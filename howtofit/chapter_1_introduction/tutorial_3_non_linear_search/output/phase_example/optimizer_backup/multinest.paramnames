@@ -1,0 +1,4 @@
+gaussian_centre_0                                                     y_{\mathrm{g1}}
+gaussian_centre_1                                                     x_{\mathrm{g1}}
+gaussian_intensity                                                    I_{\mathrm{g1}}
+gaussian_sigma                                                        sigma_{\mathrm{g1}}

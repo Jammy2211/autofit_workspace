@@ -1,0 +1,34 @@
+Bayesian Evidence                                                                         588.83547404
+Maximum Likelihood                                                                        609.93526202
+
+Most Likely Model:
+
+gaussian
+    centre
+        centre_0                                                                          0.002
+        centre_1                                                                          0.013
+    intensity                                                                             99.875
+    sigma                                                                                 4.997
+
+
+Most probable model (3.0 sigma limits):
+
+gaussian
+    centre
+        centre_0                                                                          0.000 (-0.036, 0.035)
+        centre_1                                                                          0.013 (-0.022, 0.047)
+    intensity                                                                             99.854 (99.213, 100.492)
+    sigma                                                                                 4.995 (4.973, 5.017)
+
+
+Most probable model (1.0 sigma limits):
+
+gaussian
+    centre
+        centre_0                                                                          0.000 (-0.011, 0.012)
+        centre_1                                                                          0.013 (0.001, 0.025)
+    intensity                                                                             99.854 (99.642, 100.065)
+    sigma                                                                                 4.995 (4.987, 5.002)
+
+instances
+

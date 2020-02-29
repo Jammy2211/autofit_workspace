@@ -1,0 +1,6 @@
+gaussian
+    centre
+        centre_0                                                                          GaussianPrior, mean = 0.0, sigma = 0.3
+        centre_1                                                                          GaussianPrior, mean = 0.0, sigma = 0.3
+    intensity                                                                             LogUniformPrior, lower_limit = 1e-06, upper_limit = 100000.0
+    sigma                                                                                 UniformPrior, lower_limit = 0.0, upper_limit = 10.0
