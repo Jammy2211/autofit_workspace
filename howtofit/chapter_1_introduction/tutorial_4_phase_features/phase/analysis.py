@@ -3,6 +3,7 @@ import autoarray as aa
 
 from howtofit.chapter_1_introduction.tutorial_4_phase_features import visualizer
 
+
 class Analysis(af.Analysis):
     def __init__(self, masked_dataset, image_path=None):
 
@@ -42,6 +43,4 @@ class Analysis(af.Analysis):
         model_image = instance.gaussian.image_from_grid(grid=self.masked_imaging.grid)
         fit = self.fit_from_model_image(model_image=model_image)
 
-        self.visualizer.visualize_fit(
-            fit=fit, during_analysis=during_analysis
-        )
+        self.visualizer.visualize_fit(fit=fit, during_analysis=during_analysis)

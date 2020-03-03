@@ -2,13 +2,12 @@ import autofit as af
 import autoarray as aa
 import autoarray.plot as aplt
 
-from howtofit.chapter_1_introduction.tutorial_4_phase_features import (
-    gaussians,
-    phase as ph,
-)
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.model import gaussians
+
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.phase import phase as ph
 
 # In the previous tutorial, we used PyAutoFit to fit a 2D Gaussian model to our data. In this tutorial, we'll repeat
-# the same fit, but extend our phases to perform a number of additional tasks:
+# the same fit, but extend phases to perform a number of additional tasks:
 
 # - Masking: The phase is passed a mask such that regions of the image are not fitted.
 # - Visualization: Images showing the model fit are output on-the-fly during the non-linear search.
@@ -25,8 +24,7 @@ chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/ch
 # Setup the configs as we did in the previous tutorial, as well as the output folder for our non-linear search.
 af.conf.instance = af.conf.Config(
     config_path=chapter_path + "/config",
-    output_path=chapter_path
-    + "tutorial_4_phase_features/output",
+    output_path=chapter_path + "tutorial_4_phase_features/output",
 )
 
 dataset_path = chapter_path + "dataset/gaussian_x1/"
@@ -51,7 +49,12 @@ masked_imaging = aa.masked.imaging(imaging=imaging, mask=mask)
 # A fit now requires that a mask is passed to phase before it is run. For all fits in this tutorial, lets use a mask
 # of size 10.0 in Gaussian units.
 
-mask = aa.mask.circular(shape_2d=imaging.shape_2d, pixel_scales=imaging.pixel_scales, sub_size=1, radius=10.0)
+mask = aa.mask.circular(
+    shape_2d=imaging.shape_2d,
+    pixel_scales=imaging.pixel_scales,
+    sub_size=1,
+    radius=10.0,
+)
 
 # We're now going to perform multiple fits, where each fit changes different aspects of how the fit is performed.
 # To do this, we'll set up phase with a `phase-setting', the signal_to_noise_limit.
@@ -67,9 +70,11 @@ mask = aa.mask.circular(shape_2d=imaging.shape_2d, pixel_scales=imaging.pixel_sc
 
 # For our first phase, we will omit both the phase setting (by setting it to None) and reperform the fit of tutorial 3.
 
-phase = ph.Phase(phase_name="phase_example",
-                 gaussian=af.PriorModel(gaussians.Gaussian),
-                 signal_to_noise_limit=None)
+phase = ph.Phase(
+    phase_name="phase_example",
+    gaussian=af.PriorModel(gaussians.Gaussian),
+    signal_to_noise_limit=None,
+)
 
 phase.run(dataset=imaging, mask=mask)
 
@@ -95,9 +100,11 @@ phase.run(dataset=imaging, mask=mask)
 # Next, we're going to customize and run a phase using the signal_to_noise_limit. To do this, we create a new phase and
 # run it as per usual, but additionally inputting a signal_to_noise_limit of 10.0.
 
-phase = ph.Phase(phase_name="phase_example",
-                 gaussian=af.PriorModel(gaussians.Gaussian),
-                 signal_to_noise_limit=10.0)
+phase = ph.Phase(
+    phase_name="phase_example",
+    gaussian=af.PriorModel(gaussians.Gaussian),
+    signal_to_noise_limit=10.0,
+)
 
 phase.run(dataset=imaging, mask=mask)
 

@@ -26,7 +26,6 @@ class AbstractVisualizer:
 
 
 class DatasetVisualizer(AbstractVisualizer):
-
     def __init__(self, masked_dataset, image_path):
         super().__init__(image_path)
         self.masked_dataset = masked_dataset

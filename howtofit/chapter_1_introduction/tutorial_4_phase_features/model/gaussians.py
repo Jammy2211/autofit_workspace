@@ -30,9 +30,7 @@ class Gaussian:
             np.add(np.square(transformed_grid[:, 0]), np.square(transformed_grid[:, 1]))
         )
         image = self.image_from_grid_radii(grid_radii=grid_radii)
-        return aa.masked.array.manual_1d(
-            array=image, mask=grid.mask
-        )
+        return aa.masked.array.manual_1d(array=image, mask=grid.mask)
 
     def image_from_grid_radii(self, grid_radii):
         """Calculate the intensity of the Gaussian light profile on a grid of radial coordinates.

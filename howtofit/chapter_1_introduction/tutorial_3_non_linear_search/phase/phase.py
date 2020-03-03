@@ -1,6 +1,8 @@
 import autofit as af
 from autofit.tools.phase import Dataset
-from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.phase.result import Result
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.phase.result import (
+    Result,
+)
 from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.phase.analysis import (
     Analysis,
 )
@@ -11,7 +13,9 @@ class Phase(af.AbstractPhase):
     # This tells the phase that the input parameter 'gaussian' is a model component that is fitted for by the phase's
     # non-linear search.
 
-    # In analysis.py, in the function 'fit' the input parameter 'instance' is a gaussian mapped from this model.
+    # In 'analysis.py', in the function 'fit' the input parameter 'instance' is a gaussian mapped from this model.
+
+    # For your model-fitting problem, this will most be replaced by the contents of your 'model.py' module.
 
     gaussian = af.PhaseProperty("gaussian")
 
@@ -31,7 +35,7 @@ class Phase(af.AbstractPhase):
         ----------
         paths : af.Paths
             Handles the output directory structure.
-        gaussian : gaussians.Gaussian
+        gaussian : model.gaussians.Gaussian
             The model component Gaussian class fitted by this phase.
         optimizer_class: class
             The class of a non_linear optimizer
@@ -40,13 +44,12 @@ class Phase(af.AbstractPhase):
         self.gaussian = gaussian
 
     def run(self, dataset: Dataset):
-        """
-        Pass a dataset to the phase, running the phase and non-linear search.
+        """ Pass a dataset to the phase, running the phase and non-linear search.
 
         Parameters
         ----------
-        dataset: aa.Imaging
-            The dataset fitted by the phase, which in this case is a PyAutoArray imaging object.
+        dataset : imaging.Imaging
+            The dataset fitted by the phase, which is specified in the module 'dataset/imaging.py'
 
         Returns
         -------
@@ -66,8 +69,8 @@ class Phase(af.AbstractPhase):
 
         Parameters
         ----------
-        dataset: aa.Imaging
-            The dataset fitted by the phase, which in this case is a PyAutoArray imaging object.
+        dataset : imaging.Imaging
+            The dataset fitted by the phase, which is specified in the module 'dataset/imaging.py'
 
         Returns
         -------
@@ -79,7 +82,5 @@ class Phase(af.AbstractPhase):
 
     def make_result(self, result, analysis):
         return self.Result(
-            instance=result.instance,
-            likelihood=result.likelihood,
-            analysis=analysis,
+            instance=result.instance, likelihood=result.likelihood, analysis=analysis
         )

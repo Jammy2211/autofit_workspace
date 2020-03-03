@@ -1,11 +1,11 @@
 import autofit as af
 from autofit.tools.phase import Dataset
 from howtofit.chapter_1_introduction.tutorial_4_phase_features import tagging
-from howtofit.chapter_1_introduction.tutorial_4_phase_features.meta_dataset import MetaDataset
-from howtofit.chapter_1_introduction.tutorial_4_phase_features.result import Result
-from howtofit.chapter_1_introduction.tutorial_4_phase_features.analysis import (
-    Analysis,
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.meta_dataset import (
+    MetaDataset,
 )
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.result import Result
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.analysis import Analysis
 
 
 class Phase(af.AbstractPhase):
@@ -16,11 +16,7 @@ class Phase(af.AbstractPhase):
 
     @af.convert_paths
     def __init__(
-        self,
-        paths,
-        gaussian,
-        signal_to_noise_limit=None,
-        optimizer_class=af.MultiNest,
+        self, paths, gaussian, signal_to_noise_limit=None, optimizer_class=af.MultiNest
     ):
         """
         A phase which fits a Gaussian model using a non-linear search.
@@ -36,7 +32,7 @@ class Phase(af.AbstractPhase):
         """
 
         phase_tag = tagging.phase_tag_from_phase_settings(
-            signal_to_noise_limit=signal_to_noise_limit,
+            signal_to_noise_limit=signal_to_noise_limit
         )
         paths.phase_tag = phase_tag
 
@@ -44,9 +40,7 @@ class Phase(af.AbstractPhase):
 
         self.gaussian = gaussian
 
-        self.meta_dataset = MetaDataset(
-            signal_to_noise_limit=signal_to_noise_limit,
-        )
+        self.meta_dataset = MetaDataset(signal_to_noise_limit=signal_to_noise_limit)
 
     def run(self, dataset: Dataset, mask):
         """
@@ -88,10 +82,12 @@ class Phase(af.AbstractPhase):
         """
 
         masked_dataset = self.meta_dataset.masked_dataset_from_dataset_and_mask(
-            dataset=dataset, mask=mask,
+            dataset=dataset, mask=mask
         )
 
-        return Analysis(masked_dataset=masked_dataset, image_path=self.optimizer.paths.image_path,)
+        return Analysis(
+            masked_dataset=masked_dataset, image_path=self.optimizer.paths.image_path
+        )
 
     def make_result(self, result, analysis):
         return self.Result(

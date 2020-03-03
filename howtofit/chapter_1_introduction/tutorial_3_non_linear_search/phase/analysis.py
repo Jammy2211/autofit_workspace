@@ -1,5 +1,8 @@
 import autofit as af
-from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.fit.fit import DatasetFit
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.fit import fit as f
+
+# The 'analysis.py' module contains the dataset, and given a model instance (set up via a non-linear search in
+# 'phase.py' fits the model to the dataset so as to return a likelihood.
 
 
 class Analysis(af.Analysis):
@@ -16,11 +19,11 @@ class Analysis(af.Analysis):
     # gaussian = af.PhaseProperty("gaussian")
 
     # In phase.py. Thus, PhaseProperties define our model components and thus tell the non-linear search what it is
-    # fitting!
+    # fitting! For your model-fitting problem, you'll need to update the PhaseProperty(s) to your model-components!
 
     def fit(self, instance):
         """
-        Determine the fit of a Gaussian to the imaging, using the model-instance of a Gaussian.
+        Determine the fit of a Gaussian to the dataset, using a model-instance of the Gaussian.
 
         Parameters
         ----------
@@ -30,15 +33,18 @@ class Analysis(af.Analysis):
         Returns
         -------
         fit : Fit.likelihood
-            The likelihood value indicating how well this model fit the masked imaging dataset.
+            The likelihood value indicating how well this model fit the dataset.
         """
-
         model_image = instance.gaussian.image_from_grid(grid=self.dataset.grid)
         fit = self.fit_from_model_image(model_image=model_image)
         return fit.likelihood
 
     def fit_from_model_image(self, model_image):
-        return DatasetFit(data=self.dataset.image, noise_map=self.dataset.noise_map, model_data=model_image)
+        return f.DatasetFit(
+            data=self.dataset.image,
+            noise_map=self.dataset.noise_map,
+            model_data=model_image,
+        )
 
     def visualize(self, instance, during_analysis):
 

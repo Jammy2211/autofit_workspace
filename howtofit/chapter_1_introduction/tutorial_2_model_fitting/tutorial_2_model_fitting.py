@@ -23,7 +23,9 @@ dataset_path = chapter_path + "dataset/gaussian_x1/"
 # This module directly inherits the Imaging class from PyAutoArray. I've included this as an explcit module so you're
 # aware that in your model fitting code you will have a dataset section somewhere!
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.dataset import imaging as im
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.dataset import (
+    imaging as im,
+)
 
 imaging = im.Imaging.from_fits(
     image_path=dataset_path + "image.fits",
@@ -189,7 +191,9 @@ print("Likelihood = ", likelihood)
 
 from howtofit.chapter_1_introduction.tutorial_2_model_fitting.fit import fit as f
 
-fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
+fit = f.DatasetFit(
+    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
+)
 
 print("Fit: \n")
 print(fit)
@@ -228,35 +232,45 @@ aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 # the best-fit model (the model I used to create the dataset in the first place!).
 gaussian = model.instance_from_vector(vector=[0.0, 0.5, 3.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
+fit = f.DatasetFit(
+    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
+)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 3.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
+fit = f.DatasetFit(
+    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
+)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
+fit = f.DatasetFit(
+    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
+)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 1.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
+fit = f.DatasetFit(
+    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
+)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 5.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
+fit = f.DatasetFit(
+    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
+)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)

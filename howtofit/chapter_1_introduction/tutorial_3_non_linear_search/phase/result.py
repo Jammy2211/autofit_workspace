@@ -1,5 +1,6 @@
 import autofit as af
 
+
 class Result(af.Result):
     def __init__(self, instance, likelihood, analysis):
         """
@@ -18,9 +19,7 @@ class Result(af.Result):
 
     @property
     def most_likely_model_image(self):
-        return self.instance.gaussian.image_from_grid(
-            grid=self.analysis.dataset.grid
-        )
+        return self.instance.gaussian.image_from_grid(grid=self.analysis.dataset.grid)
 
     @property
     def most_likely_fit(self):

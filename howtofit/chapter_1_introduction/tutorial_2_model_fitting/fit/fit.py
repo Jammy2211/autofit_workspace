@@ -1,6 +1,7 @@
 import autoarray as aa
 import numpy as np
 
+
 class DatasetFit:
 
     # noinspection PyUnresolvedReferences
@@ -72,9 +73,7 @@ class DatasetFit:
 
     @property
     def chi_squared(self):
-        return chi_squared_from_chi_squared_map(
-            chi_squared_map=self.chi_squared_map
-        )
+        return chi_squared_from_chi_squared_map(chi_squared_map=self.chi_squared_map)
 
     @property
     def reduced_chi_squared(self):

@@ -1,5 +1,4 @@
 class Gaussian:
-
     def __init__(
         self,
         centre=(0.0, 0.0),  # <- PyAutoFit recognises these constructor arguments

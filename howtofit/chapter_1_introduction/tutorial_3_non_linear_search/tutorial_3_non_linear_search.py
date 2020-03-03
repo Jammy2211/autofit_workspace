@@ -2,9 +2,7 @@ import autofit as af
 import autoarray as aa
 import autoarray.plot as aplt
 
-from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.model import (
-    gaussians,
-)
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.model import gaussians
 from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.phase import (
     phase as ph,
 )
@@ -40,12 +38,15 @@ chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/ch
 # Setup the configs as we did in the previous tutorial, as well as the output folder for our non-linear search.
 af.conf.instance = af.conf.Config(
     config_path=chapter_path + "/config",
-    output_path=chapter_path + "output",  # <- This sets up where the non-linear search's outputs go.
+    output_path=chapter_path
+    + "output",  # <- This sets up where the non-linear search's outputs go.
 )
 
 dataset_path = chapter_path + "dataset/gaussian_x1/"
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.dataset import imaging as im
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.dataset import (
+    imaging as im,
+)
 
 imaging = im.Imaging.from_fits(
     image_path=dataset_path + "image.fits",

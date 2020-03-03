@@ -6,9 +6,8 @@
 #    settings each non-linear search (e.g. MultiNest) won't inadvertantly use results generated via a different analysis
 #    method.
 
-def phase_tag_from_phase_settings(
-    signal_to_noise_limit=None,
-):
+
+def phase_tag_from_phase_settings(signal_to_noise_limit=None,):
 
     signal_to_noise_limit_tag = signal_to_noise_limit_tag_from_signal_to_noise_limit(
         signal_to_noise_limit=signal_to_noise_limit
@@ -17,13 +16,15 @@ def phase_tag_from_phase_settings(
     # You may well have many more tag which appear here.
 
     return (
-        "phase_tag" # For every tag you add, you'll add it to this return statement
+        "phase_tag"  # For every tag you add, you'll add it to this return statement
         + signal_to_noise_limit_tag
- # e.g. + your_own_tag
+        # e.g. + your_own_tag
     )
+
 
 # This function generates a string we'll use to 'tag' a phase which uses this setting, thus ensuring results are
 # output to a unique path.
+
 
 def signal_to_noise_limit_tag_from_signal_to_noise_limit(signal_to_noise_limit):
     """Generate a signal to noise limit tag, to customize phase names based on limiting the signal to noise ratio of
