@@ -16,7 +16,16 @@ af.conf.instance = af.conf.Config(config_path=chapter_path + "/config")
 
 dataset_path = chapter_path + "dataset/gaussian_x1/"
 
-imaging = aa.imaging.from_fits(
+# The dataset package is where our data is stored, so quickly checkout the module:
+#
+# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/dataset/imaging.py'.
+
+# This module directly inherits the Imaging class from PyAutoArray. I've included this as an explcit module so you're
+# aware that in your model fitting code you will have a dataset section somewhere!
+
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.dataset import imaging as im
+
+imaging = im.Imaging.from_fits(
     image_path=dataset_path + "image.fits",
     noise_map_path=dataset_path + "noise_map.fits",
     psf_path=dataset_path + "psf.fits",
@@ -30,11 +39,11 @@ aplt.imaging.subplot_imaging(imaging=imaging)
 # So, how do we actually go about fitting our Gaussian model to this data? First, we need to be able to generate
 # an image of our 2D Gaussian model.
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting import gaussians
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.model import gaussians
 
 # Checkout the file:
 
-# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/gaussians.py'.
+# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/model/gaussians.py'.
 
 # Here, we've extended the Gaussian class to have a method "image_from_grid". Given an input grid of (y,x) coordinates
 # this computes the intensity of the Gaussian at every point on that grid.
@@ -94,7 +103,7 @@ print(model_image.in_1d)
 # PyAutoArray has the tools we need to visualize the Gaussian's image.
 aplt.array(array=model_image)
 
-# Different values of centre, intensity and sigma change the Gaussians apperance - have a go at editing some of the
+# Different values of centre, intensity and sigma change the Gaussian's apperance - have a go at editing some of the
 # values below.
 gaussian = model.instance_from_vector(vector=[1.0, 2.0, 3.0, 4.0])
 model_image = gaussian.image_from_grid(grid=grid)
@@ -169,24 +178,24 @@ print("Likelihood = ", likelihood)
 # If you haven't performed model fitting before and these terms are new to you, make sure you are clear on exactly what
 # they all mean as they are at the core of all model-fitting performed in PyAutoFit!
 
-# Before fitting data, we may want mask it, perhaps masking out regions of the data where we know it is defective or
-# removing regions of an image where there is no signal to save on computational run time.
+# It was a lot of code performing the fits above and creating our residuals, chi-squareds and likelihoods.
 
-# For our Gaussian data there is no need to apply a mask, but PyAutoArray still requires that a mask is specified, so
-# we'll create a mask which is "unmasked" - that is it consists entirely of False entries signifying every data-point
-# in our image to perform a fit.
-mask = aa.mask.unmasked(shape_2d=imaging.shape_2d, pixel_scales=imaging.pixel_scales)
-masked_imaging = aa.masked.imaging(imaging=imaging, mask=mask)
+# From here on we'll a class to do this, which can be found in the file:
+#
+# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/fit/fit.py'
 
-# It was a lot of code performing the fits above and creating our residuals, chi-squareds and likelihoods. From here
-# on we'll use PyAutoArray's built-in fitting tools which fit the imaging data in one step.
-fit = aa.fit(masked_dataset=masked_imaging, model_data=model_image)
+# We'll use a 'fit.py' module in all remaining tutorials - for a model-fitting problem its not surprising that we need
+# a module specific to fitting!
+
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.fit import fit as f
+
+fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
 
 print("Fit: \n")
 print(fit)
 print("Model-Image:\n")
-print(fit.model_image.in_2d)
-print(fit.model_image.in_1d)
+print(fit.model_data.in_2d)
+print(fit.model_data.in_1d)
 print()
 print("Residual Maps:\n")
 print(fit.residual_map.in_2d)
@@ -198,7 +207,7 @@ print(fit.chi_squared_map.in_1d)
 print("Likelihood:")
 print(fit.likelihood)
 
-# Of course, PyAutoArray also provides the tools we need to visualize a fit.
+# PyAutoArray provides the tools we need to visualize a fit.
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 
 # So to recap the previous tutorial and this one:
@@ -219,35 +228,35 @@ aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 # the best-fit model (the model I used to create the dataset in the first place!).
 gaussian = model.instance_from_vector(vector=[0.0, 0.5, 3.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = aa.fit(masked_dataset=masked_imaging, model_data=model_image)
+fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 3.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = aa.fit(masked_dataset=masked_imaging, model_data=model_image)
+fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = aa.fit(masked_dataset=masked_imaging, model_data=model_image)
+fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 1.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = aa.fit(masked_dataset=masked_imaging, model_data=model_image)
+fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
-gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 0.5])
+gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 5.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = aa.fit(masked_dataset=masked_imaging, model_data=model_image)
+fit = f.DatasetFit(data=imaging.data, noise_map=imaging.noise_map, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
@@ -265,6 +274,25 @@ print(fit.likelihood)
 # Of course, there is a much better way to perform model-fitting, and in the next tutorial we'll take you through how
 # to do such fitting in PyAutoFit, using whats called a 'non-linear search'.
 
+
+### Datasets and Fits ###
+
+# In this tutorial, we relied heavily on PyAutoArray to take care of our data-set. We had a 'dataset.py' module which
+# contained the data, but it inherited from PyAutoArray and thus handled all visualization for us. We're going to keep
+# using PyAutoArray to handle our data, but I will make it explcit in templates where I ancitipate where you'll need to
+# change code to to make it appropriate for data specific to your model-fitting problem. Afterall, there is no
+# general template we can give you for any data-set.
+
+# So, just bare in mind from here on, whenever we use PyAutoArray to load dat or visualize it, it'll be on
+# you to do that yourself in you code!
+
+# To perform fits, we made a new module, 'fit.py'. This module is written in a general way, and it should be nothing
+# more than a copy and paste job for you to be able to reuse it for your model fitting problem, regardless of the
+# structure of your data! In tutorial 4, we'll extend 'fit.py' to include data masking.
+
+
+#### Your Model ###
+
 # To end, its worth quickly thinking about the model you ultimately want to fit with PyAutoFit. In this example,
 # we extended the Gaussian class to contain the function we needed to generate an image of the Gaussian and thus
 # generate the model-image we need to fit our data. For your model fitting problem can you do something similar?
@@ -280,4 +308,4 @@ print(fit.likelihood)
 # 3) Use these residuals in conjunction with your noise-map to define a likelihood.
 # 4) Find the highest likelihood models.
 
-# So, get thinking about how these steps woould be performed for your model!
+# So, get thinking about how these steps would be performed for your model!

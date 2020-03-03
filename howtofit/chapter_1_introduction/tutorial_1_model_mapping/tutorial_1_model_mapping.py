@@ -49,7 +49,7 @@ aplt.imaging.image(imaging=imaging)
 
 # So lets go ahead and create our model of a 2D Gaussian. Take a look at the file
 
-# 'autofit_workspace/howtofit/chapter_1_introduction.tutorial_1_model_mapping/gaussians.py'.
+# 'autofit_workspace/howtofit/chapter_1_introduction.tutorial_1_model_mapping/model/gaussians.py'.
 
 # Here we define our 2D Gaussian model using the code:
 
@@ -75,7 +75,7 @@ class Gaussian:
 
 # By writing a model component in this way, we can use the Python class to set it up as model in PyAutoFit.
 
-from howtofit.chapter_1_introduction.tutorial_1_model_mapping import gaussians
+from howtofit.chapter_1_introduction.tutorial_1_model_mapping.model import gaussians
 
 model = af.PriorModel(gaussians.Gaussian)
 

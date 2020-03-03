@@ -93,12 +93,12 @@ A description of the general.ini visualization config.
         The multiple_images appearance is specified by the [multiple_images] section of the 'figures.ini' and
         'subplots.ini' configs.
         
-    gaussian_centres : bool
+    centres : bool
 
         If True, the centre of all light profiles are plotted on figures which have have light profile(s) available, 
         such as the images of galaxies, planes, tracers and fits.
         
-        The gaussian_centres appearance is specified by the [gaussian_centres] section of the
+        The centres appearance is specified by the [centres] section of the
         'figures.ini' and 'subplots.ini' configs.
 
         If there are multiple galaxies with light profiles in a plane or tracer, light profile centres of the same
