@@ -1,11 +1,13 @@
 import autoarray as aa
 import numpy as np
 
+# This module is identical to tutorial_2_model_fitting.
+
 
 class DatasetFit:
 
     # noinspection PyUnresolvedReferences
-    def __init__(self, data, noise_map, model_data):
+    def __init__(self, dataset, model_data):
         """Class to fit a dataset with model data.
 
         Parameters
@@ -13,9 +15,9 @@ class DatasetFit:
         data : ndarray
             The observed dataset that is fitted.
         noise_map : ndarray
-            The noise_map-map of the observed dataset.
+            The noise_map of the observed dataset.
         model_data : ndarray
-            The model simulate the fitting image is fitted with.
+            The model data the data is fitted with.
 
         Attributes
         -----------
@@ -29,13 +31,12 @@ class DatasetFit:
             The reduced chi-squared of the model's fit to simulate (chi_squared / number of datas points), summed over \
             every simulator-point.
         noise_normalization : float
-            The overall normalization term of the noise_map-map, summed over every simulator-point.
+            The overall normalization term of the noise_map, summed over every simulator-point.
         likelihood : float
             The overall likelihood of the model's fit to the dataset, summed over evey simulator-point.
         """
 
-        self.data = data
-        self.noise_map = noise_map
+        self.dataset = dataset
         self.model_data = model_data
 
     # In tutorial 2, we do not mask our data. However, PyAutoArray still needs the fit to have a mask, which we make as
@@ -45,6 +46,16 @@ class DatasetFit:
     @property
     def mask(self):
         return aa.mask.unmasked(shape_2d=self.data.shape_2d, pixel_scales=1.0)
+
+    # Lets use properties to make the 'data' and noise-map accessible via our fit.
+
+    @property
+    def data(self):
+        return self.dataset.data
+
+    @property
+    def noise_map(self):
+        return self.dataset.noise_map
 
     @property
     def residual_map(self):

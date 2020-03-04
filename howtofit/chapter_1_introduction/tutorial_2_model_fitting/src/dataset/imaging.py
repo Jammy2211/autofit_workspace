@@ -12,7 +12,7 @@ from autoarray.dataset import imaging
 # above you shouldn't care about what this module does, only take note that it exists.
 
 
-class Imaging(imaging.Imaging):
+class Dataset(imaging.Imaging):
     def __init__(self, image, noise_map):
 
-        super(Imaging, self).__init__(image=image, noise_map=noise_map)
+        super(Dataset, self).__init__(image=image, noise_map=noise_map)

@@ -1,10 +1,13 @@
 import autofit as af
 import autoarray as aa
-import autoarray.plot as aplt
 
-from howtofit.chapter_1_introduction.tutorial_4_phase_features.model import gaussians
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.src.model import (
+    gaussians,
+)
 
-from howtofit.chapter_1_introduction.tutorial_4_phase_features.phase import phase as ph
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.src.phase import (
+    phase as ph,
+)
 
 # In the previous tutorial, we used PyAutoFit to fit a 2D Gaussian model to our data. In this tutorial, we'll repeat
 # the same fit, but extend phases to perform a number of additional tasks:
@@ -14,47 +17,50 @@ from howtofit.chapter_1_introduction.tutorial_4_phase_features.phase import phas
 # - Customization: The fit is customized to alter the dataset before fitting.
 # - Tagging: The output paths of the phase are tagged depending on the fit customization.
 
-# These new features have lead to additional modules not present in tutorial 3, called 'meta_dataset.py', 'tagging.py'
-# and 'visualizer.py'. Before looking at these modules, lets first perform a series of MultiNest fits to see how we
-# have changed the behaviour of PyAutoFit.
+# These new features have lead to additional modules in the 'phase' package not present in tutorial 3, called
+# 'meta_dataset.py', 'tagging.py' and 'visualizer.py'. Before looking at these modules, lets first perform a series of
+# MultiNest fits to see how they change the behaviour of PyAutoFit.
 
-# You need to change the path below to the chapter 1 directory so we can load the dataset#
+# You need to change the path below to the chapter 1 directory so we can load the dataset
 chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction/"
 
 # Setup the configs as we did in the previous tutorial, as well as the output folder for our non-linear search.
 af.conf.instance = af.conf.Config(
-    config_path=chapter_path + "/config",
-    output_path=chapter_path + "tutorial_4_phase_features/output",
+    config_path=chapter_path + "/config", output_path=chapter_path + "output"
 )
 
 dataset_path = chapter_path + "dataset/gaussian_x1/"
 
-imaging = aa.imaging.from_fits(
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.src.dataset import (
+    dataset as ds,
+)
+
+dataset = ds.Dataset.from_fits(
     image_path=dataset_path + "image.fits",
     noise_map_path=dataset_path + "noise_map.fits",
     psf_path=dataset_path + "psf.fits",
     pixel_scales=1.0,
 )
 
+# Before fitting data, we often want mask it, removing regions of the data where we know it is defective or where
+# there is no signal to save on computational run time.
 
-# Before fitting data, we may want mask it, perhaps masking out regions of the data where we know it is defective or
-# removing regions of an image where there is no signal to save on computational run time.
+# To facilitate this we have added the module 'masked_dataset.py' to our dataset package. This takes our dataset
+# dataset and a mask, and combines the two to create a masked dataset. Check it out now!
 
-# For our Gaussian data there is no need to apply a mask, but PyAutoArray still requires that a mask is specified, so
-# we'll create a mask which is "unmasked" - that is it consists entirely of False entries signifying every data-point
-# in our image to perform a fit.
-mask = aa.mask.unmasked(shape_2d=imaging.shape_2d, pixel_scales=imaging.pixel_scales)
-masked_imaging = aa.masked.imaging(imaging=imaging, mask=mask)
-
-# A fit now requires that a mask is passed to phase before it is run. For all fits in this tutorial, lets use a mask
-# of size 10.0 in Gaussian units.
+# This masking occurs within the phase package of PyAutoFit, which we'll inspect at the end of the tutorial. However,
+# for a phase to run it does now require that a mask is passed to it. For this tutorial, lets use a mask of size 10.0
+# (in Gaussian units set by the pixel_scales of the dataset as specified above).
 
 mask = aa.mask.circular(
-    shape_2d=imaging.shape_2d,
-    pixel_scales=imaging.pixel_scales,
+    shape_2d=dataset.shape_2d,
+    pixel_scales=dataset.pixel_scales,
     sub_size=1,
     radius=10.0,
 )
+
+# Its also worth checking out the 'fit.py' module in this tutorial. The module follows the same structure as tutorials
+# 2 and 3, but the functions has been updated to include the use of a mask.
 
 # We're now going to perform multiple fits, where each fit changes different aspects of how the fit is performed.
 # To do this, we'll set up phase with a `phase-setting', the signal_to_noise_limit.
@@ -71,12 +77,20 @@ mask = aa.mask.circular(
 # For our first phase, we will omit both the phase setting (by setting it to None) and reperform the fit of tutorial 3.
 
 phase = ph.Phase(
-    phase_name="phase_example",
+    phase_name="phase_t4",
     gaussian=af.PriorModel(gaussians.Gaussian),
     signal_to_noise_limit=None,
 )
 
-phase.run(dataset=imaging, mask=mask)
+print(
+    "MultiNest has begun running - checkout the autofit_workspace/howtofit/chapter_1_introduction/output/phase_t4"
+    "folder for live output of the results."
+    "This Jupyter notebook cell with progress once MultiNest has completed - this could take a few minutes!"
+)
+
+phase.run(dataset=dataset, mask=mask)
+
+print("MultiNest has finished run - you may now continue the notebook.")
 
 # Okay, lets think about what was performed differently in this phase. To begin, lets note the output directory:
 
@@ -86,7 +100,7 @@ phase.run(dataset=imaging, mask=mask)
 # results are stored. It'll be clear why this is in a moment.
 
 # Next, lets check that this phase did indeed perform visualization. Navigate to the folder 'image' in the directory
-# above. You should now see a set of folders containing visualization of the imaging and fit, as well as a subplots
+# above. You should now see a set of folders containing visualization of the dataset and fit, as well as a subplots
 # folder. As promised, our phase is now taking care of the visualization of our model.
 
 # This visualization happens 'on-the-fly', such that during a MultiNest these images are output using the current
@@ -106,7 +120,7 @@ phase = ph.Phase(
     signal_to_noise_limit=10.0,
 )
 
-phase.run(dataset=imaging, mask=mask)
+phase.run(dataset=dataset, mask=mask)
 
 # You'll note the results are now in a slightly different directory to the fit performed above:
 

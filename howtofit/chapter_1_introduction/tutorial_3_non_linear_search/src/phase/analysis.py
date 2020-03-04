@@ -1,5 +1,7 @@
 import autofit as af
-from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.fit import fit as f
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.fit import (
+    fit as f,
+)
 
 # The 'analysis.py' module contains the dataset, and given a model instance (set up via a non-linear search in
 # 'phase.py' fits the model to the dataset so as to return a likelihood.
@@ -35,16 +37,15 @@ class Analysis(af.Analysis):
         fit : Fit.likelihood
             The likelihood value indicating how well this model fit the dataset.
         """
-        model_image = instance.gaussian.image_from_grid(grid=self.dataset.grid)
+        model_image = self.model_image_from_instance(instance=instance)
         fit = self.fit_from_model_image(model_image=model_image)
         return fit.likelihood
 
+    def model_image_from_instance(self, instance):
+        return instance.gaussian.image_from_grid(grid=self.dataset.grid)
+
     def fit_from_model_image(self, model_image):
-        return f.DatasetFit(
-            data=self.dataset.image,
-            noise_map=self.dataset.noise_map,
-            model_data=model_image,
-        )
+        return f.DatasetFit(dataset=self.dataset, model_data=model_image)
 
     def visualize(self, instance, during_analysis):
 

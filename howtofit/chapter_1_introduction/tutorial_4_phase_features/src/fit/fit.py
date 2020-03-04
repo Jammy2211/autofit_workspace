@@ -1,23 +1,22 @@
 import autoarray as aa
 import numpy as np
 
-# This module is identical to tutorial_2_model_fitting.
+# This module is similar to the fit.py modules in tutorials 2 and 3, however the fit methods now also take a mask as
+# input and use the mask to omit fitting regions where the mask is True.
 
 
 class DatasetFit:
 
     # noinspection PyUnresolvedReferences
-    def __init__(self, data, noise_map, model_data):
+    def __init__(self, masked_dataset, model_data):
         """Class to fit a dataset with model data.
 
         Parameters
         -----------
-        data : ndarray
-            The observed dataset that is fitted.
-        noise_map : ndarray
-            The noise_map-map of the observed dataset.
+        masked_data : ndarray
+            The observed masked dataset that is fitted.
         model_data : ndarray
-            The model simulate the fitting image is fitted with.
+            The model data the data is fitted with.
 
         Attributes
         -----------
@@ -31,35 +30,41 @@ class DatasetFit:
             The reduced chi-squared of the model's fit to simulate (chi_squared / number of datas points), summed over \
             every simulator-point.
         noise_normalization : float
-            The overall normalization term of the noise_map-map, summed over every simulator-point.
+            The overall normalization term of the noise_map, summed over every simulator-point.
         likelihood : float
             The overall likelihood of the model's fit to the dataset, summed over evey simulator-point.
         """
-
-        self.data = data
-        self.noise_map = noise_map
+        self.masked_dataset = masked_dataset
         self.model_data = model_data
 
     @property
     def mask(self):
-        return aa.mask.unmasked(shape_2d=self.data.shape_2d, pixel_scales=1.0)
+        return self.masked_dataset.mask
+
+    @property
+    def data(self):
+        return self.masked_dataset.data.in_2d
+
+    @property
+    def noise_map(self):
+        return self.masked_dataset.noise_map.in_2d
 
     @property
     def residual_map(self):
-        return residual_map_from_data_and_model_data(
-            data=self.data, model_data=self.model_data
+        return residual_map_from_data_model_data_and_mask(
+            data=self.data, model_data=self.model_data, mask=self.mask
         )
 
     @property
     def normalized_residual_map(self):
-        return normalized_residual_map_from_residual_map_and_noise_map(
-            residual_map=self.residual_map, noise_map=self.noise_map
+        return normalized_residual_map_from_residual_map_noise_map_and_mask(
+            residual_map=self.residual_map, noise_map=self.noise_map, mask=self.mask
         )
 
     @property
     def chi_squared_map(self):
-        return chi_squared_map_from_residual_map_and_noise_map(
-            residual_map=self.residual_map, noise_map=self.noise_map
+        return chi_squared_map_from_residual_map_noise_map_and_mask(
+            residual_map=self.residual_map, noise_map=self.noise_map, mask=self.mask
         )
 
     @property
@@ -71,7 +76,9 @@ class DatasetFit:
 
     @property
     def chi_squared(self):
-        return chi_squared_from_chi_squared_map(chi_squared_map=self.chi_squared_map)
+        return chi_squared_from_chi_squared_map_and_mask(
+            chi_squared_map=self.chi_squared_map, mask=self.mask
+        )
 
     @property
     def reduced_chi_squared(self):
@@ -79,7 +86,9 @@ class DatasetFit:
 
     @property
     def noise_normalization(self):
-        return noise_normalization_from_noise_map(noise_map=self.noise_map)
+        return noise_normalization_from_noise_map_and_mask(
+            noise_map=self.noise_map, mask=self.mask
+        )
 
     @property
     def likelihood(self):
@@ -88,8 +97,8 @@ class DatasetFit:
         )
 
 
-def residual_map_from_data_and_model_data(data, model_data):
-    """Compute the residual map between a masked observed data and model-data, where:
+def residual_map_from_data_model_data_and_mask(data, mask, model_data):
+    """Compute the residual map between a masked observed simulate and model simulator, where:
 
     Residuals = (Data - Model_Data).
 
@@ -100,68 +109,88 @@ def residual_map_from_data_and_model_data(data, model_data):
     mask : np.ndarray
         The mask applied to the dataset, where *False* entries are included in the calculation.
     model_data : np.ndarray
-        The model-data used to fit the observed dataset.
+        The model simulator used to fit the observed dataset.
     """
-    return np.subtract(data, model_data, out=np.zeros_like(data))
+    return np.subtract(
+        data, model_data, out=np.zeros_like(data), where=np.asarray(mask) == 0
+    )
 
 
-def normalized_residual_map_from_residual_map_and_noise_map(residual_map, noise_map):
-    """Compute the normalized residual map between a masked observed data and model-data, where:
+def normalized_residual_map_from_residual_map_noise_map_and_mask(
+    residual_map, noise_map, mask
+):
+    """Compute the normalized residual map between a masked observed simulate and model simulator, where:
 
     Normalized_Residual = (Data - Model_Data) / Noise
 
     Parameters
     -----------
     residual_map : np.ndarray
-        The residual-map of the model-data fit to the observed data.
+        The residual-map of the model-simulator fit to the observed dataset.
     noise_map : np.ndarray
         The noise-map of the observed dataset.
+    mask : np.ndarray
+        The mask applied to the residual-map, where *False* entries are included in the calculation.
     """
-    return np.divide(residual_map, noise_map, out=np.zeros_like(residual_map))
+    return np.divide(
+        residual_map,
+        noise_map,
+        out=np.zeros_like(residual_map),
+        where=np.asarray(mask) == 0,
+    )
 
 
-def chi_squared_map_from_residual_map_and_noise_map(residual_map, noise_map):
-    """Computes the chi-squared map between a residual-map and noise-map, where:
+def chi_squared_map_from_residual_map_noise_map_and_mask(residual_map, noise_map, mask):
+    """Computes the chi-squared map between a masked residual-map and noise-map, where:
 
     Chi_Squared = ((Residuals) / (Noise)) ** 2.0 = ((Data - Model)**2.0)/(Variances)
 
     Parameters
     -----------
     residual_map : np.ndarray
-        The residual-map of the model-data fit to the observed data.
+        The residual-map of the model-simulator fit to the observed dataset.
     noise_map : np.ndarray
-        The noise-map of the observed data.
+        The noise-map of the observed dataset.
+    mask : np.ndarray
+        The mask applied to the residual-map, where *False* entries are included in the calculation.
     """
     return np.square(
-        np.divide(residual_map, noise_map, out=np.zeros_like(residual_map))
+        np.divide(
+            residual_map,
+            noise_map,
+            out=np.zeros_like(residual_map),
+            where=np.asarray(mask) == 0,
+        )
     )
 
 
-def chi_squared_from_chi_squared_map(chi_squared_map):
+def chi_squared_from_chi_squared_map_and_mask(chi_squared_map, mask):
     """Compute the chi-squared terms of each model data's fit to an observed dataset, by summing the masked
     chi-squared map of the fit.
 
     Parameters
     ----------
     chi_squared_map : np.ndarray
-        The chi-squared map of values of the model-data fit to the observed dataset.
+        The chi-squared map of values of the model-simulator fit to the observed dataset.
     mask : np.ndarray
         The mask applied to the chi-squared map, where *False* entries are included in the calculation.
     """
-    return np.sum(chi_squared_map)
+    return np.sum(chi_squared_map[np.asarray(mask) == 0])
 
 
-def noise_normalization_from_noise_map(noise_map):
-    """Compute the noise-map normalization terms of a noise-map, summing the value in every pixel as:
+def noise_normalization_from_noise_map_and_mask(noise_map, mask):
+    """Compute the noise-map normalization terms of masked noise-map, summing the noise_map value in every pixel as:
 
     [Noise_Term] = sum(log(2*pi*[Noise]**2.0))
 
     Parameters
     ----------
     noise_map : np.ndarray
-        The noise-map of the observed dataset.
+        The masked noise-map of the observed dataset.
+    mask : np.ndarray
+        The mask applied to the noise-map, where *False* entries are included in the calculation.
     """
-    return np.sum(np.log(2 * np.pi * noise_map ** 2.0))
+    return np.sum(np.log(2 * np.pi * noise_map[np.asarray(mask) == 0] ** 2.0))
 
 
 def likelihood_from_chi_squared_and_noise_normalization(

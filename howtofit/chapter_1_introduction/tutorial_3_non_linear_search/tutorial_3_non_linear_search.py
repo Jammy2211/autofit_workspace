@@ -1,9 +1,10 @@
 import autofit as af
-import autoarray as aa
 import autoarray.plot as aplt
 
-from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.model import gaussians
-from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.phase import (
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.model import (
+    gaussians,
+)
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.phase import (
     phase as ph,
 )
 
@@ -44,11 +45,11 @@ af.conf.instance = af.conf.Config(
 
 dataset_path = chapter_path + "dataset/gaussian_x1/"
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.dataset import (
-    imaging as im,
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.dataset import (
+    dataset as ds,
 )
 
-imaging = im.Imaging.from_fits(
+dataset = ds.Dataset.from_fits(
     image_path=dataset_path + "image.fits",
     noise_map_path=dataset_path + "noise_map.fits",
     psf_path=dataset_path + "psf.fits",
@@ -88,7 +89,7 @@ print(
     "This Jupyter notebook cell with progress once MultiNest has completed - this could take a few minutes!"
 )
 
-result = phase.run(dataset=imaging)
+result = phase.run(dataset=dataset)
 
 print("MultiNest has finished run - you may now continue the notebook.")
 
@@ -102,8 +103,26 @@ print("Sigma = ", result.instance.gaussian.sigma)
 aplt.array(array=result.most_likely_model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=result.most_likely_fit)
 
-# At this point, you should open and inspect (in detail) the files 'phase.py', 'analysis.py' and 'result.py'. These
-# 3 files are the heart of any PyAutoFit model fit - they are the only files you need in order fit a model to a
+# We also have an 'output' attribute, which in this case is a MultiNestOutput object:
+print(result.output)
+
+# This object acts as an interface between the MultiNest output results on your hard-disk and this Python code. For
+# example, we can use it to get the evidence estimated by MultiNest.
+print(result.output.evidence)
+
+# We can also use it to get a model-instance of the "most probable" model, which is the model where each parameter is
+# the value estimated from the probability distribution of parameter space.
+mp_instance = result.output.most_probable_instance
+print()
+print("Most Probable Model:\n")
+print("Centre = ", mp_instance.gaussian.centre)
+print("Intensity = ", mp_instance.gaussian.intensity)
+print("Sigma = ", mp_instance.gaussian.sigma)
+
+# We'll come back to this output object in tutorial 6!
+
+# At this point, you should open and inspect (in detail) the source code files 'phase.py', 'analysis.py' and 'result.py'.
+# These 3 files are the heart of any PyAutoFit model fit - they are the only files you need in order fit a model to a
 # data-set! An over view of each is as follows:
 
 # phase.py:
@@ -125,9 +144,9 @@ aplt.fit_imaging.subplot_fit_imaging(fit=result.most_likely_fit)
 #   - Has functions to inspect the overall quality of the model-fit (e.g. parameter estimates, errors, etc.). These
 #     will be detailed in chapter 5.
 
-# Finally, the other thing to think about is the directory structure of the tutorial, where we have separated modules
-# into 3 packages: 'fit', 'model' and 'phase. The reason for this is that is separates different parts of the code
-# which do different thing.
+# Finally, the other thing to think about is the directory structure of the tutorial's 'source code', where we have
+# separated modules into 3 packages: 'fit', 'model' and 'phase. The reason for this is that is separates different
+# parts of the code which do different thing.
 
 # For example, this ensures the code which handles the model is completely separate from the code which handles phases.
 # This means the model never interfaces directly with PyAutoFit, which is good code design, we want parts of code that

@@ -1,9 +1,11 @@
 import autofit as af
-from autofit.tools.phase import Dataset
-from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.phase.result import (
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.dataset.dataset import (
+    Dataset,
+)
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.phase.result import (
     Result,
 )
-from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.phase.analysis import (
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.phase.analysis import (
     Analysis,
 )
 
@@ -48,8 +50,8 @@ class Phase(af.AbstractPhase):
 
         Parameters
         ----------
-        dataset : imaging.Imaging
-            The dataset fitted by the phase, which is specified in the module 'dataset/imaging.py'
+        dataset : dataset.Dataset
+            The dataset fitted by the phase, which is specified in the module 'dataset/dataset.py'
 
         Returns
         -------
@@ -69,8 +71,8 @@ class Phase(af.AbstractPhase):
 
         Parameters
         ----------
-        dataset : imaging.Imaging
-            The dataset fitted by the phase, which is specified in the module 'dataset/imaging.py'
+        dataset : dataset.Dataset
+            The dataset fitted by the phase, which is specified in the module 'dataset/dataset.py'
 
         Returns
         -------
@@ -82,5 +84,8 @@ class Phase(af.AbstractPhase):
 
     def make_result(self, result, analysis):
         return self.Result(
-            instance=result.instance, likelihood=result.likelihood, analysis=analysis
+            instance=result.instance,
+            likelihood=result.likelihood,
+            analysis=analysis,
+            output=result.output,
         )

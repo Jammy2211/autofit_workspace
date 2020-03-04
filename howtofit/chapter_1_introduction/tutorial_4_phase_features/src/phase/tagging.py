@@ -1,19 +1,20 @@
-# This module create tags for phases settings that customize the analysis. We tag these phases for two reasons:
+# This module create tags for phases settings that customize the analysis. We tag phases for two reasons:
 
-# 1) Tags describes the analysis settings, making it explicit what analysis was used to create the results.
+# 1) Tags describes the phase settings, making it explicit what analysis was used to create the results.
 
-# 2) Tags create a unique output path, ensuring that if you run multiple phases on the same data but with different
-#    settings each non-linear search (e.g. MultiNest) won't inadvertantly use results generated via a different analysis
-#    method.
+# 2) Tags create unique output paths, ensuring that if you run multiple phases on the same data with different settings
+#    each non-linear search (e.g. MultiNest) won't inadvertantly use results generated via a different analysis method.
 
 
-def phase_tag_from_phase_settings(signal_to_noise_limit=None,):
+def phase_tag_from_phase_settings(signal_to_noise_limit=None):
 
     signal_to_noise_limit_tag = signal_to_noise_limit_tag_from_signal_to_noise_limit(
         signal_to_noise_limit=signal_to_noise_limit
     )
 
     # You may well have many more tag which appear here.
+
+    # your_own_tag = your_own_tag_from_your_own_setting(you_own_setting=you_own_setting)
 
     return (
         "phase_tag"  # For every tag you add, you'll add it to this return statement
@@ -30,11 +31,11 @@ def signal_to_noise_limit_tag_from_signal_to_noise_limit(signal_to_noise_limit):
     """Generate a signal to noise limit tag, to customize phase names based on limiting the signal to noise ratio of
     the dataset being fitted.
 
-    This changes the phase name 'phase_name' as follows:
+    This changes the phase name 'phase_tag' as follows:
 
-    signal_to_noise_limit = None -> phase_name
-    signal_to_noise_limit = 2 -> phase_name__snr_2
-    signal_to_noise_limit = 10 -> phase_name__snr_10
+    signal_to_noise_limit = None -> phase_tag
+    signal_to_noise_limit = 2 -> phase_tag__snr_2
+    signal_to_noise_limit = 10 -> phase_tag__snr_10
     """
     if signal_to_noise_limit is None:
         return ""

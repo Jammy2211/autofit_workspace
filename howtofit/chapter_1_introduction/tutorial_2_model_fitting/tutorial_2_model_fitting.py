@@ -8,7 +8,7 @@ import numpy as np
 
 # To begin, lets load the dataset again.
 
-# You need to change the path below to the chapter 1 directory so we can load the dataset#
+# You need to change the path below to the chapter 1 directory so we can load the dataset.
 chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction/"
 
 # These setup the configs as we did in the previous tutorial.
@@ -18,34 +18,34 @@ dataset_path = chapter_path + "dataset/gaussian_x1/"
 
 # The dataset package is where our data is stored, so quickly checkout the module:
 #
-# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/dataset/imaging.py'.
+# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/dataset/src/dataset.py'.
 
-# This module directly inherits the Imaging class from PyAutoArray. I've included this as an explcit module so you're
+# This module directly inherits the Dataset class from PyAutoArray. I've included this as an explcit module so you're
 # aware that in your model fitting code you will have a dataset section somewhere!
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.dataset import (
-    imaging as im,
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.dataset import (
+    dataset as im,
 )
 
-imaging = im.Imaging.from_fits(
+dataset = im.Dataset.from_fits(
     image_path=dataset_path + "image.fits",
     noise_map_path=dataset_path + "noise_map.fits",
     psf_path=dataset_path + "psf.fits",
     pixel_scales=1.0,
 )
 
-# The imaging subplot shows the imaging dataset's image and noise-map, which characterises the noise in every pixel of
+# The dataset subplot shows the dataset's image and noise-map, which characterises the noise in every pixel of
 # the image.
-aplt.imaging.subplot_imaging(imaging=imaging)
+aplt.dataset.subplot_dataset(dataset=dataset)
 
 # So, how do we actually go about fitting our Gaussian model to this data? First, we need to be able to generate
 # an image of our 2D Gaussian model.
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.model import gaussians
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.model import gaussians
 
 # Checkout the file:
 
-# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/model/gaussians.py'.
+# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/src/model/gaussians.py'.
 
 # Here, we've extended the Gaussian class to have a method "image_from_grid". Given an input grid of (y,x) coordinates
 # this computes the intensity of the Gaussian at every point on that grid.
@@ -54,7 +54,7 @@ from howtofit.chapter_1_introduction.tutorial_2_model_fitting.model import gauss
 
 # The "pixel-scales" define the conversion between pixels (which range from values of 0 to 100) and Gaussian
 # coordinates (which define the length dimensions of its centre and sigma).
-grid = aa.grid.uniform(shape_2d=imaging.shape_2d, pixel_scales=imaging.pixel_scales)
+grid = aa.grid.uniform(shape_2d=dataset.shape_2d, pixel_scales=dataset.pixel_scales)
 
 # This grid is a uniform 2D array of coordinates in length units of our Gaussian profile.
 
@@ -118,7 +118,7 @@ aplt.array(array=model_image)
 # Simple, we take the image from our data and our model_image of the Gaussian and subtract the two to get a
 # 'residual-map'.
 
-residual_map = imaging.image - model_image
+residual_map = dataset.image - model_image
 aplt.array(array=residual_map)
 
 # Clearly, this model isn't a good fit to the data - which was to be expected as they looked nothing alike!
@@ -128,7 +128,7 @@ aplt.array(array=residual_map)
 # our goodness-of-fit to account for that.
 
 # To account for noise, we take our residual-map and divide it by the noise-map, to get the 'normalized residual-map'.
-normalized_residual_map = residual_map / imaging.noise_map
+normalized_residual_map = residual_map / dataset.noise_map
 aplt.array(array=normalized_residual_map)
 
 # We're getting close to a goodness-of-fit measure, but there is still a problem - we have negative and positive values
@@ -163,7 +163,7 @@ print("Likelihood = ", likelihood)
 # There is a second quantity that enters the likelihood, called the 'noise-normalization'. This is the log sum of all
 # noise values squared in our data-set (give the noise-map doesn't change the noise_normalization is the same value for
 # all models that we fit).
-noise_normalization = np.sum(np.log(2 * np.pi * imaging.noise_map ** 2.0))
+noise_normalization = np.sum(np.log(2 * np.pi * dataset.noise_map ** 2.0))
 
 # Again, like the definition of a likelihood, lets not worry about why a noise normalization is defined in this way or
 # why its in our goodness-of-fit. Lets just accept for now that this is how it is in statistics.
@@ -189,11 +189,9 @@ print("Likelihood = ", likelihood)
 # We'll use a 'fit.py' module in all remaining tutorials - for a model-fitting problem its not surprising that we need
 # a module specific to fitting!
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.fit import fit as f
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.fit import fit as f
 
-fit = f.DatasetFit(
-    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
-)
+fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 
 print("Fit: \n")
 print(fit)
@@ -232,45 +230,35 @@ aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 # the best-fit model (the model I used to create the dataset in the first place!).
 gaussian = model.instance_from_vector(vector=[0.0, 0.5, 3.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(
-    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
-)
+fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 3.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(
-    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
-)
+fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 3.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(
-    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
-)
+fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 1.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(
-    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
-)
+fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 5.0])
 model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(
-    data=imaging.data, noise_map=imaging.noise_map, model_data=model_image
-)
+fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)

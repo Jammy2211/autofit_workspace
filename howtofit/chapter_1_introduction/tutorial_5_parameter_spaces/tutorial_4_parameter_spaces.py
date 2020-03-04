@@ -1,4 +1,4 @@
-# In the previous example, we used a non-linear search to infer the best-fit lens model of imaging-imaging of a strong lens.
+# In the previous example, we used a non-linear search to infer the best-fit lens model of dataset-dataset of a strong lens.
 # In this example, we'll get a deeper intuition of how a non-linear search works.
 
 # First, I want to develop the idea of a 'parameter space'. Lets think of a function, like the simple function below:

@@ -147,7 +147,7 @@ A description of the general.ini visualization config.
     inversion_image_pixelization_grid : bool
 
         If True, inversion's pixelizaion grid in the image-plane (e.g. the pixels which are traced to form the centre
-        of every pixel of the pixelization) is plotted on fit_imaging figures of the image.
+        of every pixel of the pixelization) is plotted on fit_dataset figures of the image.
        
         The inversion_pixelization_grid appearance is specified by the [inversion_pixelization_grid] section of 
         the 'figures.ini' and 'subplots.ini' configs.

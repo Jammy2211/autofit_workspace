@@ -18,15 +18,15 @@ af.conf.instance = af.conf.Config(config_path=chapter_path + "/config")
 # load the example dataset containing one Gaussian.
 dataset_path = chapter_path + "dataset/gaussian_x1/"
 
-# We now load this dataset from .fits files and create an instance of an 'imaging' object.
-imaging = aa.imaging.from_fits(
+# We now load this dataset from .fits files and create an instance of an 'dataset' object.
+dataset = aa.dataset.from_fits(
     image_path=dataset_path + "image.fits",
     noise_map_path=dataset_path + "noise_map.fits",
     psf_path=dataset_path + "psf.fits",
     pixel_scales=0.1,
 )
 
-aplt.imaging.image(imaging=imaging)
+aplt.dataset.image(dataset=dataset)
 
 # Its not until tutorial 3 that we'll actually this image with a model. But its worth us looking at it now so we can
 # understand the model we're going to fit. So what is the model?
@@ -49,7 +49,11 @@ aplt.imaging.image(imaging=imaging)
 
 # So lets go ahead and create our model of a 2D Gaussian. Take a look at the file
 
-# 'autofit_workspace/howtofit/chapter_1_introduction.tutorial_1_model_mapping/model/gaussians.py'.
+# 'autofit_workspace/howtofit/chapter_1_introduction.tutorial_1_model_mapping/model/src/model.gaussians.py'.
+
+# This file is in the folder 'src',  signifying the code would be in the project source-code. For this tutorial where
+# our 'source-code' is just one package it seems a bit pointless. However, later tutorials will add more code to the
+# 'src' folder. We'll benefit from us clearly separating our source code from other code, so for now just go with it!
 
 # Here we define our 2D Gaussian model using the code:
 

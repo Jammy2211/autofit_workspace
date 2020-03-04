@@ -16,8 +16,8 @@ chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/ch
 
 dataset_path = chapter_path + "dataset/gaussian_x1/"
 
-# We now load this dataset from .fits files and create an instance of an 'imaging' object.
-imaging = aa.imaging.from_fits(
+# We now load this dataset from .fits files and create an instance of an 'dataset' object.
+dataset = aa.dataset.from_fits(
     image_path=dataset_path + "image.fits",
     noise_map_path=dataset_path + "noise_map.fits",
     psf_path=dataset_path + "psf.fits",
@@ -26,7 +26,7 @@ imaging = aa.imaging.from_fits(
 
 # We can plot an image as follows.
 
-aplt.imaging.image(imaging=imaging)
+aplt.dataset.image(dataset=dataset)
 
 # Does the figure display correctly on your computer screen?
 
@@ -38,7 +38,7 @@ plotter = aplt.Plotter(
     labels=aplt.Labels(ysize=6, xsize=6, titlesize=12),
 )
 
-aplt.imaging.image(imaging=imaging, plotter=plotter)
+aplt.dataset.image(dataset=dataset, plotter=plotter)
 
 # Many matplotlib setup options can be customized, but for now we're only concerned with making sure figures display
 # cleanly in your Jupter Notebooks. However, for future reference, a description of all options can be found in the file
@@ -64,9 +64,9 @@ aplt.imaging.image(imaging=imaging, plotter=plotter)
 # you have the right values using the function above beforehand!)
 
 # In addition to individual 'figures' which use a 'plotter' to plot them, PyAutoArray also plots 'subplots' using a
-# 'sub_plotter'. Lets plot a subplot of our imaging data:
+# 'sub_plotter'. Lets plot a subplot of our dataset data:
 
-aplt.imaging.subplot_imaging(imaging=imaging)
+aplt.dataset.subplot_dataset(dataset=dataset)
 
 # Again, we can customize this subplot using a SubPlotter.
 
@@ -78,7 +78,7 @@ sub_plotter = aplt.SubPlotter(
     labels=aplt.Labels.sub(ysize=6, xsize=6, titlesize=12),
 )
 
-aplt.imaging.subplot_imaging(imaging=imaging, sub_plotter=sub_plotter)
+aplt.dataset.subplot_dataset(dataset=dataset, sub_plotter=sub_plotter)
 
 # Again, you can customize the default appearance of subplots by editing the config file
 # autofit_workspace/config/visualize/subplots.ini'.
@@ -86,9 +86,9 @@ aplt.imaging.subplot_imaging(imaging=imaging, sub_plotter=sub_plotter)
 # The other thing we can do with figures is choose what we include in the plot. For example, we can choose whether to
 # include the origin of the coordinate system on our plot of the image:
 
-aplt.imaging.image(imaging=imaging, plotter=plotter, include=aplt.Include(origin=True))
+aplt.dataset.image(dataset=dataset, plotter=plotter, include=aplt.Include(origin=True))
 
-aplt.imaging.image(imaging=imaging, plotter=plotter, include=aplt.Include(origin=False))
+aplt.dataset.image(dataset=dataset, plotter=plotter, include=aplt.Include(origin=False))
 
 # Throughout the HowToFit lecture series you'll see lots more objects that can include on figures.
 

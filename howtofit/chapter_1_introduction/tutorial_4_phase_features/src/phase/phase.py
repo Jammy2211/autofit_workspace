@@ -1,11 +1,21 @@
 import autofit as af
-from autofit.tools.phase import Dataset
-from howtofit.chapter_1_introduction.tutorial_4_phase_features import tagging
-from howtofit.chapter_1_introduction.tutorial_4_phase_features.meta_dataset import (
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.src.dataset.dataset import (
+    Dataset,
+)
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.src.phase import tagging
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.src.phase.meta_dataset import (
     MetaDataset,
 )
-from howtofit.chapter_1_introduction.tutorial_4_phase_features.result import Result
-from howtofit.chapter_1_introduction.tutorial_4_phase_features.analysis import Analysis
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.src.phase.result import (
+    Result,
+)
+from howtofit.chapter_1_introduction.tutorial_4_phase_features.src.phase.analysis import (
+    Analysis,
+)
+
+# The main addition to the phase in this tutorial is that we have added a 'phase setting' to the __init__ constructor
+# called the 'signal_to_noise_limit'. This phase setting alters the dataset that is fitted by the phase, as well as
+# the directory results are output.
 
 
 class Phase(af.AbstractPhase):
@@ -31,14 +41,27 @@ class Phase(af.AbstractPhase):
             The class of a non_linear optimizer
         """
 
+        # Here, we create a 'tag' for our phase. Basically, if we use an optional phase setting to alter the dataset we
+        # fit (here, a signal_to_noise_limit), we want to 'tag' the phase such that results are output to a unique
+        # directory whose names makes it explicit how the dataset was changed.
+
+        # If this setting is off, the tag is an empty string and thus the directory structure is not changed.
+
         phase_tag = tagging.phase_tag_from_phase_settings(
             signal_to_noise_limit=signal_to_noise_limit
         )
-        paths.phase_tag = phase_tag
+        paths.phase_tag = (
+            phase_tag
+        )  # The phase_tag must be manually added to the phase.
 
         super().__init__(paths=paths, optimizer_class=optimizer_class)
 
         self.gaussian = gaussian
+
+        # Phase settings alter the dataset that is fitted, however a phase does not have access to the dataset until it
+        # is run (e.g. the run method below is passed the dataset). In order for a phase to use its input phase
+        # settings to create the dataset it fits, these settings are stored in the 'meta_dataset' attribute and used
+        # when the 'run' and 'make_analysis' methods are called.
 
         self.meta_dataset = MetaDataset(signal_to_noise_limit=signal_to_noise_limit)
 
@@ -48,8 +71,8 @@ class Phase(af.AbstractPhase):
 
         Parameters
         ----------
-        dataset: aa.Imaging
-            The dataset fitted by the phase, which in this case is a PyAutoArray imaging object.
+        dataset: aa.Dataset
+            The dataset fitted by the phase, which in this case is a PyAutoArray dataset object.
         mask: Mask
             The mask used for the analysis.
 
@@ -71,8 +94,8 @@ class Phase(af.AbstractPhase):
 
         Parameters
         ----------
-        dataset: aa.Imaging
-            The dataset fitted by the phase, which in this case is a PyAutoArray imaging object.
+        dataset: aa.Dataset
+            The dataset fitted by the phase, which in this case is a PyAutoArray dataset object.
 
         Returns
         -------
@@ -80,6 +103,11 @@ class Phase(af.AbstractPhase):
             An analysis object that the non-linear search calls to determine the fit likelihood for a given model
             instance.
         """
+
+        # Here, the meta_dataset is used to create the masked dataset that is fitted. If the signal_to_noise_limit
+        # setting is passed into the phase, the function below uses it to alter the masked dataset.
+
+        # Checkout 'meta_dataset.py' for more details.
 
         masked_dataset = self.meta_dataset.masked_dataset_from_dataset_and_mask(
             dataset=dataset, mask=mask
@@ -92,6 +120,7 @@ class Phase(af.AbstractPhase):
     def make_result(self, result, analysis):
         return self.Result(
             instance=result.instance,
-            figure_of_merit=result.figure_of_merit,
+            likelihood=result.likelihood,
             analysis=analysis,
+            output=result.output,
         )
