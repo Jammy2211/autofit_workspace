@@ -1,6 +1,4 @@
 import autofit as af
-import autoarray as aa
-import autoarray.plot as aplt
 
 import numpy as np
 
@@ -12,114 +10,72 @@ import numpy as np
 chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction/"
 
 # These setup the configs as we did in the previous tutorial.
-af.conf.instance = af.conf.Config(config_path=chapter_path + "/config")
+af.conf.instance = af.conf.Config(config_path=chapter_path + "config")
 
 dataset_path = chapter_path + "dataset/gaussian_x1/"
 
-# The dataset package is where our data is stored, so quickly checkout the module:
-#
-# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/dataset/src/dataset.py'.
-
-# This module directly inherits the Dataset class from PyAutoArray. I've included this as an explcit module so you're
-# aware that in your model fitting code you will have a dataset section somewhere!
-
 from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.dataset import (
-    dataset as im,
+    dataset as ds,
 )
 
-dataset = im.Dataset.from_fits(
-    image_path=dataset_path + "image.fits",
-    noise_map_path=dataset_path + "noise_map.fits",
-    psf_path=dataset_path + "psf.fits",
-    pixel_scales=1.0,
+dataset = ds.Dataset.from_fits(
+    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
 )
 
-# The dataset subplot shows the dataset's image and noise-map, which characterises the noise in every pixel of
-# the image.
-aplt.dataset.subplot_dataset(dataset=dataset)
+# From here on, we're going to perform all visualization using the 'plot' package, which contains functions for
+# plotting our line dataset as well as other aspects of the model we'll cover later.
+
+# By storing all of our visualization in one package, it will make visualization of our model-fits simpler in
+# later tutorials.
+
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.plot import (
+    dataset_plots,
+)
+
+dataset_plots.data(dataset=dataset)
+dataset_plots.noise_map(dataset=dataset)
 
 # So, how do we actually go about fitting our Gaussian model to this data? First, we need to be able to generate
 # an image of our 2D Gaussian model.
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.model import gaussians
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.model import gaussian
 
 # Checkout the file:
 
-# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/src/model/gaussians.py'.
+# 'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/src/model/gaussian.py'.
 
-# Here, we've extended the Gaussian class to have a method "image_from_grid". Given an input grid of (y,x) coordinates
-# this computes the intensity of the Gaussian at every point on that grid.
+# Here, we've extended the Gaussian class to have a method "line_from_values". Given an input set of x coordinates
+# this computes the intensity of the Gaussian at every point. Our data contains the xvalues we'll use, which are
+# a 1D NumPy array spanning values 0 to 100.
+print(dataset.xvalues)
 
-# We can use PyAutoArray to create such a grid, which we'll make the same dimensions as our data above.
+# If we pass these values to an instance of the Gaussian class, we can create a line of the gaussian's values.
 
-# The "pixel-scales" define the conversion between pixels (which range from values of 0 to 100) and Gaussian
-# coordinates (which define the length dimensions of its centre and sigma).
-grid = aa.grid.uniform(shape_2d=dataset.shape_2d, pixel_scales=dataset.pixel_scales)
+model = af.PriorModel(gaussian.Gaussian)
 
-# This grid is a uniform 2D array of coordinates in length units of our Gaussian profile.
+gaussian = model.instance_from_vector(vector=[1.0, 1.0, 1.0])
 
-# We can print each coordinate of this grid, revealing that it consists of coordinates where the spacing between each
-# coordinate corresponds to the 'pixel_scale' of 1.0 we defined above
-print("(y,x) pixel 0:")
-print(grid.in_2d[0, 0])
-print("(y,x) pixel 1:")
-print(grid.in_2d[0, 1])
-print("(y,x) pixel 2:")
-print(grid.in_2d[0, 2])
-print("(y,x) pixel 100:")
-print(grid.in_2d[1, 0])
-print("etc.")
+model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
 
-# Grids in PyAutoArray are stored as both 1D and 2D NumPy arrays, because different calculations benefit from us
-# using the array in different formats. We can access both the 1D and 2D arrays automatically by specifying the input
-# as a 1D or 2D NumPy index.
-print("(y,x) pixel 0 (accessed in 2D):")
-print(grid.in_2d[0, 0])
-print("(y,x) pixel 0 (accessed in 1D):")
-print(grid.in_1d[0])
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.plot import line_plots
 
-# The shape of the grid is also available in 1D and 2D, consisting of 625 (25 x 25) coordinates.
-print(grid.shape_2d)
-print(grid.shape_1d)
-
-# We can print the entire grid in either 1D or 2D.
-print(grid.in_2d)
-print(grid.in_1d)
-
-# If we pass this grid to an instance of the Gaussian class, we can create an image of the gaussian.
-
-model = af.PriorModel(gaussians.Gaussian)
-
-gaussian = model.instance_from_vector(vector=[0.0, 0.0, 1.0, 1.0])
-
-model_image = gaussian.image_from_grid(grid=grid)
-
-# Much like the grid, the arrays PyAutoArray computes are accessible in both 2D and 1D.
-print(model_image.shape_2d)
-print(model_image.shape_1d)
-print(model_image.in_2d[0, 0])
-print(model_image.in_1d[0])
-print(model_image.in_2d)
-print(model_image.in_1d)
-
-# PyAutoArray has the tools we need to visualize the Gaussian's image.
-aplt.array(array=model_image)
+line_plots.line(xvalues=dataset.xvalues, line=model_data, ylabel="Model Data")
 
 # Different values of centre, intensity and sigma change the Gaussian's apperance - have a go at editing some of the
 # values below.
-gaussian = model.instance_from_vector(vector=[1.0, 2.0, 3.0, 4.0])
-model_image = gaussian.image_from_grid(grid=grid)
-aplt.array(array=model_image)
+gaussian = model.instance_from_vector(vector=[1.0, 2.0, 3.0])
+model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
+line_plots.line(xvalues=dataset.xvalues, line=model_data, ylabel="Model Data")
 
-# Okay, so lets recap. We've defined a model which is a 2D Gaussian and given a set of parameters for that model
-# (y, x, I, sigma) we can create a 'model_image' of the Gaussian. And, we have some data of a Gaussian we want to
+# Okay, so lets recap. We've defined a model which is a 1D Gaussian and given a set of parameters for that model
+# (x, I, sigma) we can create 'model_data' of the Gaussian. And, we have some data of a Gaussian we want to
 # fit this model with. So how do we do that?
 
 # Simple, we take the image from our data and our model_image of the Gaussian and subtract the two to get a
 # 'residual-map'.
 
-residual_map = dataset.image - model_image
-aplt.array(array=residual_map)
+residual_map = dataset.image - model_data
+line_plots.line(xvalues=dataset.xvalues, line=residual_map, ylabel="Residual Map")
 
 # Clearly, this model isn't a good fit to the data - which was to be expected as they looked nothing alike!
 
@@ -129,7 +85,11 @@ aplt.array(array=residual_map)
 
 # To account for noise, we take our residual-map and divide it by the noise-map, to get the 'normalized residual-map'.
 normalized_residual_map = residual_map / dataset.noise_map
-aplt.array(array=normalized_residual_map)
+line_plots.line(
+    xvalues=dataset.xvalues,
+    line=normalized_residual_map,
+    ylabel="Normalized Residual Map",
+)
 
 # We're getting close to a goodness-of-fit measure, but there is still a problem - we have negative and positive values
 # in the normalized residual map. A value of -0.2 represents just as good of a fit as a value of 0.2, so we want them
@@ -138,7 +98,7 @@ aplt.array(array=normalized_residual_map)
 # Thus, we next define a 'chi-squared map', which is the normalized residual-map squared. This makes negative and
 # positive values both positive and thus defined on a common overall scale.
 chi_squared_map = (normalized_residual_map) ** 2
-aplt.array(array=chi_squared_map)
+line_plots.line(xvalues=dataset.xvalues, line=chi_squared_map, ylabel="Chi-Squared Map")
 
 # Great, even when looking at a chi-squared map its clear that our model gives a rubbish fit to the data.
 
@@ -174,8 +134,8 @@ print("Likelihood = ", likelihood)
 
 # If you are familiar with model-fitting, you'll have probably heard of terms like 'residuals', 'chi-squared' and
 # 'likelihood' before. These are the standard metrics by which a model-fit's quality is measured. They are used for
-# model fitting in general, so not just when your data is an image but when its 1D data (e.g a line), 3D data
-# (e.g. a datacube) or something else entirely!
+# model fitting in general, so not just when your data is 1D but when its a 2D image, 3D datacube)or something else
+# entirely!
 
 # If you haven't performed model fitting before and these terms are new to you, make sure you are clear on exactly what
 # they all mean as they are at the core of all model-fitting performed in PyAutoFit!
@@ -191,33 +151,36 @@ print("Likelihood = ", likelihood)
 
 from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.fit import fit as f
 
-fit = f.DatasetFit(dataset=dataset, model_data=model_image)
+fit = f.DatasetFit(dataset=dataset, model_data=model_data)
 
 print("Fit: \n")
 print(fit)
-print("Model-Image:\n")
-print(fit.model_data.in_2d)
-print(fit.model_data.in_1d)
+print("Model Data:\n")
+print(fit.model_data)
 print()
-print("Residual Maps:\n")
-print(fit.residual_map.in_2d)
-print(fit.residual_map.in_1d)
+print("Residual Map:\n")
+print(fit.residual_map)
 print()
-print("Chi-Squareds Maps:\n")
-print(fit.chi_squared_map.in_2d)
-print(fit.chi_squared_map.in_1d)
+print("Chi-Squareds Map:\n")
+print(fit.chi_squared_map)
 print("Likelihood:")
 print(fit.likelihood)
 
-# PyAutoArray provides the tools we need to visualize a fit.
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+# In the plot module, we've created simple tools for plotting different components of a fit. Again, setting up our
+# plotting in this way will make visualization of our model a lot more straight forward in future tutorials.
+
+from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.plot import fit_plots
+
+fit_plots.residual_map(fit=fit)
+fit_plots.normalized_residual_map(fit=fit)
+fit_plots.chi_squared_map(fit=fit)
 
 # So to recap the previous tutorial and this one:
 
 # - We can define a model components in PyAutoFit, like our Gaussian, using Python classes that follow a certain format.
-# - The model component's parameters each have priors, which given a unit vecto can be mapped to an instance of the
+# - The model component's parameters each have priors, which given a unit vector can be mapped to an instance of the
 #   Gaussian class.
-# - We can use this model-instance to create a model-image of our Gaussian and compare it to data and quantify the
+# - We can use this model-instance to create model data of our Gaussian and compare it to data and quantify the
 #   goodness-of-fit via a likelihood.
 
 # Thus we have everything we need to fit our model to our data! So, how do we go about finding the best-fit model?
@@ -228,38 +191,24 @@ aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 
 # For our Gaussian this works pretty well, below I've fitted 5 diferent Gaussian models and ended up landing on
 # the best-fit model (the model I used to create the dataset in the first place!).
-gaussian = model.instance_from_vector(vector=[0.0, 0.5, 3.0, 3.0])
-model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+gaussian = model.instance_from_vector(vector=[0.0, 0.5, 3.0])
+model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
+fit = f.DatasetFit(dataset=dataset, model_data=model_data)
+fit_plots.chi_squared_map(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
-gaussian = model.instance_from_vector(vector=[0.0, 0.0, 3.0, 3.0])
-model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+gaussian = model.instance_from_vector(vector=[0.0, 0.0, 3.0])
+model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
+fit = f.DatasetFit(dataset=dataset, model_data=model_data)
+fit_plots.chi_squared_map(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
-gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 3.0])
-model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
-print("Likelihood:")
-print(fit.likelihood)
-
-gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 1.0])
-model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
-print("Likelihood:")
-print(fit.likelihood)
-
-gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 5.0])
-model_image = gaussian.image_from_grid(grid=grid)
-fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0])
+model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
+fit = f.DatasetFit(dataset=dataset, model_data=model_data)
+fit_plots.chi_squared_map(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 

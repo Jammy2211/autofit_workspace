@@ -1,7 +1,8 @@
 import autoarray as aa
 import numpy as np
 
-# This module is identical to tutorial_2_model_fitting.
+# This module handles a fit, offering a class that computes all relevent quantities of a fit described in tutorial 2,
+# such as the residuals, chi-squared and likelihood.
 
 
 class DatasetFit:
@@ -12,10 +13,8 @@ class DatasetFit:
 
         Parameters
         -----------
-        data : ndarray
+        dataset : ndarray
             The observed dataset that is fitted.
-        noise_map : ndarray
-            The noise_map of the observed dataset.
         model_data : ndarray
             The model data the data is fitted with.
 
@@ -39,13 +38,12 @@ class DatasetFit:
         self.dataset = dataset
         self.model_data = model_data
 
-    # In tutorial 2, we do not mask our data. However, PyAutoArray still needs the fit to have a mask, which we make as
-    # an unmasked array (e.g. all data points are not masked). Don't worry too much about this masking, as for your own
-    # model-fitting problem you will define masking yourself.
+    # This is a convenience method that makes the dataset's xvalues (used to generate the model data) directly
+    # accessible to an instance of to fit class. It is used in the 'plot.py' module.
 
     @property
-    def mask(self):
-        return aa.mask.unmasked(shape_2d=self.data.shape_2d, pixel_scales=1.0)
+    def xvalues(self):
+        return self.dataset.xvalues
 
     # Lets use properties to make the 'data' and noise-map accessible via our fit.
 
@@ -85,10 +83,6 @@ class DatasetFit:
     @property
     def chi_squared(self):
         return chi_squared_from_chi_squared_map(chi_squared_map=self.chi_squared_map)
-
-    @property
-    def reduced_chi_squared(self):
-        return self.chi_squared / int(np.size(self.mask) - np.sum(self.mask))
 
     @property
     def noise_normalization(self):

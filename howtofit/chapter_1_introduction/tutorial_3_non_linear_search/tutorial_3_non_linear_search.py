@@ -1,8 +1,10 @@
 import autofit as af
-import autoarray.plot as aplt
 
+from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.plot import (
+    fit_plots,
+)
 from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.model import (
-    gaussians,
+    gaussian,
 )
 from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.phase import (
     phase as ph,
@@ -50,10 +52,7 @@ from howtofit.chapter_1_introduction.tutorial_3_non_linear_search.src.dataset im
 )
 
 dataset = ds.Dataset.from_fits(
-    image_path=dataset_path + "image.fits",
-    noise_map_path=dataset_path + "noise_map.fits",
-    psf_path=dataset_path + "psf.fits",
-    pixel_scales=1.0,
+    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
 )
 
 # To perform a non-linear search in PyAutoFit we use Phase objects. A Phase performs the following tasks:
@@ -67,7 +66,7 @@ dataset = ds.Dataset.from_fits(
 # Performing a model-fit in PyAutoFit boils down to two lines of code, simply making the phase (specifying a model)
 # and running the phase (by passing it data). Go ahead and do it!
 
-phase = ph.Phase(phase_name="phase_t3", gaussian=af.PriorModel(gaussians.Gaussian))
+phase = ph.Phase(phase_name="phase_t3", gaussian=af.PriorModel(gaussian.Gaussian))
 
 # This line will set off the non-linear search MultiNest - it'll probably take a minute or so to run (which is very
 # fast for a model-fit). Whilst you're waiting, checkout the folder:
@@ -99,9 +98,10 @@ print("Centre = ", result.instance.gaussian.centre)
 print("Intensity = ", result.instance.gaussian.intensity)
 print("Sigma = ", result.instance.gaussian.sigma)
 
-# The Result class also has functions which generate the best-fit image and fit from the best-fit model.
-aplt.array(array=result.most_likely_model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=result.most_likely_fit)
+# The Result class also has functions which generate an instance of the fit class using the best-fit model.
+fit_plots.model_data(fit=result.most_likely_fit)
+fit_plots.residual_map(fit=result.most_likely_fit)
+fit_plots.chi_squared_map(fit=result.most_likely_fit)
 
 # We also have an 'output' attribute, which in this case is a MultiNestOutput object:
 print(result.output)
@@ -145,13 +145,13 @@ print("Sigma = ", mp_instance.gaussian.sigma)
 #     will be detailed in chapter 5.
 
 # Finally, the other thing to think about is the directory structure of the tutorial's 'source code', where we have
-# separated modules into 3 packages: 'fit', 'model' and 'phase. The reason for this is that is separates different
-# parts of the code which do different thing.
+# separated modules into 5 packages: 'dataset', 'fit', 'model', 'plot' and 'phase'. This cleanly separates different
+# parts of the code which do different thing and is a design I recommend your model-fitting project strictly adheres to!
 
 # For example, this ensures the code which handles the model is completely separate from the code which handles phases.
-# This means the model never interfaces directly with PyAutoFit, which is good code design, we want parts of code that
-# do not need to interact to never interact! Its the same for the part of the code that stores data and fits a model to
-# data - by keeping them separate its clear which part of the code do what task.
+# The model then never interfaces directly with PyAutoFit, ensuring good code design by removing dependencies between
+# parts of the code that do not need to interact! Its the same for the part of the code that stores data ('dataset')
+# and fits a model to a dataset ('fit') - by keeping them separate its clear which part of the code do what task.
 
 # This is a principle aspect of object oriented design and software engineering called 'separation of concerns' and all
 # templates we provide in the HowToFit series will adhere to it.
