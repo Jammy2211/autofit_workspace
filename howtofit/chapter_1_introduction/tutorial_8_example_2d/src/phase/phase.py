@@ -33,7 +33,7 @@ class Phase(af.AbstractPhase):
         profiles,
         data_trim_left=None,
         data_trim_right=None,
-        optimizer_class=af.MultiNest,
+        non_linear_class=af.MultiNest,
     ):
         """
         A phase which fits a model composed of multiple line profiles (Gaussian, Exponential) using a non-linear search.
@@ -44,7 +44,7 @@ class Phase(af.AbstractPhase):
             Handles the output directory structure.
         profiles : [profiles.Profile]
             The model components (e.g. Gaussian, Exponenial) fitted by this phase.
-        optimizer_class: class
+        non_linear_class: class
             The class of a non_linear optimizer
         data_trim_left : int or None
             The number of pixels by which the data is trimmed from the left-hand side.
@@ -59,7 +59,7 @@ class Phase(af.AbstractPhase):
             phase_tag
         )  # The phase_tag must be manually added to the phase.
 
-        super().__init__(paths=paths, optimizer_class=optimizer_class)
+        super().__init__(paths=paths, non_linear_class=non_linear_class)
 
         self.profiles = profiles
 

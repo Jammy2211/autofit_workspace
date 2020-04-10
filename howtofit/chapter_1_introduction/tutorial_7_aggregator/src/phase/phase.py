@@ -16,7 +16,7 @@ from howtofit.chapter_1_introduction.tutorial_6_phase_customization.src.phase im
 )
 
 
-# The 'phase.py' module is unchanged from the previous tutorial.
+# The 'phase.py' module is mostly unchanged from the previous tutorial, however the 'run' function has been updated.
 
 
 class Phase(af.AbstractPhase):
@@ -33,7 +33,7 @@ class Phase(af.AbstractPhase):
         profiles,
         data_trim_left=None,
         data_trim_right=None,
-        optimizer_class=af.MultiNest,
+        non_linear_class=af.MultiNest,
     ):
         """
         A phase which fits a model composed of multiple line profiles (Gaussian, Exponential) using a non-linear search.
@@ -44,7 +44,7 @@ class Phase(af.AbstractPhase):
             Handles the output directory structure.
         profiles : [profiles.Profile]
             The model components (e.g. Gaussian, Exponenial) fitted by this phase.
-        optimizer_class: class
+        non_linear_class: class
             The class of a non_linear optimizer
         data_trim_left : int or None
             The number of pixels by which the data is trimmed from the left-hand side.
@@ -59,7 +59,7 @@ class Phase(af.AbstractPhase):
             phase_tag
         )  # The phase_tag must be manually added to the phase.
 
-        super().__init__(paths=paths, optimizer_class=optimizer_class)
+        super().__init__(paths=paths, non_linear_class=non_linear_class)
 
         self.profiles = profiles
 
@@ -71,7 +71,7 @@ class Phase(af.AbstractPhase):
     def phase_folders(self):
         return self.optimizer.phase_folders
 
-    def run(self, dataset: Dataset, mask):
+    def run(self, dataset: Dataset, mask, info=None):
         """
         Pass a dataset to the phase, running the phase and non-linear search.
 
@@ -87,6 +87,22 @@ class Phase(af.AbstractPhase):
         result: AbstractPhase.Result
             A result object comprising the best fit model.
         """
+
+        # These functions save the objects we will later access using the aggregator. They are saved via the 'pickle'
+        # module in Python, which serializes the data on to the hard-disk.
+
+        # See the 'dataset.py' module for a description of what the metadata is.
+
+        self.save_metadata(dataset=dataset)
+        self.save_dataset(dataset=dataset)
+        self.save_mask(mask=mask)
+        self.save_meta_dataset(meta_dataset=self.meta_dataset)
+        self.save_info(info=info)
+
+        # This saves the optimizer information of the phase, meaning that we can use the non_linear_class instance
+        # (e.g. MultiNest) to interpret our results in the aggregator.
+
+        self.assert_and_save_pickle()
 
         analysis = self.make_analysis(dataset=dataset, mask=mask)
 

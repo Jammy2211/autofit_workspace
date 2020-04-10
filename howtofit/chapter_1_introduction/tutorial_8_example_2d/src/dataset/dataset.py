@@ -35,11 +35,11 @@ class Dataset:
 
         Parameters
         ----------
-        data_path : np.ndarray
+        data_path : str
             The path on your hard-disk to the '.fits' file of the data.
-        noise_map_path : np.ndarray
+        noise_map_path : str
             The path on your hard-disk to the '.fits' file of the noise-map.
-        psf_path : np.ndarray
+        psf_path : str
             The path on your hard-disk to the '.fits' file of the psf.
         pixel_scales: float
             The arc-second to pixel conversion factor of each pixel.
@@ -53,3 +53,29 @@ class Dataset:
         psf = np.array(psf_hdu_list[0].data)
 
         return Dataset(data=data, noise_map=noise_map, psf=psf, pixel_scale=pixel_scale)
+
+
+class MaskedDataset:
+    def __init__(self, dataset, mask):
+        """
+        A masked dataset, which is an image, noise-map and mask.
+
+        Parameters
+        ----------
+        dataset: im.Dataset
+            The dataset (the image, noise-map, etc.)
+        mask: msk.Mask
+            The 1D mask that is applied to the dataset.
+        """
+
+        self.dataset = dataset
+        self.mask = mask
+        self.data = dataset.data * np.invert(mask)
+        self.noise_map = dataset.noise_map * np.invert(mask)
+
+    @property
+    def xvalues(self):
+        return np.arange(self.data.shape[0])
+
+    def signal_to_noise_map(self):
+        return self.data / self.noise_map

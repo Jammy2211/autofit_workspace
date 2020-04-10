@@ -1,9 +1,6 @@
 import autofit as af
-from howtofit.chapter_1_introduction.tutorial_4_visualization_masking.src.dataset import (
-    masked_dataset as md,
-)
 from howtofit.chapter_1_introduction.tutorial_4_visualization_masking.src.dataset.dataset import (
-    Dataset,
+    Dataset, MaskedDataset
 )
 from howtofit.chapter_1_introduction.tutorial_4_visualization_masking.src.phase.result import (
     Result,
@@ -23,7 +20,7 @@ class Phase(af.AbstractPhase):
     Result = Result
 
     @af.convert_paths
-    def __init__(self, paths, gaussian, optimizer_class=af.MultiNest):
+    def __init__(self, paths, gaussian, non_linear_class=af.MultiNest):
         """
         A phase which fits a Gaussian model using a non-linear search.
 
@@ -33,11 +30,11 @@ class Phase(af.AbstractPhase):
             Handles the output directory structure.
         gaussian : gaussians.Gaussian
             The model component Gaussian class fitted by this phase.
-        optimizer_class: class
+        non_linear_class: class
             The class of a non_linear optimizer
         """
 
-        super().__init__(paths=paths, optimizer_class=optimizer_class)
+        super().__init__(paths=paths, non_linear_class=non_linear_class)
 
         self.gaussian = gaussian
 
@@ -85,7 +82,7 @@ class Phase(af.AbstractPhase):
 
         # To mask the dataset we simply pass both to the MaskedDataset class.
 
-        masked_dataset = md.MaskedDataset(dataset=dataset, mask=mask)
+        masked_dataset = MaskedDataset(dataset=dataset, mask=mask)
 
         # The 'image_path' is where visualizatiion of the model fit is output. Below, we direct it to the same path as
         # the non-linear search output, but with an additional folder 'image' at the end. This path should be used

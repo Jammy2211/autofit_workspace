@@ -1,9 +1,7 @@
 import autofit as af
-from howtofit.chapter_1_introduction.tutorial_5_complex_models.src.dataset import (
-    masked_dataset as md,
-)
+
 from howtofit.chapter_1_introduction.tutorial_5_complex_models.src.dataset.dataset import (
-    Dataset,
+    Dataset, MaskedDataset
 )
 from howtofit.chapter_1_introduction.tutorial_5_complex_models.src.phase.result import (
     Result,
@@ -25,7 +23,7 @@ class Phase(af.AbstractPhase):
     Result = Result
 
     @af.convert_paths
-    def __init__(self, paths, profiles, optimizer_class=af.MultiNest):
+    def __init__(self, paths, profiles, non_linear_class=af.MultiNest):
         """
         A phase which fits a model composed of multiple line profiles (Gaussian, Exponential) using a non-linear search.
 
@@ -35,11 +33,11 @@ class Phase(af.AbstractPhase):
             Handles the output directory structure.
         profiles : [profiles.Profile]
             The model components (e.g. Gaussian, Exponenial) fitted by this phase.
-        optimizer_class: class
+        non_linear_class: class
             The class of a non_linear optimizer
         """
 
-        super().__init__(paths=paths, optimizer_class=optimizer_class)
+        super().__init__(paths=paths, non_linear_class=non_linear_class)
 
         self.profiles = profiles
 
@@ -82,7 +80,7 @@ class Phase(af.AbstractPhase):
             instance.
         """
 
-        masked_dataset = md.MaskedDataset(dataset=dataset, mask=mask)
+        masked_dataset = MaskedDataset(dataset=dataset, mask=mask)
 
         return Analysis(
             masked_dataset=masked_dataset, image_path=self.optimizer.paths.image_path

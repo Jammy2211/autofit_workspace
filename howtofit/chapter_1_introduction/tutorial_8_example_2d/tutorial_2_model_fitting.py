@@ -53,7 +53,7 @@ print(dataset.xvalues)
 
 # The "pixel-scales" define the conversion between pixels (which range from values of 0 to 100) and Gaussian
 # coordinates (which define the length dimensions of its centre and sigma).
-grid = aa.grid.uniform(shape_2d=dataset.shape_2d, pixel_scales=dataset.pixel_scales)
+grid = aa.Grid.uniform(shape_2d=dataset.shape_2d, pixel_scales=dataset.pixel_scales)
 
 # This grid is a uniform 2D array of coordinates in length units of our Gaussian profile.
 
@@ -102,13 +102,13 @@ print(model_image.in_2d)
 print(model_image.in_1d)
 
 # PyAutoArray has the tools we need to visualize the Gaussian's image.
-aplt.array(array=model_image)
+aplt.Array(array=model_image)
 
 # Different values of centre, intensity and sigma change the Gaussian's apperance - have a go at editing some of the
 # values below.
 gaussian = model.instance_from_vector(vector=[1.0, 2.0, 3.0, 4.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
-aplt.array(array=model_image)
+aplt.Array(array=model_image)
 
 # Okay, so lets recap. We've defined a model which is a 2D Gaussian and given a set of parameters for that model
 # (y, x, I, sigma) we can create a 'model_image' of the Gaussian. And, we have some data of a Gaussian we want to
@@ -118,7 +118,7 @@ aplt.array(array=model_image)
 # 'residual-map'.
 
 residual_map = dataset.image - model_image
-aplt.array(array=residual_map)
+aplt.Array(array=residual_map)
 
 # Clearly, this model isn't a good fit to the data - which was to be expected as they looked nothing alike!
 
@@ -128,7 +128,7 @@ aplt.array(array=residual_map)
 
 # To account for noise, we take our residual-map and divide it by the noise-map, to get the 'normalized residual-map'.
 normalized_residual_map = residual_map / dataset.noise_map
-aplt.array(array=normalized_residual_map)
+aplt.Array(array=normalized_residual_map)
 
 # We're getting close to a goodness-of-fit measure, but there is still a problem - we have negative and positive values
 # in the normalized residual map. A value of -0.2 represents just as good of a fit as a value of 0.2, so we want them
@@ -137,7 +137,7 @@ aplt.array(array=normalized_residual_map)
 # Thus, we next define a 'chi-squared map', which is the normalized residual-map squared. This makes negative and
 # positive values both positive and thus defined on a common overall scale.
 chi_squared_map = (normalized_residual_map) ** 2
-aplt.array(array=chi_squared_map)
+aplt.Array(array=chi_squared_map)
 
 # Great, even when looking at a chi-squared map its clear that our model gives a rubbish fit to the data.
 
@@ -209,7 +209,7 @@ print("Likelihood:")
 print(fit.likelihood)
 
 # PyAutoArray provides the tools we need to visualize a fit.
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+aplt.FitImaging.subplot_fit_imaging(fit=fit)
 
 # So to recap the previous tutorial and this one:
 
@@ -230,35 +230,35 @@ aplt.fit_imaging.subplot_fit_imaging(fit=fit)
 gaussian = model.instance_from_vector(vector=[0.0, 0.5, 3.0, 3.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 3.0, 3.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 3.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 1.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 5.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
-aplt.fit_imaging.subplot_fit_imaging(fit=fit)
+aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
 print(fit.likelihood)
 

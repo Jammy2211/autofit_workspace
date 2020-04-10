@@ -1,13 +1,10 @@
-import autofit as af
-
 from astropy.io import fits
 import numpy as np
 
-# The 'dataset.py' module is unchanged from the previous tutorial.
-
+# The 'dataset.py' module has been extended to give the dataset a name and metadata.
 
 class Dataset:
-    def __init__(self, data, noise_map):
+    def __init__(self, data, noise_map, name=None):
         """A class containing the data and noise-map of a 1D line dataset.
 
         Parameters
@@ -20,19 +17,24 @@ class Dataset:
         self.data = data
         self.noise_map = noise_map
 
+        # The name of the dataset is used by the aggregator, to determine the name of the file the dataset is saved as
+        # and so that when using the aggregator you can know which dataset you are manipulating.
+
+        self.name = name if name is str else "dataset"
+
     @property
     def xvalues(self):
         return np.arange(self.data.shape[0])
 
     @classmethod
-    def from_fits(cls, data_path, noise_map_path):
+    def from_fits(cls, data_path, noise_map_path, name=None):
         """Load the data and noise-map of a 1D line dataset from '.fits' files.
 
         Parameters
         ----------
-        data_path : np.ndarray
+        data_path : str
             The path on your hard-disk to the '.fits' file of the data.
-        noise_map_path : np.ndarray
+        noise_map_path : str
             The path on your hard-disk to the '.fits' file of the noise-map.
         """
         data_hdu_list = fits.open(data_path)
@@ -41,4 +43,56 @@ class Dataset:
         data = np.array(data_hdu_list[0].data)
         noise_map = np.array(noise_map_hdu_list[0].data)
 
-        return Dataset(data=data, noise_map=noise_map)
+        return Dataset(data=data, noise_map=noise_map, name=name)
+
+
+class MaskedDataset:
+    def __init__(self, dataset, mask):
+        """
+        A masked dataset, which is an image, noise-map and mask.
+
+        Parameters
+        ----------
+        dataset: im.Dataset
+            The dataset (the image, noise-map, etc.)
+        mask: msk.Mask
+            The 1D mask that is applied to the dataset.
+        """
+
+        self.dataset = dataset
+        self.mask = mask
+        self.data = dataset.data * np.invert(mask)
+        self.noise_map = dataset.noise_map * np.invert(mask)
+
+    @property
+    def xvalues(self):
+        return np.arange(self.data.shape[0])
+
+    def signal_to_noise_map(self):
+        return self.data / self.noise_map
+
+    def with_left_trimmed(self, data_trim_left):
+
+        # Here, we use the existing masked dataset to create a trimmed dataset.
+
+        data_trimmed = self.dataset.data[data_trim_left:]
+        noise_map_trimmed = self.dataset.noise_map[data_trim_left:]
+
+        dataset_trimmed = Dataset(data=data_trimmed, noise_map=noise_map_trimmed)
+
+        mask_trimmed = self.mask[data_trim_left:]
+
+        return MaskedDataset(dataset=dataset_trimmed, mask=mask_trimmed)
+
+    def with_right_trimmed(self, data_trim_right):
+
+        # We do the same as above, but removing data to the right.
+
+        data_trimmed = self.dataset.data[:-data_trim_right]
+        noise_map_trimmed = self.dataset.noise_map[:-data_trim_right]
+
+        dataset_trimmed = Dataset(data=data_trimmed, noise_map=noise_map_trimmed)
+
+        mask_trimmed = self.mask[:-data_trim_right]
+
+        return MaskedDataset(dataset=dataset_trimmed, mask=mask_trimmed)

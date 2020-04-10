@@ -48,9 +48,9 @@ class Dataset:
 
         Parameters
         ----------
-        data_path : np.ndarray
+        data_path : str
             The path on your hard-disk to the '.fits' file of the data.
-        noise_map_path : np.ndarray
+        noise_map_path : str
             The path on your hard-disk to the '.fits' file of the noise-map.
         """
 
