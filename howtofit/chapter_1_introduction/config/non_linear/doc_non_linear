@@ -15,7 +15,7 @@ n_live_points : int
 
 sampling_efficiency : float
 
-    The ratio of accepted to total samples MultiNest targets. A higher efficiency will converges on the high likelihood
+    The ratio of accepted to total samples MultiNest targets. A higher efficiency will converges on the high log_likelihood
     regions of parameter space faster at the risk of missing the global maxima solution.
 
     By default I would recommend a value of 0.8 (without constant efficiency mode) and 0.3 (with constant efficiency
@@ -26,7 +26,7 @@ const_efficiency_mode : bool
     The sampling efficiency determines the acceptance rate MultiNest targets. However, if MultiNest cannot map out
     parameter-space accurately it reduce the acceptance rate. Constant efficiency mode forces MultiNest to maintain
     the sampling efficiency acceptance rate. This can dramatically reduce run-times but increases the risk of missing
-    the global maximum likelihood solution.
+    the global maximum log likelihood solution.
 
     There are two circumstances where I find turning this mode on can lead to fast results without missing the global
     maximum solution:
@@ -39,21 +39,21 @@ const_efficiency_mode : bool
 
 evidence_tolerance : float
 
-    MultiNest will stop sampling when it estimates that continuing sampling will not increase the evidence more than
+    MultiNest will stop sampling when it estimates that continuing sampling will not increase the log evidence more than
     the evidence_tolerance value. Thus, the higher the evidence_tolerance the sooner MultiNest will stop running. Higher
     tolerances provide more accurate parameter errors.
 
-    Pipelines include the evidence tolerance as an input paramemter so that early phases stop quickly, given that a
+    Pipelines include the log evidence tolerance as an input paramemter so that early phases stop quickly, given that a
     precise estimate of parameter errors is not yet desired. Values of 100.0 / 1000.0 achieve this. For later phases
     when error estimates are wanted use 0.5 or less.
 
 multimodal : bool
 
     Whether MultiNest uses multi-modal sampling, whereby the parameter space search will 'split' into multiple modes
-    if it detects there are multiple peaks in likelihood space.
+    if it detects there are multiple peaks in log_likelihood space.
 
     For lens modeling there are rarely multiple solutions, thus this mode generally does not do anything. When multiple
-    arise one typically has much higher likelihood values than the other, thus multimodal mode leads to a decrease in
+    arise one typically has much higher log_likelihood values than the other, thus multimodal mode leads to a decrease in
     run time sampling both modes. Thus, I recommend you keep this setting off.
 
 importance_nested_sampling : bool

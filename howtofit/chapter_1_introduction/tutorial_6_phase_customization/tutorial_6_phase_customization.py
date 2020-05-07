@@ -50,7 +50,7 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 af.conf.instance = af.conf.Config(
-    config_path=chapter_path + "/config", output_path=chapter_path + "output"
+    config_path=chapter_path + "/config", output_path=f"{chapter_path}/output
 )
 
 # %%
@@ -60,7 +60,7 @@ To do this, we'll set up phases with the phase-settings 'data_trim_left' and 'da
 
 - data_trim_left:
 
-  The dataset's image and noise-map are trimmed and removed from the left (e.g. 1d index values from 0).
+  The dataset's image and noise map are trimmed and removed from the left (e.g. 1d index values from 0).
   For example, if the dataset has shape (100,) and we set data_trim_left=10, the dataset that is fitted will have
   shape (90,). The mask is trimmed in the same way.
 
@@ -91,7 +91,7 @@ Lets load the dataset, create a mask and perform the fit.
 dataset_path = chapter_path + "dataset/gaussian_x1/"
 
 dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
+    data_path=dataset_path + "data.fits", noise_map_path=f"{dataset_path}/noise_map.fits"
 )
 
 mask = np.full(fill_value=False, shape=dataset.data.shape)

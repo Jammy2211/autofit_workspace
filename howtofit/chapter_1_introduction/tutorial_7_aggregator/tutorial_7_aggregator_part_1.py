@@ -38,7 +38,7 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 af.conf.instance = af.conf.Config(
-    config_path=chapter_path + "/config", output_path=chapter_path + "output"
+    config_path=chapter_path + "/config", output_path=f"{chapter_path}/output
 )
 
 # %%
@@ -63,7 +63,7 @@ We can also attach information to the model-fit, by setting up an info dictionar
 Information about our model-fit (e.g. the dataset) that isn't part of the model-fit is made accessible to the 
 aggregator. For example, below we write info on the dataset's data of observation and exposure time.
 """
-info = {"date_of_observation" : "01-02-18", "exposure_time" : 1000.0}
+info = {"date_of_observation": "01-02-18", "exposure_time": 1000.0}
 
 # %%
 """
@@ -75,7 +75,7 @@ for dataset_name in dataset_names:
 
     # The code below loads the dataset and creates the mask as per usual.
 
-    dataset_path = chapter_path + "dataset/" + dataset_name
+    dataset_path = f"{chapter_path}/dataset" + dataset_name
 
     dataset = ds.Dataset.from_fits(
         data_path=dataset_path + "/data.fits",
@@ -153,55 +153,100 @@ list.
 
 2) Once we use a generator, we cannot use it again - we'll need to remake it.
 
-We can now create a 'non-linear outputs' generator of every fit. An instance of the NonLinearOutput class acts as an 
+We can now create a 'samples' generator of every fit. An instance of the Samples class acts as an 
 interface between the results of the non-linear fit on your hard-disk and Python.
 """
 
 # %%
-output_gen = agg.values("output")
+samples_gen = agg.values("samples")
 
 # %%
 """
-When we print this list of outputs you should see over 3 different MultiNestOutput instances. There are more than 3
+When we print this list of outputs you should see over 3 different NestedSamplerSamples instances. There are more than 3
 because the aggregator has loaded the results of previous tutorial as well as the 3 fits we performed abode!
 """
 
 # %%
-print("MultiNest Outputs:\n")
-print(output_gen)
-print("Total Outputs = ", len(list(output_gen)), "\n")
+print("MultiNest Samples:\n")
+print(samples_gen)
+print("Total Samples Objects = ", len(list(samples_gen)), "\n")
 
 # %%
 """
-To remove the fits of previous tutorials and just keep the MultiNestOutputs of the 3 datasets fitted in this tutorial
+The Samples class contains all the parameter samples, which is a list of lists where:
+
+ - The outer list is the size of the total number of samples.
+ - The inner list is the size of the number of free parameters in the fit.
+
+"""
+
+# %%
+for samples in agg.values("samples"):
+    print("All parameters of the very first sample")
+    print(samples.parameters[0])
+    print("The fourth parameter of the tenth sample")
+    print(samples.parameters[9][3])
+
+print("MultiNest Samples: \n")
+print(samples_gen)
+print()
+print("Total Samples Objects = ", len(list(samples_gen)), "\n")
+
+# %%
+"""
+The Samples class all contains the log likelihood, log prior, log posterior and weights of every sample, where:
+
+   - The log likelihood is the value evaluated from the likelihood function (e.g. -0.5 * chi_squared + the noise 
+     normalized).
+
+    - The log prior encodes information on how the priors on the parameters maps the log likelihood value to the log
+      posterior value.
+
+    - The log posterior is log_likelihood + log_prior.
+
+    - The weight gives information on how samples should be combined to estimate the posterior. The weight values 
+      depend on the sampler used, for example for MCMC they will all be 1's.
+
+"""
+
+# %%
+for samples in agg.values("samples"):
+    print("log(likelihood), log(prior), log(posterior) and weight of the tenth sample.")
+    print(samples.log_likelihoods[9])
+    print(samples.log_priors[9])
+    print(samples.log_posteriors[9])
+    print(samples.weights[9])
+
+# %%
+"""
+To remove the fits of previous tutorials and just keep the NestedSamplerSampless of the 3 datasets fitted in this tutorial
 We need to us the aggregator's filter tool. The phase name 'phase_t7' used in this tutorial is unique to all 3 fits,
 so we can use it to filter our results are desired.
 """
 
-
 # %%
 phase_name = "phase_t7"
 agg_filter = agg.filter(agg.phase == phase_name)
-output_gen = agg_filter.values("output")
+samples_gen = agg_filter.values("samples")
 
 # %%
 """
-As expected, this list now has only 3 MultiNestOutputs, one for each dataset we fitted.
+As expected, this list now has only 3 NestedSamplerSamples, one for each dataset we fitted.
 """
 
 # %%
-print("Phase Name Filtered MultiNest Outputs:\n")
-print(output_gen)
-print("Total Outputs = ", len(list(output_gen)), "\n")
+print("Phase Name Filtered MultiNest Samples:\n")
+print(samples_gen)
+print("Ttotal Samples Objects = ", len(list(samples_gen)), "\n")
 
 # %%
 """
-We can use the outputs to create a list of the most-likely (e.g. highest likelihood) model of each fit to our three
+We can use the outputs to create a list of the most-likely (e.g. highest log likelihood) model of each fit to our three
 images (in this case in phase 3).
 """
 
 # %%
-vector = [out.most_likely_vector for out in agg_filter.values("output")]
+vector = [samps.max_log_likelihood_vector for samps in agg_filter.values("samples")]
 print("Most Likely Model Parameter Lists:\n")
 print(vector, "\n")
 
@@ -214,7 +259,9 @@ Its more useful to create the model instance of every fit.
 """
 
 # %%
-instances = [out.most_likely_instance for out in agg_filter.values("output")]
+instances = [
+    samps.max_log_likelihood_instance for samps in agg_filter.values("samples")
+]
 print("Most Likely Model Instances:\n")
 print(instances, "\n")
 
@@ -247,8 +294,8 @@ of every parameter in 1D and taking the median of this PDF.
 """
 
 # %%
-mp_vectors = [out.most_probable_vector for out in agg_filter.values("output")]
-mp_instances = [out.most_probable_instance for out in agg_filter.values("output")]
+mp_vectors = [samps.most_probable_vector for samps in agg_filter.values("samples")]
+mp_instances = [samps.most_probable_instance for samps in agg_filter.values("samples")]
 
 print("Most Probable Model Parameter Lists:\n")
 print(mp_vectors, "\n")
@@ -263,10 +310,18 @@ We can compute the upper and lower errors on each parameter at a given sigma lim
 """
 
 # %%
-ue3_vectors = [out.error_vector_at_upper_sigma(sigma=3.0) for out in agg_filter.values("output")]
-ue3_instances = [out.error_instance_at_upper_sigma(sigma=3.0) for out in agg_filter.values("output")]
-le3_vectors = [out.error_vector_at_lower_sigma(sigma=3.0) for out in agg_filter.values("output")]
-le3_instances = [out.error_instance_at_lower_sigma(sigma=3.0) for out in agg_filter.values("output")]
+ue3_vectors = [
+    out.error_vector_at_upper_sigma(sigma=3.0) for out in agg_filter.values("samples")
+]
+ue3_instances = [
+    out.error_instance_at_upper_sigma(sigma=3.0) for out in agg_filter.values("samples")
+]
+le3_vectors = [
+    out.error_vector_at_lower_sigma(sigma=3.0) for out in agg_filter.values("samples")
+]
+le3_instances = [
+    out.error_instance_at_lower_sigma(sigma=3.0) for out in agg_filter.values("samples")
+]
 
 print("Errors Lists:\n")
 print(ue3_vectors, "\n")
@@ -277,7 +332,7 @@ print(le3_instances, "\n")
 
 # %%
 """
-The maximum likelihood of each model fit and its Bayesian evidence (estimated via MultiNest) are also available.
+The maximum log likelihood of each model fit and its Bayesian log evidence (estimated via MultiNest) are also available.
 
 Given each fit is to a different image, these are not very useful. However, in tutorial 5 we'll look at using the
 aggregator for images that we fit with many different models and many different pipelines, in which case comparing
@@ -286,8 +341,8 @@ the evidences allows us to perform Bayesian model comparison!
 
 # %%
 print("Likelihoods:\n")
-print([out.maximum_log_likelihood for out in agg_filter.values("output")])
-print([out.evidence for out in output_gen])
+print([out.max_log_likelihood for out in agg_filter.values("samples")])
+print([out.log_evidence for out in samples_gen])
 
 # %%
 """
@@ -309,29 +364,27 @@ Gaussian profile, including error bars at 3 sigma confidence.
 # %%
 import matplotlib.pyplot as plt
 
-mp_instances = [out.most_probable_instance for out in agg_filter.values("output")]
-ue3_instances = [out.error_instance_at_upper_sigma(sigma=3.0) for out in agg_filter.values("output")]
-le3_instances = [out.error_instance_at_lower_sigma(sigma=3.0) for out in agg_filter.values("output")]
+mp_instances = [samps.most_probable_instance for samps in agg_filter.values("samples")]
+ue3_instances = [
+    out.error_instance_at_upper_sigma(sigma=3.0) for out in agg_filter.values("samples")
+]
+le3_instances = [
+    out.error_instance_at_lower_sigma(sigma=3.0) for out in agg_filter.values("samples")
+]
 
-mp_sigmas = [
-    instance.profiles.gaussian.sigma for instance in mp_instances
-]
-ue3_sigmas = [
-    instance.profiles.gaussian.sigma for instance in ue3_instances
-]
-le3_sigmas = [
-    instance.profiles.gaussian.sigma for instance in le3_instances
-]
+mp_sigmas = [instance.profiles.gaussian.sigma for instance in mp_instances]
+ue3_sigmas = [instance.profiles.gaussian.sigma for instance in ue3_instances]
+le3_sigmas = [instance.profiles.gaussian.sigma for instance in le3_instances]
 mp_intensitys = [instance.profiles.gaussian.sigma for instance in mp_instances]
-ue3_intensitys = [
-    instance.profiles.gaussian.sigma for instance in ue3_instances
-]
-le3_intensitys = [
-    instance.profiles.gaussian.intensity for instance in le3_instances
-]
+ue3_intensitys = [instance.profiles.gaussian.sigma for instance in ue3_instances]
+le3_intensitys = [instance.profiles.gaussian.intensity for instance in le3_instances]
 
 plt.errorbar(
-    x=mp_sigmas, y=mp_intensitys, marker=".", linestyle="",
-    xerr=[le3_sigmas, ue3_sigmas], yerr=[le3_intensitys, ue3_intensitys]
+    x=mp_sigmas,
+    y=mp_intensitys,
+    marker=".",
+    linestyle="",
+    xerr=[le3_sigmas, ue3_sigmas],
+    yerr=[le3_intensitys, ue3_intensitys],
 )
 plt.show()

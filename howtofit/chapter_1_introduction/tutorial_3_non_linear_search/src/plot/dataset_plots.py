@@ -17,7 +17,7 @@ def data(dataset):
 
 
 def noise_map(dataset):
-    """Plot the noise-map of a Line dataset.
+    """Plot the noise map of a Line dataset.
 
     Parameters
     -----------

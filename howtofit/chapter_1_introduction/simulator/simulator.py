@@ -42,7 +42,7 @@ def numpy_array_1d_to_fits(array_1d, file_path, overwrite=False):
 
 
 chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction/"
-dataset_path = chapter_path + "dataset/"
+dataset_path = f"{chapter_path}/dataset"
 
 ### Gaussian X1 ###
 

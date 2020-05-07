@@ -1,7 +1,8 @@
 import autofit as af
 
 from howtofit.chapter_1_introduction.tutorial_5_complex_models.src.dataset.dataset import (
-    Dataset, MaskedDataset
+    Dataset,
+    MaskedDataset,
 )
 from howtofit.chapter_1_introduction.tutorial_5_complex_models.src.phase.result import (
     Result,
@@ -76,7 +77,7 @@ class Phase(af.AbstractPhase):
         Returns
         -------
         analysis : Analysis
-            An analysis object that the non-linear search calls to determine the fit likelihood for a given model
+            An analysis object that the non-linear search calls to determine the fit log_likelihood for a given model
             instance.
         """
 
@@ -89,7 +90,7 @@ class Phase(af.AbstractPhase):
     def make_result(self, result, analysis):
         return self.Result(
             instance=result.instance,
-            likelihood=result.likelihood,
+            log_likelihood=result.log_likelihood,
             analysis=analysis,
             output=result.output,
         )

@@ -46,7 +46,7 @@ class Visualizer(AbstractVisualizer):
         # The fit is visualized during the model-fit, thus it requires its own method which is called by the non-linear
         # search every set number of intervals.
 
-        # Unlike the dataset plots above, the fit 'data' and 'noise-map' are masked.
+        # Unlike the dataset plots above, the fit 'data' and 'noise map' are masked.
 
         fit_plots.data(
             fit=fit,

@@ -1,14 +1,12 @@
-import autofit as af
-
 from astropy.io import fits
 import numpy as np
 
-# This is our dataset, which in tutorial 1 stores a 1D Gaussian with a noise-map.
+# This is our dataset, which in tutorial 1 stores a 1D Gaussian with a noise map.
 
 # Our data is a 1D numpy array of values corresponding to the observed counts of the Gaussian.
-# The noise-map corresponds to the expected noise in every data point.
+# The noise map corresponds to the expected noise in every data point.
 
-# In PyAutoFit we use the term 'dataset' to represent the collection of data, noise-map, etc. that are fitted. In this
+# In PyAutoFit we use the term 'dataset' to represent the collection of data, noise map, etc. that are fitted. In this
 # chapter our dataset is a 1D line, for your model-fitting problem your dataset is probably more complex than this.
 
 # For clarity, in these tutorials we are calling our dataset class 'Dataset', as opposed to something more specific to
@@ -21,7 +19,7 @@ import numpy as np
 
 class Dataset:
     def __init__(self, data, noise_map):
-        """A class containing the data and noise-map of a 1D line dataset.
+        """A class containing the data and noise map of a 1D line dataset.
 
         Parameters
         ----------
@@ -44,14 +42,14 @@ class Dataset:
 
     @classmethod
     def from_fits(cls, data_path, noise_map_path):
-        """Load the data and noise-map of a 1D line dataset from '.fits' files.
+        """Load the data and noise map of a 1D line dataset from '.fits' files.
 
         Parameters
         ----------
         data_path : str
             The path on your hard-disk to the '.fits' file of the data.
         noise_map_path : str
-            The path on your hard-disk to the '.fits' file of the noise-map.
+            The path on your hard-disk to the '.fits' file of the noise map.
         """
 
         data_hdu_list = fits.open(data_path)

@@ -8,7 +8,7 @@ import numpy as np
 
 class Dataset:
     def __init__(self, data, noise_map):
-        """A class containing the data and noise-map of a 1D line dataset.
+        """A class containing the data and noise map of a 1D line dataset.
 
         Parameters
         ----------
@@ -26,14 +26,14 @@ class Dataset:
 
     @classmethod
     def from_fits(cls, data_path, noise_map_path):
-        """Load the data and noise-map of a 1D line dataset from '.fits' files.
+        """Load the data and noise map of a 1D line dataset from '.fits' files.
 
         Parameters
         ----------
         data_path : str
             The path on your hard-disk to the '.fits' file of the data.
         noise_map_path : str
-            The path on your hard-disk to the '.fits' file of the noise-map.
+            The path on your hard-disk to the '.fits' file of the noise map.
         """
 
         data_hdu_list = fits.open(data_path)
@@ -47,7 +47,7 @@ class Dataset:
 
 # Here, we create masked dataset that is fitted by our phase. This class takes an unmasked dataset (e.g. an image and
 # noise map) and applies a mask to them, such that all entries where the mask is True are omitted from the fit and
-# likelihood calution.
+# log_likelihood calution.
 
 # This could be done using NumPy masked array functionality, by for simplicity we will simply set all masked entries
 # to zero instead (and not included them in the fit as seen in the 'fit.py' module).
@@ -58,12 +58,12 @@ class Dataset:
 class MaskedDataset:
     def __init__(self, dataset, mask):
         """
-        A masked dataset, which is an image, noise-map and mask.
+        A masked dataset, which is an image, noise map and mask.
 
         Parameters
         ----------
         dataset: im.Dataset
-            The dataset (the image, noise-map, etc.)
+            The dataset (the image, noise map, etc.)
         mask: msk.Mask
             The 1D mask that is applied to the dataset.
         """
@@ -76,7 +76,7 @@ class MaskedDataset:
         # We apply the mask, setting all entries where the mask is True to zero.
         self.data = dataset.data * np.invert(mask)
 
-        # Same for the noise-map
+        # Same for the noise map
         self.noise_map = dataset.noise_map * np.invert(mask)
 
     @property

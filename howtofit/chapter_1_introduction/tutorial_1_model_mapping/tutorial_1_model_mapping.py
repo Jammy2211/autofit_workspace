@@ -59,7 +59,8 @@ from howtofit.chapter_1_introduction.tutorial_1_model_mapping.src.dataset import
 )
 
 dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
+    data_path=dataset_path + "data.fits",
+    noise_map_path=f"{dataset_path}/noise_map.fits",
 )
 
 # %%

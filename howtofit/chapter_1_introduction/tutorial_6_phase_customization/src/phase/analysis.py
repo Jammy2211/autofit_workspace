@@ -21,7 +21,7 @@ class Analysis(af.Analysis):
             masked_dataset=self.masked_dataset, image_path=image_path
         )
 
-    def fit(self, instance):
+    def log_likelihood_function(self, instance):
         """Determine the fit of a list of Profiles (Gaussians, Exponentials, etc.) to the dataset, using a
         model instance.
 
@@ -32,12 +32,12 @@ class Analysis(af.Analysis):
 
         Returns
         -------
-        fit : Fit.likelihood
-            The likelihood value indicating how well this model fit the masked dataset.
+        fit : Fit.log_likelihood
+            The log likelihood value indicating how well this model fit the masked dataset.
         """
         model_data = self.model_data_from_instance(instance=instance)
         fit = self.fit_from_model_data(model_data=model_data)
-        return fit.likelihood
+        return fit.log_likelihood
 
     def model_data_from_instance(self, instance):
         return sum(

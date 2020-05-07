@@ -18,9 +18,9 @@ dataset_path = chapter_path + "dataset/gaussian_x1/"
 
 # We now load this dataset from .fits files and create an instance of an 'dataset' object.
 dataset = aa.dataset.from_fits(
-    image_path=dataset_path + "image.fits",
-    noise_map_path=dataset_path + "noise_map.fits",
-    psf_path=dataset_path + "psf.fits",
+    image_path=f"{dataset_path}/image.fits",
+    noise_map_path=f"{dataset_path}/noise_map.fits",
+    psf_path=f"{dataset_path}/psf.fits",
     pixel_scales=0.1,
 )
 

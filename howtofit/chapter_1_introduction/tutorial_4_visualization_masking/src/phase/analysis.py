@@ -29,8 +29,8 @@ class Analysis(af.Analysis):
             masked_dataset=self.masked_dataset, image_path=image_path
         )
 
-    def fit(self, instance):
-        """Determine the fit of a Gaussian to the dataset, using the model-instance of a Gaussian.
+    def log_likelihood_function(self, instance):
+        """Determine the log likelihood of a fit of a Gaussian to the dataset, using the model instance of a Gaussian.
 
         Parameters
         ----------
@@ -39,12 +39,12 @@ class Analysis(af.Analysis):
 
         Returns
         -------
-        fit : Fit.likelihood
-            The likelihood value indicating how well this model fit the masked dataset.
+        fit : Fit.log_likelihood
+            The log likelihood value indicating how well this model fit the masked dataset.
         """
         model_data = self.model_data_from_instance(instance=instance)
         fit = self.fit_from_model_data(model_data=model_data)
-        return fit.likelihood
+        return fit.log_likelihood
 
     def model_data_from_instance(self, instance):
         return instance.gaussian.line_from_xvalues(xvalues=self.masked_dataset.xvalues)
@@ -55,7 +55,7 @@ class Analysis(af.Analysis):
     def visualize(self, instance, during_analysis):
 
         # During a phase, the 'visualize' method is called throughout the non-linar search. The 'instance' passed into
-        # the visualize method is highest likelihood solution obtained by the model-fit so far.
+        # the visualize method is highest log likelihood solution obtained by the model-fit so far.
 
         # In the analysis we use this instance to create the best-fit fit of our model-fit.
 

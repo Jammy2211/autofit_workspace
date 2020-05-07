@@ -43,7 +43,7 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 af.conf.instance = af.conf.Config(
-    config_path=chapter_path + "/config", output_path=chapter_path + "output"
+    config_path=chapter_path + "/config", output_path=f"{chapter_path}/output
 )
 
 # %%
@@ -141,7 +141,7 @@ Exponential profile.
 dataset_path = chapter_path + "dataset/gaussian_x1_exponential_x1/"
 
 dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
+    data_path=dataset_path + "data.fits", noise_map_path=f"{dataset_path}/noise_map.fits"
 )
 
 # %%
@@ -196,7 +196,7 @@ N=9.
 dataset_path = chapter_path + "dataset/gaussian_x2_exponential_x1/"
 
 dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
+    data_path=dataset_path + "data.fits", noise_map_path=f"{dataset_path}/noise_map.fits"
 )
 
 phase = ph.Phase(
@@ -252,7 +252,7 @@ We can now fit this model using a phase as per usual.
 dataset_path = chapter_path + "dataset/gaussian_x3/"
 
 dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
+    data_path=dataset_path + "data.fits", noise_map_path=f"{dataset_path}/noise_map.fits"
 )
 
 phase = ph.Phase(phase_name="phase_t5_gaussian_x3", profiles=model)

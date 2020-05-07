@@ -91,7 +91,7 @@ class Phase(af.AbstractPhase):
         Returns
         -------
         analysis : Analysis
-            An analysis object that the non-linear search calls to determine the fit likelihood for a given model
+            An analysis object that the non-linear search calls to determine the fit log_likelihood for a given model
             instance.
         """
         return Analysis(dataset=dataset)
@@ -99,7 +99,7 @@ class Phase(af.AbstractPhase):
     def make_result(self, result, analysis):
         return self.Result(
             instance=result.instance,
-            likelihood=result.likelihood,
+            log_likelihood=result.log_likelihood,
             analysis=analysis,
             output=result.output,
         )

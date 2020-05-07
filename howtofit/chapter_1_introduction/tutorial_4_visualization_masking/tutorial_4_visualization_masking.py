@@ -43,7 +43,7 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 af.conf.instance = af.conf.Config(
-    config_path=chapter_path + "/config", output_path=chapter_path + "output"
+    config_path=chapter_path + "/config", output_path=f"{chapter_path}/output
 )
 
 dataset_path = chapter_path + "dataset/gaussian_x1/"
@@ -53,7 +53,7 @@ from howtofit.chapter_1_introduction.tutorial_4_visualization_masking.src.datase
 )
 
 dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
+    data_path=dataset_path + "data.fits", noise_map_path=f"{dataset_path}/noise_map.fits"
 )
 
 # %%

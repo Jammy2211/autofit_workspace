@@ -19,7 +19,8 @@ from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.dataset import
 )
 
 dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits", noise_map_path=dataset_path + "noise_map.fits"
+    data_path=dataset_path + "data.fits",
+    noise_map_path=f"{dataset_path}/noise_map.fits",
 )
 
 # From here on, we're going to perform all visualization using the 'plot' package, which contains functions for
@@ -126,7 +127,7 @@ aplt.Array(array=residual_map)
 # needs to account for noise in the data - after all if we fit a pixel badly simply because it was very noisy we want
 # our goodness-of-fit to account for that.
 
-# To account for noise, we take our residual-map and divide it by the noise-map, to get the 'normalized residual-map'.
+# To account for noise, we take our residual-map and divide it by the noise map, to get the 'normalized residual-map'.
 normalized_residual_map = residual_map / dataset.noise_map
 aplt.Array(array=normalized_residual_map)
 
@@ -149,30 +150,30 @@ print("Chi-squared = ", chi_squared)
 # Thus, the lower our chi-squared, the fewer residuals in the fit between our model and the data and therefore the
 # better our fit!
 
-# From the chi-squared we can then define our final goodness-of-fit measure, the 'likelihood', which is the
+# From the chi-squared we can then define our final goodness-of-fit measure, the 'log_likelihood', which is the
 # chi-squared value times -0.5.
-likelihood = -0.5 * chi_squared
-print("Likelihood = ", likelihood)
+log_likelihood = -0.5 * chi_squared
+print("Log Likelihood = ", log_likelihood)
 
-# Why is the likelihood the chi-squared times -0.5? Lets not worry about. This is simply the standard definition of a
-# likelihood in statistics (it relates to the noise-properties of our data-set). For now, just accept that this is what
-# a likelihood is and if we want to fit a model to data our goal is to thus find the combination of model parameters
-# that maximizes our likelihood.
+# Why is the log likelihood the chi-squared times -0.5? Lets not worry about. This is simply the standard definition of a
+# log_likelihood in statistics (it relates to the noise-properties of our data-set). For now, just accept that this is what
+# a log likelihood is and if we want to fit a model to data our goal is to thus find the combination of model parameters
+# that maximizes our log_likelihood.
 
-# There is a second quantity that enters the likelihood, called the 'noise-normalization'. This is the log sum of all
-# noise values squared in our data-set (give the noise-map doesn't change the noise_normalization is the same value for
+# There is a second quantity that enters the log likelihood, called the 'noise-normalization'. This is the log sum of all
+# noise values squared in our data-set (give the noise map doesn't change the noise_normalization is the same value for
 # all models that we fit).
 noise_normalization = np.sum(np.log(2 * np.pi * dataset.noise_map ** 2.0))
 
-# Again, like the definition of a likelihood, lets not worry about why a noise normalization is defined in this way or
+# Again, like the definition of a log likelihood, lets not worry about why a noise normalization is defined in this way or
 # why its in our goodness-of-fit. Lets just accept for now that this is how it is in statistics.
 
-# Thus, we now have the definition of a likelihood that we'll use hereafter in all PyAutoFit tutorials.
-likelihood = -0.5 * chi_squared + noise_normalization
-print("Likelihood = ", likelihood)
+# Thus, we now have the definition of a log likelihood that we'll use hereafter in all PyAutoFit tutorials.
+log_likelihood = -0.5 * chi_squared + noise_normalization
+print("Log Likelihood = ", log_likelihood)
 
 # If you are familiar with model-fitting, you'll have probably heard of terms like 'residuals', 'chi-squared' and
-# 'likelihood' before. These are the standard metrics by which a model-fit's quality is measured. They are used for
+# 'log_likelihood' before. These are the standard metrics by which a model-fit's quality is measured. They are used for
 # model fitting in general, so not just when your data is an image but when its 1D data (e.g a line), 3D data
 # (e.g. a datacube) or something else entirely!
 
@@ -206,7 +207,7 @@ print("Chi-Squareds Maps:\n")
 print(fit.chi_squared_map.in_2d)
 print(fit.chi_squared_map.in_1d)
 print("Likelihood:")
-print(fit.likelihood)
+print(fit.log_likelihood)
 
 # PyAutoArray provides the tools we need to visualize a fit.
 aplt.FitImaging.subplot_fit_imaging(fit=fit)
@@ -216,11 +217,11 @@ aplt.FitImaging.subplot_fit_imaging(fit=fit)
 # - We can define a model components in PyAutoFit, like our Gaussian, using Python classes that follow a certain format.
 # - The model component's parameters each have priors, which given a unit vecto can be mapped to an instance of the
 #   Gaussian class.
-# - We can use this model-instance to create a model-image of our Gaussian and compare it to data and quantify the
-#   goodness-of-fit via a likelihood.
+# - We can use this model instance to create a model-image of our Gaussian and compare it to data and quantify the
+#   goodness-of-fit via a log likelihood.
 
 # Thus we have everything we need to fit our model to our data! So, how do we go about finding the best-fit model?
-# That is, the model which maximizes the likelihood.
+# That is, the model which maximizes the log likelihood.
 
 # The most simple thing we can do is guess parameters, and when we guess parameters that give a good fit, guess another
 # set of parameters near those values. We can then repeat this process, over and over, until we find a really good model!
@@ -232,44 +233,44 @@ model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
-print(fit.likelihood)
+print(fit.log_likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 3.0, 3.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
-print(fit.likelihood)
+print(fit.log_likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 3.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
-print(fit.likelihood)
+print(fit.log_likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 1.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
-print(fit.likelihood)
+print(fit.log_likelihood)
 
 gaussian = model.instance_from_vector(vector=[0.0, 0.0, 10.0, 5.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 fit = f.DatasetFit(dataset=dataset, model_data=model_image)
 aplt.FitImaging.subplot_fit_imaging(fit=fit)
 print("Likelihood:")
-print(fit.likelihood)
+print(fit.log_likelihood)
 
 # You can now perform model-fitting with PyAutoFit! All we have to do is guess lots of parameters, over and over and
-# over again, until we hit a model with a high likelihood. Yay!
+# over again, until we hit a model with a high log_likelihood. Yay!
 
 # Of course, you're probably thinking, is that really it? Should we really be guessing models to find the best-fit?
 
 # Obviously, the answer is no. Imagine our model was more complex, that it had many more parameters than just 4.
 # Our approach of guessing parameters won't work - it could take days, maybe years, to find models with a high
-# likelihood, and how could you even be sure they ware the best-fit models? Maybe a set of parameters you never tried
+# log_likelihood, and how could you even be sure they ware the best-fit models? Maybe a set of parameters you never tried
 # provide an even better fit?
 
 # Of course, there is a much better way to perform model-fitting, and in the next tutorial we'll take you through how
@@ -306,7 +307,7 @@ print(fit.likelihood)
 #
 # 1) Use your model to create some model data.
 # 2) Subtract it from the data to create residuals.
-# 3) Use these residuals in conjunction with your noise-map to define a likelihood.
-# 4) Find the highest likelihood models.
+# 3) Use these residuals in conjunction with your noise map to define a log likelihood.
+# 4) Find the highest log likelihood models.
 
 # So, get thinking about how these steps would be performed for your model!

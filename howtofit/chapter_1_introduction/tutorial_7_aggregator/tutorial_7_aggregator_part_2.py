@@ -39,7 +39,7 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 af.conf.instance = af.conf.Config(
-    config_path=chapter_path + "/config", output_path=chapter_path + "output"
+    config_path=chapter_path + "/config", output_path=f"{chapter_path}/output
 )
 
 # %%
@@ -130,7 +130,9 @@ Lets filter by phase name again to get the the most-likely model instances, as w
 """
 
 # %%
-instances = [out.most_likely_instance for out in agg_filter.values("output")]
+instances = [
+    samps.max_log_likelihood_instance for samps in agg_filter.values("samples")
+]
 
 # %%
 """
