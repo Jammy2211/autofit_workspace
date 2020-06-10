@@ -10,6 +10,8 @@ which we'll ultimately need to fit to data.
 #%matplotlib inline
 
 import autofit as af
+from astropy.io import fits
+import numpy as np
 import matplotlib.pyplot as plt
 
 # %%
@@ -28,7 +30,7 @@ Lets setup the config files for this tutorial. We'll cover what configs do as we
 """
 
 # %%
-af.conf.instance = af.conf.Config(config_path=chapter_path + "/config")
+af.conf.instance = af.conf.Config(config_path=f"{chapter_path}//config")
 
 # %%
 """
@@ -37,40 +39,36 @@ load the example dataset containing one Gaussian.
 """
 
 # %%
-dataset_path = chapter_path + "dataset/gaussian_x1/"
+dataset_path = f"{chapter_path}/dataset/gaussian_x1/"
 
 # %%
 """
-We now load this dataset from .fits files and create an instance of a 'Dataset' object. Checkout the file
+We now load the data and noise from .fits files, where:
 
-'autofit_workspace/howtofit/chapter_1_introduction/tutorial_1_model_mapping/model/src/dataset/dataset.py'
-
-for a description of the Dataset class.
-
-
-This file is in the folder 'src',  signifying this code would be in the project's source-code. An aim of these
-tutorials is clearly define what belongs in the source code and what belongs in the code we use to perform
-model-fitting, e.g. these tutorial scripts. So, make sure to take note of what goes in the source code!
+- The data is a 1D numpy array of values corresponding to the observed counts of the Gaussian.
+- The noise map corresponds to the expected noise in every data point.
 """
 
 # %%
-from howtofit.chapter_1_introduction.tutorial_1_model_mapping.src.dataset import (
-    dataset as ds,
-)
+data_path = f"{dataset_path}/data.fits"
+data_hdu_list = fits.open(data_path)
+data = np.array(data_hdu_list[0].data)
 
-dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits",
-    noise_map_path=f"{dataset_path}/noise_map.fits",
-)
+noise_map_path = f"{dataset_path}/noise_map.fits"
+noise_map_hdu_list = fits.open(noise_map_path)
+noise_map = np.array(noise_map_hdu_list[0].data)
 
 # %%
 """
-Lets plot the Gaussian. In this tutorial we'll just use a Matplotlib directly, but in tutorial 2 we'll expand our
-plotting tools.
+Lets plot the Gaussian using Matplotlib. 
+
+The Gaussian is on a line of xvalues, which we'll compute using the shape of the Gaussian data and plot on the x-axis.
+These xvalues will be used in later tutorials to create and fit Gaussians to the data.
 """
 
 # %%
-plt.plot(dataset.xvalues, dataset.data)
+xvalues = np.arange(data.shape[0])
+plt.plot(xvalues, data)
 plt.show()
 
 # %%
@@ -94,11 +92,7 @@ values of these 3 parameters we can describe *any* possible 1D Gaussian.
 At its core, PyAutoFit is all about making it simple to define a model and straight forwardly map a set of input
 parameters to the model.
 
-So lets go ahead and create our model of a 1D Gaussian. Take a look at the file
-
-'autofit_workspace/howtofit/chapter_1_introduction/tutorial_1_model_mapping/model/src/model/gaussian.py'.
-
-Here we define our 1D Gaussian model using the code:
+So lets go ahead and create our model of a 1D Gaussian.
 """
 
 # %%
@@ -113,38 +107,54 @@ class Gaussian:
         self.intensity = intensity
         self.sigma = sigma
 
+    def line_from_xvalues(self, xvalues):
+        """
+        Calculate the intensity of the light profile on a line of Cartesian x coordinates.
+
+        The input xvalues are translated to a coordinate system centred on the Gaussian, using its centre.
+
+        Parameters
+        ----------
+        xvalues : ndarray
+            The x coordinates in the original reference frame of the data.
+        """
+        transformed_xvalues = np.subtract(xvalues, self.centre)
+        return np.multiply(
+            np.divide(self.intensity, self.sigma * np.sqrt(2.0 * np.pi)),
+            np.exp(-0.5 * np.square(np.divide(transformed_xvalues, self.sigma))),
+        )
+
 
 # %%
 """
 The class's format is how PyAutoFit requires the components of a model to be written, where:
 
 - The name of the class is the name of the model component, in this case, "Gaussian".
-- The input arguments of the constructor are the model parameters which we will ultimately fit for.
-- The default values of the input arguments tell PyAutoFit whether a parameter is a single-valued float (e.g. like
-  the intensity and sigma) or a multi-valued tuple. For the Gaussian class, no input parameters are a tuple, however
-  we will show an example of a tuple input in a later tutorial).
+- The input arguments of the constructor are the model parameters which we will ultimately fit for, in this case the
+  centre, intensity and sigma.
+- The default values of the input arguments tell PyAutoFit whether a parameter is a single-valued floats or a 
+  multi-valued tuple. For the Gaussian class, no input parameters are a tuple and we will show an example of a tuple 
+  input in a later tutorial).
+  
+By writing a model component in this way, we can use the Python class to set it up as model component in PyAutoFit.
+PyAutoFit can the generate model components as instances of their Python class, meaning that its functions 
+(e.g. 'line_from_xvalues') are accessible to PyAutoFit.
 
-By writing a model component in this way, we can use the Python class to set it up as model in PyAutoFit.
+To set it up as a model component, we use a PriorModel object.
 """
 
 # %%
-from howtofit.chapter_1_introduction.tutorial_1_model_mapping.src.model import gaussian
-
-model = af.PriorModel(gaussian.Gaussian)
-
-# %%
-"""
-The model is what PyAutoFit calls a PriorModel - we'll explain the name below.
-"""
-
-# %%
+model = af.PriorModel(Gaussian)
+model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=np.inf)
+model.intensity = af.UniformPrior(lower_limit=0.0, upper_limit=np.inf)
+model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=np.inf)
 print("PriorModel Gaussian object: \n")
 print(model)
 
 # %%
 """
-Using our model we can create an 'instance' of the model, by mapping a list of physical values of each parameter to
-the model.
+Using this PriorModel we can create an 'instance' of the model, by mapping a list of physical values of each parameter 
+as follows.
 """
 
 # %%
@@ -161,7 +171,7 @@ print(instance)
 
 # %%
 """
-It has the parameters of our Gaussian with the values input above.
+It has the parameters of the Gaussian with the values input above.
 """
 
 # %%
@@ -179,23 +189,16 @@ So, why is it called a PriorModel?
 The parameters of a PriorModel in PyAutoFit all have a prior associated with them. Priors encode our expectations on
 what values we expect each parameter can have. For example, we might know that our Gaussian will be centred near 0.0.
 
-Where are priors set? Checkout the config file:
+How are priors set? In this example, we did not specify priors, so they default to UniformPriors between 0 and 1. Below,
+we'll show how to customize priors, and in a later tutorial we'll explain how for a given model component we can 
+define config files that specify the default priors.
 
-'autofit_workspace/howtofit/chapter_1_introduction/config/json_priors/gaussian.json
+### How Are Priors Used? ###
 
-For our Gaussian, we use the following default priors:
+Priors are used to create model instances from a unit-vector, which is a vector defined in the same way as the vector 
+above but with values spanning from 0 -> 1.
 
-centre (x) - UniformPrior between 0.0 to 100.0.
-intensity (I) - LogUniformPrior (base 10) between 0.01 and 100.0
-sigma - UniformPrior between 0.0 and 10.0
-
-Config files in PyAutoFit use the module name to read the config files. This is why our Gaussian component is in the
-the module "gaussian.py", so that PyAutoFit knows to look for config files with the name "gaussian.json".
-
-So, when are these priors actually used? They are used to generate model instances from a unit-vector, a vector
-defined in the same way as the vector above but with values spanning from 0 -> 1.
-
-Unit values are mapped to physical values using the prior, for example:
+Unit values are mapped to physical values via the prior, for example:
 
 For a UniformPrior defined between 0.0 and 10.0:
 
@@ -216,31 +219,8 @@ Lets take a look:
 """
 
 # %%
-instance = model.instance_from_unit_vector(unit_vector=[0.5, 0.3, 0.8])
-
-# %%
 """
-The instance is again an instance of the Gaussian class.
-"""
-
-# %%
-print("Model Instance: \n")
-print(instance)
-
-# %%
-"""
-It has physical values for the parameters mapped from the priors defined in the gaussian.json config file.
-"""
-
-# %%
-print("Instance Parameters \n")
-print("x = ", instance.centre)
-print("intensity = ", instance.intensity)
-print("sigma = ", instance.sigma)
-
-# %%
-"""
-We can overwrite the priors defined in the config.
+We can overwrite the default priors assumed for each parameter.
 """
 
 # %%
@@ -250,7 +230,8 @@ model.sigma = af.LogUniformPrior(lower_limit=1.0, upper_limit=100.0)
 
 # %%
 """
-Our model, with all new priors, can again be used to map unit values to create a model instance.
+These priors are now used to map our unit values to physical values when we create an instance of the Gaussian
+class.
 """
 
 # %%
@@ -258,7 +239,16 @@ instance = model.instance_from_unit_vector(unit_vector=[0.5, 0.3, 0.8])
 
 # %%
 """
-Its physical values are mapped using the new priors defined above and not those in the gaussians.ini config file.
+Lets check that this instance is again an instance of the Gaussian class.
+"""
+
+# %%
+print("Model Instance: \n")
+print(instance)
+
+# %%
+"""
+It now has physical values for the parameters mapped from the priors defined above.
 """
 
 # %%
@@ -276,14 +266,14 @@ For example, a Gaussian cannot have a negative intensity, so we can set its lowe
 """
 
 # %%
-model = af.PriorModel(gaussian.Gaussian)
 model.intensity = af.GaussianPrior(
     mean=0.0, sigma=1.0, lower_limit=0.0, upper_limit=1000.0
 )
 
 # %%
 """
-The unit vector input below creates a negative intensity value, so the line below leads PyAutoFit to raise an error.
+The unit vector input below creates a negative intensity value, such that if you uncomment the line below PyAutoFit 
+raises an error.
 """
 
 # %%
@@ -291,8 +281,7 @@ The unit vector input below creates a negative intensity value, so the line belo
 
 # %%
 """
-The config file 'autofit_workspace/howtofit/chapter_1_introduction/config/priors/limits/gaussian.json' also sets the
-default limits on all parameters of our model.
+In a later tutorial, we'll explain how config files can again be used to set the default limits of every parameter.
 
 
 And with that, you've completed tutorial 1!
@@ -301,9 +290,9 @@ At this point, you might be wondering, whats the big deal? Sure, its cool that w
 we can translate priors to parameters in this way, but how is this actually going to help me perform model fitting?
 With a bit of effort couldn't I have written some code to do this myself?
 
-Well, you're probably right, but this tutorial is covering just the backend of PyAutoFit, what holds everything
-together if you will. Once you start using PyAutoFit, you're ultimately never going to directly perform model
-mapping yourself, its the 'magic' behind the scenes that makes model-fitting work.
+Well, you're probably right, but this tutorial is covering just the backend of PyAutoFit - what holds everything
+together. Once you start using PyAutoFit, its unlikely that you'll perform model mapping yourself, its the 'magic' 
+behind the scenes that makes model-fitting work.
 
 So, we're pretty much ready to move on to tutorial 2, where we'll actually fit this model to some data. However,
 first, I want you to quickly think about the model you want to fit. How would you write it as a class using the

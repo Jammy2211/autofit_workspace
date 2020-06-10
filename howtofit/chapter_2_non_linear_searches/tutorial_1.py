@@ -35,7 +35,7 @@
 # density functions' or PDF's for short. These represent where the highest log likelihood regions of parameter space
 # were found for each parameter.
 #
-# Navigate to the folder 'autolens_workspace/howtolens/chapter_2_lens_modeling/output_optimizer/t1_non_linear_search/image' and
+# Navigate to the folder 'autolens_workspace/howtolens/chapter_2_lens_modeling/output_search/t1_non_linear_search/image' and
 # open the 'pdf_triangle.png' figure. The Gaussian shaped lines running down the diagonal of this triangle represent 1D
 # estimates of the highest log likelihood regions that were found in parameter space for each parameter.
 

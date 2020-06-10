@@ -2,26 +2,30 @@
 """
 __Model Fitting__
 
-In this tutorial, we'll fit the Gaussian model from the previous tutorial to the data we loaded.
+In this tutorial, we'll fit the 1D Gaussian model from the previous tutorial to the data we loaded.
 """
 
 # %%
 #%matplotlib inline
 
 # %%
+from autoconf import conf
 import autofit as af
 
+import matplotlib.pyplot as plt
+from astropy.io import fits
 import numpy as np
 
 # %%
 """
 To begin, lets load the dataset again.
 
-You need to change the path below to the chapter 1 directory so we can load the dataset.
+You need to change the path below to the chapter 1 directory so we can load the 
 """
 
 # %%
-chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction/"
+chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction"
+dataset_path = f"{chapter_path}/dataset/gaussian_x1"
 
 # %%
 """
@@ -29,99 +33,129 @@ These setup the configs as we did in the previous tutorial.
 """
 
 # %%
-af.conf.instance = af.conf.Config(config_path=chapter_path + "config")
-
-dataset_path = chapter_path + "dataset/gaussian_x1/"
-
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.dataset import (
-    dataset as ds,
-)
-
-dataset = ds.Dataset.from_fits(
-    data_path=dataset_path + "data.fits",
-    noise_map_path=f"{dataset_path}/noise_map.fits",
-)
+conf.instance = conf.Config(config_path=f"{chapter_path}/config")
 
 # %%
 """
-From here on, we're going to perform all visualization using the 'plot' package, which contains functions for
-plotting our line dataset as well as other aspects of the model we'll cover later.
+Lets load the data and noise-map we'll use for our fits (if you are unfamiliar with the .fits format, don't worry about 
+it, its a format typically used only by Astronomers).
+"""
+data_hdu_list = fits.open(f"{dataset_path}/data.fits")
+data = np.array(data_hdu_list[0].data)
 
-By storing all of our visualization in one package, it will make visualization of our model-fits simpler in
-later tutorials.
+noise_map_hdu_list = fits.open(f"{dataset_path}/noise_map.fits")
+noise_map = np.array(noise_map_hdu_list[0].data)
+
+# %%
+"""
+The shape of the data gives us its xvalues - the x coordinates we evaluate our model 1D Gaussian on.
+"""
+xvalues = np.arange(data.shape[0])
+print(xvalues)
+
+# %%
+"""
+Lets plot the data and noise-map we're going to fit.
 """
 
 # %%
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.plot import (
-    dataset_plots,
-)
+plt.plot(xvalues, data)
+plt.xlabel("x")
+plt.ylabel("Intensity")
+plt.show()
+plt.clf()
 
-dataset_plots.data(dataset=dataset)
-dataset_plots.noise_map(dataset=dataset)
+plt.plot(xvalues, noise_map)
+plt.xlabel("x")
+plt.ylabel("Intensity")
+plt.show()
+plt.clf()
 
 # %%
 """
 So, how do we actually go about fitting our Gaussian model to this data? First, we need to be able to generate
-an image of our 2D Gaussian model.
+an image of our 1D Gaussian model. As we did in tutorial 1, we define the Gaussian as a Python class with the format 
+required for PyAutoFit to use it as a model-component.
 """
 
 # %%
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.model import gaussian
+class Gaussian:
+    def __init__(
+        self,
+        centre=0.0,  # <- PyAutoFit recognises these constructor arguments
+        intensity=0.1,  # <- are the Gaussian's model parameters.
+        sigma=0.01,
+    ):
+        self.centre = centre
+        self.intensity = intensity
+        self.sigma = sigma
+
+    def line_from_xvalues(self, xvalues):
+        """
+        Calculate the intensity of the light profile on a line of Cartesian x coordinates.
+
+        The input xvalues are translated to a coordinate system centred on the Gaussian, using its centre.
+
+        Parameters
+        ----------
+        xvalues : ndarray
+            The x coordinates in the original reference frame of the data.
+        """
+        transformed_xvalues = np.subtract(xvalues, self.centre)
+        return np.multiply(
+            np.divide(self.intensity, self.sigma * np.sqrt(2.0 * np.pi)),
+            np.exp(-0.5 * np.square(np.divide(transformed_xvalues, self.sigma))),
+        )
+
 
 # %%
 """
-Checkout the file:
+We've extended the Gaussian class to have a method "line_from_xvalues". Given an input set of x coordinates
+this computes the intensity of the Gaussian at every point. We've already seen how the data contains the xvalues we 
+use, which are a 1D NumPy array spanning values 0 to 100.
 
-'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/src/model/gaussian.py'.
-
-Here, we've extended the Gaussian class to have a method "line_from_values". Given an input set of x coordinates
-this computes the intensity of the Gaussian at every point. Our data contains the xvalues we'll use, which are
-a 1D NumPy array spanning values 0 to 100.
-"""
-
-# %%
-print(dataset.xvalues)
-
-# %%
-"""
 If we pass these values to an instance of the Gaussian class, we can create a line of the gaussian's values.
 """
 
 # %%
-model = af.PriorModel(gaussian.Gaussian)
+model = af.PriorModel(Gaussian)
+model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=np.inf)
+model.intensity = af.UniformPrior(lower_limit=0.0, upper_limit=np.inf)
+model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=np.inf)
 
 gaussian = model.instance_from_vector(vector=[60.0, 20.0, 15.0])
 
-model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
+model_data = gaussian.line_from_xvalues(xvalues=xvalues)
 
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.plot import line_plots
-
-line_plots.line(xvalues=dataset.xvalues, line=model_data, ylabel="Model Data")
+plt.plot(xvalues, model_data)
+plt.xlabel("x")
+plt.ylabel("Intensity")
+plt.show()
+plt.clf()
 
 # %%
 """
 Different values of centre, intensity and sigma change the Gaussian's apperance - have a go at editing some of the
-values below.
+values above to see this behaviour.
 """
-
-# %%
-gaussian = model.instance_from_vector(vector=[50.0, 10.0, 5.0])
-model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
-line_plots.line(xvalues=dataset.xvalues, line=model_data, ylabel="Model Data")
 
 # %%
 """
 Okay, so lets recap. We've defined a model which is a 1D Gaussian and given a set of parameters for that model
-(x, I, sigma) we can create 'model_data' of the Gaussian. And, we have some data of a Gaussian we want to
-fit this model with. So how do we do that?
+(x, I, sigma) we can create 'model_data' of the Gaussian. And, we have some data of a 1D Gaussian we want to
+fit this model with, so as to determine the values of (x, I, sigma) from which it was created. So how do we do that?
 
 Simple, we take the image from our data and our model_image of the Gaussian and subtract the two to get a
 'residual-map'.
 """
 
 # %%
-residual_map = dataset.data - model_data
-line_plots.line(xvalues=dataset.xvalues, line=residual_map, ylabel="Residual Map")
+residual_map = data - model_data
+plt.plot(xvalues, model_data)
+plt.xlabel("x")
+plt.ylabel("Residuals")
+plt.show()
+plt.clf()
 
 # %%
 """
@@ -135,12 +169,12 @@ To account for noise, we take our residual-map and divide it by the noise map, t
 """
 
 # %%
-normalized_residual_map = residual_map / dataset.noise_map
-line_plots.line(
-    xvalues=dataset.xvalues,
-    line=normalized_residual_map,
-    ylabel="Normalized Residual Map",
-)
+normalized_residual_map = residual_map / noise_map
+plt.plot(xvalues, model_data)
+plt.xlabel("x")
+plt.ylabel("Normalized Residuals")
+plt.show()
+plt.clf()
 
 # %%
 """
@@ -149,12 +183,16 @@ in the normalized residual map. A value of -0.2 represents just as good of a fit
 to both be the same value.
 
 Thus, we next define a 'chi-squared map', which is the normalized residual-map squared. This makes negative and
-positive values both positive and thus defined on a common overall scale.
+positive values both positive and thus defines them on a common overall scale.
 """
 
 # %%
 chi_squared_map = (normalized_residual_map) ** 2
-line_plots.line(xvalues=dataset.xvalues, line=chi_squared_map, ylabel="Chi-Squared Map")
+plt.plot(xvalues, model_data)
+plt.xlabel("x")
+plt.ylabel("Chi-Squareds")
+plt.show()
+plt.clf()
 
 # %%
 """
@@ -170,8 +208,8 @@ print("Chi-squared = ", chi_squared)
 
 # %%
 """
-Thus, the lower our chi-squared, the fewer residuals in the fit between our model and the data and therefore the
-better our fit!
+The lower our chi-squared, the fewer residuals in the fit between our model and the data and therefore the better our 
+fit!
 
 From the chi-squared we can then define our final goodness-of-fit measure, the 'log_likelihood', which is the
 chi-squared value times -0.5.
@@ -184,80 +222,40 @@ print("Log Likelihood = ", log_likelihood)
 # %%
 """
 Why is the log likelihood the chi-squared times -0.5? Lets not worry about. This is simply the standard definition of a
-log_likelihood in statistics (it relates to the noise-properties of our data-set). For now, just accept that this is what
-a log likelihood is and if we want to fit a model to data our goal is to thus find the combination of model parameters
-that maximizes our log_likelihood.
+log_likelihood in statistics (it relates to the noise-properties of our data-set). For now, just accept that this is 
+what a log likelihood is and if we want to fit a model to data our goal is to thus find the combination of model 
+parameters that maximizes our log_likelihood.
 
 There is a second quantity that enters the log likelihood, called the 'noise-normalization'. This is the log sum of all
-noise values squared in our data-set (give the noise map doesn't change the noise_normalization is the same value for
-all models that we fit).
+noise values squared in our data (given the noise map is fixed, the noise_normalization retains the same value for
+all models that we fit. Nevertheless, it is good practise to include it in the log likelihood).
 """
 
 # %%
-noise_normalization = np.sum(np.log(2 * np.pi * dataset.noise_map ** 2.0))
+noise_normalization = np.sum(np.log(2 * np.pi * noise_map ** 2.0))
 
 # %%
 """
-Again, like the definition of a log likelihood, lets not worry about why a noise normalization is defined in this way or
-why its in our goodness-of-fit. Lets just accept for now that this is how it is in statistics.
+Again, like the definition of a log likelihood, lets not worry about why a noise normalization is defined in this way 
+or why its in our goodness-of-fit. Lets just accept for now that this is how it is in statistics.
 
 Thus, we now have the definition of a log likelihood that we'll use hereafter in all PyAutoFit tutorials.
 """
 
 # %%
-log_likelihood = -0.5 * chi_squared + noise_normalization
+log_likelihood = -0.5 * (chi_squared + noise_normalization)
 print("Log Likelihood = ", log_likelihood)
 
 # %%
 """
 If you are familiar with model-fitting, you'll have probably heard of terms like 'residuals', 'chi-squared' and
 'log_likelihood' before. These are the standard metrics by which a model-fit's quality is measured. They are used for
-model fitting in general, so not just when your data is 1D but when its a 2D image, 3D datacube)or something else
+model fitting in general, so not just when your data is 1D but when its a 2D image, 3D datacube or something else
 entirely!
 
 If you haven't performed model fitting before and these terms are new to you, make sure you are clear on exactly what
 they all mean as they are at the core of all model-fitting performed in PyAutoFit!
-
-It was a lot of code performing the fits above and creating our residuals, chi-squareds and likelihoods.
-
-From here on we'll a class to do this, which can be found in the file:
-#
-'autofit_workspace/howtofit/chapter_1_introduction/tutorial_2_model_fitting/fit/fit.py'
-
-We'll use a 'fit.py' module in all remaining tutorials - for a model-fitting problem its not surprising that we need
-a module specific to fitting!
 """
-
-# %%
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.fit import fit as f
-
-fit = f.DatasetFit(dataset=dataset, model_data=model_data)
-
-print("Fit: \n")
-print(fit)
-print("Model Data:\n")
-print(fit.model_data)
-print()
-print("Residual Map:\n")
-print(fit.residual_map)
-print()
-print("Chi-Squareds Map:\n")
-print(fit.chi_squared_map)
-print("Likelihood:")
-print(fit.log_likelihood)
-
-# %%
-"""
-In the plot module, we've created simple tools for plotting different components of a fit. Again, setting up our
-plotting in this way will make visualization of our model a lot more straight forward in future tutorials.
-"""
-
-# %%
-from howtofit.chapter_1_introduction.tutorial_2_model_fitting.src.plot import fit_plots
-
-fit_plots.residual_map(fit=fit)
-fit_plots.normalized_residual_map(fit=fit)
-fit_plots.chi_squared_map(fit=fit)
 
 # %%
 """
@@ -277,29 +275,78 @@ set of parameters near those values. We can then repeat this process, over and o
 
 For our Gaussian this works pretty well, below I've fitted 5 diferent Gaussian models and ended up landing on
 the best-fit model (the model I used to create the dataset in the first place!).
+
+For convenience, I've create functions which compute the chi-squared map and log likelihood of a model-fit, alongside a
+method to plot a line profile, residual map or chi-squared map.
 """
+
+
+def chi_squared_map_from_data_and_model_data(data, noise_map, model_data):
+    residual_map = data - model_data
+    normalized_residual_map = residual_map / noise_map
+    return (normalized_residual_map) ** 2
+
+
+def log_likelihood_from_data_and_model_data(data, noise_map, model_data):
+
+    chi_squared_map = chi_squared_map_from_data_and_model_data(
+        data=data, noise_map=noise_map, model_data=model_data
+    )
+    chi_squared = sum(chi_squared_map)
+    noise_normalization = np.sum(np.log(2 * np.pi * noise_map ** 2.0))
+    log_likelihood = -0.5 * (chi_squared + noise_normalization)
+
+    return log_likelihood
+
+
+def plot_line(xvalues, line, ylabel=None):
+
+    plt.plot(xvalues, line)
+    plt.xlabel("x")
+    plt.ylabel(ylabel)
+    plt.show()
+    plt.clf()
+
 
 # %%
 gaussian = model.instance_from_vector(vector=[50.0, 10.0, 5.0])
-model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
-fit = f.DatasetFit(dataset=dataset, model_data=model_data)
-fit_plots.chi_squared_map(fit=fit)
+model_data = gaussian.line_from_xvalues(xvalues=xvalues)
+chi_squared_map = chi_squared_map_from_data_and_model_data(
+    data=data, noise_map=noise_map, model_data=model_data
+)
+plot_line(xvalues=xvalues, line=chi_squared_map, ylabel="Chi-Squareds")
+
+log_likelihood = log_likelihood_from_data_and_model_data(
+    data=data, noise_map=noise_map, model_data=model_data
+)
 print("Likelihood:")
-print(fit.log_likelihood)
+print(log_likelihood)
 
 gaussian = model.instance_from_vector(vector=[50.0, 25.0, 5.0])
-model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
-fit = f.DatasetFit(dataset=dataset, model_data=model_data)
-fit_plots.chi_squared_map(fit=fit)
+model_data = gaussian.line_from_xvalues(xvalues=xvalues)
+chi_squared_map = chi_squared_map_from_data_and_model_data(
+    data=data, noise_map=noise_map, model_data=model_data
+)
+plot_line(xvalues=xvalues, line=chi_squared_map, ylabel="Chi-Squareds")
+
+log_likelihood = log_likelihood_from_data_and_model_data(
+    data=data, noise_map=noise_map, model_data=model_data
+)
 print("Likelihood:")
-print(fit.log_likelihood)
+print(log_likelihood)
 
 gaussian = model.instance_from_vector(vector=[50.0, 25.0, 10.0])
-model_data = gaussian.line_from_xvalues(xvalues=dataset.xvalues)
-fit = f.DatasetFit(dataset=dataset, model_data=model_data)
-fit_plots.chi_squared_map(fit=fit)
+model_data = gaussian.line_from_xvalues(xvalues=xvalues)
+chi_squared_map = chi_squared_map_from_data_and_model_data(
+    data=data, noise_map=noise_map, model_data=model_data
+)
+plot_line(xvalues=xvalues, line=chi_squared_map, ylabel="Chi-Squareds")
+
+log_likelihood = log_likelihood_from_data_and_model_data(
+    data=data, noise_map=noise_map, model_data=model_data
+)
 print("Likelihood:")
-print(fit.log_likelihood)
+print(log_likelihood)
 
 # %%
 """
@@ -314,26 +361,9 @@ log_likelihood, and how could you even be sure they ware the best-fit models? Ma
 provide an even better fit?
 
 Of course, there is a much better way to perform model-fitting, and in the next tutorial we'll take you through how
-to do such fitting in PyAutoFit, using whats called a 'non-linear search'.
+to do such fitting in PyAutoFit, using a 'non-linear search'.
 
-
-## Datasets and Fits ###
-
-In this tutorial, we relied heavily on PyAutoArray to take care of our data-set. We had a 'dataset.py' module which
-contained the data, but it inherited from PyAutoArray and thus handled all visualization for us. We're going to keep
-using PyAutoArray to handle our data, but I will make it explcit in templates where I ancitipate where you'll need to
-change code to to make it appropriate for data specific to your model-fitting problem. Afterall, there is no
-general template we can give you for any data-set.
-
-So, just bare in mind from here on, whenever we use PyAutoArray to load dat or visualize it, it'll be on
-you to do that yourself in you code!
-
-To perform fits, we made a new module, 'fit.py'. This module is written in a general way, and it should be nothing
-more than a copy and paste job for you to be able to reuse it for your model fitting problem, regardless of the
-structure of your data! In tutorial 4, we'll extend 'fit.py' to include data masking.
-
-
-###Your Model ###
+### Your Model ###
 
 To end, its worth quickly thinking about the model you ultimately want to fit with PyAutoFit. In this example,
 we extended the Gaussian class to contain the function we needed to generate an image of the Gaussian and thus
@@ -344,7 +374,7 @@ combine or there is an inter-dependency between models?
 PyAutoFit provides a lot of flexibility in how you ultimate use your model instances, so whatever your problem you
 should find that it is straight forward to find a solution. But, whatever you need to do at its core your modeling
 problem will break down into the tasks we did in this tutorial:
-#
+
 1) Use your model to create some model data.
 2) Subtract it from the data to create residuals.
 3) Use these residuals in conjunction with your noise map to define a log likelihood.
