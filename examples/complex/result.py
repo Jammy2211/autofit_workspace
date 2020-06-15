@@ -191,7 +191,7 @@ print("Sigma = ", max_log_likelihood_instance.exponential.rate, "\n")
 
 # %%
 """
-For our example problem of fitting a 1D Gaussian + Exponential line profile, this makes it straight forward to plot 
+For our example problem of fitting a 1D Gaussian + Exponential profile, this makes it straight forward to plot 
 the maximum likelihood model:
 """
 
@@ -208,9 +208,9 @@ plt.plot(range(data.shape[0]), data)
 plt.plot(range(data.shape[0]), model_data)
 plt.plot(range(data.shape[0]), model_gaussian, "--")
 plt.plot(range(data.shape[0]), model_exponential, "--")
-plt.title("Illustrative toy model fit to 1D Gaussian + Exponential line profile data.")
-plt.xlabel("x values of line profile")
-plt.ylabel("Line profile intensity")
+plt.title("Illustrative model fit to 1D Gaussian + Exponential profile data.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile intensity")
 plt.show()
 plt.close()
 

@@ -277,7 +277,7 @@ For our Gaussian this works pretty well, below I've fitted 5 diferent Gaussian m
 the best-fit model (the model I used to create the dataset in the first place!).
 
 For convenience, I've create functions which compute the chi-squared map and log likelihood of a model-fit, alongside a
-method to plot a line profile, residual map or chi-squared map.
+method to plot a profile, residual map or chi-squared map.
 """
 
 

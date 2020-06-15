@@ -22,12 +22,12 @@ class Analysis(af.Analysis):
 
     def log_likelihood_function(self, instance):
         """
-        Determine the log likelihood of a fit of multiple line profiles to the dataset.
+        Determine the log likelihood of a fit of multiple profiles to the dataset.
 
         Parameters
         ----------
         instance : af.CollectionPriorModel
-            The model instances of the line profiles.
+            The model instances of the profiles.
 
         Returnsn
         -------
@@ -49,10 +49,10 @@ class Analysis(af.Analysis):
         # print("Intensity = ", instance.exponential.intensity)
         # print("Rate = ", instance.exponential.rate)
 
-        # Get the range of x-values the data is defined on, to evaluate the model of the line profiles.
+        # Get the range of x-values the data is defined on, to evaluate the model of the profiles.
         xvalues = np.arange(self.data.shape[0])
 
-        # The simplest way to create the summed line profile is to add the line profile of each model component. If we
+        # The simplest way to create the summed profile is to add the profile of each model component. If we
         # know we are going to fit a Gaussian + Exponential we can do the following:
 
         # model_data_gaussian = instance.gaussian.line_from_xvalues(xvalues=xvalues)
@@ -61,12 +61,12 @@ class Analysis(af.Analysis):
 
         # However, this does not work if we change our model components. However, the *instance* variable is a list of
         # our model components. We can iterate over this list, calling their line_from_xvalues and summing the result
-        # to compute the summed line profile of any model.
+        # to compute the summed profile of any model.
 
-        # Use these xvalues to create model data of our line profiles.
+        # Use these xvalues to create model data of our profiles.
         model_data = sum([line.line_from_xvalues(xvalues=xvalues) for line in instance])
 
-        # Fit the model line profile data to the observed data, computing the residuals and chi-squareds.
+        # Fit the model profile data to the observed data, computing the residuals and chi-squareds.
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
         log_likelihood = -0.5 * sum(chi_squared_map)

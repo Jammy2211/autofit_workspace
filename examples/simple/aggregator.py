@@ -5,7 +5,7 @@ samples, the best-fit model and parameter estimates and errors. If you are fitti
 object suffices, but what if you are fitting the model to many datasets? How do you analyse, interpret and combine the
 results?
 
-Lets extend our example of fitting a 1D Gaussian line profile and fit 3 independent datasets containing 1D Gaussians,
+Lets extend our example of fitting a 1D Gaussian profile and fit 3 independent datasets containing 1D Gaussians,
 such that the results of every *non-linear search* are in an ordered path structure on our hard-disk. We'll then use
 the *Aggregator* to load the results of all 3 *non-linear searches*:
 """

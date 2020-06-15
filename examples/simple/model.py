@@ -15,7 +15,7 @@ class Gaussian:
         intensity=0.1,  # <- are the Gaussian's model parameters.
         sigma=0.01,
     ):
-        """Represents a 1D Gaussian line profile, which may be treated as a model-component of PyAutoFit the
+        """Represents a 1D Gaussian profile, which may be treated as a model-component of PyAutoFit the
         parameters of which are fitted for by a non-linear search.
 
         Parameters
@@ -23,7 +23,7 @@ class Gaussian:
         centre : float
             The x coordinate of the profile centre.
         intensity : float
-            Overall intensity normalisation of the Gaussian line profile.
+            Overall intensity normalisation of the Gaussian profile.
         sigma : float
             The sigma value controlling the size of the Gaussian.
         """
@@ -34,7 +34,7 @@ class Gaussian:
 
     def line_from_xvalues(self, xvalues):
         """
-        Calculate the intensity of the line profile on a line of Cartesian x coordinates.
+        Calculate the intensity of the profile on a line of Cartesian x coordinates.
 
         The input xvalues are translated to a coordinate system centred on the Gaussian, using its centre.
 

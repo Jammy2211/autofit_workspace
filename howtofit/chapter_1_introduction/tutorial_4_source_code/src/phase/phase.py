@@ -33,7 +33,7 @@ class Phase(af.AbstractPhase):
         self,
         paths,
         gaussian,  # <- The user inputs a model -> gaussian.py -> Gaussian class here.
-        non_linear_class=af.Emcee,  # <- This specifies the default non-linear search used by the phase.
+        search=af.Emcee,  # <- This specifies the default non-linear search used by the phase.
     ):
         """
         A phase which fits a Gaussian model using a non-linear search.
@@ -44,10 +44,10 @@ class Phase(af.AbstractPhase):
             Handles the output directory structure.
         gaussian : model.gaussians.Gaussian
             The model component Gaussian class fitted by this phase.
-        non_linear_class: class
+        search: class
             The class of a non_linear search
         """
-        super().__init__(paths=paths, non_linear_class=non_linear_class)
+        super().__init__(paths=paths, search=search)
         self.gaussian = gaussian
 
     def run(self, dataset: Dataset):

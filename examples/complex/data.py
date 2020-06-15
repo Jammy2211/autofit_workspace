@@ -6,7 +6,7 @@ import numpy as np
 
 # %%
 """
-This script simulates the 1D Gaussians and Exponential line profile datasets used throughout the example scripts.
+This script simulates the 1D Gaussians and Exponential profile datasets used throughout the example scripts.
 """
 
 # %%
@@ -85,7 +85,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian and Exponential model instances at every xvalues to create their model line profiles and add 
+Evaluate this Gaussian and Exponential model instances at every xvalues to create their model profiles and add 
 them together.
 """
 
@@ -96,7 +96,7 @@ model_line = gaussian.line_from_xvalues(
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%

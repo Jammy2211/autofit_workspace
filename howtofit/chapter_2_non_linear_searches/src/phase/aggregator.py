@@ -54,7 +54,7 @@ def masked_dataset_from_agg_obj(agg_obj):
 
 
 def model_data_generator_from_aggregator(aggregator):
-    """Compute a generator of the model data arrays of the 1D line profile models from an input aggregator, which
+    """Compute a generator of the model data arrays of the 1D profile models from an input aggregator, which
     generates a list of 1D ndarrays every set of results loaded in the aggregator.
 
     This is performed by mapping the *model_data_from_agg_obj* with the aggregator, which sets up each model data array

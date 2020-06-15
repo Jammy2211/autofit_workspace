@@ -159,6 +159,7 @@ dynesty = af.DynestyStatic(
     max_move=100,
     iterations_per_update=500,
     number_of_cores=1,
+    paths=af.Paths(folders=["examples", "complex"]),
 )
 
 # %%
@@ -193,9 +194,9 @@ plt.plot(range(data.shape[0]), data)
 plt.plot(range(data.shape[0]), model_data)
 plt.plot(range(data.shape[0]), model_gaussian, "--")
 plt.plot(range(data.shape[0]), model_exponential, "--")
-plt.title("Illustrative toy model fit to 1D Gaussian + Exponential line profile data.")
-plt.xlabel("x values of line profile")
-plt.ylabel("Line profile intensity")
+plt.title("Illustrative model fit to 1D Gaussian + Exponential profile data.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile intensity")
 plt.show()
 plt.close()
 
@@ -237,6 +238,7 @@ emcee = af.Emcee(
     auto_correlation_required_length=50,
     auto_correlation_change_threshold=0.01,
     number_of_cores=1,
+    paths=af.Paths(folders=["examples", "complex"]),
 )
 
 # %%
@@ -263,9 +265,9 @@ plt.plot(range(data.shape[0]), data)
 plt.plot(range(data.shape[0]), model_data)
 plt.plot(range(data.shape[0]), model_gaussian, "--")
 plt.plot(range(data.shape[0]), model_exponential, "--")
-plt.title("Illustrative toy model fit to 1D Gaussian + Exponential line profile data.")
-plt.xlabel("x values of line profile")
-plt.ylabel("Line profile intensity")
+plt.title("Illustrative model fit to 1D Gaussian + Exponential profile data.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile intensity")
 plt.savefig(f"{workspace_path}/toy_model_fit_x2.png", bbox_inches="tight")
 plt.show()
 plt.close()

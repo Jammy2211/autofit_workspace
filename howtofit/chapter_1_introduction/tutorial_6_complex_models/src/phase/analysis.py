@@ -70,7 +70,7 @@ class Analysis(af.Analysis):
 
         # A CollectionPriorModel allows us to name our model components whatever we want!
 
-        # In this tutorial, we want our 'fit' function to fit the data with a line profile which is the summed profile
+        # In this tutorial, we want our 'fit' function to fit the data with a profile which is the summed profile
         # of all individual profiles in the model. Look at 'model_data_from_instance' to see how we do this.
 
         model_data = self.model_data_from_instance(instance=instance)
@@ -79,7 +79,7 @@ class Analysis(af.Analysis):
 
     def model_data_from_instance(self, instance):
 
-        # To create the summed line profile of all individual profiles in an instance, we can use a list comprehension
+        # To create the summed profile of all individual profiles in an instance, we can use a list comprehension
         # to iterate over all profiles in the instance.
         return sum(
             [
@@ -105,7 +105,7 @@ class Analysis(af.Analysis):
 
         # It is worth noting here why we create specific methods for creating the model_data and fit in an analysis.
         # By doing so, the code in our visualize function (and also in the 'result.py' module) do not need changing
-        # even though we are now using a model with more components, requiring to sum their individual line profiles.
+        # even though we are now using a model with more components, requiring to sum their individual profiles.
 
         model_data = self.model_data_from_instance(instance=instance)
         fit = self.fit_from_model_data(model_data=model_data)

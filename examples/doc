@@ -1,7 +1,7 @@
 Welcome to the PyAutoFit examples!
 
 On the PyAutoFit GitHub page (https://github.com/rhayes777/PyAutoFit) and readthedocs () you'll have seen us illustrate
-the PyAutoFit API using the example problem of fitting 1D gaussian line profiles to noisy 1D data of. In this examples
+the PyAutoFit API using the example problem of fitting 1D gaussian profiles to noisy 1D data of. In this examples
 folder, you'll find Python scripts and Jupter Notebooks illustrating these examples, which you can run to experiment
 with PyAutoFit's behaviour and adapt as templates for your own model-fitting software.
 

@@ -125,7 +125,7 @@ A description of the general.ini config.
 
     pixels : int
 
-        The shape_2d of the grid inside the bounding box from which the lensing quantitiy is computed (e.g. it is shape
+        The shape of the grid inside the bounding box from which the lensing quantitiy is computed (e.g. it is shape
         (pixels, pixels)).
 
 [inversion]

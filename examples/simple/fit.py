@@ -131,6 +131,7 @@ dynesty = af.DynestyStatic(
     max_move=100,
     iterations_per_update=500,
     number_of_cores=1,
+    paths=af.Paths(folders=["examples", "simple"]),
 )
 
 # %%
@@ -201,6 +202,7 @@ emcee = af.Emcee(
     auto_correlation_change_threshold=0.01,
     iterations_per_update=500,
     number_of_cores=1,
+    paths=af.Paths(folders=["examples", "simple"]),
 )
 result = emcee.fit(model=model, analysis=analysis)
 
@@ -219,10 +221,9 @@ model_data = result.max_log_likelihood_instance.line_from_xvalues(
 
 plt.plot(range(data.shape[0]), data)
 plt.plot(range(data.shape[0]), model_data)
-plt.title("Illustrative toy model fit to 1D Gaussian line profile data.")
-plt.xlabel("x values of line profile")
-plt.ylabel("Line profile intensity")
-plt.savefig(f"{workspace_path}/toy_model_fit.png", bbox_inches="tight")
+plt.title("Illustrative model fit to 1D Gaussian profile data.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile intensity")
 plt.show()
 plt.close()
 
@@ -232,7 +233,7 @@ plt.close()
 ###### PARTICLE SWARM ######
 ############################
 
-PyAutoFit also supports a number of searchs, which seem to find the global (or local) maxima likelihood solution.
+PyAutoFit also supports a number of searches, which seem to find the global (or local) maxima likelihood solution.
 Unlike nested samplers and MCMC algorithms, they do not extensive map out parameter space. This means they can find the
 best solution a lot faster than these algorithms, but they do not properly quantify the errors on each parameter.
 
@@ -259,6 +260,7 @@ pso = af.PySwarmsGlobal(
     initialize_ball_lower_limit=0.49,
     initialize_ball_upper_limit=0.51,
     number_of_cores=1,
+    paths=af.Paths(folders=["examples", "simple"]),
 )
 result = pso.fit(model=model, analysis=analysis)
 
@@ -276,10 +278,9 @@ model_data = result.max_log_likelihood_instance.line_from_xvalues(
 
 plt.plot(range(data.shape[0]), data)
 plt.plot(range(data.shape[0]), model_data)
-plt.title("Illustrative toy model fit to 1D Gaussian line profile data.")
-plt.xlabel("x values of line profile")
-plt.ylabel("Line profile intensity")
-plt.savefig(f"{workspace_path}/toy_model_fit.png", bbox_inches="tight")
+plt.title("Illustrative model fit to 1D Gaussian profile data.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile intensity")
 plt.show()
 plt.close()
 

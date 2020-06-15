@@ -2,7 +2,7 @@
 """
 __Galaxy Morphology__
 
-In this chapter, we illustrated PyAutoFit with the same model through - fitting 1D line profiles consisting primarily
+In this chapter, we illustrated PyAutoFit with the same model through - fitting 1D profiles consisting primarily
 of Gaussians, but sometimes Exponentials.
 #
 For this, the final tutorial, I've created a template project of based around a real-world modeling problem from

@@ -33,10 +33,10 @@ class Phase(af.AbstractPhase):
         profiles,
         data_trim_left=None,
         data_trim_right=None,
-        non_linear_class=af.Emcee,
+        search=af.Emcee,
     ):
         """
-        A phase which fits a model composed of multiple line profiles (Gaussian, Exponential) using a non-linear search.
+        A phase which fits a model composed of multiple profiles (Gaussian, Exponential) using a non-linear search.
 
         Parameters
         ----------
@@ -44,7 +44,7 @@ class Phase(af.AbstractPhase):
             Handles the output directory structure.
         profiles : [profiles.Profile]
             The model components (e.g. Gaussian, Exponenial) fitted by this phase.
-        non_linear_class: class
+        search: class
             The class of a non_linear search
         data_trim_left : int or None
             The number of pixels by which the data is trimmed from the left-hand side.
@@ -57,7 +57,7 @@ class Phase(af.AbstractPhase):
         )
         paths.tag = phase_tag  # The phase_tag must be manually added to the phase.
 
-        super().__init__(paths=paths, non_linear_class=non_linear_class)
+        super().__init__(paths=paths, search=search)
 
         self.profiles = profiles
 

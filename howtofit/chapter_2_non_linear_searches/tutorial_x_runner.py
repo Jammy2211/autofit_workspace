@@ -8,7 +8,6 @@ __Pipelines__
 
 # %%
 from autoconf import conf
-import autofit as af
 import numpy as np
 
 from howtofit.chapter_2_non_linear_searches.src.dataset import dataset as ds
@@ -51,18 +50,16 @@ Lets use a plot function to plot our data.
 Note how - describe its x2 peaks.
 """
 
-from howtofit.chapter_1_introduction.tutorial_4_source_code.src.plot import (
-    dataset_plots,
-)
+from howtofit.chapter_2_non_linear_searches.src.plot import dataset_plots
 
 dataset_plots.data(dataset=dataset)
 
 mask = np.full(fill_value=False, shape=dataset.data.shape)
 
 print(
-    "Emcee has begun running - checkout the autofit_workspace/howtofit/chapter_1_introduction/output/phase_t6"
+    "Pipeline has begun running - checkout the autofit_workspace/howtofit/chapter_2_non_linear_searches/output/pipeline__x2_gaussians"
     "folder for live output of the results."
-    "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
+    "This Jupyter notebook cell with progress once the Pipeline has completed - this could take a few minutes!"
 )
 
 from howtofit.chapter_2_non_linear_searches import tutoial_x_pipeline

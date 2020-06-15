@@ -18,14 +18,14 @@ import numpy as np
 
 class Profile:
     def __init__(self, centre=0.0, intensity=0.01):
-        """Represents an Abstract 1D line profile.
+        """Represents an Abstract 1D profile.
 
         Parameters
         ----------
         centre : float
             The x coordinate of the profile centre.
         intensity : float
-            Overall intensity normalisation of the line profile.
+            Overall intensity normalisation of the profile.
         """
 
         # Every profile class we add below (e.g. Gaussian, Exponential) will call this __init__ method of the Profile
@@ -45,7 +45,7 @@ class Gaussian(Profile):
         intensity=0.1,  # <- are the Gaussian's model parameters.
         sigma=0.01,
     ):
-        """Represents a 1D Gaussian line profile, which may be treated as a model-component of PyAutoFit the
+        """Represents a 1D Gaussian profile, which may be treated as a model-component of PyAutoFit the
         parameters of which are fitted for by a non-linear search.
 
         Parameters
@@ -53,7 +53,7 @@ class Gaussian(Profile):
         centre : float
             The x coordinate of the profile centre.
         intensity : float
-            Overall intensity normalisation of the Gaussian line profile.
+            Overall intensity normalisation of the Gaussian profile.
         sigma : float
             The sigma value controlling the size of the Gaussian.
         """
@@ -72,7 +72,7 @@ class Gaussian(Profile):
 
     def line_from_xvalues(self, xvalues):
         """
-        Calculate the intensity of the line profile on a line of Cartesian x coordinates.
+        Calculate the intensity of the profile on a line of Cartesian x coordinates.
 
         The input xvalues are translated to a coordinate system centred on the Gaussian, using its centre.
 
@@ -95,7 +95,7 @@ class Exponential(Profile):
         intensity=0.1,  # <- parameters of the Gaussian.
         rate=0.01,
     ):
-        """Represents a 1D Exponential line profile, which may be treated as a model-component of PyAutoFit the
+        """Represents a 1D Exponential profile, which may be treated as a model-component of PyAutoFit the
         parameters of which are fitted for by a non-linear search.
 
         Parameters
@@ -103,7 +103,7 @@ class Exponential(Profile):
         centre : float
             The x coordinate of the profile centre.
         intensity : float
-            Overall intensity normalisation of the Gaussian line profile.
+            Overall intensity normalisation of the Gaussian profile.
         ratw : float
             The decay rate controlling has fast the Exponential declines.
         """
@@ -114,7 +114,7 @@ class Exponential(Profile):
 
     def line_from_xvalues(self, xvalues):
         """
-        Calculate the intensity of the line profile on a line of Cartesian x coordinates.
+        Calculate the intensity of the profile on a line of Cartesian x coordinates.
 
         The input xvalues are translated to a coordinate system centred on the Exponential, using its centre.
 

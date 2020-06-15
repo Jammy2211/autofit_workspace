@@ -9,10 +9,10 @@ To begin, you should check out the module 'tutorial_6_complex_models/model/profi
 module was called 'gaussian.py' and it contained only the Gaussian class we fitted to data. The module now includes
 a second profile, 'Exponential', which like the Gaussian class is a model-component that can be fitted to data.
 
-Up to now, our data has always been generated using a single Gaussian line profile. Thus, we have only needed to fit
+Up to now, our data has always been generated using a single Gaussian profile. Thus, we have only needed to fit
 it with a single Gaussian. In this tutorial, our dataset is now a superpositions of multiple profiles (e.g a
 Gaussians + Exponential). The models we compose and fit are therefore composed of multiple profiles, such that when we
-generate the model-data we generate it as the sum of all individual line profiles in our model.
+generate the model-data we generate it as the sum of all individual profiles in our model.
 """
 
 # %%
@@ -130,8 +130,8 @@ print("sigma (Exponential) = ", instance.rich.rate)
 """
 Now we can create a model composed of multiple components, lets fit it to a dataset. To do this, we updated this 
 tutorial's phase package, spefically its 'Analysis' class such that it creates model data as a super position of all of 
-the model's individual line profiles. For example, in the model above, the model data is the sum of the Gaussian's 
-individual line profile and Exponential's individual line profile.
+the model's individual profiles. For example, in the model above, the model data is the sum of the Gaussian's 
+individual profile and Exponential's individual profile.
 
 Checkout 'phase.py' and 'analysis.py' now, for a description of how this has been implemented.
 
@@ -287,7 +287,7 @@ And with that, we are complete. In this tutorial, we learned how to compose comp
 fitting problem:
 
 Are there many different model components you may wish to define and fit?
-Is your model-data the super position of many different model components, like the line profiles in this tutorial?
+Is your model-data the super position of many different model components, like the profiles in this tutorial?
 
 In this tutorial, all components of our model did the same thing - represent a 'line' of data. In your model, you may
 have model components that represent different parts of your model, which need to be combined in more complicated ways

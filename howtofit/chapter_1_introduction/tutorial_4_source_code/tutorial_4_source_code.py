@@ -179,7 +179,7 @@ from howtofit.chapter_1_introduction.tutorial_4_source_code.src.phase import pha
 
 # %%
 phase = ph.Phase(
-    phase_name="phase_t4", gaussian=af.PriorModel(g.Gaussian), non_linear_class=af.Emcee
+    phase_name="phase_t4", gaussian=af.PriorModel(g.Gaussian), search=af.Emcee
 )
 
 print(

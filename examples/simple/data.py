@@ -8,7 +8,7 @@ import numpy as np
 """
 __Example: Data__
 
-This script simulates the 1D Gaussians line profile datasets used throughout the example scripts.
+This script simulates the 1D Gaussians profile datasets used throughout the example scripts.
 """
 
 # %%
@@ -86,7 +86,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian model instance at every xvalues to create its model line profile.
+Evaluate this Gaussian model instance at every xvalues to create its model profile.
 """
 
 # %%
@@ -94,7 +94,7 @@ model_line = gaussian.line_from_xvalues(xvalues=xvalues)
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -154,7 +154,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian model instance at every xvalues to create its model line profile.
+Evaluate this Gaussian model instance at every xvalues to create its model profile.
 """
 
 # %%
@@ -162,7 +162,7 @@ model_line = gaussian.line_from_xvalues(xvalues=xvalues)
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -222,7 +222,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian model instance at every xvalues to create its model line profile.
+Evaluate this Gaussian model instance at every xvalues to create its model profile.
 """
 
 # %%
@@ -230,7 +230,7 @@ model_line = gaussian.line_from_xvalues(xvalues=xvalues)
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -290,7 +290,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian model instance at every xvalues to create its model line profile.
+Evaluate this Gaussian model instance at every xvalues to create its model profile.
 """
 
 # %%
@@ -298,7 +298,7 @@ model_line = gaussian.line_from_xvalues(xvalues=xvalues)
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 signal_to_noise_ratio = 25.0

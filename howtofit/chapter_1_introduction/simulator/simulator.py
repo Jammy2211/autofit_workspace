@@ -10,7 +10,7 @@ import numpy as np
 # %%
 """
 ___Simulator___
-This script simulates the 1D Gaussians line profile datasets used throughout chapter 1.
+This script simulates the 1D Gaussians profile datasets used throughout chapter 1.
 """
 
 
@@ -88,7 +88,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian model instance at every xvalues to create its model line profile.
+Evaluate this Gaussian model instance at every xvalues to create its model profile.
 """
 
 # %%
@@ -96,7 +96,7 @@ model_line = gaussian.line_from_xvalues(xvalues=xvalues)
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -157,8 +157,8 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate the Gaussian and Exponential model instances at every xvalues to create their model line profile and sum
-them together to create the overall model line profile.
+Evaluate the Gaussian and Exponential model instances at every xvalues to create their model profile and sum
+them together to create the overall model profile.
 """
 
 # %%
@@ -168,7 +168,7 @@ model_line = gaussian.line_from_xvalues(
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -231,7 +231,7 @@ xvalues = np.arange(pixels)
 # %%
 """
 Evaluate both Gaussian model instances and Exponential model instance at every xvalues to create their model line
-profiles and sum them together to create the overall model line profile.
+profiles and sum them together to create the overall model profile.
 """
 
 # %%
@@ -243,7 +243,7 @@ model_line = (
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -313,8 +313,8 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate all three Gaussian model instances at every xvalues to create their model line profiles and sum them
-together to create the overall model line profile.
+Evaluate all three Gaussian model instances at every xvalues to create their model profiles and sum them
+together to create the overall model profile.
 """
 
 # %%
@@ -326,7 +326,7 @@ model_line = (
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -386,7 +386,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian model instance at every xvalues to create its model line profile.
+Evaluate this Gaussian model instance at every xvalues to create its model profile.
 """
 
 # %%
@@ -394,7 +394,7 @@ model_line = gaussian.line_from_xvalues(xvalues=xvalues)
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -454,7 +454,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian model instance at every xvalues to create its model line profile.
+Evaluate this Gaussian model instance at every xvalues to create its model profile.
 """
 
 # %%
@@ -462,7 +462,7 @@ model_line = gaussian.line_from_xvalues(xvalues=xvalues)
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%
@@ -522,7 +522,7 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate this Gaussian model instance at every xvalues to create its model line profile.
+Evaluate this Gaussian model instance at every xvalues to create its model profile.
 """
 
 # %%
@@ -530,7 +530,7 @@ model_line = gaussian.line_from_xvalues(xvalues=xvalues)
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 signal_to_noise_ratio = 25.0

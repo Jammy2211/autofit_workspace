@@ -21,7 +21,7 @@ class Phase(af.AbstractPhase):
     Result = Result
 
     @af.convert_paths
-    def __init__(self, paths, gaussian, non_linear_class=af.Emcee):
+    def __init__(self, paths, gaussian, search=af.Emcee):
         """
         A phase which fits a Gaussian model using a non-linear search.
 
@@ -31,11 +31,11 @@ class Phase(af.AbstractPhase):
             Handles the output directory structure.
         gaussian : gaussians.Gaussian
             The model component Gaussian class fitted by this phase.
-        non_linear_class: class
+        search: class
             The class of a non_linear search
         """
 
-        super().__init__(paths=paths, non_linear_class=non_linear_class)
+        super().__init__(paths=paths, search=search)
 
         self.gaussian = gaussian
 

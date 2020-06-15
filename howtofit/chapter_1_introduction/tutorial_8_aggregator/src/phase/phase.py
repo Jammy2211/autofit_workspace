@@ -11,7 +11,7 @@ from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.phase.analysis im
 from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.phase.meta_dataset import (
     MetaDataset,
 )
-from howtofit.chapter_1_introduction.tutorial_7_phase_customization.src.phase.settings import (
+from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.phase.settings import (
     PhaseSettings,
 )
 
@@ -26,11 +26,9 @@ class Phase(af.AbstractPhase):
     Result = Result
 
     @af.convert_paths
-    def __init__(
-        self, paths, *, profiles, settings=PhaseSettings(), non_linear_class=af.Emcee
-    ):
+    def __init__(self, paths, *, profiles, settings=PhaseSettings(), search=af.Emcee):
         """
-        A phase which fits a model composed of multiple line profiles (Gaussian, Exponential) using a non-linear search.
+        A phase which fits a model composed of multiple profiles (Gaussian, Exponential) using a non-linear search.
 
         Parameters
         ----------
@@ -38,7 +36,7 @@ class Phase(af.AbstractPhase):
             Handles the output directory structure.
         profiles : [profiles.Profile]
             The model components (e.g. Gaussian, Exponenial) fitted by this phase.
-        non_linear_class: class
+        search: class
             The class of a non_linear search
         data_trim_left : int or None
             The number of pixels by which the data is trimmed from the left-hand side.
@@ -48,7 +46,7 @@ class Phase(af.AbstractPhase):
 
         paths.tag = settings.tag
 
-        super().__init__(paths=paths, non_linear_class=non_linear_class)
+        super().__init__(paths=paths, search=search)
 
         self.profiles = profiles
 
@@ -84,7 +82,7 @@ class Phase(af.AbstractPhase):
         self.save_dataset(dataset=dataset)
         self.save_mask(mask=mask)
         self.save_meta_dataset(meta_dataset=self.meta_dataset)
-        # This saves the search information of the phase, meaning that we can use the non_linear_class instance
+        # This saves the search information of the phase, meaning that we can use the search instance
         # (e.g. Emcee) to interpret our results in the aggregator.
 
         analysis = self.make_analysis(dataset=dataset, mask=mask)

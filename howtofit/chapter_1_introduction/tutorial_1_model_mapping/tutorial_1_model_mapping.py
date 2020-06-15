@@ -30,7 +30,7 @@ Lets setup the config files for this tutorial. We'll cover what configs do as we
 """
 
 # %%
-af.conf.instance = af.conf.Config(config_path=f"{chapter_path}//config")
+conf.instance = conf.Config(config_path=f"{chapter_path}//config")
 
 # %%
 """

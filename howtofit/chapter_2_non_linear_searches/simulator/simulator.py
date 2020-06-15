@@ -10,7 +10,7 @@ import numpy as np
 # %%
 """
 ___Simulator___
-This script simulates the 1D Gaussians line profile datasets used throughout chapter 1.
+This script simulates the 1D Gaussians profile datasets used throughout chapter 1.
 """
 
 
@@ -71,8 +71,8 @@ Create the model instances of the two Gaussians.
 """
 
 # %%
-gaussian_0 = profiles.Gaussian(centre=25.0, intensity=30.0, sigma=3.0)
-gaussian_1 = profiles.Gaussian(centre=75.0, intensity=30.0, sigma=3.0)
+gaussian_0 = profiles.Gaussian(centre=25.0, intensity=50.0, sigma=12.5)
+gaussian_1 = profiles.Gaussian(centre=75.0, intensity=50.0, sigma=12.5)
 
 # %%
 """
@@ -86,8 +86,8 @@ xvalues = np.arange(pixels)
 
 # %%
 """
-Evaluate all three Gaussian model instances at every xvalues to create their model line profiles and sum them
-together to create the overall model line profile.
+Evaluate all three Gaussian model instances at every xvalues to create their model profiles and sum them
+together to create the overall model profile.
 """
 
 # %%
@@ -97,7 +97,7 @@ model_line = gaussian_0.line_from_xvalues(
 
 # %%
 """
-Determine the noise (at a specified signal to noise level) in every pixel of our model line profile.
+Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
 """
 
 # %%

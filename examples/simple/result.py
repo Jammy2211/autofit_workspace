@@ -241,7 +241,7 @@ print("Sigma = ", max_log_likelihood_instance.sigma, "\n")
 
 # %%
 """
-For our example problem of fitting a 1D Gaussian line profile, this makes it straight forward to plot the maximum
+For our example problem of fitting a 1D Gaussian profile, this makes it straight forward to plot the maximum
 likelihood model:
 """
 
@@ -252,9 +252,9 @@ model_data = samples.max_log_likelihood_instance.line_from_xvalues(
 
 plt.plot(range(data.shape[0]), data)
 plt.plot(range(data.shape[0]), model_data)
-plt.title("Illustrative toy model fit to 1D Gaussian line profile data.")
-plt.xlabel("x values of line profile")
-plt.ylabel("Line profile intensity")
+plt.title("Illustrative model fit to 1D Gaussian profile data.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile intensity")
 plt.show()
 plt.close()
 
@@ -299,7 +299,7 @@ part of its *samples* property! For projects which use **PyAutoFit**'s phase API
 *Results* object can be extended to include model-specific results.
 
 For example, we may extend the results of our 1D Gaussian example to include properties containing the maximum
-log likelihood of the summed model data and for every individual line profile in the model.
+log likelihood of the summed model data and for every individual profile in the model.
 
 (The commented out functions below are llustrative of the API we can create, but do not work in this example given we 
 are not using the phase API.)

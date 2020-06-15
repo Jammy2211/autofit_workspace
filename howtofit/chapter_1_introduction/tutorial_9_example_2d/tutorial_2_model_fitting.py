@@ -10,7 +10,7 @@ import numpy as np
 chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction/"
 
 # These setup the configs as we did in the previous tutorial.
-af.conf.instance = af.conf.Config(config_path=f"{chapter_path}//config")
+conf.instance = conf.Config(config_path=f"{chapter_path}//config")
 
 dataset_path = f"{chapter_path}/dataset/gaussian_x1/"
 
@@ -54,7 +54,7 @@ print(dataset.xvalues)
 
 # The "pixel-scales" define the conversion between pixels (which range from values of 0 to 100) and Gaussian
 # coordinates (which define the length dimensions of its centre and sigma).
-grid = aa.Grid.uniform(shape_2d=dataset.shape_2d, pixel_scales=dataset.pixel_scales)
+grid = aa.Grid.uniform(shape=dataset.shape, pixel_scales=dataset.pixel_scales)
 
 # This grid is a uniform 2D array of coordinates in length units of our Gaussian profile.
 
@@ -79,7 +79,7 @@ print("(y,x) pixel 0 (accessed in 1D):")
 print(grid.in_1d[0])
 
 # The shape of the grid is also available in 1D and 2D, consisting of 625 (25 x 25) coordinates.
-print(grid.shape_2d)
+print(grid.shape)
 print(grid.shape_1d)
 
 # We can print the entire grid in either 1D or 2D.
@@ -95,7 +95,7 @@ gaussian = model.instance_from_vector(vector=[0.0, 0.0, 1.0, 1.0])
 model_image = gaussian.line_from_xvalues(grid=grid)
 
 # Much like the grid, the arrays PyAutoArray computes are accessible in both 2D and 1D.
-print(model_image.shape_2d)
+print(model_image.shape)
 print(model_image.shape_1d)
 print(model_image.in_2d[0, 0])
 print(model_image.in_1d[0])
