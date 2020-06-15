@@ -11,7 +11,7 @@ This version of the workspace are built and tested for using **PyAutoFit v0.59.3
 
 .. code-block:: python
 
-    pip install autofit==0.59.1
+    pip install autofit==0.59.3
 
 Getting Started
 ===============
