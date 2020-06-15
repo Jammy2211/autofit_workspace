@@ -7,7 +7,7 @@ instructions at `the PyAutoFit readthedocs <https://pyautofit.readthedocs.io/en/
 Workspace Version
 =================
 
-This version of the workspace are built and tested for using **PyAutoFit v0.59.1**.
+This version of the workspace are built and tested for using **PyAutoFit v0.59.3**.
 
 .. code-block:: python
 
