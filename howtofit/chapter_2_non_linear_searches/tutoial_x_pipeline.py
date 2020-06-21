@@ -13,14 +13,14 @@ from howtofit.chapter_2_non_linear_searches.src.phase import phase as ph
 from howtofit.chapter_2_non_linear_searches.src.model import profiles
 
 
-def make_pipeline(phase_folders=None):
+def make_pipeline(folders=None):
 
-    if phase_folders is None:
-        phase_folders = []
+    if folders is None:
+        folders = []
 
     pipeline_name = "pipeline__x2_gaussians"
 
-    phase_folders.append(pipeline_name)
+    setup.folders.append(pipeline_name)
 
     """
     Phase 1:
@@ -33,7 +33,7 @@ def make_pipeline(phase_folders=None):
 
     phase1 = ph.Phase(
         phase_name="phase_1__left_gaussian",
-        phase_folders=phase_folders,
+        folders=folders,
         profiles=af.CollectionPriorModel(gaussian_0=gaussian_0),
         search=af.DynestyStatic(),
     )
@@ -51,7 +51,7 @@ def make_pipeline(phase_folders=None):
 
     phase2 = ph.Phase(
         phase_name="phase_2__right_gaussian",
-        phase_folders=phase_folders,
+        folders=folders,
         profiles=af.CollectionPriorModel(
             gaussian_0=phase1.result.instance.profiles.gaussian_0,  # <- Use the Gaussian fitted in phase 1
             gaussian_1=gaussian_1,
@@ -67,7 +67,7 @@ def make_pipeline(phase_folders=None):
 
     phase3 = ph.Phase(
         phase_name="phase_3__both_gaussian",
-        phase_folders=phase_folders,
+        folders=folders,
         profiles=af.CollectionPriorModel(
             gaussian_0=phase1.result.model.profiles.gaussian_0,  # <- use phase 1 Gaussian results.
             gaussian_1=phase2.result.model.profiles.gaussian_1,  # <- use phase 2 Gaussian results.

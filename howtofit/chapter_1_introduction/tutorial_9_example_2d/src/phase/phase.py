@@ -66,7 +66,7 @@ class Phase(af.AbstractPhase):
         )
 
     @property
-    def phase_folders(self):
+    def folders(self):
         return self.search.folders
 
     def run(self, dataset: Dataset, mask):

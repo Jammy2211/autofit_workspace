@@ -86,7 +86,7 @@ for dataset_name in dataset_names:
 
     mask = np.full(fill_value=False, shape=dataset.data.shape)
 
-    # Here, we create a phase as normal. However, we also include an input parameter 'phase_folders'. The phase folders
+    # Here, we create a phase as normal. However, we also include an input parameter 'folders'. The phase folders
     # define the names of folders that the phase goes in. For example, if a phase goes to the path:
 
     # '/path/to/autofit_workspace/output/phase_name/'
@@ -95,7 +95,7 @@ for dataset_name in dataset_names:
 
     # '/path/to/autofit_workspace/output/phase_folder/phase_name/'
 
-    # You can input multiple phase folders, for example 'phase_folders=['folder_0', 'folder_1'] would create the path:
+    # You can input multiple phase folders, for example 'folders=['folder_0', 'folder_1'] would create the path:
 
     # '/path/to/autofit_workspace/output/folder_0/folder_1/phase_name/'
 
@@ -113,7 +113,7 @@ for dataset_name in dataset_names:
 
     phase = ph.Phase(
         phase_name="phase_t8",
-        phase_folders=[dataset_name],
+        folders=[dataset_name],
         profiles=af.CollectionPriorModel(gaussian=profiles.Gaussian),
     )
 
