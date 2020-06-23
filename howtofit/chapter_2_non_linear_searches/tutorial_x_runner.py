@@ -27,7 +27,8 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 conf.instance = conf.Config(
-    config_path=f"{chapter_path}/config", output_path=f"{chapter_path}/output"
+    config_path=f"{workspace_path}/config",
+    output_path=f"{workspace_path}/output/howtofit",
 )
 
 # %%

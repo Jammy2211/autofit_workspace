@@ -1,0 +1,172 @@
+{
+    "sigma": {
+        "type": "Uniform",
+        "lower_limit": 0.0,
+        "upper_limit": 30.0,
+        "width_modifier": {
+            "type": "Absolute",
+            "value": 0.2
+        },
+        "gaussian_limits": {
+            "lower": 0.0,
+            "upper": "inf"
+        }
+    },
+    "intensity": {
+        "type": "LogUniform",
+        "lower_limit": 1e-06,
+        "upper_limit": 1000000.0,
+        "width_modifier": {
+            "type": "Absolute",
+            "value": 0.2
+        },
+        "gaussian_limits": {
+            "lower": 0.0,
+            "upper": "inf"
+        }
+    },
+    "centre": {
+        "type": "Uniform",
+        "lower_limit": 0.0,
+        "upper_limit": 100.0,
+        "width_modifier": {
+            "type": "Absolute",
+            "value": 0.2
+        },
+        "gaussian_limits": {
+            "lower": 0.0,
+            "upper": "inf"
+        }
+    },
+    "examples": {
+        "simple": {
+            "model.Gaussian": {
+                "sigma": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 30.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": "inf"
+                    }
+                },
+                "intensity": {
+                    "type": "LogUniform",
+                    "lower_limit": 1e-06,
+                    "upper_limit": 1000000.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": "inf"
+                    }
+                },
+                "centre": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 100.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": "inf"
+                    }
+                }
+            }
+        },
+        "complex": {
+            "model": {
+                "Gaussian": {
+                    "sigma": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    },
+                    "intensity": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    },
+                    "centre": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    }
+                },
+                "Exponential": {
+                    "rate": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    },
+                    "intensity": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    },
+                    "centre": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 A description of the general.ini visualization config.
 
 [general]
-    backend : str
+    backend -> str
         The matploblib backend used for visualization (see
         https://gist.github.com/CMCDragonkai/4e9464d9f32f5893d837f3de2c43daa4 for a description of backends).
 
@@ -15,7 +15,3 @@ A description of the general.ini visualization config.
         WXAgg
         WX
         Agg (outputs to .fits / .png but doesn't'display figures during a run on your computer screen)
-    visualize_every_update : int
-        The number of new best-fit (e.g. highest log likelihood) models that must be sampled for PyAutoLens to output
-        the best-fit as a new set of figure / subplot visualization during a non-linear fit (e.g. on-the-fly). A
-        visualization_interval of -1 turns off on-the-fly visualization.

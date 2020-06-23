@@ -41,11 +41,12 @@ from howtofit.chapter_1_introduction.tutorial_7_phase_customization.src.phase.se
 
 # %%
 """
-You need to change the path below to the chapter 1 directory so we can load the dataset
+You need to change the path below to the workspace directory so we can load the dataset.
 """
 
 # %%
-chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction"
+workspace_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace"
+chapter_path = f"{workspace_path}/howtofit/chapter_1_introduction"
 
 # %%
 """
@@ -54,7 +55,8 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 conf.instance = conf.Config(
-    config_path=f"{chapter_path}/config", output_path=f"{chapter_path}/output"
+    config_path=f"{workspace_path}/config",
+    output_path=f"{workspace_path}/output/howtofit",
 )
 
 # %%
@@ -82,8 +84,8 @@ CollectionPriorModel to do this).
 phase = ph.Phase(
     phase_name="phase_t7",
     profiles=af.CollectionPriorModel(gaussian=profiles.Gaussian),
-    data_trim_left=None,
-    data_trim_right=None,
+    settings=PhaseSettings(data_trim_left=None, data_trim_right=None),
+    search=af.Emcee(),
 )
 
 # %%
@@ -124,6 +126,7 @@ Next, we're going to customize and run a phase using the data_trim_left and righ
 PhaseSettings object using our input values of these parameters. 
 """
 
+# %%
 settings = PhaseSettings(data_trim_left=20, data_trim_right=30)
 
 # %%
@@ -137,6 +140,7 @@ phase = ph.Phase(
     phase_name="phase_t7",
     profiles=af.CollectionPriorModel(gaussian=profiles.Gaussian),
     settings=settings,
+    search=af.Emcee(),
 )
 
 print(

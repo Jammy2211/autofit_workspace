@@ -2,9 +2,9 @@ Welcome to HowToFit - The PyAutoFit tutorial!
 
 ### JUYPTER NOTEBOOKS ###
 
-The majority of these tutorials are supplied as Juypter Notebooks, which come with a '.ipynb' suffix. For those new to
-Python, Juypter Notebooks are a different way to write, view and use Python code. Compared to the traditional Python
-scripts, they allow:
+The tutorials are supplied as Juypter Notebooks, which come with a '.ipynb' suffix. For those new to Python, Juypter
+Notebooks are a different way to write, view and use Python code. Compared to the traditional Python scripts, they
+allow:
 
 - Small blocks of code to be viewed and run at a time
 - Images and visualization from a code to be displayed directly underneath it.
@@ -18,15 +18,6 @@ each chapter.
 
 For actual PyAutoFit use I recommend you use Python scripts. Therefore, as you go through the lecture series you will 
 notice that we will transition you to Python scripts.
-
-### VISUALIZATION ###
-
-To perform these tutorials we are going to use the library PyAutoArray. This extends the NumPy libraries to create
-Python objects representing data, with in-built tools that specialize in visualization.
-
-Before beginning the HowToFit lecture series you should do 'tutorial_0_visualization'. This will take you through how 
-PyAutoArray interfaces with matplotlib to perform visualization and will get you setup such that images and figures 
-display properly in your Jupyter notebooks.
 
 ### CODE STYLE AND FORMATTING ###
 

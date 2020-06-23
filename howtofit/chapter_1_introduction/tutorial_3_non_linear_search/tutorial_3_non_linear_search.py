@@ -18,13 +18,15 @@ non-linear search algorithm called 'Emcee', which for those familiar with statis
 Carlo (MCMC) method. For now, lets not worry about the details of how Emcee actually works. Instead, just picture that
 a non-linear search in PyAutoFit operates as follows:
 
-1) Randomly guess a model, mapping their parameters via the priors to instances of the model, in this case a Gaussian.
+    1) Randomly guess a model, mapping their parameters via the priors to instances of the model, in this case a
+       Gaussian.
 
-2) Use this model instance to generate model data and compare this model data to the data to compute a log likelihood.
+    2) Use this model instance to generate model data and compare this model data to the data to compute a log
+       likelihood.
 
-3) Repeat this many times, choosing models whose parameter values are near those of the model which currently has the
-   highest log likelihood value. If the new model's log likelihood is higher than the previous model, new models will
-   thus be chosen with parameters nearer this model.
+    3) Repeat this many times, choosing models whose parameter values are near those of the model which currently has
+       the highest log likelihood value. If the new model's log likelihood is higher than the previous model, new
+       models will thus be chosen with parameters nearer this model.
 
 The idea is that if we keep guessing models with higher log-likelihood values, we'll inevitably 'climb' up the gradient
 of the log likelihood in parameter space until we eventually hit the highest log likelihood models.
@@ -49,29 +51,36 @@ import numpy as np
 
 # %%
 """
-You need to change the path below to the chapter 1 directory so we can load the dataset.
+You need to change the path below to the workspace directory so we can load the dataset.
 """
 
 # %%
-chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction"
+workspace_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace"
+chapter_path = f"{workspace_path}/howtofit/chapter_1_introduction"
 
 # %%
 """
-Setup the configs as we did in the previous tutorial, which includes the output folder where the results of the 
-non-linear search are stored.
+The line conf.instance is now used to set up a second property of the configuration:
+
+    - The path to the PyAutoFit output folder, which is where the results of the non-linear search are written to 
+      on your hard-disk, alongside visualization and other properties of the fit 
+      (e.g. '/path/to/autolens_workspace/output/howtolens')
+
+(These will work autommatically if the WORKSPACE environment variable was set up correctly during installation. 
+Nevertheless, setting the paths explicitly within the code is good practise.
 """
 
 # %%
 conf.instance = conf.Config(
-    config_path=f"{chapter_path}/config",
-    output_path=f"{chapter_path}/output",  # <- This sets up where the non-linear search's outputs go.
+    config_path=f"{workspace_path}/config",
+    output_path=f"{workspace_path}/output/howtofit",  # <- This sets up where the non-linear search's outputs go.
 )
 
 # %%
 """
 Lets load the data and noise-map we'll use for our fits, which is the same data we used in tutorial 2.
 """
-dataset_path = f"{chapter_path}/dataset/gaussian_x1"
+dataset_path = f"{workspace_path}/dataset/gaussian_x1"
 
 data_hdu_list = fits.open(f"{dataset_path}/data.fits")
 data = np.array(data_hdu_list[0].data)
@@ -137,10 +146,10 @@ class Gaussian:
 """
 The non-linear search requires an *Analysis* class, which:
 
-- Receives the data to be fitted and prepares it so the model can fit it.
-- Defines the 'log_likelihood_function' used to compute the log likelihood from a model instance. 
-- Passes this log likelihood to the non-linear search so that it can determine parameter values for the the next model 
-  that it samples.
+    - Receives the data to be fitted and prepares it so the model can fit it.
+    - Defines the 'log_likelihood_function' used to compute the log likelihood from a model instance. 
+    - Passes this log likelihood to the non-linear search so that it can determine parameter values for the the next model 
+      that it samples.
 
 For our 1D Gaussian model-fitting example, here is our *Analysis* class:
 """
@@ -208,11 +217,11 @@ model-fit). Whilst you're waiting, checkout the folder:
 Here, the results of the model-fit are output to your hard-disk (on-the-fly) and you can inspect them as the non-linear
 search runs. In particular, you'll fild:
 
-- model.info: A file listing every model component, parameter and prior in your model-fit.
-- model.results: A file giving the latest best-fit model, parameter estimates and errors of the fit.
-- search: A folder containing the Emcee output in hdf5 format.txt (you'll probably never need to look at these, but
-             its good to know what they are).
-- Other metadata which you can ignore for now.
+    - model.info: A file listing every model component, parameter and prior in your model-fit.
+    - model.results: A file giving the latest best-fit model, parameter estimates and errors of the fit.
+    - search: A folder containing the Emcee output in hdf5 format.txt (you'll probably never need to look at these, but
+              its good to know what they are).
+    - Other metadata which you can ignore for now.
 """
 
 # %%
@@ -229,8 +238,12 @@ print("Emcee has finished run - you may now continue the notebook.")
 # %%
 """
 Once completed, the non-linear search returns a Result object, which contains lots of information about the non-linear. 
-A full description of the *Results* object can be found at 'autofit_workspace/examples/simple/results' and 
-'autofit_workspace/examples/complex/results'. In this tutorial, lets use it to inspect the maximum likelihood model instance.
+A full description of the *Results* object can be found at:
+ 
+'autofit_workspace/examples/simple/results'
+'autofit_workspace/examples/complex/results'. 
+
+In this tutorial, lets use it to inspect the maximum likelihood model instance.
 """
 
 # %%

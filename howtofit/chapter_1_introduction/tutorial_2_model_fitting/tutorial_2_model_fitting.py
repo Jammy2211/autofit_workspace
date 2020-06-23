@@ -20,26 +20,27 @@ import numpy as np
 """
 To begin, lets load the dataset again.
 
-You need to change the path below to the chapter 1 directory so we can load the 
+You need to change the path below to the workspace directory so we can load the dataset.
 """
 
 # %%
-chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction"
-dataset_path = f"{chapter_path}/dataset/gaussian_x1"
-
+workspace_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace"
+chapter_path = f"{workspace_path}/howtofit/chapter_1_introduction"
 # %%
 """
 These setup the configs as we did in the previous tutorial.
 """
 
 # %%
-conf.instance = conf.Config(config_path=f"{chapter_path}/config")
+conf.instance = conf.Config(config_path=f"{workspace_path}/config")
 
 # %%
 """
 Lets load the data and noise-map we'll use for our fits (if you are unfamiliar with the .fits format, don't worry about 
 it, its a format typically used only by Astronomers).
 """
+dataset_path = f"{chapter_path}/dataset/gaussian_x1"
+
 data_hdu_list = fits.open(f"{dataset_path}/data.fits")
 data = np.array(data_hdu_list[0].data)
 
@@ -260,12 +261,13 @@ they all mean as they are at the core of all model-fitting performed in PyAutoFi
 # %%
 """
 So to recap the previous tutorial and this one:
-
-- We can define a model components in PyAutoFit, like our Gaussian, using Python classes that follow a certain format.
-- The model component's parameters each have priors, which given a unit vector can be mapped to an instance of the
-  Gaussian class.
-- We can use this model instance to create model data of our Gaussian and compare it to data and quantify the
-  goodness-of-fit via a log likelihood.
+    
+    - We can define a model components in PyAutoFit, like our Gaussian, using Python classes that follow a certain 
+      format.
+    - The model component's parameters each have priors, which given a unit vector can be mapped to an instance of the
+      Gaussian class.
+    - We can use this model instance to create model data of our Gaussian and compare it to data and quantify the
+      goodness-of-fit via a log likelihood.
 
 Thus we have everything we need to fit our model to our data! So, how do we go about finding the best-fit model?
 That is, the model which maximizes the log likelihood.
@@ -375,10 +377,10 @@ PyAutoFit provides a lot of flexibility in how you ultimate use your model insta
 should find that it is straight forward to find a solution. But, whatever you need to do at its core your modeling
 problem will break down into the tasks we did in this tutorial:
 
-1) Use your model to create some model data.
-2) Subtract it from the data to create residuals.
-3) Use these residuals in conjunction with your noise map to define a log likelihood.
-4) Find the highest log likelihood models.
+    1) Use your model to create some model data.
+    2) Subtract it from the data to create residuals.
+    3) Use these residuals in conjunction with your noise map to define a log likelihood.
+    4) Find the highest log likelihood models.
 
 So, get thinking about how these steps would be performed for your model!
 """

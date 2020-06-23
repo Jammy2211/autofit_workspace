@@ -28,7 +28,7 @@ class Phase(af.AbstractPhase):
     Result = Result
 
     @af.convert_paths
-    def __init__(self, paths, profiles, search=af.Emcee):
+    def __init__(self, paths, profiles, search):
         """
         A phase which fits a model composed of multiple profiles (Gaussian, Exponential) using a non-linear search.
 

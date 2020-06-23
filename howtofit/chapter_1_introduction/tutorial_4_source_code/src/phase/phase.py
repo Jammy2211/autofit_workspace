@@ -33,7 +33,7 @@ class Phase(af.AbstractPhase):
         self,
         paths,
         gaussian,  # <- The user inputs a model -> gaussian.py -> Gaussian class here.
-        search=af.Emcee,  # <- This specifies the default non-linear search used by the phase.
+        search,  # <- This specifies the default non-linear search used by the phase.
     ):
         """
         A phase which fits a Gaussian model using a non-linear search.

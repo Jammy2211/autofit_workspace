@@ -9,6 +9,7 @@ which we'll ultimately need to fit to data.
 # %%
 #%matplotlib inline
 
+from autoconf import conf
 import autofit as af
 from astropy.io import fits
 import numpy as np
@@ -18,19 +19,27 @@ import matplotlib.pyplot as plt
 """
 To get a feeling for our model lets look at the data we'll ultimately be fitting, a 1D Gaussian.
 
-You need to change the path below to the chapter 1 directory so we can load the dataset.
+You need to change the path below to the workspace directory so we can load the dataset.
 """
 
 # %%
-chapter_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace/howtofit/chapter_1_introduction/"
+workspace_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace"
+chapter_path = f"{workspace_path}/howtofit/chapter_1_introduction"
 
 # %%
 """
-Lets setup the config files for this tutorial. We'll cover what configs do as we go through the tutorials.
+You're going to see a line like the one below (with 'conf.instance =') in every tutorial this chapter. This sets the
+following property:
+
+    - The path to the configuration files used by PyAutoFit. You need to give the path to your autofit_workspace, so 
+      the configuration files in the workspace are used (e.g. '/path/to/autolens_workspace/config'). 
+
+(These will work autommatically if the WORKSPACE environment variable was set up correctly during installation. 
+Nevertheless, setting the paths explicitly within the code is good practise.
 """
 
 # %%
-conf.instance = conf.Config(config_path=f"{chapter_path}//config")
+conf.instance = conf.Config(config_path=f"{chapter_path}/config")
 
 # %%
 """

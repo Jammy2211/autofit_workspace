@@ -3,12 +3,12 @@ export WORKSPACE_PATH=$PYAUTO_PATH/autofit_workspace
 export CHAPTER1_PATH=$WORKSPACE_PATH/howtofit/chapter_1_introduction
 export WORKSPACE=$WORKSPACE_PATH
 
-RUN_SCRIPTS=FALSE
+RUN_SCRIPTS=TRUE
 
 find $WORKSPACE_PATH -type f -exec sed -i 's/backend = TKAgg/backend = TKAgg/g' {} +
 
 rm -rf $CHAPTER1_PATH/tutorial_*/.ipynb_checkpoints
-rm $CHAPTER1_PATH/tutorial_*/.ipynb
+rm $CHAPTER1_PATH/tutorial_*/*.ipynb
 
 if [ "$RUN_SCRIPTS" == "TRUE" ]; then
 
@@ -42,5 +42,7 @@ cd $CHAPTER1_PATH/tutorial_8_aggregator
 py_to_notebook $CHAPTER1_PATH/tutorial_8_aggregator/tutorial_8_aggregator_part_1.py
 cd $CHAPTER1_PATH/tutorial_8_aggregator
 py_to_notebook $CHAPTER1_PATH/tutorial_8_aggregator/tutorial_8_aggregator_part_2.py
+
+git add chapter_1_introduction
 
 find $WORKSPACE_PATH -type f -exec sed -i 's/backend = TKAgg/backend = TKAgg/g' {} +

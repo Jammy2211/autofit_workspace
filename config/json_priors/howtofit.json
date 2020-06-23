@@ -1,0 +1,262 @@
+{
+    "chapter_1_introduction": {
+        "tutorial_4_source_code": {
+            "src.model.gaussian.Gaussian": {
+                "sigma": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 30.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": "inf"
+                    }
+                },
+                "intensity": {
+                    "type": "Uniform",
+                    "lower_limit": 1e-06,
+                    "upper_limit": 1000000.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": "inf"
+                    }
+                },
+                "centre": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 100.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": "inf"
+                    }
+                }
+            }
+        },
+        "tutorial_5_visualization_masking": {
+            "src.model.gaussian.Gaussian": {
+                "sigma": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                },
+                "intensity": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                },
+                "centre": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                }
+            }
+        },
+        "tutorial_6_complex_models": {
+            "src.model.profiles": {
+                "Gaussian": {
+                    "sigma": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    },
+                    "intensity": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    },
+                    "centre": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    }
+                },
+                "Exponential": {
+                    "rate": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    },
+                    "intensity": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    },
+                    "centre": {
+                        "type": "Uniform",
+                        "lower_limit": 0.0,
+                        "upper_limit": 1.0,
+                        "width_modifier": {
+                            "type": "Absolute",
+                            "value": 0.2
+                        },
+                        "gaussian_limits": {
+                            "lower": 0.0,
+                            "upper": 1.0
+                        }
+                    }
+                }
+            }
+        },
+        "tutorial_7_phase_customization": {
+            "src.model.profiles.Gaussian": {
+                "sigma": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                },
+                "intensity": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                },
+                "centre": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                }
+            }
+        },
+        "tutorial_8_aggregator": {
+            "src.model.profiles.Gaussian": {
+                "sigma": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                },
+                "intensity": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                },
+                "centre": {
+                    "type": "Uniform",
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0,
+                    "width_modifier": {
+                        "type": "Absolute",
+                        "value": 0.2
+                    },
+                    "gaussian_limits": {
+                        "lower": 0.0,
+                        "upper": 1.0
+                    }
+                }
+            }
+        }
+    }
+}

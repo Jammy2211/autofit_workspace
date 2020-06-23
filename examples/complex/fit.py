@@ -153,7 +153,7 @@ dynesty = af.DynestyStatic(
     vol_dec=0.5,
     vol_check=2.0,
     walks=25,
-    sampling_efficiency=0.5,
+    facc=0.5,
     slices=5,
     fmove=0.9,
     max_move=100,
@@ -271,6 +271,71 @@ plt.ylabel("Profile intensity")
 plt.savefig(f"{workspace_path}/toy_model_fit_x2.png", bbox_inches="tight")
 plt.show()
 plt.close()
+
+# %%
+"""
+############################
+###### PARTICLE SWARM ######
+############################
+
+PyAutoFit also supports a number of searches, which seem to find the global (or local) maxima likelihood solution.
+Unlike nested samplers and MCMC algorithms, they do not extensive map out parameter space. This means they can find the
+best solution a lot faster than these algorithms, but they do not properly quantify the errors on each parameter.
+
+We'll use the Particle Swarm Optimization algorithm PySwarms. For a full description of PySwarms, checkout its Github 
+and readthedocs webpages:
+
+https://github.com/ljvmiranda921/pyswarms
+https://pyswarms.readthedocs.io/en/latest/index.html
+
+**PyAutoFit** extends *PySwarms* by allowing runs to be terminated and resumed from the point of termination, as well
+as providing different options for the initial distribution of particles.
+
+"""
+
+# %%
+pso = af.PySwarmsGlobal(
+    n_particles=30,
+    iters=1000,
+    cognitive=0.5,
+    social=0.3,
+    inertia=0.9,
+    ftol=-np.inf,
+    initialize_method="prior",
+    initialize_ball_lower_limit=0.49,
+    initialize_ball_upper_limit=0.51,
+    number_of_cores=1,
+    paths=af.Paths(folders=["examples", "complex"]),
+)
+result = pso.fit(model=model, analysis=analysis)
+
+# %%
+"""
+__Result__
+
+The result object returned by PSO is again very similar in structure to previous results.
+"""
+
+# %%
+instance = result.max_log_likelihood_instance
+
+model_gaussian = instance.gaussian.line_from_xvalues(xvalues=np.arange(data.shape[0]))
+model_exponential = instance.exponential.line_from_xvalues(
+    xvalues=np.arange(data.shape[0])
+)
+model_data = model_gaussian + model_exponential
+
+plt.plot(range(data.shape[0]), data)
+plt.plot(range(data.shape[0]), model_data)
+plt.plot(range(data.shape[0]), model_gaussian, "--")
+plt.plot(range(data.shape[0]), model_exponential, "--")
+plt.title("Illustrative model fit to 1D Gaussian + Exponential profile data.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile intensity")
+plt.savefig(f"{workspace_path}/toy_model_fit_x2.png", bbox_inches="tight")
+plt.show()
+plt.close()
+
 
 # %%
 """

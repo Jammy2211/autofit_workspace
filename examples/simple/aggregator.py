@@ -26,7 +26,7 @@ import numpy as np
 
 # %%
 """
-You need to change the path below to the chapter 1 directory so we can load the dataset
+You need to change the path below to the workspace directory so we can load the dataset
 """
 
 # %%

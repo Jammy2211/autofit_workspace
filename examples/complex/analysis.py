@@ -13,6 +13,8 @@ class Analysis(af.Analysis):
 
     def __init__(self, data, noise_map):
 
+        super().__init__()
+
         self.data = data
         self.noise_map = noise_map
 
