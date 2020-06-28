@@ -38,7 +38,7 @@ class Analysis(af.Analysis):
         """
 
         # In tutorials 3 & 4, the instance was an instance of a single Gaussian profile. PyAutoFit knew this instance
-        # would contain just one Gaussian, because when the phase was created we used a PriorModel object in PyAutoFit
+        # would contain just one Gaussian, because when the phase was created we used a _PriorModel_ object in PyAutoFit
         # to make the Gaussian. This meant we could create the model data using the line:
 
         # model_data = instance.gaussian.line_from_xvalues(xvalues=self.masked_dataset.xvalues)

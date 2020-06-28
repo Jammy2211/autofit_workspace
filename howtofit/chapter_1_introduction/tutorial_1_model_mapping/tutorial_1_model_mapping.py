@@ -149,7 +149,7 @@ By writing a model component in this way, we can use the Python class to set it 
 PyAutoFit can the generate model components as instances of their Python class, meaning that its functions 
 (e.g. 'line_from_xvalues') are accessible to PyAutoFit.
 
-To set it up as a model component, we use a PriorModel object.
+To set it up as a model component, we use a _PriorModel_ object.
 """
 
 # %%
@@ -162,7 +162,7 @@ print(model)
 
 # %%
 """
-Using this PriorModel we can create an 'instance' of the model, by mapping a list of physical values of each parameter 
+Using this _PriorModel_ we can create an 'instance' of the model, by mapping a list of physical values of each parameter 
 as follows.
 """
 
@@ -195,7 +195,7 @@ Congratulations! You've defined your first model in PyAutoFit! :)
 
 So, why is it called a PriorModel?
 
-The parameters of a PriorModel in PyAutoFit all have a prior associated with them. Priors encode our expectations on
+The parameters of a _PriorModel_ in PyAutoFit all have a prior associated with them. Priors encode our expectations on
 what values we expect each parameter can have. For example, we might know that our Gaussian will be centred near 0.0.
 
 How are priors set? In this example, we did not specify priors, so they default to UniformPriors between 0 and 1. Below,

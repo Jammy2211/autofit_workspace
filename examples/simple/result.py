@@ -104,9 +104,7 @@ Create the non-linear object for emcee and perform the fit.
 emcee = af.Emcee(
     nwalkers=30,
     nsteps=1000,
-    initialize_method="ball",
-    initialize_ball_lower_limit=0.49,
-    initialize_ball_upper_limit=0.51,
+    initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
     auto_correlation_check_for_convergence=True,
     auto_correlation_check_size=100,
     auto_correlation_required_length=50,

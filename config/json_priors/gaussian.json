@@ -1,15 +1,15 @@
 {
     "Gaussian": {
-        "sigma": {
+        "centre": {
             "type": "Uniform",
             "lower_limit": 0.0,
-            "upper_limit": 30.0,
+            "upper_limit": 100.0,
             "width_modifier": {
                 "type": "Absolute",
-                "value": 0.2
+                "value": 20.0
             },
             "gaussian_limits": {
-                "lower": 0.0,
+                "lower": "-inf",
                 "upper": "inf"
             }
         },
@@ -18,21 +18,21 @@
             "lower_limit": 1e-06,
             "upper_limit": 1000000.0,
             "width_modifier": {
-                "type": "Absolute",
-                "value": 0.2
+                "type": "Relative",
+                "value": 0.5
             },
             "gaussian_limits": {
                 "lower": 0.0,
                 "upper": "inf"
             }
         },
-        "centre": {
+        "sigma": {
             "type": "Uniform",
             "lower_limit": 0.0,
-            "upper_limit": 100.0,
+            "upper_limit": 25.0,
             "width_modifier": {
-                "type": "Absolute",
-                "value": 0.2
+                "type": "Relative",
+                "value": 0.5
             },
             "gaussian_limits": {
                 "lower": 0.0,

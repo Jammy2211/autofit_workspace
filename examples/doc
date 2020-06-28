@@ -9,7 +9,7 @@ First, lets cover the two sub-folders, 'simple' and 'complex':
 
     simple:
         For all examples the model is composed of just one model component, a 1D Gaussian. Therefore, only the
-        PyAutoFit PriorModel class is used for model composition.
+        PyAutoFit _PriorModel_ class is used for model composition.
 
     complex:
         The model is composed of multiple model components (a 1D Gaussian and / or a 1D Exponential). Therefore, the
@@ -40,7 +40,7 @@ Both sub-folders have the following example scripts, which should be read in the
 
     result.py:
         This gives a run-through of the outputs available from the result of a non-linear search, including information
-        on the non-linear search samples, the model parameter estimates and errors.
+        on the samples, the model parameter estimates and errors.
 
     aggregator.py:
         This illustrates how to use the Aggregator tool to load the results of many non-linear search fits from your

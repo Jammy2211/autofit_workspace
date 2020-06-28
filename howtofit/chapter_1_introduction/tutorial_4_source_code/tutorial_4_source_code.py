@@ -171,14 +171,26 @@ performs the following tasks (which we performed manually in the previous tutori
     - Contains the Analysis class that defines the log likelihood function.
     - Returns the results. including the non-linear search's samples and the maximum likelihood fit.
 
-Lets instantiate and run a phase to, which reduces the take of perforing a model-fit in PyAutoFit to just two lines. 
+In the previous tutorial, after we composed our model using the _PriorModel_ object we had to manually specify its
+priors. However, now we are using a source code, the priors are instead loaded from config files, specifically the
+config file found at 'autofit_workspace/config/json_piors/gaussian.json'. If you inspect this file, you'll see the priors
+are set up using the same values as the previous tutorila.
+
+It is worth noting that the name of this config file, 'gaussian.json', is not a conincidence. It is named after the
+module we imported to create the _PriorModel_, the 'gaussian.py' module. Thus, our the json_config files we use to
+set up the default priors of different model components share the name of the module they are in! 
+
+Although we don't in this tutorial, we could of course over write the priors with new priors as we did in the previous
+tutorial.
+
+Lets instantiate and run a phase, which reduces the task of performing a model-fit in PyAutoFit to just two lines. 
 The results are output to the path 'autofit_workspace/howtofit/chapter_1_introduction/output/phase_t4/emcee', which in 
 contrast to the previous tutorial includes the phase name in the path structure.
 """
 
+# %%
 from howtofit.chapter_1_introduction.tutorial_4_source_code.src.phase import phase as ph
 
-# %%
 phase = ph.Phase(
     phase_name="phase_t4", gaussian=af.PriorModel(g.Gaussian), search=af.Emcee()
 )

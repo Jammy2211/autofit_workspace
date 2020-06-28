@@ -83,7 +83,7 @@ model = af.CollectionPriorModel(
 
 # %%
 """
-A CollectionPriorModel behaves like a PriorModel but contains a collection of model components. For example, it can
+A CollectionPriorModel behaves like a _PriorModel_ but contains a collection of model components. For example, it can
 create a model instance by mapping a list of parameters, which in this case is 6 (3 for the Gaussian [centre,
 intensity, sigma] and 3 for the Exponential [centre, intensity, rate]).
 """

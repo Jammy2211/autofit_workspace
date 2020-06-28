@@ -4,7 +4,7 @@ import autofit as af
 
 
 class Result(af.Result):
-    def __init__(self, samples, analysis):
+    def __init__(self, samples, previous_model, search, analysis):
         """
         The results of a non-linear search performed by a phase.
 
@@ -16,7 +16,7 @@ class Result(af.Result):
         analysis : Analysis
             The Analysis class used by this model-fit to fit the model to the data.
         """
-        self.samples = samples
+        super().__init__(samples=samples, previous_model=previous_model, search=search)
         self.analysis = analysis
 
     @property

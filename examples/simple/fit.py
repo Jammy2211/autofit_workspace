@@ -193,9 +193,7 @@ during the run and terminating sampling early if these meet a specified threshol
 emcee = af.Emcee(
     nwalkers=30,
     nsteps=1000,
-    initialize_method="ball",
-    initialize_ball_lower_limit=0.49,
-    initialize_ball_upper_limit=0.51,
+    initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
     auto_correlation_check_for_convergence=True,
     auto_correlation_check_size=100,
     auto_correlation_required_length=50,
@@ -249,16 +247,14 @@ as providing different options for the initial distribution of particles.
 """
 
 # %%
-pso = af.PySwarmsGlobal(
-    n_particles=10,
-    iters=1000,
+pso = af.PySwarmsLocal(
+    n_particles=50,
+    iters=100,
     cognitive=0.5,
     social=0.3,
     inertia=0.9,
     ftol=-np.inf,
-    initialize_method="prior",
-    initialize_ball_lower_limit=0.49,
-    initialize_ball_upper_limit=0.51,
+    initializer=af.InitializerPrior(),
     number_of_cores=1,
     paths=af.Paths(folders=["examples", "simple"]),
 )

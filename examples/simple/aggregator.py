@@ -118,9 +118,7 @@ for dataset_name in dataset_names:
         ),
         nwalkers=30,
         nsteps=1000,
-        initialize_method="ball",
-        initialize_ball_lower_limit=0.49,
-        initialize_ball_upper_limit=0.51,
+        initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
         auto_correlation_check_for_convergence=True,
         auto_correlation_check_size=100,
         auto_correlation_required_length=50,
@@ -308,7 +306,7 @@ We can also access the 'most probable' model, which is the model computed by bin
 parameters into a histogram, after removing the initial samples where the non-linear sampler is 'burning in' to the 
 high likelihood regions of parameter space. 
 
-The median of each 1D histogram (1 for each parameter) is then used to give the most probable model. This process is 
+The median of each 1D histogram (1 for each parameter) is then used to give the median PDF model. This process is 
 called 'marginalization' and the hisograms which provide information on the probability estimates of each parameter 
 are called the 'Probability Density Function' or PDF for short.
 """

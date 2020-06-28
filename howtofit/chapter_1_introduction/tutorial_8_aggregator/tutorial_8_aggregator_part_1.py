@@ -139,7 +139,7 @@ To load these results with the aggregator, we simply point it to the path of the
 """
 
 # %%
-output_path = f"{chapter_path}/output"
+output_path = f"{workspace_path}/output/howtofit"
 
 agg = af.Aggregator(directory=str(output_path))
 
@@ -194,6 +194,24 @@ samples_gen = agg_filter.values("samples")
 
 # %%
 """
+Alternatively, we can filter using strings, requiring that the string appears in the full path of the output
+results. This is useful if you fit a large sample of data where:
+
+    - Multiple results, corresponding to different phases and model-fits are stored in the same path.
+    - Different runs using different _PhaseSettings_ are in the same path.
+    - Fits using different non-linear searches, with different settings, are contained in the same path.
+
+The example below shows us using the contains filter to get the results of the fit to only the first dataset. 
+"""
+agg_filter_contains = agg.filter(
+    agg.directory.contains("phase_t8"),
+    agg.directory.contains("gaussian_x1_0"),
+)
+print("Directory Contains Filtered NestedSampler Samples: \n")
+print("Total Samples Objects = ", len(list(agg_filter_contains.values("samples"))), "\n\n")
+
+# %%
+"""
 We've encountered the Samples class in previous tutorials, specifically the Result object returned from a phase. In 
 this tutorial we'll inspect the Sampels class in more detail. The Samples class contains all the accepted parameter 
 samples of the non-linear search, which is a list of lists where:
@@ -204,7 +222,7 @@ samples of the non-linear search, which is a list of lists where:
 """
 
 # %%
-for samples in agg.values("samples"):
+for samples in agg_filter.values("samples"):
     print("All parameters of the very first sample")
     print(samples.parameters[0])
     print("The tenth sample's third parameter")
@@ -229,7 +247,7 @@ where:
 """
 
 # %%
-for samples in agg.values("samples"):
+for samples in agg_filter.values("samples"):
     print("log(likelihood), log(prior), log(posterior) and weight of the tenth sample.")
     print(samples.log_likelihoods[9])
     print(samples.log_priors[9])
@@ -299,7 +317,7 @@ We can also access the 'most probable' model, which is the model computed by bin
 parameters into a histogram, after removing the initial samples where the non-linear sampler is 'burning in' to the 
 high likelihood regions of parameter space. 
 
-The median of each 1D histogram (1 for each parameter) is then used to give the most probable model. This process is 
+The median of each 1D histogram (1 for each parameter) is then used to give the median PDF model. This process is 
 called 'marginalization' and the hisograms which provide information on the probability estimates of each parameter 
 are called the 'Probability Density Function' or PDF for short.
 """

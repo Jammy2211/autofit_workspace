@@ -80,7 +80,7 @@ conf.instance = conf.Config(
 """
 Lets load the data and noise-map we'll use for our fits, which is the same data we used in tutorial 2.
 """
-dataset_path = f"{workspace_path}/dataset/gaussian_x1"
+dataset_path = f"{chapter_path}/dataset/gaussian_x1/"
 
 data_hdu_list = fits.open(f"{dataset_path}/data.fits")
 data = np.array(data_hdu_list[0].data)
@@ -195,7 +195,9 @@ class Analysis(af.Analysis):
 # %%
 """
 To perform the non-linear search using Emcee, we simply compose our model using a PriorModel, instantiate the Analysis
-class and pass them to an instance of the Emcee class:
+class and pass them to an instance of the Emcee class.
+
+We manually set the priors on the model, in the next tutorial we'll cover how this can be performed automatically.
 """
 
 model = af.PriorModel(Gaussian)

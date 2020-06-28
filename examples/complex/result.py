@@ -70,7 +70,7 @@ noted the Gaussian has 3 parameters (centre, intensity and sigma) and Exponentia
 rate). These are the free parameters of our model that the non-linear search fits for, meaning the non-linear
 parameter space has dimensionality = 6.
 
-In the simple example tutorial, we used a PriorModel to create the model of the Gaussian. PriorModels cannot be used to
+In the simple example tutorial, we used a _PriorModel_ to create the model of the Gaussian. PriorModels cannot be used to
 compose models from multiple model components and for this example we must instead use the CollectionPriorModel.
 """
 
@@ -112,9 +112,7 @@ Create the non-linear object for emcee and perform the fit.
 emcee = af.Emcee(
     nwalkers=50,
     nsteps=2000,
-    initialize_method="ball",
-    initialize_ball_lower_limit=0.49,
-    initialize_ball_upper_limit=0.51,
+    initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
     auto_correlation_check_for_convergence=True,
     auto_correlation_check_size=100,
     auto_correlation_required_length=50,
@@ -172,7 +170,7 @@ print("\n")
 # %%
 """
 When we return a result as an instance, it provides us with instances of the model using the Python classes used to
-compose it. Because our fit uses a CollectionPriorModel (as opposed to a PriorModel in the simple example) the instance
+compose it. Because our fit uses a CollectionPriorModel (as opposed to a _PriorModel_ in the simple example) the instance
 returned a dictionary named acoording to the names given to the CollectionPriorModel, which above were 'gaussian' and
 'exponential'.
 """
