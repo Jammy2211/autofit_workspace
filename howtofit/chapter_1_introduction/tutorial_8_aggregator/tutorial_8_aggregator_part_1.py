@@ -204,11 +204,12 @@ results. This is useful if you fit a large sample of data where:
 The example below shows us using the contains filter to get the results of the fit to only the first dataset. 
 """
 agg_filter_contains = agg.filter(
-    agg.directory.contains("phase_t8"),
-    agg.directory.contains("gaussian_x1_0"),
+    agg.directory.contains("phase_t8"), agg.directory.contains("gaussian_x1_0")
 )
 print("Directory Contains Filtered NestedSampler Samples: \n")
-print("Total Samples Objects = ", len(list(agg_filter_contains.values("samples"))), "\n\n")
+print(
+    "Total Samples Objects = ", len(list(agg_filter_contains.values("samples"))), "\n\n"
+)
 
 # %%
 """

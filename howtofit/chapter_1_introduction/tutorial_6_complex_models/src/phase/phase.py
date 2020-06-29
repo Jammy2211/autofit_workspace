@@ -92,4 +92,9 @@ class Phase(af.AbstractPhase):
         )
 
     def make_result(self, result, analysis):
-        return self.Result(samples=result.samples, previous_model=self.model, search=self.search, analysis=analysis)
+        return self.Result(
+            samples=result.samples,
+            previous_model=self.model,
+            search=self.search,
+            analysis=analysis,
+        )
