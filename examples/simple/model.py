@@ -1,11 +1,13 @@
 import numpy as np
 
-# The Gaussian class in this module is the model components that is fitted to data using a non-linear search. The
-# inputs of its __init__ constructor are the parameters which can be fitted for.
+"""
+The Gaussian class in this module is the model components that is fitted to data using a non-linear search. The
+inputs of its __init__ constructor are the parameters which can be fitted for.
 
-# The log_likelihood_function in the Analysis class receives an instance of this classes where the values of its
-# parameters have been set up according to the non-linear search. Because instances of the classes are used, this means
-# their methods (e.g. line_from_xvalues) can be used in the log likelihood function.
+The log_likelihood_function in the Analysis class receives an instance of this classes where the values of its
+parameters have been set up according to the non-linear search. Because instances of the classes are used, this means
+their methods (e.g. profile_from_xvalues) can be used in the log likelihood function.
+"""
 
 
 class Gaussian:
@@ -32,7 +34,7 @@ class Gaussian:
         self.intensity = intensity
         self.sigma = sigma
 
-    def line_from_xvalues(self, xvalues):
+    def profile_from_xvalues(self, xvalues):
         """
         Calculate the intensity of the profile on a line of Cartesian x coordinates.
 

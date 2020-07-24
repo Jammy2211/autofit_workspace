@@ -44,7 +44,7 @@ import autofit as af
 workspace_path = "/path/to/user/autofit_workspace/"
 
 conf.instance = conf.Config(
-    config_path=f"{workspace_path}/config/",
+    config_path=f"{workspace_path}/howtofit/config/",
     output_path=f"{workspace_path}/output/",
 )
 

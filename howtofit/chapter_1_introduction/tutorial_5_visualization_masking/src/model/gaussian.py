@@ -24,7 +24,7 @@ class Gaussian:
         self.intensity = intensity
         self.sigma = sigma
 
-    def line_from_xvalues(self, xvalues):
+    def profile_from_xvalues(self, xvalues):
         """
         Calculate the intensity of the light profile on a line of Cartesian x coordinates.
 

@@ -1,13 +1,3 @@
-from astropy.io import fits
-import os
-import matplotlib.pyplot as plt
-import numpy as np
-
-from autoconf import conf
-import autofit as af
-from autofit_workspace.examples.simple import model as m
-from autofit_workspace.examples.simple import analysis as a
-
 # %%
 """
 __Example: Fit__
@@ -22,14 +12,26 @@ provided PyAutoFit with the necessary information on our model, data and log lik
 # %%
 #%matplotlib inline
 
+import matplotlib.pyplot as plt
+import numpy as np
+
+from autoconf import conf
+import autofit as af
+from autofit_workspace.examples.simple import model as m
+from autofit_workspace.examples.simple import analysis as a
+
 # %%
 """
 __Paths__
-Setup the path to the autofit_workspace, using a relative directory name.
+
+Setup the path to the autofit_workspace, using the project pyprojroot which determines it automatically.
 """
 
 # %%
-workspace_path = "{}/../..".format(os.path.dirname(os.path.realpath(__file__)))
+from pyprojroot import here
+
+workspace_path = str(here())
+print("Workspace Path: ", workspace_path)
 
 # %%
 """
@@ -37,6 +39,8 @@ Use this path to explicitly set the config path and output path.
 """
 
 # %%
+from autoconf import conf
+
 conf.instance = conf.Config(
     config_path=f"{workspace_path}/config", output_path=f"{workspace_path}/output"
 )
@@ -45,17 +49,15 @@ conf.instance = conf.Config(
 """
 __Data__
 
-First, lets load our data of a 1D Gaussian, which we'll plot before perform the model-fit.
+First, lets get data of a 1D Gaussian, by importing the 'autofit_workspace/simple/simulator.py' module, which 
+simulates the noisy data we fit (check it out to see how we simulate the data).
 """
 
 # %%
-dataset_path = f"{workspace_path}/dataset/gaussian_x1"
+from autofit_workspace.examples.simple import simulator
 
-data_hdu_list = fits.open(f"{dataset_path}/data.fits")
-data = np.array(data_hdu_list[0].data)
-
-noise_map_hdu_list = fits.open(f"{dataset_path}/noise_map.fits")
-noise_map = np.array(noise_map_hdu_list[0].data)
+data = simulator.data
+noise_map = simulator.noise_map
 
 plt.plot(range(data.shape[0]), data)
 plt.show()
@@ -116,7 +118,7 @@ https://dynesty.readthedocs.io/en/latest/index.html
 
 # %%
 dynesty = af.DynestyStatic(
-    n_live_points=50,
+    n_live_points=100,
     bound="multi",
     sample="auto",
     bootstrap=0,
@@ -154,7 +156,7 @@ compare the maximum log likelihood Gaussian to the data.
 """
 
 # %%
-model_data = result.max_log_likelihood_instance.line_from_xvalues(
+model_data = result.max_log_likelihood_instance.profile_from_xvalues(
     xvalues=np.arange(data.shape[0])
 )
 
@@ -213,7 +215,7 @@ us with the maximum log likelihood instance.
 """
 
 # %%
-model_data = result.max_log_likelihood_instance.line_from_xvalues(
+model_data = result.max_log_likelihood_instance.profile_from_xvalues(
     xvalues=np.arange(data.shape[0])
 )
 
@@ -247,7 +249,7 @@ as providing different options for the initial distribution of particles.
 """
 
 # %%
-pso = af.PySwarmsLocal(
+pso = af.PySwarmsGlobal(
     n_particles=50,
     iters=100,
     cognitive=0.5,
@@ -268,7 +270,7 @@ The result object returned by PSO is again very similar in structure to previous
 """
 
 # %%
-model_data = result.max_log_likelihood_instance.line_from_xvalues(
+model_data = result.max_log_likelihood_instance.profile_from_xvalues(
     xvalues=np.arange(data.shape[0])
 )
 
@@ -282,9 +284,7 @@ plt.close()
 
 # %%
 """
-##########################
-##### Other Samplers #####
-##########################
+__Other Samplers__
 
-Checkout ? for all of the non-linear searches available in PyAutoFit.
+Checkout https://pyautofit.readthedocs.io/en/latest/api/api.html for the non-linear searches available in PyAutoFit.
 """

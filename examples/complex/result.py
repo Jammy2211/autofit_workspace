@@ -1,13 +1,4 @@
-from astropy.io import fits
-import os
-import matplotlib.pyplot as plt
-import numpy as np
-
-from autoconf import conf
-import autofit as af
-from autofit_workspace.examples.complex import model as m
-from autofit_workspace.examples.complex import analysis as a
-
+# %%
 """
 __Example: Result__
 
@@ -25,15 +16,26 @@ attributes in full, and instead only focus on how the use of a more complex mode
 # %%
 #%matplotlib inline
 
+import matplotlib.pyplot as plt
+import numpy as np
+
+from autoconf import conf
+import autofit as af
+from autofit_workspace.examples.complex import model as m
+from autofit_workspace.examples.complex import analysis as a
+
 # %%
 """
 __Paths__
 
-Setup the path to the autofit_workspace, using a relative directory name.
+Setup the path to the autofit_workspace, using the project pyprojroot which determines it automatically.
 """
 
 # %%
-workspace_path = "{}/../..".format(os.path.dirname(os.path.realpath(__file__)))
+from pyprojroot import here
+
+workspace_path = str(here())
+print("Workspace Path: ", workspace_path)
 
 # %%
 """
@@ -41,6 +43,8 @@ Use this path to explicitly set the config path and output path.
 """
 
 # %%
+from autoconf import conf
+
 conf.instance = conf.Config(
     config_path=f"{workspace_path}/config", output_path=f"{workspace_path}/output"
 )
@@ -49,17 +53,15 @@ conf.instance = conf.Config(
 """
 __Data__
 
-First, lets load our data of a 1D Gaussian + Exponential, which we'll plot before we perform the model-fit.
+First, lets get data of a 1D Gaussian + 1D Exponential, by importing the 'autofit_workspace/complex/simulator.py' 
+module, which  simulates the noisy data we fit (check it out to see how we simulate the data).
 """
 
 # %%
-dataset_path = f"{workspace_path}/dataset/gaussian_x1__exponential_x1"
+from autofit_workspace.examples.complex import simulator
 
-data_hdu_list = fits.open(f"{dataset_path}/data.fits")
-data = np.array(data_hdu_list[0].data)
-
-noise_map_hdu_list = fits.open(f"{dataset_path}/noise_map.fits")
-noise_map = np.array(noise_map_hdu_list[0].data)
+data = simulator.data
+noise_map = simulator.noise_map
 
 # %%
 """
@@ -194,10 +196,10 @@ the maximum likelihood model:
 """
 
 # %%
-model_gaussian = max_log_likelihood_instance.gaussian.line_from_xvalues(
+model_gaussian = max_log_likelihood_instance.gaussian.profile_from_xvalues(
     xvalues=np.arange(data.shape[0])
 )
-model_exponential = max_log_likelihood_instance.exponential.line_from_xvalues(
+model_exponential = max_log_likelihood_instance.exponential.profile_from_xvalues(
     xvalues=np.arange(data.shape[0])
 )
 model_data = model_gaussian + model_exponential

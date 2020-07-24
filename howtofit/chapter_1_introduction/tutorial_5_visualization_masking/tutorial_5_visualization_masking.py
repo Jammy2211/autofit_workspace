@@ -1,42 +1,33 @@
 # %%
 """
-__Visualization Masking__
+Tutorial 5: Visualization & Masking
+===================================
 
 In the previous tutorial, we wrote source code which used PyAutoFit to fit a 1D Gaussian model to a dataset. In this
 tutorial, we'll extend this source code's phase package to perform a number of additional tasks:
 
-    - Masking: The phase is passed a mask such that regions of the dataset are omitted by the log likelihood function.
-    - Visualization: Images showing the model fit are output on-the-fly during the non-linear search.
+ - Masking: The phase is passed a mask such that regions of the dataset are omitted by the log likelihood function.
+
+ - Visualization: Images showing the model fit are output on-the-fly during the non-linear search.
 
 These new features have lead to an additional module in the 'phase' package not present in tutorial 4, called
 'visualizer.py'. Before looking at this module, lets perform a fit to see the changed behaviour of PyAutoFit.
 """
 
-
 # %%
 #%matplotlib inline
 
-# %%
 from autoconf import conf
 import autofit as af
+from autofit_workspace.howtofit.chapter_1_introduction.tutorial_5_visualization_masking import (
+    src as htf,
+)
+
 import numpy as np
+from pyprojroot import here
 
-from howtofit.chapter_1_introduction.tutorial_5_visualization_masking.src.model import (
-    gaussian,
-)
-
-from howtofit.chapter_1_introduction.tutorial_5_visualization_masking.src.phase import (
-    phase as ph,
-)
-
-# %%
-"""
-You need to change the path below to the workspace directory so we can load the dataset.
-"""
-
-# %%
-workspace_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace"
-chapter_path = f"{workspace_path}/howtofit/chapter_1_introduction"
+workspace_path = str(here())
+print("Workspace Path: ", workspace_path)
 
 # %%
 """
@@ -45,20 +36,19 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 conf.instance = conf.Config(
-    config_path=f"{workspace_path}/config",
-    output_path=f"{workspace_path}/output/howtofit",
+    config_path=f"{workspace_path}/howtofit/config",
+    output_path=f"{workspace_path}/howtofit/output",
 )
 
-dataset_path = f"{chapter_path}/dataset/gaussian_x1"
+# %%
+"""
+Import the simulator module and set up the dataset.
+"""
 
-from howtofit.chapter_1_introduction.tutorial_5_visualization_masking.src.dataset import (
-    dataset as ds,
-)
+# %%
+from autofit_workspace.howtofit.simulators.chapter_1 import gaussian_x1
 
-dataset = ds.Dataset.from_fits(
-    data_path=f"{dataset_path}/data.fits",
-    noise_map_path=f"{dataset_path}/noise_map.fits",
-)
+dataset = htf.Dataset(data=gaussian_x1.data, noise_map=gaussian_x1.noise_map)
 
 # %%
 """
@@ -89,8 +79,8 @@ Lets now reperform the fit from tutorial 4, but with a masked dataset and visual
 """
 
 # %%
-phase = ph.Phase(
-    phase_name="phase_t5", gaussian=af.PriorModel(gaussian.Gaussian), search=af.Emcee()
+phase = htf.Phase(
+    phase_name="phase_t5", gaussian=af.PriorModel(htf.Gaussian), search=af.Emcee()
 )
 
 print(
@@ -128,12 +118,12 @@ the masked data is set up and how visualization is performed.
 
 And with that, we have completed this (fairly short) tutorial. There are two things worth ending on:
 
-    1) In tutorial 4, we introduced the 'plot' package that had functions specific to plotting attributes of
-    a data-set and fit. This project structure has again helped us, by making it straight forward to perform plotting with 
-    the Visualizer. For your model-fitting project you should aim to strichtly adhere to performing all plots in a 'plot' 
-    module - more benefits will become clear in tutorial 8.
+ 1) In tutorial 4, we introduced the 'plot' package that had functions specific to plotting attributes of
+ a data-set and fit. This project structure has again helped us, by making it straight forward to perform plotting with 
+ the Visualizer. For your model-fitting project you should aim to strichtly adhere to performing all plots in a 'plot' 
+ module - more benefits will become clear in tutorial 8.
     
-    2) For our very simple 1D case, we used a 1D NumPy array to represent a mask. For projects with more complicated
-    datasets, one may require more complicated masks, warranting a 'mask' package and 'mask.py' module. In tutorial 9
-    we will show an example of this.
+ 2) For our very simple 1D case, we used a 1D NumPy array to represent a mask. For projects with more complicated
+ datasets, one may require more complicated masks, warranting a 'mask' package and 'mask.py' module. In tutorial 9
+ we will show an example of this.
 """

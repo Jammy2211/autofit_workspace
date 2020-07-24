@@ -1,6 +1,7 @@
 # %%
 """
-__Model Mapping__
+Tutorial 1: Model Mapping
+=========================
 
 In this tutorial, we'll parameterize a simple model and use PyAutoFit to map its parameters to a model instance,
 which we'll ultimately need to fit to data.
@@ -11,61 +12,65 @@ which we'll ultimately need to fit to data.
 
 from autoconf import conf
 import autofit as af
-from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
 
 # %%
 """
-To get a feeling for our model lets look at the data we'll ultimately be fitting, a 1D Gaussian.
+The tutorials need to know the path to your autolens_workspace folder, in order to:
 
-You need to change the path below to the workspace directory so we can load the dataset.
+ - Load configuration settings from the config files.
+ - Load example data.
+ - Output the results of models fits to your hard-disk. 
+
+Unfortunately, Jupyter notebooks cannot use relative paths, therefore we use the library 'pyprojroot' to do instead. Its
+'here' function provides the path to the GitHub project directory, which is the autolens_workspace. For example on my 
+computer the here() function returns:
+
+ '/home/jammy/PycharmProjects/PyAuto/autolens_workspace'
+
+Throughout these tutorials, we will use this workspace_path. 
 """
 
 # %%
-workspace_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace"
-chapter_path = f"{workspace_path}/howtofit/chapter_1_introduction"
+from pyprojroot import here
+
+workspace_path = str(here())
+print("Workspace Path: ", workspace_path)
 
 # %%
 """
 You're going to see a line like the one below (with 'conf.instance =') in every tutorial this chapter. This sets the
 following property:
 
-    - The path to the configuration files used by PyAutoFit. You need to give the path to your autofit_workspace, so 
-      the configuration files in the workspace are used (e.g. '/path/to/autolens_workspace/config'). 
+ - The path to the configuration files used by PyAutoFit. You need to give the path to your autofit_workspace, so 
+ the configuration files in the workspace are used (e.g. '/path/to/autolens_workspace/config'). 
 
 (These will work autommatically if the WORKSPACE environment variable was set up correctly during installation. 
 Nevertheless, setting the paths explicitly within the code is good practise.
 """
 
 # %%
-conf.instance = conf.Config(config_path=f"{chapter_path}/config")
+conf.instance = conf.Config(config_path=f"{workspace_path}/howtofit/config")
 
 # %%
 """
-The dataset path specifies where the dataset is located, this time in the directory 'chapter_path/dataset'. We'll
-load the example dataset containing one Gaussian.
+Below, you'll notice the command:
+
+ 'from autofit_workspace.howtofit.simulators.chapter_1.gaussian_x1'
+
+This will crop up in nearly every tutorial from here on. This imports a module that simulates the dataset we plot in
+this tutorialt. Feel free to check out the simulator scripts to see how this is done!
+
+ - The data is a 1D numpy array of values corresponding to the observed counts of the Gaussian.
+ - The noise-map corresponds to the expected noise in every data point.
 """
 
 # %%
-dataset_path = f"{chapter_path}/dataset/gaussian_x1/"
+from autofit_workspace.howtofit.simulators.chapter_1 import gaussian_x1
 
-# %%
-"""
-We now load the data and noise from .fits files, where:
-
-- The data is a 1D numpy array of values corresponding to the observed counts of the Gaussian.
-- The noise map corresponds to the expected noise in every data point.
-"""
-
-# %%
-data_path = f"{dataset_path}/data.fits"
-data_hdu_list = fits.open(data_path)
-data = np.array(data_hdu_list[0].data)
-
-noise_map_path = f"{dataset_path}/noise_map.fits"
-noise_map_hdu_list = fits.open(noise_map_path)
-noise_map = np.array(noise_map_hdu_list[0].data)
+data = gaussian_x1.data
+noise_map = gaussian_x1.noise_map
 
 # %%
 """
@@ -116,7 +121,7 @@ class Gaussian:
         self.intensity = intensity
         self.sigma = sigma
 
-    def line_from_xvalues(self, xvalues):
+    def profile_from_xvalues(self, xvalues):
         """
         Calculate the intensity of the light profile on a line of Cartesian x coordinates.
 
@@ -139,15 +144,17 @@ class Gaussian:
 The class's format is how PyAutoFit requires the components of a model to be written, where:
 
 - The name of the class is the name of the model component, in this case, "Gaussian".
+
 - The input arguments of the constructor are the model parameters which we will ultimately fit for, in this case the
   centre, intensity and sigma.
+  
 - The default values of the input arguments tell PyAutoFit whether a parameter is a single-valued floats or a 
   multi-valued tuple. For the Gaussian class, no input parameters are a tuple and we will show an example of a tuple 
   input in a later tutorial).
   
 By writing a model component in this way, we can use the Python class to set it up as model component in PyAutoFit.
 PyAutoFit can the generate model components as instances of their Python class, meaning that its functions 
-(e.g. 'line_from_xvalues') are accessible to PyAutoFit.
+(e.g. 'profile_from_xvalues') are accessible to PyAutoFit.
 
 To set it up as a model component, we use a _PriorModel_ object.
 """
@@ -202,7 +209,7 @@ How are priors set? In this example, we did not specify priors, so they default 
 we'll show how to customize priors, and in a later tutorial we'll explain how for a given model component we can 
 define config files that specify the default priors.
 
-### How Are Priors Used? ###
+__How Are Priors Used?__
 
 Priors are used to create model instances from a unit-vector, which is a vector defined in the same way as the vector 
 above but with values spanning from 0 -> 1.

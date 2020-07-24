@@ -27,8 +27,8 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 conf.instance = conf.Config(
-    config_path=f"{workspace_path}/config",
-    output_path=f"{workspace_path}/output/howtofit",
+    config_path=f"{workspace_path}/howtofit/config",
+    output_path=f"{workspace_path}/howtofit/output",
 )
 
 # %%
@@ -39,10 +39,7 @@ Lets load the dataset, create a mask and perform the fit.
 # %%
 dataset_path = f"{chapter_path}/dataset/gaussian_x2_split/"
 
-dataset = ds.Dataset.from_fits(
-    data_path=f"{dataset_path}/data.fits",
-    noise_map_path=f"{dataset_path}/noise_map.fits",
-)
+dataset = ds.Dataset(data=data, noise_map=noise_map)
 
 # %%
 """

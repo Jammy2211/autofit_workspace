@@ -1,6 +1,7 @@
 # %%
 """
-__Aggregator Part 2__
+Tutorial 8: Aggregator Part 2
+=============================
 
 In part 1 of tutorial 8, we fitted 3 datasets and used the aggregator to load their results. We focused on the
 results of the non-linear search, Emcee. In part 2, we'll look at how the way we designed our source code
@@ -10,29 +11,16 @@ makes it easy to use these results to plot results and data.
 # %%
 #%matplotlib inline
 
-# %%
 from autoconf import conf
 import autofit as af
-
-from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.dataset import (
-    dataset as ds,
-)
-from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.fit import fit as f
-from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.plot import (
-    dataset_plots,
-    fit_plots,
+from autofit_workspace.howtofit.chapter_1_introduction.tutorial_8_aggregator import (
+    src as htf,
 )
 
-import numpy as np
+from pyprojroot import here
 
-# %%
-"""
-You need to change the path below to the workspace directory so we can load the dataset.
-"""
-
-# %%
-workspace_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace"
-chapter_path = f"{workspace_path}/howtofit/chapter_1_introduction"
+workspace_path = str(here())
+print("Workspace Path: ", workspace_path)
 
 # %%
 """
@@ -41,8 +29,8 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 conf.instance = conf.Config(
-    config_path=f"{workspace_path}/config",
-    output_path=f"{workspace_path}/output/howtofit",
+    config_path=f"{workspace_path}/howtofit/config",
+    output_path=f"{workspace_path}/howtofit/output",
 )
 
 # %%
@@ -51,7 +39,7 @@ To load these results with the aggregator, we again point it to the path of the 
 """
 
 # %%
-output_path = f"{chapter_path}/output"
+output_path = f"{workspace_path}/howtofit/output"
 
 agg = af.Aggregator(directory=str(output_path))
 phase_name = "phase_t8"
@@ -80,7 +68,7 @@ we can easily plot each dataset using the 'dataset_plot.py' module.
 
 # %%
 for dataset in agg_filter.values("dataset"):
-    dataset_plots.data(dataset=dataset)
+    htf.plot.Dataset.data(dataset=dataset)
 
 # %%
 """
@@ -128,7 +116,7 @@ dataset_gen = agg_filter.values("dataset")
 mask_gen = agg_filter.values("mask")
 
 masked_datasets = [
-    ds.MaskedDataset(dataset=dataset, mask=mask)
+    htf.MaskedDataset(dataset=dataset, mask=mask)
     for dataset, mask in zip(dataset_gen, mask_gen)
 ]
 
@@ -161,7 +149,7 @@ def masked_dataset_from_agg_obj(agg_obj):
     dataset = agg_obj.dataset
     mask = agg_obj.mask
 
-    masked_dataset = ds.MaskedDataset(dataset=dataset, mask=mask)
+    masked_dataset = htf.MaskedDataset(dataset=dataset, mask=mask)
 
     meta_dataset = agg_obj.meta_dataset
 
@@ -215,7 +203,7 @@ we included more profiles in the model would consist of multiple Gaussians / Exp
 
 # %%
 model_datas = [
-    profile.gaussian.line_from_xvalues(xvalues=dataset.xvalues)
+    profile.gaussian.profile_from_xvalues(xvalues=dataset.xvalues)
     for profile, dataset in zip(profiles, agg_filter.values("dataset"))
 ]
 
@@ -227,7 +215,7 @@ maximum likelihood fit of each phase!
 
 # %%
 fits = [
-    f.FitDataset(masked_dataset=masked_dataset, model_data=model_data)
+    htf.FitDataset(masked_dataset=masked_dataset, model_data=model_data)
     for masked_dataset, model_data in zip(masked_datasets, model_datas)
 ]
 
@@ -238,9 +226,9 @@ We can now plot different components of the fit (again benefiting from how we se
 
 # %%
 for fit in fits:
-    fit_plots.residual_map(fit=fit)
-    fit_plots.normalized_residual_map(fit=fit)
-    fit_plots.chi_squared_map(fit=fit)
+    htf.plot.FitDataset.residual_map(fit=fit)
+    htf.plot.FitDataset.normalized_residual_map(fit=fit)
+    htf.plot.FitDataset.chi_squared_map(fit=fit)
 
 # %%
 """
@@ -255,7 +243,7 @@ def model_data_from_agg_obj(agg_obj):
     instance = agg_obj.samples.max_log_likelihood_instance
     profiles = instance.profiles
     model_data = sum(
-        [profile.line_from_xvalues(xvalues=xvalues) for profile in profiles]
+        [profile.profile_from_xvalues(xvalues=xvalues) for profile in profiles]
     )
 
     return model_data
@@ -265,15 +253,15 @@ def fit_from_agg_obj(agg_obj):
     masked_dataset = masked_dataset_from_agg_obj(agg_obj=agg_obj)
     model_data = model_data_from_agg_obj(agg_obj=agg_obj)
 
-    return f.FitDataset(masked_dataset=masked_dataset, model_data=model_data)
+    return htf.FitDataset(masked_dataset=masked_dataset, model_data=model_data)
 
 
 fit_gen = agg_filter.map(func=fit_from_agg_obj)
 
 for fit in fit_gen:
-    fit_plots.residual_map(fit=fit)
-    fit_plots.normalized_residual_map(fit=fit)
-    fit_plots.chi_squared_map(fit=fit)
+    htf.plot.FitDataset.residual_map(fit=fit)
+    htf.plot.FitDataset.normalized_residual_map(fit=fit)
+    htf.plot.FitDataset.chi_squared_map(fit=fit)
 
 # %%
 """

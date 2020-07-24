@@ -1,6 +1,6 @@
 from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.plot import line_plots
 
-# The 'dataset_plots.py' module is unchanged from the previous tutorial.
+"""The 'dataset_plots.py' module is unchanged from the previous tutorial."""
 
 
 def data(dataset, output_path=None, output_filename=None, output_format="show"):
@@ -22,7 +22,7 @@ def data(dataset, output_path=None, output_filename=None, output_format="show"):
 
 
 def noise_map(dataset, output_path=None, output_filename=None, output_format="show"):
-    """Plot the noise map of a Line dataset.
+    """Plot the noise-map of a Line dataset.
 
     Parameters
     -----------

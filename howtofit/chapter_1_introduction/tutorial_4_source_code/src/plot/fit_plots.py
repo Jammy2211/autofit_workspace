@@ -1,10 +1,12 @@
 from howtofit.chapter_1_introduction.tutorial_4_source_code.src.plot import line_plots
 
-# These functions are simple matplotlib calls that plot components of our FitDataset class, specifically its
-# data, noise map, signal-to-noise map, residual-map, normalized residual-map and chi-squared map.
+"""
+These functions are simple matplotlib calls that plot components of our FitDataset class, specifically its
+data, noise-map, signal-to-noise-map, residual-map, normalized residual-map and chi-squared-map.
 
-# Storing simple functions like this for plotting components of our fit will prove beneficial in later tutorials,
-# when it comes to inspecting the results of a model-fit after they have been completed.
+Storing simple functions like this for plotting components of our fit will prove beneficial in later tutorials,
+when it comes to inspecting the results of a model-fit after they have been completed.
+"""
 
 
 def data(fit):
@@ -19,23 +21,23 @@ def data(fit):
 
 
 def noise_map(fit):
-    """Plot the noise map of a Fit.
+    """Plot the noise-map of a Fit.
 
     Parameters
     -----------
     Fit : fit.Fit
-        The observed Fit whose noise map is plotted.
+        The observed Fit whose noise-map is plotted.
     """
     line_plots.line(xvalues=fit.xvalues, line=fit.noise_map, ylabel="Noise Map")
 
 
 def signal_to_noise_map(fit):
-    """Plot the signal-to-noise map of a Fit.
+    """Plot the signal-to-noise-map of a Fit.
 
     Parameters
     -----------
     Fit : fit.Fit
-        The observed Fit whose signal-to-noise map is plotted.
+        The observed Fit whose signal-to-noise-map is plotted.
     """
     line_plots.line(
         xvalues=fit.xvalues, line=fit.signal_to_noise_map, ylabel="Signal-To-Noise Map"

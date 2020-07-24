@@ -1,6 +1,7 @@
 # %%
 """
-__Aggregator Part 1__
+Tutorial 8: Aggregator Part 1
+=============================
 
 After fitting a large suite of data with the same pipeline, the aggregator allows us to load the results and
 manipulate / plot them using a Python script or Jupyter notebook.
@@ -12,28 +13,17 @@ different data-sets. Each dataset is a single Gaussian and we'll fit them using 
 # %%
 #%matplotlib inline
 
-# %%
 from autoconf import conf
 import autofit as af
+from autofit_workspace.howtofit.chapter_1_introduction.tutorial_8_aggregator import (
+    src as htf,
+)
 
-from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.model import profiles
-from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.dataset import (
-    dataset as ds,
-)
-from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.phase import phase as ph
-from howtofit.chapter_1_introduction.tutorial_8_aggregator.src.phase.settings import (
-    PhaseSettings,
-)
 import numpy as np
+from pyprojroot import here
 
-# %%
-"""
-You need to change the path below to the workspace directory so we can load the dataset.
-"""
-
-# %%
-workspace_path = "/home/jammy/PycharmProjects/PyAuto/autofit_workspace"
-chapter_path = f"{workspace_path}/howtofit/chapter_1_introduction"
+workspace_path = str(here())
+print("Workspace Path: ", workspace_path)
 
 # %%
 """
@@ -42,8 +32,8 @@ Setup the configs as we did in the previous tutorial, as well as the output fold
 
 # %%
 conf.instance = conf.Config(
-    config_path=f"{workspace_path}/config",
-    output_path=f"{workspace_path}/output/howtofit",
+    config_path=f"{workspace_path}/howtofit/config",
+    output_path=f"{workspace_path}/howtofit/output",
 )
 
 # %%
@@ -59,7 +49,13 @@ figures we make via the aggregator.
 """
 
 # %%
+from autofit_workspace.howtofit.simulators.chapter_1 import gaussian_x1_0
+from autofit_workspace.howtofit.simulators.chapter_1 import gaussian_x1_1
+from autofit_workspace.howtofit.simulators.chapter_1 import gaussian_x1_2
+
 dataset_names = ["gaussian_x1_0", "gaussian_x1_1", "gaussian_x1_2"]
+datas = [gaussian_x1_0.data, gaussian_x1_1.data, gaussian_x1_2.data]
+noise_maps = [gaussian_x1_0.noise_map, gaussian_x1_1.noise_map, gaussian_x1_2.noise_map]
 
 # %%
 """
@@ -68,6 +64,8 @@ We can also attach information to the model-fit, by setting up an info dictionar
 Information about our model-fit (e.g. the dataset) that isn't part of the model-fit is made accessible to the 
 aggregator. For example, below we write info on the dataset's data of observation and exposure time.
 """
+
+# %%
 info = {"date_of_observation": "01-02-18", "exposure_time": 1000.0}
 
 # %%
@@ -76,54 +74,49 @@ This for loop runs over every dataset, checkout the comments below for how we se
 """
 
 # %%
-for dataset_name in dataset_names:
+for index in range(len(datas)):
 
-    # The code below loads the dataset and creates the mask as per usual.
+    """The code below creates the dataset and mask as per usual."""
 
-    dataset_path = f"{chapter_path}/dataset/{dataset_name}"
-
-    dataset = ds.Dataset.from_fits(
-        data_path=f"{dataset_path}//data.fits",
-        noise_map_path=f"{dataset_path}/noise_map.fits",
-        name=dataset_name,
-    )
+    dataset = htf.Dataset(data=datas[index], noise_map=noise_maps[index])
 
     mask = np.full(fill_value=False, shape=dataset.data.shape)
 
-    # Here, we create a phase as normal. However, we also include an input parameter 'folders'. The phase folders
-    # define the names of folders that the phase goes in. For example, if a phase goes to the path:
+    """
+    Here, we create a phase as normal. However, we also include an input parameter 'folders'. The phase folders
+    define the names of folders that the phase goes in. For example, if a phase goes to the path:
 
-    # '/path/to/autofit_workspace/output/phase_name/'
+        '/path/to/autofit_workspace/output/phase_name/'
 
-    # A phase folder with the input 'phase_folder' edits this path to:
+    A phase folder with the input 'phase_folder' edits this path to:
 
-    # '/path/to/autofit_workspace/output/phase_folder/phase_name/'
+        '/path/to/autofit_workspace/output/phase_folder/phase_name/'
 
-    # You can input multiple phase folders, for example 'folders=['folder_0', 'folder_1'] would create the path:
+    You can input multiple phase folders, for example 'folders=['folder_0', 'folder_1'] would create the path:
 
-    # '/path/to/autofit_workspace/output/folder_0/folder_1/phase_name/'
+        '/path/to/autofit_workspace/output/folder_0/folder_1/phase_name/'
 
-    # Below, we use the data_name, so our results go in a folder specific to the dataset, e.g:
+    Below, we use the data_name, so our results go in a folder specific to the dataset, e.g:
 
-    # '/path/to/autofit_workspace/output/gaussian_x1_0/phase_t8/'
+        '/path/to/autofit_workspace/output/gaussian_x1_0/phase_t8/'
+    """
 
     print(
-        "Emcee has begun running - checkout the autofit_workspace/howtofit/chapter_1_introduction/output/"
-        + dataset_name
-        + "/phase_t8"
-        "folder for live output of the results."
-        "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
+        f"Emcee has begun running - checkout the "
+        f"autofit_workspace/howtofit/chapter_1_introduction/output/{dataset_names[index]}/phase_t8 folder for live "
+        f"output of the results. This Jupyter notebook cell with progress once Emcee has completed - this could take a "
+        f"few minutes!"
     )
 
-    phase = ph.Phase(
+    phase = htf.Phase(
         phase_name="phase_t8",
-        folders=[dataset_name],
-        profiles=af.CollectionPriorModel(gaussian=profiles.Gaussian),
-        settings=PhaseSettings(),
+        folders=[dataset_names[index]],
+        profiles=af.CollectionPriorModel(gaussian=htf.profiles.Gaussian),
+        settings=htf.PhaseSettings(),
         search=af.Emcee(),
     )
 
-    # Note that we pass the info to the phase when we run it, so that the aggregator can make it accessible.
+    """Note that we pass the info to the phase when we run it, so that the aggregator can make it accessible."""
 
     phase.run(dataset=dataset, mask=mask, info=info)
 
@@ -156,11 +149,11 @@ crash!
 
 There are two things to bare in mind with generators:
 
-1) A generator has no length, thus to determine how many entries of data it corresponds to you first must turn it to a 
-list.
+ 1) A generator has no length, thus to determine how many entries of data it corresponds to you first must turn it to a 
+ list.
 
-2) Once we use a generator, we cannot use it again - we'll need to remake it. For this reason, we typically avoid 
-   storing the generator as a variable and instead use the aggregator to create them on use.
+ 2) Once we use a generator, we cannot use it again - we'll need to remake it. For this reason, we typically avoid 
+ storing the generator as a variable and instead use the aggregator to create them on use.
 
 We can now create a 'samples' generator of every fit. An instance of the Samples class acts as an 
 interface between the results of the non-linear fit on your hard-disk and Python.
@@ -197,12 +190,16 @@ samples_gen = agg_filter.values("samples")
 Alternatively, we can filter using strings, requiring that the string appears in the full path of the output
 results. This is useful if you fit a large sample of data where:
 
-    - Multiple results, corresponding to different phases and model-fits are stored in the same path.
-    - Different runs using different _PhaseSettings_ are in the same path.
-    - Fits using different non-linear searches, with different settings, are contained in the same path.
+ - Multiple results, corresponding to different phases and model-fits are stored in the same path.
+ 
+ - Different runs using different _PhaseSettings_ are in the same path.
+ 
+ - Fits using different non-linear searches, with different settings, are contained in the same path.
 
 The example below shows us using the contains filter to get the results of the fit to only the first dataset. 
 """
+
+# %%
 agg_filter_contains = agg.filter(
     agg.directory.contains("phase_t8"), agg.directory.contains("gaussian_x1_0")
 )
@@ -218,6 +215,7 @@ this tutorial we'll inspect the Sampels class in more detail. The Samples class 
 samples of the non-linear search, which is a list of lists where:
 
  - The outer list is the size of the total number of samples.
+ 
  - The inner list is the size of the number of free parameters in the fit.
 
 """
@@ -234,16 +232,16 @@ for samples in agg_filter.values("samples"):
 The Samples class also contains the log likelihood, log prior, log posterior and weights of every accepted sample, 
 where:
 
-   - The log likelihood is the value evaluated from the likelihood function (e.g. -0.5 * chi_squared + the noise 
-     normalized).
+ - The log likelihood is the value evaluated from the likelihood function (e.g. -0.5 * chi_squared + the noise 
+ normalized).
 
-   - The log prior encodes information on how the priors on the parameters maps the log likelihood value to the log
-     posterior value.
+ - The log prior encodes information on how the priors on the parameters maps the log likelihood value to the log
+ posterior value.
 
-   - The log posterior is log_likelihood + log_prior.
+ - The log posterior is log_likelihood + log_prior.
 
-   - The weight gives information on how samples should be combined to estimate the posterior. The weight values 
-     depend on the sampler used, for MCMC samples they are all 1 (e.g. all weighted equally).
+ - The weight gives information on how samples should be combined to estimate the posterior. The weight values 
+ depend on the sampler used, for MCMC samples they are all 1 (e.g. all weighted equally).
 
 """
 
@@ -339,7 +337,7 @@ marginalization, whereby instead of using the median of the histogram (e.g. the 
 histogram) the values at a specified sigma interval are used. For 3 sigma, these confidence intervals are at 0.3% and
 99.7%.
 
-# Here, I use "ue3" to signify this is an upper error at 3 sigma confidence,, and "le3" for the lower error.
+Here, I use "ue3" to signify this is an upper error at 3 sigma confidence,, and "le3" for the lower error.
 """
 
 # %%

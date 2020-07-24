@@ -1,13 +1,4 @@
-from astropy.io import fits
-import os
-import matplotlib.pyplot as plt
-import numpy as np
-
-from autoconf import conf
-import autofit as af
-from autofit_workspace.examples.simple import model as m
-from autofit_workspace.examples.simple import analysis as a
-
+# %%
 """
 __Example: Result__
 
@@ -20,17 +11,29 @@ see how the fit is performed by the code below. The first section of code below 
 """
 
 # %%
+#%matplotlib inline
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+from autoconf import conf
+import autofit as af
+from autofit_workspace.examples.simple import model as m
+from autofit_workspace.examples.simple import analysis as a
+
+# %%
 """
 __Paths__
 
-Setup the path to the autofit_workspace, using a relative directory name.
+Setup the path to the autofit_workspace, using the project pyprojroot which determines it automatically.
 """
 
 # %%
-#%matplotlib inline
+from pyprojroot import here
 
-# %%
-workspace_path = "{}/../..".format(os.path.dirname(os.path.realpath(__file__)))
+workspace_path = str(here())
+print("Workspace Path: ", workspace_path)
+
 
 # %%
 """
@@ -38,6 +41,8 @@ Use this path to explicitly set the config path and output path.
 """
 
 # %%
+from autoconf import conf
+
 conf.instance = conf.Config(
     config_path=f"{workspace_path}/config", output_path=f"{workspace_path}/output"
 )
@@ -46,17 +51,15 @@ conf.instance = conf.Config(
 """
 __Data__
 
-First, lets load our data of a 1D Gaussian.
+First, lets get data of a 1D Gaussian, by importing the 'autofit_workspace/simple/simulator.py' module, which 
+simulates the noisy data we fit (check it out to see how we simulate the data).
 """
 
 # %%
-dataset_path = f"{workspace_path}/dataset/gaussian_x1"
+from autofit_workspace.examples.simple import simulator
 
-data_hdu_list = fits.open(f"{dataset_path}/data.fits")
-data = np.array(data_hdu_list[0].data)
-
-noise_map_hdu_list = fits.open(f"{dataset_path}/noise_map.fits")
-noise_map = np.array(noise_map_hdu_list[0].data)
+data = simulator.data
+noise_map = simulator.noise_map
 
 # %%
 """
@@ -116,7 +119,7 @@ result = emcee.fit(model=model, analysis=analysis)
 
 # %%
 """
-__RESULT__
+__Result__
 
 Here, we'll look in detail at what information is contained in the result.
 
@@ -244,7 +247,7 @@ likelihood model:
 """
 
 # %%
-model_data = samples.max_log_likelihood_instance.line_from_xvalues(
+model_data = samples.max_log_likelihood_instance.profile_from_xvalues(
     xvalues=np.arange(data.shape[0])
 )
 
