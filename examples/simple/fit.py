@@ -20,6 +20,10 @@ import autofit as af
 from autofit_workspace.examples.simple import model as m
 from autofit_workspace.examples.simple import analysis as a
 
+# python 3.8 recursion problem
+import sys
+sys.setrecursionlimit(10000)
+
 # %%
 """
 __Paths__
