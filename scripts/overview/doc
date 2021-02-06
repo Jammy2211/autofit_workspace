@@ -1,0 +1,43 @@
+Welcome to the PyAutoFit examples!
+
+On the PyAutoFit GitHub page (https://github.com/rhayes777/PyAutoFit) and readthedocs () you'll have seen us illustrate
+the PyAutoFit API using the example problem of fitting 1D gaussian profiles to noisy 1D data of. In this examples
+folder, you'll find Python scripts and Jupter Notebooks illustrating these examples, which you can run to experiment
+with PyAutoFit's behaviour and adapt as templates for your own model-fitting software.
+
+First, lets cover the two sub-folders, 'simple' and 'complex':
+
+    simple:
+        For all examples the model is composed of just one model component, a 1D Gaussian. Therefore, only the
+        PyAutoFit `PriorModel` class is used for model composition.
+
+    complex:
+        The model is composed of multiple model components (a 1D `Gaussian` and / or a 1D Exponential). Therefore, the
+        PyAutoFit CollectionPriorModel class is used for model composition.
+
+We recommend that you begin by reading through the 'simple' sub-folder. If your model-fitting problem is simple and
+doesn't require a model composed from multiple components, you should go ahead and adapt the scripts as templates!
+However, if you feel that your problem is sufficiently complex that you'd benefit using models composed from multiple
+components, you should rread through the 'complex' sub-folder and adapt the scripts there instead.
+
+Both sub-folders have the following example scripts, which should be read in the order listed below:
+
+    model:
+        This contains the model-components that can be used to fit a model to data. They are written as Python classes
+        using a format that allows PyAutoFit to determine from them the model's parameters.
+
+    simulators:
+        This uses the model-components to create simulated data, which includes noise, that'll well fit the model with
+        to illustrate fitting with PyAutoFit.
+
+    analysis:
+        This contains the Analysis class, which contains the data and the log_likelihood_function within which the
+        data is fitted to the model and a likelihood is returned.
+
+    fit:
+        This pass the model and analysis to two `NonLinearSearch`s (Emcee, Dynesty) to fit the model to
+        the data.
+
+    result:
+        This gives a run-through of the outputs available from the result of a non-linear search, including information
+        on the samples, the model parameter estimates and errors.

@@ -4,7 +4,10 @@ PyAutoFit Workspace
 .. |binder| image:: https://mybinder.org/badge_logo.svg
    :target: https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/HEAD
 
-|binder|
+.. |JOSS| image:: https://joss.theoj.org/papers/10.21105/joss.02550/status.svg
+   :target: https://doi.org/10.21105/joss.02550
+
+|binder| |JOSS|
 
 Welcome to the **PyAutoFit** Workspace. You can get started right away by going to the `autofit workspace
 Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/f7b68b6e613fb657881d0e7fadf78ab014a25e06?filepath=introduction.ipynb>`_.
