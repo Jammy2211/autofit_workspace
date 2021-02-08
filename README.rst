@@ -10,7 +10,7 @@ PyAutoFit Workspace
 |binder| |JOSS|
 
 Welcome to the **PyAutoFit** Workspace. You can get started right away by going to the `autofit workspace
-Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/f7b68b6e613fb657881d0e7fadf78ab014a25e06?filepath=introduction.ipynb>`_.
+Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/26262bc184d0c77795db70636a004c9dce9c52b0?filepath=introduction.ipynb>`_.
 Alternatively, you can get set up by following the installation guide on our `readthedocs <https://pyautofit.readthedocs.io>`_.
 
 Workspace Structure
