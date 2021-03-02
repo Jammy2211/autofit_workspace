@@ -1,5 +1,5 @@
 """
-Tutorial 9: Aggregator
+Tutorial 2: Aggregator
 ======================
 
 In the previous tutorial, we fitted 3 datasets with an identical `NonLinearSearch`, outputting the results of each to a

@@ -1,5 +1,5 @@
 """
-Tutorial 10: Filtering
+Tutorial 3: Filtering
 =====================
 
 In the previous tutorial, the `Aggregator` loaded all of the results of all 3 fits.

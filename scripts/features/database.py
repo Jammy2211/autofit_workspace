@@ -1,10 +1,6 @@
 """
-__Database__
-
-Before reading this example, you should have read the examples:
-
- `overview/simple/fit.py`
- `overview/simple/result.py`
+Feature: Database
+=================
 
 In the example `result.py`, we discussed the `Result`'s object, which contains information on the `NonLinearSearch`
 samples, the best-fit model and parameter estimates and errors. If you are fitting a model to only one dataset, this
@@ -29,7 +25,7 @@ import numpy as np
 """
 __Model__
 
-We create the same model used in the example `autofit_workspace/notebooks/overview/simple/fit.ipynb`.
+We create the same model used in the example `autofit_workspace/notebooks/features/simple/fit.ipynb`.
 """
 class Gaussian:
     def __init__(
@@ -78,7 +74,7 @@ class Gaussian:
 """
 __Analysis__
 
-We also create the same `Analysis` used in the example `autofit_workspace/notebooks/overview/simple/fit.ipynb`.
+We also create the same `Analysis` used in the example `autofit_workspace/notebooks/features/simple/fit.ipynb`.
 """
 class Analysis(af.Analysis):
     def __init__(self, data, noise_map):
@@ -145,6 +141,7 @@ model.intensity = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
 model.sigma = af.GaussianPrior(
     mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=np.inf
 )
+
 """
 This for loop runs over every dataset, checkout the comments below for how we set up the path structure.
 """
@@ -174,7 +171,7 @@ for dataset_name in dataset_names:
     Note that this therefore means the fit to each dataset will go into a unique folder.
     """
     emcee = af.Emcee(
-        paths=af.Paths(path_prefix=path.join("database", dataset_name)),
+        paths=af.Paths(path_prefix=path.join("features", "database", dataset_name)),
         nwalkers=30,
         nsteps=1000,
         initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
@@ -195,13 +192,21 @@ for dataset_name in dataset_names:
 
 print("Emcee has finished run - you may now continue the notebook.")
 
+from autofit.database.aggregator import Aggregator
+
+aggregator = Aggregator.from_database(
+    "database.sqlite",
+)
+
+aggregator.add_directory(path.join("output", "features", "database"))
+
 """
 Checkout the output folder, you should see three new sets of results corresponding to the 3 `Gaussian` datasets.
 Unlike previous tutorials, these folders in the output folder are named after the dataset.
 
 To load these results with the aggregator, we simply point it to the path of the results we want it to inspect.
 """
-agg = af.Aggregator(directory=path.join("output", "database"))
+agg = af.Aggregator(directory=path.join("output", "features", "database"))
 
 """
 To begin, let me quickly explain what a generator is in Python, for those unaware. A generator is an object that 

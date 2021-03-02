@@ -1,5 +1,5 @@
 """
-Tutorial 8: Fitting Multiple Datasets
+Tutorial 1: Fitting Multiple Datasets
 =====================================
 
 In this tutorial, we'll fit multiple dataset's with the same `NonLinearSearch`, producing multiple sets of results on
@@ -190,7 +190,7 @@ for dataset_name in dataset_names:
     analysis = Analysis(data=data, noise_map=noise_map)
 
     emcee = af.Emcee(
-        name="tutorial_8_fitting_multiple_datasets",
+        name="tutorial_1_fitting_multiple_datasets",
         path_prefix=path.join("howtofit", "database", dataset_name),
     )
 
