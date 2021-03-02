@@ -28,7 +28,7 @@ We can first filter results to only include completed results. By including `com
 are in the middle of a `NonLinearSearch` will be omitted and not loaded in the `Aggregator`.
 """
 agg = af.Aggregator(
-    directory=path.join("output", "howtofit", "chapter_1", "database"),
+    directory=path.join("output", "howtofit", "database"),
     completed_only=True,
 )
 

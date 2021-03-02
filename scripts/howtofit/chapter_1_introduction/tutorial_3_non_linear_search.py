@@ -154,13 +154,13 @@ model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=50.0)
 
 analysis = Analysis(data=data, noise_map=noise_map)
 
-emcee = af.Emcee(name="tutorial_3", path_prefix=path.join("howtofit", "chapter_1"))
+emcee = af.Emcee(name="tutorial_3_non_linear_search", path_prefix="howtofit")
 
 """
 We begin the `NonLinearSearch` by calling its `fit` method. This will take a minute or so to run (which is very fast 
 for a model-fit). Whilst you're waiting, checkout the folder:
 
-`autofit_workspace/output/howtofit/chapter_1`
+`autofit_workspace/output/howtofit`
 
 Here, the results of the model-fit are output to your hard-disk (on-the-fly) and you can inspect them as the non-linear
 search runs. In particular, you'll find:
@@ -177,7 +177,7 @@ search runs. In particular, you'll find:
 result = emcee.fit(model=model, analysis=analysis)
 
 print(
-    "Emcee has begun running - checkout the autofit_workspace/output/howtofit/chapter_1/phase_t3"
+    "Emcee has begun running - checkout the autofit_workspace/output/howtofit/tutorial_3_non_linear_search"
     " folder for live output of the results."
     "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
 )

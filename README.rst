@@ -9,9 +9,34 @@ PyAutoFit Workspace
 
 |binder| |JOSS|
 
+`Installation Guide <https://pyautofit.readthedocs.io/en/latest/installation/overview.html>`_ |
+`readthedocs <https://pyautofit.readthedocs.io/en/latest/index.html>`_ |
+`Introduction on Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/26262bc184d0c77795db70636a004c9dce9c52b0?filepath=introduction.ipynb>`_ |
+`HowToFit <https://pyautofit.readthedocs.io/en/latest/howtofit/howtofit.html>`_
+
 Welcome to the **PyAutoFit** Workspace. You can get started right away by going to the `autofit workspace
 Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/26262bc184d0c77795db70636a004c9dce9c52b0?filepath=introduction.ipynb>`_.
 Alternatively, you can get set up by following the installation guide on our `readthedocs <https://pyautofit.readthedocs.io>`_.
+
+Getting Started
+---------------
+
+If you haven't already, install `PyAutoFit via pip or conda <https://pyautofit.readthedocs.io/en/latest/installation/overview.html>`_.
+
+Next, clone the ``autofit workspace`` (the line ``--depth 1`` clones only the most recent branch on
+the ``autofit_workspace``, reducing the download size):
+
+.. code-block:: bash
+
+   cd /path/on/your/computer/you/want/to/put/the/autofit_workspace
+   git clone https://github.com/Jammy2211/autofit_workspace --depth 1
+   cd autofit_workspace
+
+Run the ``welcome.py`` script to get started!
+
+.. code-block:: bash
+
+   python3 welcome.py
 
 Workspace Structure
 ===================
@@ -39,7 +64,7 @@ tutorials.
 Workspace Version
 =================
 
-This version of the workspace are built and tested for using **PyAutoFit v0.73.0**.
+This version of the workspace are built and tested for using **PyAutoFit v0.73.1**.
 
 Support
 =======

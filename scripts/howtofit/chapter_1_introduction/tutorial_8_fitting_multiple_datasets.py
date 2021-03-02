@@ -190,13 +190,13 @@ for dataset_name in dataset_names:
     analysis = Analysis(data=data, noise_map=noise_map)
 
     emcee = af.Emcee(
-        name="tutorial_7_multi",
-        path_prefix=path.join("howtofit", "chapter_1", "database", dataset_name),
+        name="tutorial_8_fitting_multiple_datasets",
+        path_prefix=path.join("howtofit", "database", dataset_name),
     )
 
     print(
         f"Emcee has begun running, checkout \n"
-        f"autofit_workspace/output/howtofit/chapter_1/database/{dataset_name}/tutorial_7_multi folder for live \n"
+        f"autofit_workspace/output/howtofit/database/{dataset_name}/tutorial_7_multi folder for live \n"
         f"output of the results. This Jupyter notebook cell with progress once Emcee has completed, this could take a \n"
         f"few minutes!"
     )

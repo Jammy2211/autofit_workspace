@@ -20,7 +20,7 @@ import autofit as af
 To load these results with the `Aggregator`, we again point it to the path of the results we want it to inspect, with
 our path straight to the `Aggregator` results ensuring we don't need to filter our `Aggregator` in this tutorial.
 """
-agg = af.Aggregator(directory=path.join("output", "howtofit", "chapter_1", "database"))
+agg = af.Aggregator(directory=path.join("output", "howtofit", "database"))
 
 """
 We'll reuse the `plot_line` function of previous tutorials, however it now displays to the notebook as opposed to

@@ -154,13 +154,13 @@ model = af.CollectionPriorModel(gaussian=p.Gaussian)
 analysis = Analysis(data=data, noise_map=noise_map)
 
 emcee = af.Emcee(
-    name="tutorial_6__results_and_samples",
-    path_prefix=path.join("howtofit", "chapter_1"),
+    name="tutorial_7_results_and_samples",
+    path_prefix="howtofit",
 )
 
 print(
     "Emcee has begun running. \n"
-    "Checkout the autofit_workspace/output/howtofit/chapter_1/tutorial_6__results_and_samples \n"
+    "Checkout the autofit_workspace/output/howtofit/tutorial_6__results_and_samples \n"
     "folder for live output of the results.\n"
     "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
 )

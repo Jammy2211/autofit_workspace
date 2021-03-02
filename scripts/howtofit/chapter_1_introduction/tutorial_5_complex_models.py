@@ -311,12 +311,12 @@ dimensionality has increased from N=3 to N=6, given that we are now fitting two 
 analysis = Analysis(data=data, noise_map=noise_map)
 
 emcee = af.Emcee(
-    name="tutorial_5__gaussian_x1__exponential_x1", path_prefix="howtofit/chapter_1"
+    name="tutorial_5__gaussian_x1__exponential_x1", path_prefix="howtofit"
 )
 
 print(
     "Emcee has begun running. \n"
-    "Checkout the autofit_workspace/output/howtofit/chapter_1/tutorial_5__gaussian_x1__exponential_x1 \n"
+    "Checkout the autofit_workspace/output/howtofit/tutorial_5__gaussian_x1__exponential_x1 \n"
     "folder for live output of the results.\n"
     "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
 )
@@ -327,7 +327,7 @@ print("Emcee has finished run - you may now continue the notebook.")
 
 """
 Inspect the results of the fit by going to the folder 
-`autofit_workspace/output/howtofit/chapter_1/tutorial_5__gaussian_x1__exponential_x1`. The fit takes longer to run than 
+`autofit_workspace/output/howtofit/tutorial_5__gaussian_x1__exponential_x1`. The fit takes longer to run than 
 the fits performed in previous tutorials, because the dimensionality of the model we fit increases from 3 to 6.
 
 With the `CollectionPriorModel`, **PyAutoFit** provides all the tools needed to compose and fit any model imaginable!
@@ -346,12 +346,12 @@ model = af.CollectionPriorModel(
 )
 
 emcee = af.Emcee(
-    name="tutorial_5__gaussian_x2__exponential_x1", path_prefix="howtofit/chapter_1"
+    name="tutorial_5__gaussian_x2__exponential_x1", path_prefix="howtofit"
 )
 
 print(
     "Emcee has begun running.\n"
-    "checkout the autofit_workspace/output/howtofit/chapter_1/tutorial_5__gaussian_x2__exponential_x1\n"
+    "checkout the autofit_workspace/output/howtofit/tutorial_5__gaussian_x2__exponential_x1\n"
     " folder for live output of the results.\n"
     "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
 )
@@ -394,12 +394,12 @@ noise_map = af.util.numpy_array_from_json(
 analysis = Analysis(data=data, noise_map=noise_map)
 
 emcee = af.Emcee(
-    name="tutorial_5__gaussian_x3", path_prefix=path.join("howtofit", "chapter_1")
+    name="tutorial_5__gaussian_x3", path_prefix="howtofit",
 )
 
 print(
     "Emcee has begun running. "
-    "Checkout the autofit_workspace/output/howtofit/chapter_1/tutorial_5__gaussian_x3"
+    "Checkout the autofit_workspace/output/howtofit/tutorial_5__gaussian_x3"
     " folder for live output of the results."
     "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
 )

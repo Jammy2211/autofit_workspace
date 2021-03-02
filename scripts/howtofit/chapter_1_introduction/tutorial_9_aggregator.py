@@ -21,7 +21,7 @@ import autofit as af
 To load the results of the previous tutorial into the `Aggregator`, we simply point the `Aggregator` class to the path 
 of the results we want it to load.
 """
-agg = af.Aggregator(directory=path.join("output", "howtofit", "chapter_1", "database"))
+agg = af.Aggregator(directory=path.join("output", "howtofit", "database"))
 
 """
 To begin, let me quickly explain what a generator is in Python, for those unaware. A generator is an object that 

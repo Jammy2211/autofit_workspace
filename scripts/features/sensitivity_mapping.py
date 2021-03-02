@@ -132,7 +132,7 @@ base_model = af.CollectionPriorModel(gaussian_main=m.Gaussian)
 """
 We now define the `perturbation_model`, which is the model component whose parameters we iterate over to perform 
 sensitivity mapping. Many instances of the `perturbation_model` are created and used to simulate the many datasets 
-that we fit. However, it is only included in half of the model-fits corresponding to the more complex models whose
+that we fit. However, it is only included in half of the model-fits; corresponding to the more complex models whose
 Bayesian evidence we compare to the simpler model-fits consisting of just the `base_model`.
 
 The `perturbation_model` is therefore another `Gaussian` but now corresponds to the `gaussian_feature` above.
@@ -158,11 +158,11 @@ We are performing sensitivity mapping to determine how bright the `gaussian_feat
 detectable. However, every simulated dataset must include the `main_gaussian`, as its presence in the data will effect
 the detectability of the `gaussian_feature`.
 
-We can pass the `main_gaussian` into the sensitivity mapping as the `base_instance`, meaning that it will be used 
+We can pass the `main_gaussian` into the sensitivity mapping as the `simulation_instance`, meaning that it will be used 
 in the simulation of every dataset. For this example we use the inferred `main_gaussian` from one of the model-fits
 performed above.
 """
-base_instance = result_single.instance
+simulation_instance = result_single.instance
 
 """
 We are about to write a `simulate_function` that simulates examples of 1D `Gaussian` datasets that are fitted to
@@ -182,7 +182,7 @@ class Dataset:
 
 
 """
-We now write the `simulate_function`, which takes the `instance` of our model (defined above) and uses it to 
+We now write the `simulate_function`, which takes the `simulation_instance` of our model (defined above) and uses it to 
 simulate a dataset which is subsequently fitted.
 
 Note that when this dataset is simulated, the quantity `instance.perturbation` is used in the `simulate_function`.
@@ -208,7 +208,7 @@ def simulate_function(instance):
     them together to create the overall model profile.
     
     This print statement will show that, when you run `Sensitivity` below the values of the perturbation use fixed 
-    values of `centre=70` and `sigma=0.5`, whereas the intensity varies over the `step_size` based on its prior.
+    values of `centre=70` and `sigma=0.5`, whereas the intensity varies over the `number_of_steps` based on its prior.
     """
 
     print(instance.perturbation.centre)
@@ -261,37 +261,38 @@ search = af.DynestyStatic(
 We can now combine all of the objects created above and perform sensitivity mapping. The inputs to the `Sensitivity`
 object below are:
 
-- base_instance: This is an instance of the model used to simulate every dataset that is fitted. In this example it 
+- `simulation_instance`: This is an instance of the model used to simulate every dataset that is fitted. In this example it 
 contains an instance of the `gaussian_main` model component.
 
-- base_model: This is the simpler model that is fitted to every simulated dataset, which in this example is composed of 
+- `base_model`: This is the simpler model that is fitted to every simulated dataset, which in this example is composed of 
 a single `Gaussian` called the `gaussian_main`.
 
-- perturbation_model: This is the extra model component that alongside the `base_model` is fitted to every simulated 
+- `perturbation_model`: This is the extra model component that alongside the `base_model` is fitted to every simulated 
 dataset, which in this example  is composed of two `Gaussians` called the `gaussian_main` and `gaussian_feature`.
 
-- simulate_function: This is the function that uses the `instance` and many instances of the `pertubation_model` to
-simulate many datasets that are fitted with the `base_model` and `base_model` + `perturbation_model`.
+- `simulate_function`: This is the function that uses the `simulation_instance` and many instances of the `perturbation_model` 
+to simulate many datasets that are fitted with the `base_model` and `base_model` + `perturbation_model`.
 
-- analysis_class: The wrapper `Analysis` class defined above that passes each simulated dataset to the `Analysis` class
-that fits the data.
+- `analysis_class`: The wrapper `Analysis` class that passes each simulated dataset to the `Analysis` class that fits 
+the data.
 
-- step_size: The size of steps over which the parameters in the `perturbation_model` are iterated. In this example, 
-intensity has a `LogUniformPrior` with lower limit 1e-4 and upper limit 1e2, therefore the `step_size` of 0.5 will
-simulate and fit just 2 datasets where the intensity is 1e-4 and 1e2.
+- `number_of_steps`: The number of steps over which the parameters in the `perturbation_model` are iterated. In this 
+example, intensity has a `LogUniformPrior` with lower limit 1e-4 and upper limit 1e2, therefore the `number_of_steps` 
+of 2 wills imulate and fit just 2 datasets where the intensities between 1e-4 and 1e2.
 
-- number_of_cores: The number of cores over which the sensitivity mapping is performed, enabling parallel processing.
+- `number_of_cores`: The number of cores over which the sensitivity mapping is performed, enabling parallel processing
+if set above 1.
 """
 from autofit.non_linear.grid import sensitivity as s
 
 sensitivity = s.Sensitivity(
     search=search,
-    base_instance=base_instance,
+    simulation_instance=simulation_instance,
     base_model=base_model,
     perturbation_model=perturbation_model,
     simulate_function=simulate_function,
     analysis_class=Analysis,
-    step_size=0.5,
+    number_of_steps=2,
     number_of_cores=2,
 )
 
@@ -302,17 +303,17 @@ You should now look at the results of the sensitivity mapping in the folder `out
 
 You will note the following 4 model-fits have been performed:
 
- - The `base_model` is fitted to a simulated dataset where the `base_instance` and 
- a `perturbation` with intensity is 0.01 are used.
+ - The `base_model` is fitted to a simulated dataset where the `simulation_instance` and 
+ a `perturbation` with `intensity=0.01` are used.
 
- - The `base_model` + `pertubation_model`  is fitted to a simulated dataset where the `base_instance` and 
- a `perturbation` with intensity is 0.01 are used.
+ - The `base_model` + `perturbation_model`  is fitted to a simulated dataset where the `simulation_instance` and 
+ a `perturbation` with `intensity=0.01` are used.
 
- - The `base_model` is fitted to a simulated dataset where the `base_instance` and 
- a `perturbation` with intensity is 100.0 are used.
+ - The `base_model` is fitted to a simulated dataset where the `simulation_instance` and 
+ a `perturbation` with `intensity=100.0` are used.
 
- - The `base_model` + `pertubation_model`  is fitted to a simulated dataset where the `base_instance` and 
- a `perturbation` with intensity is 100.0 are used.
+ - The `base_model` + `perturbation_model`  is fitted to a simulated dataset where the `simulation_instance` and 
+ a `perturbation` with `intensity=100.0` are used.
 
 The fit produced a `sensitivity_result`. 
 

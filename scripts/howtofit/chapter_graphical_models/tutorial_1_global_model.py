@@ -140,7 +140,7 @@ for dataset_name in dataset_names:
     emcee = af.DynestyStatic(
         name=dataset_name,
         path_prefix=path.join(
-            "howtofit", "chapter_graphical_models", "tutorial_1_global_model"
+            "howtofit", "tutorial_1_global_model"
         ),
     )
 

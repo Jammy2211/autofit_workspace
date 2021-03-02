@@ -31,8 +31,6 @@ __Model__
 
 We create the same model used in the example `autofit_workspace/notebooks/overview/simple/fit.ipynb`.
 """
-
-
 class Gaussian:
     def __init__(
         self,
@@ -82,8 +80,6 @@ __Analysis__
 
 We also create the same `Analysis` used in the example `autofit_workspace/notebooks/overview/simple/fit.ipynb`.
 """
-
-
 class Analysis(af.Analysis):
     def __init__(self, data, noise_map):
 
@@ -149,13 +145,14 @@ model.intensity = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
 model.sigma = af.GaussianPrior(
     mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=np.inf
 )
-
 """
 This for loop runs over every dataset, checkout the comments below for how we set up the path structure.
 """
 for dataset_name in dataset_names:
 
-    """The code below sets up the Analysis and creates the mask."""
+    """
+    The code below sets up the Analysis and creates the mask.
+    """
     dataset_path = path.join("dataset", "example_1d", dataset_name)
 
     data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
@@ -177,7 +174,7 @@ for dataset_name in dataset_names:
     Note that this therefore means the fit to each dataset will go into a unique folder.
     """
     emcee = af.Emcee(
-        paths=af.Paths(path_prefix=path.join("overview", "database", dataset_name)),
+        paths=af.Paths(path_prefix=path.join("database", dataset_name)),
         nwalkers=30,
         nsteps=1000,
         initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
@@ -204,7 +201,7 @@ Unlike previous tutorials, these folders in the output folder are named after th
 
 To load these results with the aggregator, we simply point it to the path of the results we want it to inspect.
 """
-agg = af.Aggregator(directory=path.join("output", "overview", "database"))
+agg = af.Aggregator(directory=path.join("output", "database"))
 
 """
 To begin, let me quickly explain what a generator is in Python, for those unaware. A generator is an object that 

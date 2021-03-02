@@ -63,7 +63,7 @@ settings = htf.SettingsPhase(settings_dataset=settings_dataset)
 
 phase = htf.Phase(
     search=af.Emcee(
-        path_prefix=path.join("howtofit", "chapter_phase_api"), name="phase_t3"
+        path_prefix=path.join("howtofit"), name="phase_tutorial_3_customization"
     ),
     settings=settings,
     profiles=af.CollectionPriorModel(gaussian=htf.Gaussian),
@@ -112,7 +112,7 @@ We now create a new `Phase` with these settings and run it (note that we haven't
 """
 phase = htf.Phase(
     search=af.Emcee(
-        path_prefix=path.join("howtofit", "chapter_phase_api"), name="phase_t3"
+        path_prefix=path.join("howtofit"), name="phase_tutorial_3_customization"
     ),
     settings=settings,
     profiles=af.CollectionPriorModel(gaussian=htf.Gaussian),

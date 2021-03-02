@@ -173,14 +173,14 @@ import gaussian as g
 
 model = af.PriorModel(g.Gaussian)
 
-emcee = af.Emcee(name="tutorial_4", path_prefix=path.join("howtofit", "chapter_1"))
+emcee = af.Emcee(name="tutorial_4_visualization", path_prefix="howtofit")
 
 analysis = Analysis(data=data, noise_map=noise_map)
 
 result = emcee.fit(model=model, analysis=analysis)
 
 print(
-    "Emcee has begun running - checkout the autofit_workspace/output/howtofit/chapter_1/phase_t4"
+    "Emcee has begun running - checkout the autofit_workspace/output/howtofit/phase_t4"
     " folder for live output of the results."
     "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
 )
@@ -189,7 +189,7 @@ print("Emcee has finished run - you may now continue the notebook.")
 
 """
 Lets check that this model-fit performs visualization. Navigate to the folder `image` in the directory 
-`autofit_workspace/output/howtofit/chapter_1. You should see `.png` files containing images of the data, 
+`autofit_workspace/output/howtofit. You should see `.png` files containing images of the data, 
 residuals, chi-squared map, etc.
 
 Visualization happens `on-the-fly`, such that during `Emcee` these images are output using the current maximum 

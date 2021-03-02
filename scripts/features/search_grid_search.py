@@ -173,12 +173,12 @@ the third 40.0 -> 60.0, and so on.
    
 `parallel`: If `True`, each grid search is performed in parallel on your laptop. 
 
-In the config file `config/non_linear/GridSearch.ini` you can set the `number_of_cores`, which is the maximum number 
-of cores the grid search will parallelize the run over. 1 core is reserved as a farmer, so if `number_of_cores=4` 
-then up to 3 searches will be run in parallel. In case your laptop has limited hardware resources we do not run in 
-parallel in this example by default, but feel free to change the option to `True` if you have a lot of CPUs and memory!
+`number_of_cores`: The number of cores the grid search will parallelize the run over. If `number_of_cores=1`, the
+search is run in serial. For > 1 core, 1 core is reserved as a farmer, e.g., if `number_of_cores=4` then up to 3 
+searches will be run in parallel. In case your laptop has limited hardware resources we do not run in parallel in 
+this example by default, but feel free to change the option to `True` if you have a lot of CPUs and memory!
 """
-grid_search = af.SearchGridSearch(search=dynesty, number_of_steps=5, parallel=False)
+grid_search = af.SearchGridSearch(search=dynesty, number_of_steps=5, number_of_cores=1)
 
 """
 We can now run the grid search.
