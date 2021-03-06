@@ -215,7 +215,7 @@ of code.  The results are output to the path `autofit_workspace/output/howtofit/
 """
 phase = htf.Phase(
     search=af.Emcee(
-        path_prefix="howtofit", name="tutorial_1_source_code"
+        path_prefix="howtofit", name="tutorial_1_source_code",
     ),
     settings=htf.SettingsPhase(),  # We describe `Settings` objects in tutorial 3.
     profiles=af.CollectionPriorModel(gaussian=htf.Gaussian),

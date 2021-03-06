@@ -33,8 +33,6 @@ To facilitate this we define the function `plot_line` below, which uses Matplotl
 in previous tutorials. This function has additional inputs so the plot can be output to a specified output path with a 
 given output file name.
 """
-
-
 def plot_line(
     xvalues,
     line,

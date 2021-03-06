@@ -1,6 +1,6 @@
 """
 Tutorial 4: Aggregator
-===========================
+======================
 In chapter 1. we used used the `Aggregator` to load and inspect the `Samples` and fits of a model-fit.
 
 In this tutorial, we'll look at how the phase API and the template source code makes it easy to use the `Aggregator`
@@ -29,7 +29,7 @@ To load these results with the `Aggregator`, we again point it to the path of th
 our path straight to the `Aggregator` results ensuring we don't need to filter our `Aggregator` in this tutorial.
 """
 agg = af.Aggregator(
-    directory=path.join("output", "howtofit", "chapter_phase_api", "phase_t1")
+    directory=path.join("output", "howtofit", "tutorial_1_source_code")
 )
 
 """
@@ -79,8 +79,6 @@ datasets = [
 """
 Of course, we should actually be setting up the `Dataset`'s using generators.
 """
-
-
 def dataset_from_agg_obj(agg_obj):
 
     dataset = agg_obj.dataset
@@ -137,8 +135,6 @@ for fit in fits:
 Again, the code above does not use generators and could prove memory intensive for large datasets. Below is how we 
 would perform the above task with generator functions, using the `dataset_gen` above for the `Dataset`.
 """
-
-
 def model_data_from_agg_obj(agg_obj):
 
     xvalues = agg_obj.dataset.xvalues

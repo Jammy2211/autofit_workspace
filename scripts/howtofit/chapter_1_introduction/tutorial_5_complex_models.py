@@ -94,8 +94,6 @@ print("sigma (Exponential) = ", instance.rich.rate)
 """
 To perform visualization we'll again use the plot_line function.
 """
-
-
 def plot_line(
     xvalues,
     line,
@@ -145,8 +143,6 @@ Now we can create a model composed of multiple components we need to fit it to o
 example, in the model above, the `model_data` is the sum of the `Gaussian`'s  individual profile and `Exponential`'s 
 individual profile.
 """
-
-
 class Analysis(af.Analysis):
     def __init__(self, data, noise_map):
 
@@ -374,17 +370,25 @@ model = af.CollectionPriorModel(
     gaussian_0=p.Gaussian, gaussian_1=p.Gaussian, gaussian_2=p.Gaussian
 )
 
-"""This aligns the `centre`'s of the 3 `Gaussian`'s reducing the dimensionality of the model from N=9 to N=7."""
+"""
+This aligns the `centre`'s of the 3 `Gaussian`'s reducing the dimensionality of the model from N=9 to N=7.
+"""
 model.gaussian_0.centre = model.gaussian_1.centre
 model.gaussian_1.centre = model.gaussian_2.centre
 
-"""This fixes the `sigma` value of one `Gaussian` to 1.0, further reducing the dimensionality from N=7 to N=6."""
+"""
+This fixes the `sigma` value of one `Gaussian` to 1.0, further reducing the dimensionality from N=7 to N=6.
+"""
 model.gaussian_0.sigma = 1.0
 
-"""This assertion forces all values of the `sigma` value of the third `Gaussian` to  be above 3.0."""
+"""
+This assertion forces all values of the `sigma` value of the third `Gaussian` to  be above 3.0.
+"""
 model.gaussian_2.add_assertion(model.gaussian_2.sigma > 3.0)
 
-"""We can now fit this model as per usual."""
+"""
+We can now fit this model as per usual.
+"""
 dataset_path = path.join("dataset", "example_1d", "gaussian_x3")
 data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
 noise_map = af.util.numpy_array_from_json(

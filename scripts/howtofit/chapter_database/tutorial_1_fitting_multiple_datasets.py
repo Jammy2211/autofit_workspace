@@ -2,9 +2,20 @@
 Tutorial 1: Fitting Multiple Datasets
 =====================================
 
-In this tutorial, we'll fit multiple dataset's with the same `NonLinearSearch`, producing multiple sets of results on
-our hard-disc. In the following tutorials, we then use these results and the `Aggregator` to load the results into
-our Jupyter notebook to interpret, inspect and plot the output results.
+The default behaviour of **PyAutoFit** is for model-fitting results to be output to hard-disc in folders, which are
+straight forward to navigate and manually check the model-fitting results and visualization. For small model-fitting
+tasks this is sufficient, however many users have a need to perform many model fits to very large datasets, making
+the manual inspection of results time consuming.
+
+PyAutoFit's database feature outputs all model-fitting results as a
+sqlite3 (https://docs.python.org/3/library/sqlite3.html) relational database, such that all results
+can be efficiently loaded into a Jupyter notebook or Python script for inspection, analysis and interpretation. This
+database supports advanced querying, so that specific model-fits (e.g., which fit a certain model or dataset) can be
+loaded.
+
+In this tutorial, we fit multiple dataset's with a `NonLinearSearch`, producing multiple sets of results on our
+hard-disc. In the following tutorials, we load these results using the database into our Jupyter notebook and
+interpret, inspect and plot the results.
 
 we'll fit 3 different dataset's, each with a single `Gaussian` model.
 """
@@ -27,8 +38,6 @@ We'll reuse the `plot_line` and `Analysis` classes of the previous tutorial.
 Note that the `Analysis` class has a new method, `save_attributes_for_aggregator`. This method specifies which properties of the
 fit are output to hard-disc so that we can load them using the `Aggregator` in the next tutorial.
 """
-
-
 def plot_line(
     xvalues,
     line,
@@ -60,6 +69,7 @@ class Analysis(af.Analysis):
         self.noise_map = noise_map
 
     def log_likelihood_function(self, instance):
+
         model_data = self.model_data_from_instance(instance=instance)
 
         residual_map = self.data - model_data
@@ -93,7 +103,9 @@ class Analysis(af.Analysis):
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
 
-        """The visualizer now outputs images of the best-fit results to hard-disk (checkout `visualizer.py`)."""
+        """
+        The visualizer now outputs images of the best-fit results to hard-disk (checkout `visualizer.py`).
+        """
         plot_line(
             xvalues=xvalues,
             line=self.data,
@@ -135,7 +147,10 @@ class Analysis(af.Analysis):
         )
 
     def save_attributes_for_aggregator(self, paths):
-        """Save files like the data and noise-map as pickle files so they can be loaded in the `Aggregator`"""
+        """
+        Save files like the data and noise-map as pickle files so they can be loaded in the `Aggregator`
+        """
+
         # These functions save the objects we will later access using the aggregator. They are saved via the `pickle`
         # module in Python, which serializes the data on to the hard-disk.
 
@@ -147,25 +162,33 @@ class Analysis(af.Analysis):
 
 
 """
-We'll also fit the same model as the previous tutorial.
+We'll fit the single `Gaussian` model used in chapter 1 of **HowToFit**.
 """
 import profiles as p
 
 model = af.CollectionPriorModel(gaussian=p.Gaussian)
 
-"""
-Here, for each dataset we are going to set up the correct path, load it, and fit it using a `NonLinearSearch`.
+model.gaussian.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
+model.gaussian.intensity = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
+model.gaussian.sigma = af.GaussianPrior(
+    mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=np.inf
+)
 
-We want our results to be in a folder specific to the dataset. we'll use the dataset`'s name string to do this. Lets
-create a list of all 3 of our dataset names.
+"""
+For each dataset we load it from hard-disc, set up its `Analysis` class and fit it with a non-linear search. 
+
+The 3 datasets are in the `autofit_workspace/dataset/example_1d` folder.
+
+We want each results to be stored in the database with an entry specific to the dataset. We'll use the `Dataset`'s name 
+string to do this, so lets create a list of the 3 dataset names.
 """
 dataset_names = ["gaussian_x1_0", "gaussian_x1_1", "gaussian_x1_2"]
 
 """
 We can also attach information to the model-fit, by setting up an info dictionary. 
 
-Information about our model-fit (e.g. the data of observation) that isn't part of the model-fit is made accessible to 
-the `Aggregator`. For example, below we write info on the dataset's data of observation and exposure time.
+Information about our model-fit (e.g. the dataset) that isn't part of the model-fit is made accessible to the 
+database. For example, below we write info on the dataset`s (hypothetical) data of observation and exposure time.
 """
 info = {"date_of_observation": "01-02-18", "exposure_time": 1000.0}
 
@@ -174,7 +197,9 @@ This for loop runs over every dataset, checkout the comments below for how we se
 """
 for dataset_name in dataset_names:
 
-    """Load the dataset from the `autofit_workspace/dataset` folder."""
+    """
+    The code below loads the dataset and sets up the Analysis class.
+    """
     dataset_path = path.join("dataset", "example_1d", dataset_name)
 
     data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
@@ -182,15 +207,22 @@ for dataset_name in dataset_names:
         file_path=path.join(dataset_path, "noise_map.json")
     )
 
-    """
-    Here, we create the `Emcee` `NonLinear` as normal. However, we also includethe data name in the `path_prefix`.
-    
-    Note that we pass the info to the fit, so that the `Aggregator` can make it accessible.
-    """
     analysis = Analysis(data=data, noise_map=noise_map)
 
-    emcee = af.Emcee(
-        name="tutorial_1_fitting_multiple_datasets",
+    """
+    In all examples so far, results have gone to the default output path, which was the `autofit_workspace/output` 
+    folder and a folder named after the non linear search. In this example, we will repeat this process and then load
+    these results into the database and a `database.sqlite` file.
+
+    However, results can be written directly to the `database.sqlite` file omitted hard-disc output entirely, which
+    can be important for performing large model-fitting tasks on high performance computing facilities where there
+    may be limits on the number of files allowed. The commented out code below shows how one would perform
+    direct output to the `.sqlite` file. 
+
+    [NOTE: direct writing to .sqlite not supported yet, so this fit currently outputs to hard-disc as per usual and
+    these outputs will be used to make the database.]
+    """
+    emcee = af.DynestyStatic(
         path_prefix=path.join("howtofit", "database", dataset_name),
     )
 
@@ -205,4 +237,7 @@ for dataset_name in dataset_names:
 
 """
 Checkout the output folder, you should see three new sets of results corresponding to our 3 `Gaussian` datasets.
+
+This completes tutorial 1, which was less of a tutorial and more a quick exercise in getting the results of three 
+model-fits onto our hard-disc to demonstrate **PyAutoFit**'s database feature!
 """

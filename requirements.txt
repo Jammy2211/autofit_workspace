@@ -1,1 +1,1 @@
-autofit==0.73.1
+autofit==0.74.0

@@ -60,8 +60,6 @@ To facilitate this we define the function `plot_line` below, which uses Matplotl
 in previous tutorials. This function has additional inputs so the plot can be output to a specified output path with a 
 given output file name.
 """
-
-
 def plot_line(xvalues, line, title=None, ylabel=None, errors=None, color="k"):
     """
     Plot a 1D line of data on a plot of x versus y, where the x-axis is the x coordinate of the line and the y-axis
@@ -164,7 +162,7 @@ We now load the results of all 3 model-fits using the `Aggregator`, so we can tr
 """
 agg = af.Aggregator(
     directory=path.join(
-        "output", "howtofit", "chapter_graphical_models", "tutorial_1_global_model"
+        "output", "howtofit", "tutorial_1_global_model"
     )
 )
 

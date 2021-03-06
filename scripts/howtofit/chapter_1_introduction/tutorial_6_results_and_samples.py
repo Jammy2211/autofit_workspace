@@ -32,8 +32,6 @@ noise_map = af.util.numpy_array_from_json(
 """
 We'll reuse the `plot_line` and `Analysis` classes of the previous tutorial.
 """
-
-
 def plot_line(
     xvalues,
     line,
@@ -180,7 +178,6 @@ The parameters are stored as a list of lists, where:
 
  - The outer list is the size of the total number of samples.
  - The inner list is the size of the number of free parameters in the fit.
-
 """
 samples = result.samples
 print("Sample 50's second parameter value (Gaussian -> intensity):")
