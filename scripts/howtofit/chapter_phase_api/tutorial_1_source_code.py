@@ -214,9 +214,7 @@ Lets instantiate and run a phase, which reduces the task of performing a model-f
 of code.  The results are output to the path `autofit_workspace/output/howtofit/chapter_phase_api/phase_t1`
 """
 phase = htf.Phase(
-    search=af.Emcee(
-        path_prefix="howtofit", name="tutorial_1_source_code",
-    ),
+    search=af.Emcee(path_prefix="howtofit", name="tutorial_1_source_code"),
     settings=htf.SettingsPhase(),  # We describe `Settings` objects in tutorial 3.
     profiles=af.CollectionPriorModel(gaussian=htf.Gaussian),
 )

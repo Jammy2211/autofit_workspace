@@ -32,6 +32,8 @@ noise_map = af.util.numpy_array_from_json(
 """
 We'll reuse the `plot_line` and `Analysis` classes of the previous tutorial.
 """
+
+
 def plot_line(
     xvalues,
     line,
@@ -151,10 +153,7 @@ model = af.CollectionPriorModel(gaussian=p.Gaussian)
 
 analysis = Analysis(data=data, noise_map=noise_map)
 
-emcee = af.Emcee(
-    name="tutorial_6_results_and_samples",
-    path_prefix="howtofit",
-)
+emcee = af.Emcee(name="tutorial_6_results_and_samples", path_prefix="howtofit")
 
 print(
     "Emcee has begun running. \n"

@@ -65,6 +65,8 @@ noise_map = af.util.numpy_array_from_json(
 """
 Lets remind ourselves what the data looks like, using the `plot_line` convenience method fom the previous tutorial.
 """
+
+
 def plot_line(xvalues, line, title=None, errors=None, ylabel=None):
 
     plt.errorbar(
@@ -98,6 +100,8 @@ The `NonLinearSearch` requires an `Analysis` class, which:
 
 For our 1D `Gaussian` model-fitting example, here is our `Analysis` class:
 """
+
+
 class Analysis(af.Analysis):
     def __init__(self, data, noise_map):
 

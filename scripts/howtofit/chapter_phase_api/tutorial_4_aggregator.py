@@ -28,9 +28,7 @@ import src as htf
 To load these results with the `Aggregator`, we again point it to the path of the results we want it to inspect, with
 our path straight to the `Aggregator` results ensuring we don't need to filter our `Aggregator` in this tutorial.
 """
-agg = af.Aggregator(
-    directory=path.join("output", "howtofit", "tutorial_1_source_code")
-)
+agg = af.Aggregator(directory=path.join("output", "howtofit", "tutorial_1_source_code"))
 
 """
 We can again use the `Aggregator` to load a generator of every fit`s dataset, by changing the `output` attribute to 
@@ -79,6 +77,8 @@ datasets = [
 """
 Of course, we should actually be setting up the `Dataset`'s using generators.
 """
+
+
 def dataset_from_agg_obj(agg_obj):
 
     dataset = agg_obj.dataset
@@ -135,6 +135,8 @@ for fit in fits:
 Again, the code above does not use generators and could prove memory intensive for large datasets. Below is how we 
 would perform the above task with generator functions, using the `dataset_gen` above for the `Dataset`.
 """
+
+
 def model_data_from_agg_obj(agg_obj):
 
     xvalues = agg_obj.dataset.xvalues

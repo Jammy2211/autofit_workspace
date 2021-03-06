@@ -22,7 +22,7 @@ We begin by loading the database via the `.sqlite` file as we did in the previou
 from autofit.database.aggregator import Aggregator
 
 agg = Aggregator.from_database(
-    path.join("output", "howtofit", "database", "database.sqlite"),
+    path.join("output", "howtofit", "database", "database.sqlite")
 )
 
 """
@@ -119,6 +119,8 @@ simultaneously in memory on our hard-disk, likely crashing our laptop! To avoid 
 manipulate the `Aggregator` generators as generators themselves. Below is an example function that performs the same 
 task as above.
 """
+
+
 def plot_residuals_from_agg_obj(agg_obj):
 
     data = agg_obj.data

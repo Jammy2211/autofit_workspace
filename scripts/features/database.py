@@ -209,7 +209,9 @@ accessed via the database.]
 gaussian = agg.gaussian
 agg_query = agg.query(gaussian == m.Gaussian)
 samples_gen = agg_query.values("samples")
-print("Total Samples Objects via `Gaussian` model query = ", len(list(samples_gen)), "\n")
+print(
+    "Total Samples Objects via `Gaussian` model query = ", len(list(samples_gen)), "\n"
+)
 
 """
 Queries using the results of model-fitting are also supported. Below, we query the database to find all fits where the 
@@ -218,7 +220,11 @@ inferred value of `sigma` for the `Gaussian` is less than 3.0 (which returns onl
 gaussian = agg.gaussian
 agg_query = agg.query(gaussian.sigma < 3.0)
 samples_gen = agg_query.values("samples")
-print("Total Samples Objects In Query `gaussian.sigma < 3.0` = ", len(list(samples_gen)), "\n")
+print(
+    "Total Samples Objects In Query `gaussian.sigma < 3.0` = ",
+    len(list(samples_gen)),
+    "\n",
+)
 
 """
 Advanced queries can be constructed using logic, for example we below we combine the two queries above to find all
@@ -229,7 +235,11 @@ The OR logical clause is also supported via the symbol |.
 gaussian = agg.gaussian
 agg_query = agg.query((gaussian == m.Gaussian) & (gaussian.sigma < 3.0))
 samples_gen = agg_query.values("samples")
-print("Total Samples Objects In Query `Gaussian & sigma < 3.0` = ", len(list(samples_gen)), "\n")
+print(
+    "Total Samples Objects In Query `Gaussian & sigma < 3.0` = ",
+    len(list(samples_gen)),
+    "\n",
+)
 
 """
 Tutorial 3 complete! 
@@ -298,4 +308,3 @@ corner.corner(
 The Database chapter of the **HowToFit** Jupyter notebooks give a full description of the database feature, including 
 examples of advanced queries and how to load and plot the results of a model-fit in more detail.
 """
-

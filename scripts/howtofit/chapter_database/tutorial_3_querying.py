@@ -28,7 +28,7 @@ from autofit.database.aggregator import Aggregator
 
 agg = Aggregator.from_database(
     path.join("output", "howtofit", "database", "database.sqlite"),
- #   completed_only=True
+    #   completed_only=True
 )
 
 """
@@ -71,7 +71,9 @@ accessed via the database.]
 gaussian = agg.gaussian
 agg_query = agg.query(gaussian == p.Gaussian)
 samples_gen = agg_query.values("samples")
-print("Total Samples Objects via `Gaussian` model query = ", len(list(samples_gen)), "\n")
+print(
+    "Total Samples Objects via `Gaussian` model query = ", len(list(samples_gen)), "\n"
+)
 
 """
 We can also query based on the result of the model that is fitted. Below, we query to the database to find all fits 
@@ -81,7 +83,11 @@ three model-fits).
 gaussian = agg.gaussian
 agg_query = agg.query(gaussian.sigma < 3.0)
 samples_gen = agg_query.values("samples")
-print("Total Samples Objects In Query `gaussian.sigma < 3.0` = ", len(list(samples_gen)), "\n")
+print(
+    "Total Samples Objects In Query `gaussian.sigma < 3.0` = ",
+    len(list(samples_gen)),
+    "\n",
+)
 
 """
 Advanced queries can be constructed using logic, for example we below we combine the two queries above to find all
@@ -92,7 +98,11 @@ The OR logical clause is also supported via the symbol |.
 gaussian = agg.gaussian
 agg_query = agg.query((gaussian == p.Gaussian) & (gaussian.sigma < 3.0))
 samples_gen = agg_query.values("samples")
-print("Total Samples Objects In Query `Gaussian & sigma < 3.0` = ", len(list(samples_gen)), "\n")
+print(
+    "Total Samples Objects In Query `Gaussian & sigma < 3.0` = ",
+    len(list(samples_gen)),
+    "\n",
+)
 
 """
 Tutorial 3 complete! 

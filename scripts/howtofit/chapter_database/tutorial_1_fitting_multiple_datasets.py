@@ -38,6 +38,8 @@ We'll reuse the `plot_line` and `Analysis` classes of the previous tutorial.
 Note that the `Analysis` class has a new method, `save_attributes_for_aggregator`. This method specifies which properties of the
 fit are output to hard-disc so that we can load them using the `Aggregator` in the next tutorial.
 """
+
+
 def plot_line(
     xvalues,
     line,
@@ -223,7 +225,7 @@ for dataset_name in dataset_names:
     these outputs will be used to make the database.]
     """
     emcee = af.DynestyStatic(
-        path_prefix=path.join("howtofit", "database", dataset_name),
+        path_prefix=path.join("howtofit", "database", dataset_name)
     )
 
     print(

@@ -60,6 +60,8 @@ To facilitate this we define the function `plot_line` below, which uses Matplotl
 in previous tutorials. This function has additional inputs so the plot can be output to a specified output path with a 
 given output file name.
 """
+
+
 def plot_line(xvalues, line, title=None, ylabel=None, errors=None, color="k"):
     """
     Plot a 1D line of data on a plot of x versus y, where the x-axis is the x coordinate of the line and the y-axis
@@ -136,10 +138,7 @@ for dataset_name in dataset_names:
     analysis = Analysis(data=data, noise_map=noise_map)
 
     emcee = af.DynestyStatic(
-        name=dataset_name,
-        path_prefix=path.join(
-            "howtofit", "tutorial_1_global_model"
-        ),
+        name=dataset_name, path_prefix=path.join("howtofit", "tutorial_1_global_model")
     )
 
     print(
@@ -161,9 +160,7 @@ parameters) have much larger errors than other **PyAutoFit** examples due to the
 We now load the results of all 3 model-fits using the `Aggregator`, so we can try determine the global `centre` value.
 """
 agg = af.Aggregator(
-    directory=path.join(
-        "output", "howtofit", "tutorial_1_global_model"
-    )
+    directory=path.join("output", "howtofit", "tutorial_1_global_model")
 )
 
 """
