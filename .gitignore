@@ -1,3 +1,4 @@
+*.sqlite*
 *.pyc
 *.ipynb_checkpoints
 .cache
