@@ -7,15 +7,16 @@ the non-linear searches Emcee and Dynesty.
 If you haven't already, you should checkout the files `example/model.py` and `example/analysis.py` to see how we have
 provided PyAutoFit with the necessary information on our model, data and log likelihood function.
 """
-#%matplotlib inline
+# %matplotlib inline
 
-import autofit as af
-import model as m
-import analysis as a
+from os import path
 
 import matplotlib.pyplot as plt
 import numpy as np
-from os import path
+
+import analysis as a
+import autofit as af
+import model as m
 
 """
 __Data__
@@ -30,7 +31,7 @@ noise_map = af.util.numpy_array_from_json(
 )
 
 session = af.db.open_database(
-   "database.sqlite"
+    "database.sqlite"
 )
 
 """
