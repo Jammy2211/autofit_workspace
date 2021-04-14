@@ -100,7 +100,7 @@ the search grid search.
 dynesty = af.DynestyStatic(
     name="single_fit",
     path_prefix=path.join("features", "search_grid_search"),
-    n_live_points=100,
+    nlive=100,
     iterations_per_update=500,
     maxcall=30000,
 )
@@ -157,7 +157,7 @@ We will use the same `Dynesty` settings, but change its `name`.
 dynesty = af.DynestyStatic(
     name="grid_fit",
     path_prefix=path.join("features", "search_grid_search"),
-    n_live_points=100,
+    nlive=100,
     iterations_per_update=500,
     maxcall=30000,
 )

@@ -3,9 +3,8 @@ Feature: Database
 =================
 
 The default behaviour of **PyAutoFit** is for model-fitting results to be output to hard-disc in folders, which are
-straight forward to navigate and manually check the model-fitting results. For small model-fitting tasks this is
-sufficient, however many users have a need to perform many model fits to very large datasets, making the manual
-inspection of results time consuming.
+straight forward to navigate and manually check. For small model-fitting tasks this is sufficient, however many users
+have a need to perform many model fits to very large datasets, making manual inspection of results time consuming.
 
 PyAutoFit's database feature outputs all model-fitting results as a
 sqlite3 (https://docs.python.org/3/library/sqlite3.html) relational database, such that all results
@@ -26,6 +25,7 @@ A full description of PyAutoFit's database tools is provided in the database cha
 
 import autofit as af
 
+import os
 from os import path
 import numpy as np
 
@@ -33,6 +33,8 @@ import model as m
 import analysis as a
 
 """
+__Dataset Names__
+
 For each dataset we load it from hard-disc, set up its `Analysis` class and fit it with a non-linear search. 
 
 The 3 datasets are in the `autofit_workspace/dataset/example_1d` folder.
@@ -43,10 +45,13 @@ string to do this, so lets create a list of the 3 dataset names.
 dataset_names = ["gaussian_x1_0", "gaussian_x1_1", "gaussian_x1_2"]
 
 """
-We can also attach information to the model-fit, by setting up an info dictionary. 
+__Info__
 
-Information about our model-fit (e.g. the dataset) that isn't part of the model-fit is made accessible to the 
-database. For example, below we write info on the dataset`s (hypothetical) data of observation and exposure time.
+Information about our model-fit that isn't part of the model-fit can be made accessible to the database, by passing 
+an `info` dictionary. 
+
+For example, below we write info on the dataset`s (hypothetical) data of observation and exposure time, which the
+database will be able to access.
 """
 info = {"date_of_observation": "01-02-18", "exposure_time": 1000.0}
 
@@ -98,10 +103,12 @@ for dataset_name in dataset_names:
         nwalkers=30,
         nsteps=1000,
         initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
-        auto_correlation_check_for_convergence=True,
-        auto_correlation_check_size=100,
-        auto_correlation_required_length=50,
-        auto_correlation_change_threshold=0.01,
+        auto_correlations_settings=af.AutoCorrelationsSettings(
+            check_for_convergence=True,
+            check_size=100,
+            required_length=50,
+            change_threshold=0.01,
+        ),
         number_of_cores=1,
     )
 
@@ -125,10 +132,12 @@ datasets.
 """
 from autofit.database.aggregator import Aggregator
 
-agg = Aggregator.from_database(
-    path.join("output", "features", "database", "database.sqlite")
-)
+database_file = path.join("output", "features", "database", "database.sqlite")
 
+if path.isfile(database_file):
+    os.remove(database_file)
+
+agg = Aggregator.from_database(path.join(database_file))
 agg.add_directory(path.join("output", "features", "database"))
 
 """
@@ -142,9 +151,9 @@ Python is then free to overwrite it afterwards. Thus, your laptop won't crash!
 
 There are two things to bare in mind with generators:
 
-1) A generator has no length and to determine how many entries it contains you first must turn it into a list.
+ 1) A generator has no length and to determine how many entries it contains you first must turn it into a list.
 
-2) Once we use a generator, we cannot use it again and need to remake it. For this reason, we typically avoid 
+ 2) Once we use a generator, we cannot use it again and need to remake it. For this reason, we typically avoid 
  storing the generator as a variable and instead use the aggregator to create them on use.
 
 We can now create a `samples` generator of every fit. As we saw in the `result.py` example scripts, an instance of 
@@ -181,7 +190,7 @@ input into the model-fit above.
 
 By querying using the string `gaussian_x1_1` the model-fit to only the second `Gaussian` dataset is returned:
 """
-# FEature Missing
+# Feature Missing
 
 # agg_query = agg.query(agg.directory.contains("gaussian_x1_1"))
 # samples_gen = agg_query.values("samples")
@@ -198,7 +207,7 @@ We can also query based on the model fitted.
 For example, we can load all results which fitted a `Gaussian` model-component, which in this simple example is all
 3 model-fits.
  
-The ability to query via the model is extremely powerful. It enalbes a user to perform many model-fits with many 
+The ability to query via the model is extremely powerful. It enables a user to perform many model-fits with many 
 different model parameterizations to large datasets and efficiently load and inspect the results. 
 
 [Note: the code `agg.gaussian` corresponds to the fact that in the `CollectionPriorModel` above, we named the model
@@ -242,69 +251,10 @@ print(
 )
 
 """
-Tutorial 3 complete! 
-
 The API for querying is fairly self explanatory. Through the combination of info based queries, model based
 queries and result based queries a user has all the tools they need to fit extremely large datasets with many different
 models and load only the results they are interested in for inspection and analysis.
 
-Lets next try something more ambitious and create a plot of the inferred sigma values vs intensity of each
-Gaussian profile, including error bars at 3 sigma confidence.
-
-This will use many of the methods described in the `result.py` example scripts, so if anything below appears new or
-unclear checkout that script for a explanation.
-"""
-import matplotlib.pyplot as plt
-
-mp_instances = [samps.median_pdf_instance for samps in agg.values("samples")]
-ue3_instances = [
-    out.error_instance_at_upper_sigma(sigma=3.0) for out in agg.values("samples")
-]
-le3_instances = [
-    out.error_instance_at_lower_sigma(sigma=3.0) for out in agg.values("samples")
-]
-
-print(mp_instances)
-
-mp_sigmas = [instance.gaussian.sigma for instance in mp_instances]
-ue3_sigmas = [instance.gaussian.sigma for instance in ue3_instances]
-le3_sigmas = [instance.gaussian.sigma for instance in le3_instances]
-mp_intensitys = [instance.gaussian.intensity for instance in mp_instances]
-ue3_intensitys = [instance.gaussian.intensity for instance in ue3_instances]
-le3_intensitys = [instance.gaussian.intensity for instance in le3_instances]
-
-plt.errorbar(
-    x=mp_sigmas,
-    y=mp_intensitys,
-    marker=".",
-    linestyle="",
-    xerr=[le3_sigmas, ue3_sigmas],
-    yerr=[le3_intensitys, ue3_intensitys],
-)
-plt.title("Intensity vs Sigma for 3 model-fits to 1D Gaussians.")
-plt.ylabel("Intensity")
-plt.xlabel("Sigma")
-plt.show()
-
-"""
-The Probability Density Functions (PDF's) of the results can be plotted using the library:
-
- corner.py: https://corner.readthedocs.io/en/latest/
-
-(In built visualization for PDF's and non-linear searches is a future feature of PyAutoFit, but for now you`ll have to 
-use the libraries yourself!).
-"""
-import corner
-
-samples = list(agg.values("samples"))[0]
-
-corner.corner(
-    xs=samples.parameters,
-    weights=samples.weights,
-    labels=samples.model.parameter_labels,
-)
-
-"""
 The Database chapter of the **HowToFit** Jupyter notebooks give a full description of the database feature, including 
 examples of advanced queries and how to load and plot the results of a model-fit in more detail.
 """
