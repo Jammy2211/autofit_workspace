@@ -86,7 +86,7 @@ model = af.CollectionPriorModel(gaussian_main=m.Gaussian)
 
 dynesty = af.DynestyStatic(
     path_prefix=path.join("features", "sensitivity_mapping", "single_gaussian"),
-    n_live_points=100,
+    nlive=100,
     iterations_per_update=500,
 )
 
@@ -98,7 +98,7 @@ model.gaussian_feature.sigma = 0.5
 
 dynesty = af.DynestyStatic(
     path_prefix=path.join("features", "sensitivity_mapping", "two_gaussians"),
-    n_live_points=100,
+    nlive=100,
     iterations_per_update=500,
 )
 
@@ -253,7 +253,7 @@ We next specify the search used to perform each model fit by the sensitivity map
 """
 search = af.DynestyStatic(
     path_prefix=path.join("features", "sensitivity_mapping", "sensitivity_map"),
-    n_live_points=100,
+    nlive=100,
     iterations_per_update=500,
 )
 

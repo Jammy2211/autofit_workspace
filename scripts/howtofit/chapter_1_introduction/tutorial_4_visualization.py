@@ -180,7 +180,7 @@ analysis = Analysis(data=data, noise_map=noise_map)
 result = emcee.fit(model=model, analysis=analysis)
 
 print(
-    "Emcee has begun running - checkout the autofit_workspace/output/howtofit/phase_t4"
+    "Emcee has begun running - checkout the autofit_workspace/output/howtofit/tutorial_4_visualization"
     " folder for live output of the results."
     "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
 )

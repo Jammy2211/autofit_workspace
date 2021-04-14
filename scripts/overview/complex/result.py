@@ -72,10 +72,12 @@ emcee = af.Emcee(
     nwalkers=50,
     nsteps=2000,
     initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
-    auto_correlation_check_for_convergence=True,
-    auto_correlation_check_size=100,
-    auto_correlation_required_length=50,
-    auto_correlation_change_threshold=0.01,
+    auto_correlations_settings=af.AutoCorrelationsSettings(
+        check_for_convergence=True,
+        check_size=100,
+        required_length=50,
+        change_threshold=0.01,
+    ),
     number_of_cores=1,
 )
 

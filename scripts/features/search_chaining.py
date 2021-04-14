@@ -108,7 +108,7 @@ Given the simplicity of the model, we can use a low number of live points to ach
 dynesty = af.DynestyStatic(
     name=("search[1]__left_gaussian"),
     path_prefix=path.join("features", "search_chaining"),
-    n_live_points=30,
+    nlive=30,
     iterations_per_update=500,
 )
 
@@ -163,7 +163,7 @@ Given the simplicity of the model, we can again use a low number of live points 
 dynesty = af.DynestyStatic(
     name=("search[2]__right_gaussian"),
     path_prefix=path.join("features", "search_chaining"),
-    n_live_points=30,
+    nlive=30,
     iterations_per_update=500,
 )
 
@@ -214,7 +214,7 @@ model = af.CollectionPriorModel(
 dynesty = af.DynestyStatic(
     name=("search[3]__both_gaussians"),
     path_prefix=path.join("features", "search_chaining"),
-    n_live_points=100,
+    nlive=100,
     iterations_per_update=500,
 )
 

@@ -64,10 +64,12 @@ emcee = af.Emcee(
     nwalkers=30,
     nsteps=1000,
     initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),
-    auto_correlation_check_for_convergence=True,
-    auto_correlation_check_size=100,
-    auto_correlation_required_length=50,
-    auto_correlation_change_threshold=0.01,
+    auto_correlations_settings=af.AutoCorrelationsSettings(
+        check_for_convergence=True,
+        check_size=100,
+        required_length=50,
+        change_threshold=0.01,
+    ),
     number_of_cores=1,
 )
 
@@ -219,15 +221,14 @@ is None).:
 log_evidence = samples.log_evidence
 
 """
-At this point, you might be wondering what else the results contains - pretty much everything we discussed above was a
-part of its *samples* property! For projects which use **PyAutoFit**'s phase API (see the howtofit tutrials), the 
-`Result`'s object can be extended to include model-specific results.
+At this point, you might be wondering what else the results contains, pretty much everything we discussed above was a
+part of its *samples* property! The answer is, not much, however the `Result`'s object can be extended to include 
+model-specific results for your project, and we detail how to do this in the **HowToFit** lectures.
 
 For example, we may extend the results of our 1D `Gaussian` example to include properties containing the maximum
 log likelihood of the summed model data and for every individual profile in the model.
 
-(The commented out functions below are llustrative of the API we can create, but do not work in this example given we 
-are not using the phase API.)
+(The commented out functions below are llustrative of the API we can create by extending a result).
 """
 # max_log_likelihood_profile = results.max_log_likelihood_profile
 # max_log_likelihood_profile_list = results.max_log_likelihood_profile_list

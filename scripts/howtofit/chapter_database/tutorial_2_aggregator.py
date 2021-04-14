@@ -133,7 +133,7 @@ print("Most probable Model Instances:\n")
 print(mp_instances, "\n")
 
 """
-We can also print the `model_results` of all phases, which is string that summarizes every fit`s model providing
+We can also print the `model_results` of all searchs, which is string that summarizes every fit`s model providing
 quick inspection of all results.
 """
 results = agg.model_results
