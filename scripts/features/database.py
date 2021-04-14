@@ -94,7 +94,7 @@ for dataset_name in dataset_names:
     these outputs will be used to make the database.]
     """
     emcee = af.Emcee(
-        paths=af.Paths(path_prefix=path.join("features", "database", dataset_name)),
+        paths=af.DirectoryPaths(path_prefix=path.join("features", "database", dataset_name)),
         nwalkers=30,
         nsteps=1000,
         initializer=af.InitializerBall(lower_limit=0.49, upper_limit=0.51),

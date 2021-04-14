@@ -65,7 +65,7 @@ class Visualizer:
             "chi_squared_map"
         ]
 
-    def visualize_dataset(self, paths: af.Paths, dataset: ds.Dataset):
+    def visualize_dataset(self, paths: af.DirectoryPaths, dataset: ds.Dataset):
 
         """For visualizing the dataset, we simply plot the plot methods here."""
         if self.plot_dataset_data:
@@ -86,7 +86,7 @@ class Visualizer:
                 output_format="png",
             )
 
-    def visualize_fit(self, paths: af.Paths, fit: f.FitDataset, during_analysis: bool):
+    def visualize_fit(self, paths: af.DirectoryPaths, fit: f.FitDataset, during_analysis: bool):
 
         """
         If this function is called during an analysis, the during_analysis bool will be `True`. If there are

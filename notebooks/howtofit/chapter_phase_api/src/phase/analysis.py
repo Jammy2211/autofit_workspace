@@ -104,7 +104,7 @@ class Analysis(af.Analysis):
         return f.FitDataset(dataset=self.dataset, model_data=model_data)
 
     def visualize(
-        self, paths: af.Paths, instance: af.ModelInstance, during_analysis: bool
+        self, paths: af.DirectoryPaths, instance: af.ModelInstance, during_analysis: bool
     ):
 
         """
@@ -127,5 +127,4 @@ class Analysis(af.Analysis):
         with open(f"{paths.pickle_path}/dataset.pickle", "wb") as f:
             pickle.dump(self.dataset, f)
 
-        with open(f"{paths.pickle_path}/settings.pickle", "wb+") as f:
-            pickle.dump(self.settings, f)
+        paths.save_object("settings", self.settings)
