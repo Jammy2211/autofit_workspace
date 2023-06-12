@@ -1,0 +1,8 @@
+gradient:
+  type: Uniform
+  lower_limit: -10.0
+  upper_limit: 10.0
+intercept:
+  type: Uniform
+  lower_limit: -10.0
+  upper_limit: 10.0
