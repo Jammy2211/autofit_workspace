@@ -1,0 +1,6 @@
+{
+    "type": "autofit.example.model.Exponential",
+    "centre": 70.0,
+    "normalization": 40.0,
+    "rate": 0.005
+}
