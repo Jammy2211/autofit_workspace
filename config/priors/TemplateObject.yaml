@@ -1,0 +1,10 @@
+parameter0:
+  type: Uniform
+  lower_limit: 0.0
+  upper_limit: 1.0
+parameter1:
+  type: Gaussian
+  mean: 0.0
+  sigma: 0.1
+  lower_limit: -inf
+  upper_limit: inf
