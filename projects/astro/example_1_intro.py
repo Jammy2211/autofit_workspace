@@ -12,7 +12,7 @@ When the alignment is just right and the lens is massive enough, the background 
 times. The schematic below shows such a system, where light-rays from the source are deflected around the lens galaxy
 to the observer following multiple distinct paths.
 
-![Schematic of Gravitational Lensing](https://raw.githubusercontent.com/Jammy2211/PyAutoLens/main/docs/overview/images/lensing/schematic.jpg)
+![Schematic of Gravitational Lensing](https://raw.githubusercontent.com/Jammy2211/PyAutoLens/main/docs/overview/images/overview_1_lensing/schematic.jpg)
 **Credit: F. Courbin, S. G. Djorgovski, G. Meylan, et al., Caltech / EPFL / WMKO**
 https://www.astro.caltech.edu/~george/qsolens/
 
