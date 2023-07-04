@@ -27,7 +27,7 @@ import numpy as np
 """
 __Data__
 
-First, lets load data of a 1D `Gaussian` + 1D Exponential, by loading it from a .json file in the directory 
+Load data of a 1D `Gaussian` + 1D Exponential, by loading it from a .json file in the directory 
 `autofit_workspace/dataset/`, which simulates the noisy data we fit (check it out to see how we simulate the 
 data).
 """
