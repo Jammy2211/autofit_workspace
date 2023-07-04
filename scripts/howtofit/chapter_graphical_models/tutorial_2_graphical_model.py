@@ -2,21 +2,20 @@
 Tutorial 2: Graphical Models
 ============================
 
-In the previous tutorial, we fitted a dataset containing 5 noisy 1D Gaussian which had a shared `centre` value. We
-attempted to estimate the `centre` by fitting each dataset individually and combining the value of the `centre`
-inferred by each fit into an overall estimate, using a weighted average.
+We have fitted a dataset containing 5 noisy 1D Gaussian which had a shared `centre` value. We estimated
+the `centre` by fitting each dataset individually and combining the value of the `centre` inferred by each fit into
+an overall estimate, using a weighted average.
 
-Graphical modeling follows a different approach. It composes a single model that is fitted to the entire dataset.
-This model includes specific model component for every individual 1D Gaussian in the sample. However, the graphical
+Graphical models use a different approach. They are a single model that is fitted to the entire dataset simultaneously. 
+The model includes specific model component for every individual 1D Gaussian in the sample. However, the graphical 
 model also has shared parameters between these individual model components.
 
-This example fits a graphical model using the same sample fitted in the previous tutorial, consisting of
-data of three 1D Gaussians. We fit the `Gaussian` model to each 1D gaussian. However, whereas previously
-the `cenyre` of each model component was a free parameter in each fit, in the graphical model there is only
-a single value of `centre` shared by all three 1D Gaussians (which is how the galaxy data was simulated).
+This example fits a graphical model using the same sample fitted in the previous tutorial, consisting of many 1D 
+Gaussians. However, whereas previously the `centre` of each Gaussian was a free parameter in each fit, in the graphical 
+model there is only a single parameter for the `centre` shared by all 1D Gaussians.
 
-This graphical model creates a non-linear parameter space that has parameters for every Gaussian in our sample. In this
-example, there are 5 Gaussians each with their own model, therefore:
+This graphical model creates a non-linear parameter space with parameters for every Gaussian in our sample. For 5
+Gaussians each with their own model parameters but a single shared centre:
 
  - Each Gaussian has 2 free parameters from the components that are not shared (`normalization`, `sigma`).
  - There is one additional free parameter, which is the `centre` shared by all 5 Gaussians.
@@ -44,8 +43,8 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 
  - `plot_profile_1d`: a function for plotting 1D profile datasets including their noise.
 
-These are functionally identical to the `Analysis`, `Gaussian` and `plot_profile_1d` objects and functions you have seen 
-and used elsewhere throughout the workspace.
+These are functionally identical to the `Analysis`, `Gaussian` and `plot_profile_1d` objects and functions you 
+have seen and used elsewhere throughout the workspace.
 
 __Dataset__
 
@@ -115,8 +114,8 @@ centre_shared_prior = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 We now set up a list of `Model`'s, each of which contain a `Gaussian` that is used to fit each of the datasets 
 loaded above.
 
-All of these `Model`'s use the `centre_shared_prior`. This means all model-components use the same value of `centre` 
-for every model composed and fitted by the `NonLinearSearch`. 
+All of these models use the `centre_shared_prior`, meaning that all model-components use the same value of `centre` 
+for every individual model component. 
 
 For a fit using five Gaussians, this reduces the dimensionality of parameter space from N=15 (e.g. 3 parameters per 
 Gaussian) to N=11 (e.g. 5 `sigma`'s 5 `normalizations` and 1 `centre`).
@@ -139,7 +138,7 @@ Above, we composed a model consisting of three `Gaussian`'s with a shared `centr
 which we intend to fit with each of these `Gaussians`, setting up each in an `Analysis` class that defines how the 
 model is used to fit the data.
 
-We now simply pair each model-component to each `Analysis` class, so that **PyAutoFit** knows that: 
+We now simply pair each model-component to each `Analysis` class, so that:
 
 - `gaussian_0` fits `data_0` via `analysis_0`.
 - `gaussian_1` fits `data_1` via `analysis_1`.
@@ -147,9 +146,9 @@ We now simply pair each model-component to each `Analysis` class, so that **PyAu
 
 The point where a `Model` and `Analysis` class meet is called an `AnalysisFactor`. 
 
-This term is used to denote that we are composing a graphical model, which is commonly termed a 'factor graph'. A 
-factor defines a node on this graph where we have some data, a model, and we fit the two together. The 'links' between 
-these different nodes then define the global model we are fitting.
+This term denotes that we are composing a graphical model, which is commonly called a 'factor graph'. A  factor 
+defines a node on this graph where we have some data, a model, and we fit the two together. The 'links' between these 
+different nodes then define the global model we are fitting.
 """
 analysis_factor_list = []
 
@@ -161,14 +160,13 @@ for model, analysis in zip(model_list, analysis_list):
 """
 __Factor Graph__
 
-We combine our `AnalysisFactor`'s to compose a factor graph.
+We now combine our `AnalysisFactor`'s to compose a factor graph.
 
-What is a factor graph? A factor graph defines the graphical model we have composed. For example, it defines the 
-different model components that make up our model (e.g. the three `Gaussian` classes) and how their parameters are 
-linked or shared (e.g. that each `Gaussian` has its own unique `normalization` and `sigma`, but a shared `centre` 
-parameter).
+What is a factor graph? A factor graph defines the graphical model's graph. For example, it defines the different 
+model components that make up our model (e.g. the individual `Gaussian` classes) and how their parameters are linked or 
+shared (e.g. that each `Gaussian` has its own unique `normalization` and `sigma`, but a shared `centre` parameter).
 
-This is what our factor graph looks like (visualization of graphs not implemented in **PyAutoFit** yet): 
+This is what our factor graph looks like (visualization of graphs not implemented yet): 
 
 The factor graph above is made up of two components:
 
@@ -197,7 +195,10 @@ We can now create a non-linear search and use it to the fit the factor graph, us
 search = af.DynestyStatic(
     path_prefix=path.join("howtofit", "chapter_graphical_models"),
     name="tutorial_2_graphical_model",
+    nlive=200,
+    dlogz=1e-4,
     sample="rwalk",
+    walks=10,
 )
 
 result = search.fit(model=factor_graph.global_prior_model, analysis=factor_graph)

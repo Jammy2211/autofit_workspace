@@ -61,7 +61,7 @@ import autofit as af
 """
 __Data__
 
-First, lets load data of two 1D Gaussians, by loading it from a .json file in the directory 
+Load data of two 1D Gaussians, by loading it from a .json file in the directory 
 `autofit_workspace/dataset/gaussian_x1_with_feature`.
 
 This 1D data includes two `Gaussians` that are split from one another.
@@ -73,7 +73,7 @@ noise_map = af.util.numpy_array_from_json(
 )
 
 """
-Now lets plot the data, including its error bars. 
+Lets plot the data. 
 
 Two separate `Gaussians` are clearly visible.
 """
@@ -91,7 +91,7 @@ plt.close()
 """
 __Analysis__
 
-Our Analysis class is described in `analysis.py` and is the same used in the `overview/complex` example. 
+Create the analysis which fits the model to the data.
 
 It fits the data as the sum of as many `Gaussian`'s as are in the model.
 
@@ -115,7 +115,7 @@ print(model_1.info)
 """
 __Search 1__
 
-We will now fit the data with the `left_gaussian` using a single non-linear search. 
+Fit the data with the `left_gaussian` using a single non-linear search. 
 
 Given the simplicity of the model, we can use a low number of live points to achieve a fast model-fit.
 """

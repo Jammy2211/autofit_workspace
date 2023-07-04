@@ -2,22 +2,24 @@
 Feature: Multiple Datasets
 ==========================
 
-In this example, we illustrate **PyAutoFit** tools for performing model-fits to multiple datasets simultaneously,
-including tools to customize the model composition that make it straight forward for specific parameters of the model
-to vary across the datasets.
+It is common to have multiple observations of the same signal. For the 1D Gaussian example, this would be multiple
+1D datasets of the same underlying Gaussian, with different noise-map realizations. In this situation, fitting the
+same model to all datasets simultaneously is desired, and would provide better constraints on the model.
 
-This is achieve via summing of `Analysis` object, which you should recall each has its own unique dataset
-and `log_likelihood_function`. Thus, via analysis summing, we can perform model-fits to large and diverse datasets
-where each individual dataset may only constrain specific aspects of a model.
+On other occations, the signal may vary across the datasets in a way that requires that the model is updated
+accordingly. For example, a scenario where the centre of each Gaussian is the same across the datasets, but
+their `sigma` values are different in each dataset. A model where all Gaussians share the same `centre` is now required.
 
-This reflects the nature of temporal datasets which are acquired over time, where one can likely expect that certain
-model parameters vary as a function of time (and therefore should be fitted to vary across the datasets) whilst others
-remain fixed.
+This examples illustrates how to perform model-fits to multiple datasets simultaneously, including tools to customize
+the model composition such that specific parameters of the model vary across the datasets.
 
-__Prerequisites__
+This uses the summing of `Analysis` object, which each have their own unique dataset and `log_likelihood_function`.
+Unique `Analysis` objects can be written for each dataset, meaning that we can perform model-fits to diverse datasets
+with different formats and structures.
 
-If you haven't already, you should checkout the files `example/model.py` and `example/analysis.py` to see how we have
-provided PyAutoFit with the necessary information on our model, data and log likelihood function.
+It is also common for each individual dataset to only constrain specific aspects of a model. The high level of model
+customizaiton ensures that composing a model that is appropriate for fitting to such large datasets is straight
+forward.
 
 __Example Source Code (`af.ex`)__
 
@@ -52,9 +54,8 @@ First, lets load 3 datasets of a 1D Gaussian, by loading them from .json files i
 All three datasets contain an identical signal, meaning that it is appropriate to fit the same model to all three 
 datasets simultaneously.
 
-Each dataset has a different noise realization, meaning that performing a simultaneously fit will offer improved constraints
-over individual fits.
-
+Each dataset has a different noise realization, meaning that performing a simultaneously fit will offer improved 
+constraints over individual fits.
 """
 dataset_size = 3
 
@@ -86,6 +87,7 @@ for data, noise_map in zip(data_list, noise_map_list):
         yerr=noise_map,
         color="k",
         ecolor="k",
+        linestyle=" ",
         elinewidth=1,
         capsize=2,
     )
@@ -95,16 +97,15 @@ for data, noise_map in zip(data_list, noise_map_list):
 """
 __Model__
 
-Next, we create our model, which in this case corresponds to a single 1D Gaussian, that will be fitted to all 3 
-datasets simultaneously..
+Next, we create our model, which corresponds to a single 1D Gaussian, that is fitted to all 3 datasets simultaneously.
 """
 model = af.Model(af.ex.Gaussian)
 
 """
-Checkout `autofit_workspace/config/priors/model.json`, this config file defines the default priors of the `Gaussian` 
+Checkout `autofit_workspace/config/priors/model.yaml`, this config file defines the default priors of the `Gaussian` 
 model component. 
 
-We can overwrite priors before running the `NonLinearSearch` as shown below.
+We overwrite the priors below to make them explicit.
 """
 model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 model.normalization = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
@@ -115,7 +116,7 @@ model.sigma = af.GaussianPrior(
 """
 __Analysis__
 
-We now set up our three instances of the `Analysis` class, using the class described in `analysis.py`.
+We set up our three instances of the `Analysis` class, using the class described in `analysis.py`.
  
 We set up an `Analysis` for each dataset one-by-one, using a for loop:
 """
@@ -128,21 +129,21 @@ for data, noise_map in zip(data_list, noise_map_list):
 """
 __Analysis Summing__
 
-We can now sum together every analysis in the list, to produce an overall analysis class which we fit with a non-linear
+We now sum together every analysis in the list, to produce an overall analysis class which we fit with the non-linear
 search.
 
-By summing analysis objects the following happens:
+By summing analysis objects the following happen:
 
  - The log likelihood values computed by the `log_likelihood_function` of each individual analysis class are summed to
- give the overall log likelihood value that the non-linear search uses for model-fitting.
+   give an overall log likelihood value that the non-linear search uses for model-fitting.
 
  - The output path structure of the results goes to a single folder, which includes sub-folders for the visualization
- of every individual analysis object based on the `Analysis` object's `visualize` method.
+   of every individual analysis object based on the `Analysis` object's `visualize` method.
 """
 analysis = analysis_list[0] + analysis_list[1] + analysis_list[2]
 
 """
-We can alternatively sum the analysis objects as follows:
+We can alternatively sum a list of analysis objects as follows:
 """
 analysis = sum(analysis_list)
 
@@ -154,7 +155,7 @@ analysis.n_cores = 1
 """
 __Search__
 
-To fit the multiple datasets via a non-linear search we use this analysis using the usual **PyAutoFit** API:
+To fit multiple datasets via a non-linear search we use this summed analysis object:
 """
 search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_simple")
 
@@ -276,10 +277,17 @@ This means that the model has 5 free parameters in total, the shared `centre` an
 analysis = analysis.with_free_parameters(model.gaussian.sigma)
 
 """
+To inspect this new model, with extra parameters for each dataset created, we have to extract the modified version of this model from the Analysis object.
+This occurs automatically when we begin a non-linear search, therefore the normal model we created above is what we input to the search.fit() method.
+"""
+
+model_updated = analysis.modify_model(model)
+
+"""
 This means that the model has 5 free parameters in total, the shared `centre` and `normalization` and a unique
 `sigma` value for every dataset.
 """
-print(model.prior_count)
+print(model_updated.total_free_parameters)
 
 """
 We can now fit this model to the data using the usual **PyAutoFit** tools:

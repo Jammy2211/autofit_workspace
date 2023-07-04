@@ -4,4 +4,4 @@ They show how one would build a structure a project around **PyAutoFit** to best
 
 They also demonstrate advanced functionality using real-world examples.
 
-- ``astro``: Example **PyAutoFit** project using a model-fitting example from Astronomy. This highlights **multi-level models**.
+- ``cosmology``: Example **PyAutoFit** project using a model-fitting example from Astronomy. This highlights **multi-level models**.

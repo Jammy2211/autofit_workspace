@@ -1,75 +1,102 @@
 """
-Tutorial 3: Parameter Space And Priors
-======================================
+Tutorial 3: Non Linear Search
+=============================
 
-In the previous tutorial, we define fitting functions that allowed us to create model-data using realizations of a
-1D `Gaussian` model and fit it to the data. We achieved a good fit, but only by guessing values of parameters. In the
-next two tutorials we are going to learn how to fit a model to data properly, which means we first need to define
-concepts of a parameter space and priors.
+In the previous tutorials, we defined a model and fitted it to data via fitting functions. We quantified the goodness
+of fit via the log likliehood and showed that for models with only a few free parameters, we could find good fits to
+the data by manually guessing parameter values. However, for more complex models, this approach was infeasible.
+
+In this tutorial, we will learn how to fit the model to data properly, using a technique that can scale up to
+models with 10s or 100s of parameters.
 
 __Parameter Space__
 
-If mathematics, you will have learnt that we can write a simple function as follows:
+In mathematics, we can write a function as follows:
 
 $f(x) = x^2$
 
-In this function, when we input the parameter $x`$ in to the function $f$, it returns a value $f(x)$. The mappings
-between values of $x$ and $f(x)$ define what we can call the parameter space of this function (and if you remember
-your math classes, the parameter space of the function $f(x) = x^2$ is a parabola).
+In this function, when we input the parameter $x$ in to the function $f$, it returns a value $f(x)$.
 
-A function can of course have multiple parameters:
+This mapping between values of $x$ and $f(x)$ define the "parameter space" of this function (which fot
+the function $f(x) = x^2$ is a parabola).
+
+A function can have multiple parameters, for 3 parameters, $x$, $y$ and $z$:
 
 $f(x, y, z) = x + y^2 - z^3$
 
-This function has 3 parameters, $x$, $y$ and $z$. The mappings between $x$, $y$ and $z$ and $f(x, y, z)$ define another
-parameter space, albeit this parameter space now has 3 dimensions. Nevertheless, just like we could plot a parabola to
-visualize the parameter space $f(x) = x^2$, we could visualize this parameter space as 3 dimensional surface.
+The mapping between values of $x$, $y$ and $z$ and $f(x, y, z)$ define another parameter space, albeit it now
+has 3 dimensions.
 
-In the previous tutorial, we used realizations of the `Gaussian` class to fit data with a model so as to return a log
-likelihood.
+The concept of a parameter space relates closely to how in the previous tutorial we use instances of a 1D Gaussian
+profile, with parameters $(x, I, \sigma)$ to fit data with a model and compute a log likelihood.
 
-This process can be thought of as us computing a likelihood from a function, just like our functions $f(x)$ above.
-However, the log likelihood function is not something that we can write down analytically as an equation and its
-behaviour is inherently non-linear. Nevertheless, it is a function, and if we put the same values of model
-parameters into this function the same value of log likelihood will be returned.
+This process can be thought of as a function $f (x, I, \sigma)$, where the value returned by this function is the
+log likelihood.
 
-Therefore, we can write this log likelihood function as follows, where the parameters $(x, N, \sigma)$ are again
-the parameters of our `Gaussian`:
+With that, we have introduced one of the most important concepts in model-fitting,
+the "log likelihood function". This function describes how we use an instance of the model (e.g. where the
+parameters have values) to compute a log likelihood describing good of a fit to the data it is.
+
+We can write this log likelihood function as follows:
 
 $f(x, N, \sigma) = log_likelihood$
 
-By expressing the likelihood in this way we have defined a parameter space! The solutions to this function cannot be
-written analytically and it is highly complex and non-linear. However, we have already learnt how we can use this
-function to determine a log likelihood, by creating realizations of the Gaussian and comparing them to the data.
+By expressing the likelihood in this way, we can therefore now think of our model as having a parameter space. This
+parameter space consists of an N dimensional surface (where N is the number of free parameters) spanning all possible
+values of model parameters. This surface itself can be considered the "likelihood surface", and finding the peak of
+this surface is our goal when we perform model-fitting.
 
-__Priors__
+This parameter space is "non-linear", meaning that the relationship between input parameters and log likelihood does
+not behave linearly. This simply means that it is not possible to predict what a log likelihood will be from a set of
+model parameters, unless a whole fit to the data is performed in order to compute the value.
 
-We are now thinking about our model and log likelihood function as a parameter space, which is crucial for
-understanding how we will fit the model to data in the next tutorial. Before we do that, we need to consider one more
-concept, how do we define where in parameter space we search for solutions? What values of model parameters do we
-consider viable solutions?
+__Non Linear Search__
 
-A parameter, say, the `centre` of the `Gaussian`, could in principle take any value between negative and positive
-infinity. However, when we inspect the data it is clearly confined to values between 0.0 and 100.0, therefore we should
-define a parameter space that only contains these solutions as these are the only physically plausible values
-of `centre` (e.g. between 0.0 --> 100.0).
+Now that we are thinking about the problem in terms of a non-linear parameter space with a likelihood surface, we can
+now introduce the method used to fit the model to the data, the "non-linear search".
 
-These are called the 'priors'. Our priors define where parameter space has valid solutions, and throughout these
-tutorials we will use three types of prior:
+Previously, we tried a basic approach, randomly guessing models until we found one that gave a good fit and
+high `log_likelihood`. Surprisingly, this is the basis of how model fitting using a non-linear search actually works!
 
-- UniformPrior: The permitted values of a parameter are between a `lower_limit` and `upper_limit` and we assign equal
-probability to all solutions between these limits. For example, the `centre` of the `Gaussian` will typically assume
-a uniform prior between 0.0 and 100.0.
+The non-linear search guesses lots of models, tracking the log likelihood of these models. As the algorithm
+progresses, it preferentially tries more models using parameter combinations that gave higher log likelihood solutions
+previously. The rationale is that if a parameters set provided a good fit to the data, models with similar values will
+too.
 
-- LogUniformPrior: Like a `UniformPrior` this confines the values of a parameter between a `limit_limit`
-and `upper_limit`, but we assign the probability of solutions with a log distribution with base 10. For example,
-the `normalization` of the `Gaussian` will typically assume a log uniform prior between 1e-2 and 100.0.
+There are two key differences between guessing random models to find a good fit and a non-linear search:
 
-- GaussianPrior: The permitted values of a parameter whose probability is tied to a Gaussian distribution with
-a `mean` and width `sigma`. For example, the `sigma` of the `Gaussian` will typically assume Gaussian prior with mean
-10.0 and sigma 5.0.
+ - The non-linear search fits the model to the data in mere miliseconds. It therefore can compute the log likelihood
+   of tens of thousands of different model parameter combinations in order to find the highest likelihood solutions.
+   This would have been impractical for a human.
+
+ - The non-linear search has a much better tracking system to remember which models it guess previously and what
+   their log likelihoods were. This means it can sample all possible solutions more thoroughly, whilst honing in on
+   those which give the highest likelihood more quickly.
+
+We can think of our non-linear search as "searching" parameter space, trying to find the regions of parameter space
+with the highest log likelihood values. Its goal is to find them, and then converge on the highest log likelihood
+solutions possible. In doing so, it can tell us what model parameters best-fit the data.
+
+This picture of how a non-linear search is massively simplified, and omits key details on how statistical principles
+are upheld to ensure that results are statistically robust. The goal of this chapter is to teach you how to fit a
+model to data, not the underlying principles of Bayesian inference on which model-fitting is based.
+
+If you are interested, more infrmation can be found at the following web links:
+
+https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo
+
+https://twiecki.io/blog/2015/11/10/mcmc-sampling/
+
+https://towardsdatascience.com/a-zero-math-introduction-to-markov-chain-monte-carlo-methods-dcba889e0c50
+
+__MCMC__
+
+There are many different non-linear search algorithms, which search parameter space in different ways. This tutorial
+uses a a Markov Chain Monte Carlo (MCMC) method alled `Emcee`. For now, lets not worry about the details of how
+an MCMC method actually works, and just use the simplified picture we painted above.
 """
 import autofit as af
+import autofit.plot as aplt
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -84,7 +111,7 @@ from os import path
 """
 __Data__
 
-Again, load and plot the dataset from the `autofit_workspace/dataset` folder.
+Load and plot the dataset from the `autofit_workspace/dataset` folder.
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
 data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
@@ -114,19 +141,38 @@ Lets again define our 1D `Gaussian` model.
 class Gaussian:
     def __init__(
         self,
-        centre: float = 30.0,  # <- **PyAutoFit** recognises these constructor arguments
-        normalization: float = 1.0,  # <- are the Gaussian`s model parameters.3
-        sigma: float = 5.0,
+        centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
+        normalization=1.0,  # <- are the Gaussian`s model parameters.
+        sigma=5.0,
     ):
+        """
+        Represents a 1D Gaussian profile.
+
+        This is a model-component of example models in the **HowToFit** lectures and is used to fit example datasets
+        via a non-linear search.
+
+        Parameters
+        ----------
+        centre
+            The x coordinate of the profile centre.
+        normalization
+            Overall normalization of the profile.
+        sigma
+            The sigma value controlling the size of the Gaussian.
+        """
         self.centre = centre
         self.normalization = normalization
         self.sigma = sigma
 
-    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray) -> np.ndarray:
+    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray):
         """
-        Calculate the normalization of the light profile on a line of Cartesian x coordinates.
 
-        The input xvalues are translated to a coordinate system centred on the Gaussian, using its centre.
+        Returns a 1D Gaussian on an input list of Cartesian x coordinates.
+
+        The input xvalues are translated to a coordinate system centred on the Gaussian, via its `centre`.
+
+        The output is referred to as the `model_data` to signify that it is a representation of the data from the
+        model.
 
         Parameters
         ----------
@@ -141,151 +187,218 @@ class Gaussian:
 
 
 """
-__Model Mapping via Priors__
-
-We can again use **PyAutoFit** to set the `Gaussian` as a model and map it to instances of the `Gaussian`, however
-we can now do this via priors.
+We now compose our model, a single 1D Gaussian, which we will fit to the data via the non-linear search.
 """
 model = af.Model(Gaussian)
-print("Model `Gaussian` object: \n")
-print(model)
 
-"""
-We now set the prior for each parameter.
-"""
-model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
-model.normalization = af.LogUniformPrior(lower_limit=0.1, upper_limit=10.0)
-model.sigma = af.GaussianPrior(mean=10.0, sigma=5.0)
-
-"""
-The updated priors are reflected in the model's `info` attribute.
-
-[The `info` below may not display optimally on your computer screen, for example the whitespace between parameter
-names on the left and parameter priors on the right may lead them to appear across multiple lines. This is a
-common issue in Jupyter notebooks.
-
-The`info_whitespace_length` parameter in the file `config/general.yaml` in the [output] section can be changed to 
-increase or decrease the amount of whitespace (The Jupyter notebook kernel will need to be reset for this change to 
-appear in a notebook).]
-"""
 print(model.info)
 
 """
-As a quick reminder, we have seen that using this `Model` we can create an `instance` of the model, by mapping a 
-list of physical values of each parameter as follows.
+__Priors__
+
+When we print its `.info`, we see that the parameters have priors (e.g. `UniformPrior`). We have so far not worried 
+about what these meant, but now we understand how a non-linear search works we can now discuss what priors are.
+
+A parameter, for example the `centre` of the `Gaussian`, could take any value between negative and positive infinity. 
+However, when we inspect the data it is clearly confined to values between 0.0 and 100.0. Our model parameter space 
+should reflect this, and only contain solutions with these physically plausible values between 0.0 --> 100.0.
+
+One role of priors is to define where parameter space has valid solutions. The `centre` parameter has 
+a `UniformPrior` with a  `lower_limit=0.0` and `upper_limit=100.0`. It therefore is already confined to the values 
+discussed above.
+
+Priors have a second role: they encode our previous beliefs about a model and what values we expect the parameters 
+to have. 
+
+For example, imagine we had multiple datasets observing the same signal and we had already fitted the model to the 
+first signal already. We may set priors that reflect this result, as we have prior knowledge of what the parameters
+will likely be. 
+
+Setting priros in this way actually changes the result inferred when fitting the second dataset, because the priors 
+partly constrain the result based on the information learned in the first fit. Other types of priors you will 
+see throughout the autofit workspace (e.g `GaussianPrior`, `LogUniformPrior`) allow one to encode this type of 
+information in a fit..
+
+In this tutorial, we will stick to uniform priors, as they are conceptually the most simple.
+
+Lets manually set the priors of the model we fit in this example.
 """
-instance = model.instance_from_vector(vector=[1.0, 2.0, 3.0])
-print("Instance Parameters \n")
-print("x = ", instance.centre)
-print("normalization = ", instance.normalization)
-print("sigma = ", instance.sigma)
-
-"""
-Priors are used to create model instances via a mapping analogous to the one above, but from a unit-vector of values.
-
-This vector is defined in the same way as the vector above but with values spanning from 0 -> 1, where the unit values 
-are mapped to physical values via the prior, for example:
-
-For the `UniformPrior` defined between 0.0 and 100.0:
-
-- An input unit value of 0.5 will give the physical value 5.0.
-- An input unit value of 0.8 will give te physical value 80.0.
-
-For the `LogUniformPrior` (base 10) defined between 0.1 and 10.0:
-
-- An input unit value of 0.5 will give the physical value 1.0.
-- An input unit value of 1.0 will give te physical value 10.0.
-
-For a `GaussianPrior `defined with mean 10.0 and sigma 5.0:
-
-- An input unit value of 0.5 (e.g. the centre of the Gaussian) will give the physical value 10.0.
-- An input unit value of 0.8173 (e.g. 1 sigma confidence) will give te physical value 14.5256.
-
-Lets take a look:
-"""
-instance = model.instance_from_unit_vector(unit_vector=[0.5, 0.3, 0.8173])
-
-print("Model Instance: \n")
-print(instance)
-
-print("Instance Parameters \n")
-print("x = ", instance.centre)
-print("normalization = ", instance.normalization)
-print("sigma = ", instance.sigma)
+model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
+model.normalization = af.UniformPrior(lower_limit=0.0, upper_limit=10.0)
+model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=10.0)
 
 """
-__How Are Priors Actually Used?__
+__Analysis__
 
-Priors allow us to map unit vectors to physical parameters and therefore define a parameter space. However, the actual
-process of mapping unit-values to physical values in this way is pretty much all handled by **PyAutoFit** 
-"behind ths scenes" and is not something you'll explicitly do yourself. Nevertheless, this is core concept of any
-model-fitting exercise and is why we have covered it in this tutorial. 
+The non-linear search requires an `Analysis` class, which:
 
-In the next tutorial, we'll see how this mapping between unit and physical values is built-in to the algorithms we 
-use to perform model-fitting!
+ 1) Receives the data that the model fits.
 
-__Limits__
+ 2) Defines the `log_likelihood_function`, which computes a `log_likelihood` from a model instance. 
 
-We can also set physical limits on parameters, such that a model instance cannot generate parameters outside of a
-specified range.
+ 3) Provides an interface between the non-linear search and the `log_likelihood_function`, so the search can determine
+    the goodness of fit of any set of model parameters.
+    
+The non-linear search calls the `log_likelihood_function` many times, enabling it map out the high likelihood regions 
+of parameter space and converges on the highest log likelihood solutions.
 
-For example, a `Gaussian` cannot have a negative normalization, so we can set its lower limit to a value of 0.0.
-
-This is what the `gaussian_limits` section in the priors config files sets.
+Below is a suitable `Analysis` class for fitting a 1D gaussian to the data loaded above.
 """
-model.normalization = af.GaussianPrior(
-    mean=0.0, sigma=1.0, lower_limit=0.0, upper_limit=1000.0
+
+
+class Analysis(af.Analysis):
+    def __init__(self, data, noise_map):
+        """
+        In this example the `Analysis` object only contains the `data` and `noise-map`.
+
+        It can be easily extended, for more complex data-sets and model fitting problems.
+
+        Parameters
+        ----------
+        data
+            A 1D numpy array containing the data (e.g. a noisy 1D Gaussian) fitted in the workspace examples.
+        noise_map
+            A 1D numpy array containing the noise values of the data, used for computing the goodness of fit
+            metric.
+        """
+        super().__init__()
+
+        self.data = data
+        self.noise_map = noise_map
+
+    def log_likelihood_function(self, instance):
+        """
+        Returns the log likelihood of a fit of multiple 1D Gaussians to the dataset.
+
+        The `instance` that comes into this method is an instance of the `Gaussian` model above. The parameter values
+        are chosen by the non-linear search, based on where it thinks the high likelihood regions of parameter
+        space are.
+
+        The lines of Python code are commented out below to prevent excessive print statements when we run the
+        non-linear search, but feel free to uncomment them and run the search so you can see all the models it tries.
+
+        print("Gaussian Instance:")
+        print("Centre = ", instance.centre)
+        print("Normalization = ", instance.normalization)
+        print("Sigma = ", instance.sigma)
+
+        We fit the data with the `Gaussian` instance, using its "model_data_1d_via_xvalues_from" function to create the
+        model data.
+        """
+        xvalues = np.arange(self.data.shape[0])
+
+        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        residual_map = self.data - model_data
+        chi_squared_map = (residual_map / self.noise_map) ** 2.0
+        chi_squared = sum(chi_squared_map)
+        noise_normalization = np.sum(np.log(2 * np.pi * noise_map**2.0))
+        log_likelihood = -0.5 * (chi_squared + noise_normalization)
+
+        return log_likelihood
+
+
+"""
+We create an instance of the `Analysis` class by simply passing it the `data` and `noise_map`:
+"""
+analysis = Analysis(data=data, noise_map=noise_map)
+
+"""
+__Search__
+
+To use the non-linear search `Emcee` we simply create an instance of the `af.Emcee` object and pass the analysis
+and model to its `fit` method.
+"""
+model = af.Model(Gaussian)
+
+search = af.Emcee()
+
+"""
+__Model Fit__
+
+We begin the non-linear search by calling its `fit` method. This will take a minute or so to run.
+"""
+print(
+    """
+    Emcee has begun running.
+    This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!
+    """
 )
 
-"""
-The unit vector input below creates a negative normalization value, such that if you uncomment the line 
-below **PyAutoFit** raises an error.
-"""
-# instance = model.instance_from_unit_vector(unit_vector=[0.01, 0.01, 0.01])
+result = search.fit(model=model, analysis=analysis)
+
+print("Emcee has finished run - you may now continue the notebook.")
 
 """
-__Prior Configs__
+__Result__
 
-For highly complex models with many parameters, it is cumbersome to have to manually define the prior on every 
-parameter and would likely lead to input mistakes.
+Upon completion the non-linear search returns a `Result` object, which contains information about the model-fit.
 
-**PyAutoFit** allows one to define all of the default prior values in a configuration file, such that they are loaded
-automatically. This means we do not need manually define the priors ourselves.
+The `info` attribute shows the result in a readable format.
 
-To do this, we define the `Gaussian` class in a standalone Python 
-module `autofit_workspace/*/howtofit/chapter_1_introduction/gaussian.py` (as opposed to this Python script). 
-The name of this module is used to look for a file `gaussian.json` in the directory `autofit_workspace/config/priors` 
-such that the default priors of the model are loaded from the file `gaussian.json`. 
-
-For example, because our `Gaussian` is in the module `gaussian.py`, its priors are loaded from the priors config
-file `gaussian.json`. Check this file out now to see the default priors; we'll discuss what the different inputs
-mean later on.
-
-This is illustrated below, where we are using the `Gaussian` defined in `gaussian.py` and inspect its prior to see
-they have been automatically set up via the config file.
+[Above, we discussed that the `info_whitespace_length` parameter in the config files could b changed to make 
+the `model.info` attribute display optimally on your computer. This attribute also controls the whitespace of the
+`result.info` attribute.]
 """
-import gaussian as g
-
-model = af.Model(g.Gaussian)
-print("Model `Gaussian` object via priors configs: \n")
-print(model)
+print(result.info)
 
 """
+The result has a "maximum log likelihood instance", which is the instance of the model (e.g. the `Gaussian`) with
+the model parameters that gave the highest overall log likelihood out of any model trialed by the non-linear search.
+"""
+print("Maximum Likelihood Model:\n")
+max_log_likelihood_instance = result.samples.max_log_likelihood()
+print("Centre = ", max_log_likelihood_instance.centre)
+print("Normalization = ", max_log_likelihood_instance.normalization)
+print("Sigma = ", max_log_likelihood_instance.sigma)
+
+"""
+We can use this to plot the maximum log likelihood fit over the data and confirm that a good fit was inferred:
+"""
+model_data = result.max_log_likelihood_instance.model_data_1d_via_xvalues_from(
+    xvalues=np.arange(data.shape[0])
+)
+plt.errorbar(
+    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+)
+plt.plot(xvalues, model_data, color="r")
+plt.title("Emcee model fit to 1D Gaussian dataset.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile normalization")
+plt.show()
+plt.close()
+
+"""
+__Samples__
+
+Above, we used the `Result`'s `samples` property, which in this case is a `SamplesMCMC` object:
+"""
+print(result.samples)
+
+"""
+This object acts as an interface between the `Emcee` output results on your hard-disk and this Python code. For
+example, we can use it to get the parameters and log likelihood of an accepted emcee sample.
+"""
+print(result.samples.parameter_lists[10][:])
+print(result.samples.log_likelihood_list[10])
+
+"""
+The Probability Density Functions (PDF's) of the results can be plotted using the Emcee's visualization 
+tool `corner.py`, which is wrapped via the `EmceePlotter` object.
+
+The PDF shows the 1D and 2D probabilities estimated for every parameter after the model-fit. The two dimensional 
+figures can show the degeneracies between different parameters, for example how increasing $\sigma$ and decreasing 
+the normalization $I$ can lead to similar likelihoods and probabilities.
+"""
+search_plotter = aplt.EmceePlotter(samples=result.samples)
+search_plotter.corner()
+
+"""
+A more detailed description of the `Result` object will be given in tutorial 5.
+
 __Wrap Up__
 
-In this tutorial, we introduce the notion of a parameter space and priors, which **PyAutoFit**'s model mapping 
-utilities map between. We are now in a position to perform a model-fit, which will be the subject of the next tutorial.
- 
-The description of priors in this tutorial was somewhat of a simplification; we viewed them as a means to map a 
-unit values of parameters to physical values. In Bayesian inference, priors play a far more important role, as they
-define one's previous knowledge of the model before performing the fit. They directly impact the solution that one
-infers and ultimately dictate how the model-fitting is performed.
+This tutorial introduced a lot of concepts: the parameter space, likelihood surface, non-linear search, priors, 
+and much more. 
 
-The aim of the **HowToFit** tutorials is not to teach the reader the details of Bayesian inference but instead set
-you up with the tools necessary to perform a model-fit. Nevertheless, it is worth reading up on Bayesian inference and 
-priors at any of the following links:
-
-https://seeing-theory.brown.edu/bayesian-inference/index.html
-
-https://towardsdatascience.com/probability-concepts-explained-bayesian-inference-for-parameter-estimation-90e8930e5348
+Make sure you are confident in your understanding of them, however the next tutorial will expand on them all.
 """

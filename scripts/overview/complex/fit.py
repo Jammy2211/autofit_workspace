@@ -24,7 +24,7 @@ from os import path
 """
 __Data__
 
-First, lets load data of a 1D `Gaussian` + 1D Exponential, by loading it from a .json file in the directory 
+Load data of a 1D `Gaussian` + 1D Exponential, by loading it from a .json file in the directory 
 `autofit_workspace/dataset//gaussian_x1__exponential_x1`.
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1__exponential_x1")
@@ -34,7 +34,7 @@ noise_map = af.util.numpy_array_from_json(
 )
 
 """
-Now lets plot the data, including its error bars. We'll use its shape to determine the xvalues of the
+Lets plot the data. We'll use its shape to determine the xvalues of the
 data for the plot.
 """
 xvalues = range(data.shape[0])

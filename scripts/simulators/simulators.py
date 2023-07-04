@@ -85,6 +85,16 @@ util.simulate_dataset_1d_via_profile_1d_list_from(
 )
 
 """
+__Gaussian x2__
+"""
+gaussian_0 = af.ex.Gaussian(centre=50.0, normalization=20.0, sigma=1.0)
+gaussian_1 = af.ex.Gaussian(centre=50.0, normalization=40.0, sigma=5.0)
+dataset_path = path.join("dataset", "example_1d", "gaussian_x2")
+util.simulate_dataset_1d_via_profile_1d_list_from(
+    profile_1d_list=[gaussian_0, gaussian_1], dataset_path=dataset_path
+)
+
+"""
 __Gaussian x3__
 """
 gaussian_0 = af.ex.Gaussian(centre=50.0, normalization=20.0, sigma=1.0)

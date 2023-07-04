@@ -2,22 +2,20 @@
 Tutorial 4: Hierarchical
 ========================
 
-In the previous tutorial, we fitted a graphical model with the aim of determining an estimate of a shared
-parameter, the `centre` of a dataset of 1D Gaussians. We did this by fitting all datasets simultaneously. When there
-are shared parameters we wish to estimate, this is a powerful and effective tool, but for many graphical models things
-are not so straight forward.
+In the previous tutorial, we fitted a graphical model with the aim of determining an estimate of shared parameters,
+the `centre`'s of a dataset of 1D Gaussians. We did this by fitting all datasets simultaneously. When there are shared
+parameters in a model, this is a powerful and effective tool, but things may not always be so simple.
 
-A common extension to this problem is one where we expect that the shared parameter(s) of the model do not have exactly
+A common extension to the problem is one where we expect that the shared parameter(s) of the model do not have exactly
 the same value in every dataset. Instead, our expectation is that the parameter(s) are drawn from a common
 parent distribution (e.g. a Gaussian distribution). It is the parameters of this distribution that we consider shared
-across the dataset (e.g. the means and scatter of the Gaussian distribution), and these are the parameters we
-ultimately wish to infer to understand the global behaviour of our model.
+across the dataset (e.g. the means and scatter of the Gaussian distribution). These are the parameters we ultimately
+wish to infer to understand the global behaviour of our model.
 
-This is called a hierarchical model, and we will fit such a model In this tutorial. We will again fit a dataset
-comprising 1D Gaussians. However, the `centre` of each Gaussian is no longer the same in each dataset -- they are
-instead drawn from a shared parent Gaussian distribution with `mean=50.0` and `sigma=10.0`. Using a hierarchical model
-we will recover these input values of the parent distribution's `mean` and `sigma`, by fitting the dataset of 1D
-Gaussians.
+This is called a hierarchical model, whihc we fit in this tutorial. The `centre` of each 1D Gaussian is now no
+longer the same in each dataset and they are instead drawn from a shared parent Gaussian distribution
+(with `mean=50.0` and `sigma=10.0`). The hierarchical model will recover the `mean` and `sigma` values of the parent
+distribution'.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -75,7 +73,7 @@ for dataset_index in range(total_datasets):
     noise_map_list.append(noise_map)
 
 """
-By plotting the Gaussians we can just about make out that their centres are not all at pix 50, and are spread out
+By plotting the Gaussians we can just about make out that their centres are not all at pixel 50, and are spread out
 around it (albeit its difficult to be sure, due to the low signal-to-noise of the data). 
 """
 for dataset_name, data in zip(dataset_name_list, data_list):
@@ -109,16 +107,12 @@ factors on the factor graph we compose.
 This uses a nearly identical for loop to the previous tutorials, however a shared `centre` is no longer used and each 
 `Gaussian` is given its own prior for the `centre`. 
 
-We will see next how this `centre` is used to construct the hierachical model.
+We will see next how this `centre` is used to construct the hierarchical model.
 """
 model_list = []
 
 for model_index in range(len(data_list)):
     gaussian = af.Model(af.ex.Gaussian)
-
-    # gaussian.centre = af.UniformPrior(lower_limit=0.0, upper_limit=1e2)
-    #  gaussian.normalization = af.UniformPrior(lower_limit=0.0, upper_limit=1e2)
-    # gaussian.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=25.0)
 
     gaussian.centre = af.GaussianPrior(
         mean=50.0, sigma=20.0, lower_limit=0.0, upper_limit=100.0
@@ -177,9 +171,7 @@ __Factor Graph__
 
 We now create the factor graph for this model, using the list of `AnalysisFactor`'s and the hierarchical factor.
 
-Note that in previous tutorials, when we created the `FactorGraphModel` we only passed the list of `AnalysisFactor`'s,
-which contained the necessary information on the model create the factor graph that was fitted. The `AnalysisFactor`'s
-were created before we composed the `HierachicalFactor` and we pass it separately when composing the factor graph.
+Note that the `hierarchical_factor` is passed in below, which was not the case in previous tutorials.
 """
 factor_graph = af.FactorGraphModel(*analysis_factor_list, hierarchical_factor)
 
@@ -213,6 +205,9 @@ print(result.info)
 We can now inspect the inferred value of hierarchical factor's mean and sigma.
 
 We see that they are consistent with the input values of `mean=50.0` and `sigma=10.0`.
+
+The hierarchical factor results are at the end of the samples list, hence why we extract them using `[-1]` and [-2]`
+below.
 """
 samples = result.samples
 
@@ -245,13 +240,13 @@ print(f"{scatter} ({l1_error} {u1_error}) [1.0 sigma confidence intervals]")
 print(f"{scatter} ({l3_error} {u3_error}) [3.0 sigma confidence intervals]")
 
 """
-__Comparison to one-by-one Fits__
+__Comparison to One-by-One Fits__
 
-We can compare the inferred values above to the values inferred in the 
+We can compare the inferred values above to the values inferred for individual fits in the 
 tutorial `tutorial_optional_hierarchical_individual.py`.
 
-This fits the hierarchical model is a much simpler way -- fitting each dataset one-by-one and then fitted those
-the parent Gaussian distribution to those results.
+This fits the hierarchical model is a much simpler way -- fitting each dataset one-by-one and then fitting the 
+parent Gaussian distribution to those results.
 
 For the results below, inferred on my laptop, we can see that the correct mean and scatter of the parent Gaussian is 
 inferred but the errors are much larger than the graphical model fit above.
@@ -286,17 +281,17 @@ The graphical model provides a more accurate and precise estimate of the parent 
 because the fit to each dataset informs the hierarchical distribution's parameters, which in turn improves
 constraints on the other datasets. In a hierarchical fit, we describe this as "the datasets talking to one another". 
 
-For example, by itself, dataset_0 may give weak constraints on the centre spanning the range 10 -> 45 at 1 sigma 
+For example, by itself, dataset_0 may give weak constraints on the centre spanning the range 20 -> 85 at 1 sigma 
 confidence. Now, consider if simultaneously all of the other datasets provide strong constraints on the 
-hierarchical's distribution's parameters, such that its `mean = 40 +- 5.0` and `sigma = 5.0 +- 2.0` at 1 sigma 
+hierarchical's distribution's parameters, such that its `mean = 50 +- 5.0` and `sigma = 10.0 +- 2.0` at 1 sigma 
 confidence. 
 
 This will significantly change our inferred parameters for dataset 0, as the other datasets inform us
-that solutions where the centre is well below approximately 30 are less likely, because they are inconsistent with
+that solutions where the centre is well below approximately 40 are less likely, because they are inconsistent with
 the parent hierarchical distribution's parameters!
 
 For complex graphical models with many hierarchical factors, this phenomena of the "datasets talking to one another" 
-can be crucial in breaking degeneracies between parameters and maximally extracting information from extremely large
+is crucial in breaking degeneracies between parameters and maximally extracting information from extremely large
 datasets.
 
 __Wrap Up__

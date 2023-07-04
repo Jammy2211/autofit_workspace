@@ -155,7 +155,7 @@ print()
 """
 __Overall Gaussian Parent Distribution__
 
-We will now fit the inferred `centre`'s from the fits performed above with a Gaussian distribution, in order to 
+Fit the inferred `centre`'s from the fits performed above with a Gaussian distribution, in order to 
 estimate the mean and scatter of the Gaussian from which the centres were drawn.
 
 We first extract the inferred median PDF centre values and their 1 sigma errors below, which will be the inputs

@@ -1,39 +1,40 @@
 """
-Tutorial 1: Individual Modelss
-=========================
+Tutorial 1: Individual Models
+=============================
 
-In chapter 1, we focused on fitting one model to one dataset. We inspected the results of those individual model-fits
-and demonstrated that when necessary we are able to fit more complex models, for example 1D profiles composed of 2 or 3
-Gaussians / Exponentials.
+In many examples, we fit one model to one dataset. For many problems, we may have a large dataset and are not
+interested in how well the model fits each individual dataset. Instead, we want to know how the model fits the full
+dataset, so that we can determine "global" trends of how the model fits the data.
 
-For many problems we may have a large dataset and not be interested in how well the model fits each individual dataset.
-Instead, our interest is fitting this dataset in its entirety, to determine 'global' trends of how the model fits the
-data.
+These tutorials show you how to compose and fit hierarchical models to large datasets, which fit many individual
+models to each dataset. However, all parameters in the model are linked together, enabling global inference of the
+model over the full dataset. This can extract a significant amount of extra information from large datasets, which
+fitting each dataset individually does not.
 
-This chapter of **HowToFit** shows you how to compose and fit graphical models to these large datasets. We'll see that
-a graphical model links together the many individual models that fit each dataset, but that it also contains shared
-parameters that describe the global behaviour of how the model fits the full dataset.
+Fitting a hierarchical model uses a "graphical model", which is a model that is simultaneously fitted to every
+dataset simultaneously. The graph expresses how the parameters of every individual model is paired with each dataset
+and how they are linked to every other model parameter. Complex graphical models fitting a diversity of different
+datasets and non-trivial model parameter linking is possible and common.
 
-Lets consider a real world example. In a healthcare setting, we may fit a model to some data and be able to show
-that a certain treatment helps an individual patient recover from illness. However, for us to claim this treatment is
-effective more generally, we would have to fit this model to a large patient dataset. One could imagine that we would
-compose and fit many individual models to the dataset on each patient, but now link them together with shared parameters
-describing how effective the treatment is across the full global population.
+This chapter will start by fitting a simple graphical model to a dataset of noisy 1D Gaussians. The Gaussians all
+share the same `centre`, meaning that a graphical model can be composed where there is only a single global `centre`
+shared by all Gaussians.
 
-Medical datasets may contain data on thousands of patients, and we may therefore need to fit very complex models with
-many thousands of parameters to determine global trends. We may have different datasets on different patients, meaning
-that we need high levels of customization in the models we compose and fitting procedures that we apply. The
-**PyAutoFit** graphical modeling framework provides the tools we need to do these tasks in a computationally tractable
-manner.
+However, before fitting a graphical model, we will first fit each Gaussian individually and combine the inference
+on the `centre` after every fit is complete. This will give us an estimate of the `centre` that we can compare to
+the result of the graphical model in tutorial 2.
 
-This chapter illustrates the problem using the toy model of fitting noisy 1D datasets. The dataset contains up to 10
-noisy 1D Gaussians, which all have the same value of `centre=50.0`. The centre is therefore the shared parameter we want
-to infer across the full dataset -- it is the global aspect of our model we are actually interested in!
+__Real World Example__
 
-This tutorial does not use graphical models. Instead, it attempts to estimate the `centre` is the simpliest way
-imaginable, by fitting each dataset one-by-one and combining the results after all model-fitting is complete. In
-tutorial 2, we will do the fitting 'properly' using graphical models, and compare to our estimate in this tutorial to
-see how much our estimate of the `centre` improves.
+Hierarchical models are often used to determine effective drug treatments across a sample of patients distributed over
+many hospitals. Trying to do this on each individual hospital dataset is not ideal, as the number of patients in each
+hospital is small and the treatment may be more or less effective in some hospitals than others. Hierarchical models
+can extract the global trends of how effective the treatment is across the full population of patients.
+
+In healthcare, there may also be many datasets available, with different formats that require slightly different models
+to fit them. The high levels of customization possible in model composition and defining the analysis class mean
+that fitting diverse datasets with hierarchical models is feasible. This also means that a common problem in healthcare
+data, missing data, can be treated in a statistically robust manner.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -117,7 +118,7 @@ for dataset_name in dataset_name_list:
 """
 __Model Fits (one-by-one)__
 
-For every dataset we now create an `Analysis` and use `Dynesty` to fit it with a `Gaussian`.
+For every dataset we now create an `Analysis` and fit it with a `Gaussian`.
 
 The `Result` is stored in the list `result_list`.
 """
@@ -271,13 +272,13 @@ print(
 """
 __Posterior Multiplication__
 
-An alternative and more accurate way to combine each individual infered centre is multiply their posteriors together.
+An alternative and more accurate way to combine each individual inferred centre is multiply their posteriors together.
 
 In order to do this, a smooth 1D profile must be fit to the posteriors via a Kernel Density Estimator (KDE).
 
-[**PyAutoFit** does not currently support posterior multiplication and an example illustrating this is currently
-missing from this tutorial. However, I will discuss KDE multiplication throughout these tutorials to give the
-reader context for how this approach to parameter estimation compares to graphical models.]
+[There is currently no support for posterior multiplication and an example illustrating this is currently missing 
+from this tutorial. However, I will discuss KDE multiplication throughout these tutorials to give the reader context 
+for how this approach to parameter estimation compares to graphical models.]
 
 __Wrap Up__
 

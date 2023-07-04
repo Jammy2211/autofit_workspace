@@ -1,0 +1,55 @@
+MassIsothermal:
+  centre_0:
+    type: Gaussian
+    mean: 0.0
+    sigma: 0.3
+    lower_limit: -inf
+    upper_limit: inf
+    width_modifier:
+      type: Absolute
+      value: 0.05
+    gaussian_limits:
+      lower: -inf
+      upper: inf
+  centre_1:
+    type: Gaussian
+    mean: 0.0
+    sigma: 0.3
+    lower_limit: -inf
+    upper_limit: inf
+    width_modifier:
+      type: Absolute
+      value: 0.05
+    gaussian_limits:
+      lower: -inf
+      upper: inf
+  axis_ratio:
+    type: Uniform
+    lower_limit: 0.2
+    upper_limit: 1.0
+    width_modifier:
+      type: Relative
+      value: 1.0
+    gaussian_limits:
+      lower: 0.0
+      upper: inf
+  angle:
+    type: Uniform
+    lower_limit: 0.0
+    upper_limit: 180.0
+    width_modifier:
+      type: Relative
+      value: 1.0
+    gaussian_limits:
+      lower: 0.0
+      upper: inf
+  mass:
+    type: Uniform
+    lower_limit: 0.0
+    upper_limit: 4.0
+    width_modifier:
+      type: Relative
+      value: 1.0
+    gaussian_limits:
+      lower: 0.0
+      upper: inf

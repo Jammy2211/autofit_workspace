@@ -2,21 +2,16 @@
 Tutorial 3: Graphical Benefits
 ==============================
 
-In the previous tutorials, we fitted a dataset containing 5 noisy 1D Gaussian which had a shared `centre` value.
-
-We used different approaches to estimate the shared `centre`, for example a simple approach of fitting each dataset
+In the previous tutorials, we fitted a dataset containing 5 noisy 1D Gaussian which had a shared `centre` value and
+compared different approaches to estimate the shared `centre`. This included a simple approach fitting each dataset
 one-by-one and estimating the centre via a weighted average or posterior multiplication and a more complicated
 approach using a graphical model.
 
 The estimates were consistent with one another, making it hard to justify the use of the more complicated graphical
 model. However, the model fitted in the previous tutorial was extremely simple, and by making it slightly more complex
-in this tutorial we will be able to show the benefits of using the graphical modeling approach.
+we will show the benefits of the graphical model.
 
 __The Model__
-
-The more complex datasets and model fitted in this tutorial is an extension of those fitted in the previous tutorial.
-
-Previously, there was one Gaussian in each dataset and they all had the same shared centre, located at pixel 50.
 
 In this tutorial, each dataset now contains two Gaussians, and they all have the same shared centres, located at
 pixels 40 and 60.
@@ -112,8 +107,8 @@ We are first going to fit each dataset one by one.
 Our model therefore now has two 1D `Gaussian`'s.
 
 To remove solutions where the Gaussians flip locations and fit the other Gaussian, we set uniform priors on the
-`centre`'s which ensures one Gaussian stays on the left hand side of the data (and therefore fits the Gaussian in the
-data at pixel 40) whilst the other stays on the right (and fits the Gaussian at pixel 60).
+`centre`'s which ensures one Gaussian stays on the left side of the data (fitting the Gaussian at pixel 40) 
+whilst the other stays on the right (fitting the Gaussian at pixel 60).
 """
 gaussian_0 = af.Model(af.ex.Gaussian)
 
@@ -128,41 +123,24 @@ model = af.Collection(gaussian_0=gaussian_0, gaussian_1=gaussian_1)
 """
 __Model Fits (one-by-one)__
 
-For every dataset we now create an `Analysis` and use `Dynesty` to fit it with a `Gaussian`.
+For every dataset we now create an `Analysis` and fit it with a `Gaussian`.
 
 The `Result` is stored in the list `result_list`.
 """
 result_list = []
 
-for dataset_name in dataset_name_list:
-    """
-    Load the dataset from the `autofit_workspace/dataset` folder.
-    """
-    dataset_path = path.join(
-        "dataset", "example_1d", "gaussian_x1__low_snr", dataset_name
-    )
-
-    data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
-    noise_map = af.util.numpy_array_from_json(
-        file_path=path.join(dataset_path, "noise_map.json")
-    )
-
-    """
-    For each dataset create a corresponding `Analysis` class.
-    """
-    analysis = af.ex.Analysis(data=data, noise_map=noise_map)
+for i, analysis in enumerate(analysis_list):
 
     """
     Create the `DynestyStatic` non-linear search and use it to fit the data.
 
     We use custom dynesty settings which ensure the posterior is explored fully and that our error estimates are robust.
     """
-    dynesty = af.DynestyStatic(
-        name="global_model",
+    search = af.DynestyStatic(
+        name=f"individual_fit_{i}",
         path_prefix=path.join(
-            "howtofit", "chapter_graphical_models", "tutorial_1_individual_models"
+            "howtofit", "chapter_graphical_models", "tutorial_3_graphical_benefits"
         ),
-        unique_tag=dataset_name,
         nlive=200,
         dlogz=1e-4,
         sample="rwalk",
@@ -171,12 +149,12 @@ for dataset_name in dataset_name_list:
 
     print(
         f"Dynesty has begun running, checkout \n"
-        f"autofit_workspace/output/howtofit/chapter_graphica_models/tutorial_1_individual_models/{dataset_name} for live \n"
+        f"autofit_workspace/output/howtofit/chapter_graphical_models/tutorial_3_graphical_benefits/{dataset_name} for live \n"
         f"output of the results. This Jupyter notebook cell with progress once Dynesty has completed, this could take a \n"
         f"few minutes!"
     )
 
-    result_list.append(dynesty.fit(model=model, analysis=analysis))
+    result_list.append(search.fit(model=model, analysis=analysis))
 
 """
 __Centre Estimates (Weighted Average)__
@@ -237,7 +215,7 @@ We will next show that the graphical model offers a notable improvement, but fir
 approach is suboptimal.
 
 The most important difference between this model and the model fitted in the previous tutorial is that there are now
-two shared parameters we are trying to estimate, *and they are degenerate with one another*.
+two shared parameters we are trying to estimate, which are degenerate with one another.
 
 We can see this by inspecting the probability distribution function (PDF) of the fit, placing particular focus on the 
 2D degeneracy between the Gaussians centres. 
@@ -251,20 +229,19 @@ of the PDF between the two centres. This leads to significant error over estimat
 
 __Discussion__
 
-Let us now consider other downsides of fitting each dataset one-by-one, from a more statistical perspective. We 
-will contrast these to the graphical model later in the tutorial.
+Let us now consider other downsides of fitting each dataset one-by-one, from a statistical perspective. We 
+will contrast these to the graphical model later in the tutorial:
 
 1) By fitting each dataset one-by-one this means that each model-fit fails to fully exploit the information we know 
-about the global model. We *know* that there are only two single shared values of `centre` across the full dataset 
+about the global model. We know that there are only two single shared values of `centre` across the full dataset 
 that we want to estimate. However, each individual fit has its own `centre` value which is able to assume different 
-values than the `centre` values used to fit the other datasets. This means that the large degeneracies between the two 
-centres emerge for each model-fit.
+values than the `centre` values used to fit the other datasets. This means that large degeneracies between the two 
+centres are present in each model-fit.
 
 By not fitting our model as a global model, we do not maximize the amount of information that we can extract from the 
-dataset as a whole. If a model fits dataset 1 particularly bad, this *should* be reflected in how we interpret how 
-well the model fits datasets 2 and 3. Our non-linear search should have a global view of how well the model fits the 
-whole dataset. This is the *crucial aspect of fitting each dataset individually that we miss*, and what a graphical 
-model addresses.
+dataset as a whole. If a model fits dataset 1 poorly, this should be reflected in how we interpret how well the model 
+fits datasets 2 and 3. Our non-linear search should have a global view of how well the model fits the whole dataset. 
+This is the crucial aspect of fitting each dataset individually that we miss, and what a graphical model addresses.
 
 2) When we combined the result to estimate the global `centre` value via a weighted average, we marginalized over 
 the samples in 1D. As showed above, when there are strong degeneracies between models parameters the information on 
@@ -274,9 +251,8 @@ parameter covariances.
  
 3) In Bayesian inference it is important that we define priors on all of the model parameters. By estimating the 
 global `centre` after the model-fits are completed it is unclear what prior the global `centre` actually has! We
-actually defined the prior five times -- once for each fit -- which is not a well defined prior.
-
-In a graphical model the prior is clearly defined.
+actually defined the prior five times -- once for each fit -- which is not a well defined prior. In a graphical model 
+the prior is clearly defined.
 
 What would have happened if we had estimate the shared centres via 2D posterior multiplication using a KDE? We
 will discuss this at the end of the tutorial after fitting a graphical model.
@@ -286,7 +262,7 @@ __Model (Graphical)__
 We now compose a graphical model and fit it.
 
 Our model now consists of two Gaussians with two `centre_shared_prior` variables, such that the same centres are
-used for the Gaussians across all datasets. 
+used for each Gaussians across all datasets. 
 
 We again restrict one Gaussian's centre between pixels 0 -> 50 and the other 50 -> 100 to remove solutions where
 the Gaussians flip location.
@@ -299,7 +275,7 @@ We now set up a list of `Model`'s, each of which contain two `Gaussian`'s that a
 loaded above.
 
 All of these `Model`'s use the `centre_shared_prior`'s abpve. This means all model-components use the same value 
-of `centre` for every model composed and fitted by the `NonLinearSearch`. 
+of `centre` for every model composed and fitted. 
 
 For a fit to five datasets (each using two Gaussians), this reduces the dimensionality of parameter space 
 from N=30 (e.g. 6 parameters per pair of Gaussians) to N=22 (e.g. 10 `sigma`'s 10 `normalizations` and 2 `centre`'s).
@@ -416,8 +392,6 @@ print(
 """
 As expected, using a graphical model allows us to infer a more precise and accurate model.
 
-You may already have an idea of why this is, but lets go over it in detail:
-
 __Discussion__
 
 Unlike a fit to each dataset one-by-one, the graphical model:
@@ -439,23 +413,24 @@ This would produce an inaccurate estimate of the error, because each posterior c
 times which given the properties of this model should not be repeated.
 
 However, it is possible to convert each posterior to a likelihood (by dividing by its prior), combining these 5
-likelihoods to form a joint likelihood via 2D KDE multiplication and then insert just one prior back (agian using a 2D
+likelihoods to form a joint likelihood via 2D KDE multiplication and then insert just one prior back (again using a 2D
 KDE) at the end to get a posterior which does not have repeated priors. 
 
 This posterior, in theory, should be equivalent to the graphical model, giving the same accurate estimates of the
 centres with precise errors. The process extracts the same information, fully accounting for the 2D structure of the
 PDF between the two centres for each fit.
 
-However, in practise, this will likely not work that well. Every time we use a KDE to represent and multiply a posterior,
-we make an approximation which will impact our inferred errors. The removal of the prior before combining the likelihood
+However, in practise, this will likely not work well. Every time we use a KDE to represent and multiply a posterior, we 
+make an approximation which will impact our inferred errors. The removal of the prior before combining the likelihood
 and reinserting it after also introduces approximations, especially because the fit performed by the non-linear search
 is informed by the prior. 
 
-Crucially, whilst posterior multiplication maybe sort-of-works-ok in two dimensions, for models with many more 
-dimensions and degeneracies between parameters that are in 3D, 4D of more dimensions it simply does not work.
+Crucially, whilst posterior multiplication can work in two dimensions, for models with many more dimensions and 
+degeneracies between parameters that are in 3D, 4D of more dimensions it will introduce more and more numerical
+inaccuracies.
 
-In contrast, a graphical model fully samples all of the information a large dataset contains about the model, without
-making an approximations. In this sense, irrespective of how complex the model gets, it will fully extract the 
+A graphical model fully samples all of the information a large dataset contains about the model, without making 
+such large approximation. Therefore, irrespective of how complex the model gets, it extracts significantly more 
 information contained in the dataset.
 
 __Wrap Up__
@@ -466,8 +441,8 @@ We argued that irrespective of how one may try to combine the results of many in
 are made will always lead to a suboptimal estimation of the model parameters and fail to fully extract all information
 from the dataset. 
 
-Furthermore, we argued that for high dimensional complex models a graphical model is the only way to fully extract
-all of the information contained in the dataset.
+We argued that for high dimensional complex models a graphical model is the only way to fully extract all of the 
+information contained in the dataset.
 
 In the next tutorial, we will consider a natural extension of a graphical model called a hierarchical model.
 """

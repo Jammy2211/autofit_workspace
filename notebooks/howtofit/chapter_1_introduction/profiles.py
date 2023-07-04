@@ -51,20 +51,20 @@ class Gaussian(Profile):
         normalization=0.1,  # <- are the Gaussian`s model parameters.
         sigma=0.01,
     ):
-        """Represents a 1D `Gaussian` profile, which may be treated as a model-component of PyAutoFit the
-        parameters of which are fitted for by a `NonLinearSearch`.
+        """
+        Represents a 1D Gaussian profile.
+
+        This is a model-component of example models in the **HowToFit** lectures and is used to fit example datasets
+        via a non-linear search.
 
         Parameters
         ----------
         centre
             The x coordinate of the profile centre.
         normalization
-            Overall normalization normalisation of the `Gaussian` profile.
+            Overall normalization of the profile.
         sigma
             The sigma value controlling the size of the Gaussian.
-
-        Writing (Profile) above does not mean the `Gaussian` class will call the Profile class`s __init__ method. To
-        achieve this we have the call the `super` method following the format below.
         """
 
         super(Gaussian, self).__init__(centre=centre, normalization=normalization)
@@ -106,16 +106,19 @@ class Exponential(Profile):
         normalization=0.1,  # <- parameters of the Gaussian.
         rate=0.01,
     ):
-        """Represents a 1D Exponential profile, which may be treated as a model-component of PyAutoFit the
-        parameters of which are fitted for by a `NonLinearSearch`.
+        """
+        Represents a 1D Exponential profile.
+
+        This is a model-component of example models in the **HowToFit** lectures and is used to fit example datasets
+        via a non-linear search.
 
         Parameters
         ----------
         centre
             The x coordinate of the profile centre.
         normalization
-            Overall normalization normalisation of the `Gaussian` profile.
-        ratw
+            Overall normalization of the profile.
+        rate
             The decay rate controlling has fast the Exponential declines.
         """
 
