@@ -71,7 +71,14 @@ Plot the data.
 xvalues = range(data.shape[0])
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", linestyle=" ", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    color="k",
+    ecolor="k",
+    linestyle=" ",
+    elinewidth=1,
+    capsize=2,
 )
 plt.title("1D Gaussian Dataset Used For Model Comparison.")
 plt.xlabel("x values of profile")
@@ -106,7 +113,7 @@ search = af.DynestyStatic(
     path_prefix=path.join("features", "model_comparison"),
     name="gaussian_x1",
     nlive=50,
-    iterations_per_update=3000
+    iterations_per_update=3000,
 )
 
 """
@@ -138,7 +145,14 @@ gaussian_0 = instance.gaussian_0.model_data_1d_via_xvalues_from(
 model_data = gaussian_0
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", linestyle=" ", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    color="k",
+    ecolor="k",
+    linestyle=" ",
+    elinewidth=1,
+    capsize=2,
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 plt.plot(range(data.shape[0]), gaussian_0, "--")
@@ -175,7 +189,7 @@ search = af.DynestyStatic(
     path_prefix=path.join("features", "model_comparison"),
     name="gaussian_x2",
     nlive=50,
-    iterations_per_update=3000
+    iterations_per_update=3000,
 )
 
 result_x2_gaussian = search.fit(model=model, analysis=analysis)
@@ -206,7 +220,14 @@ gaussian_1 = instance.gaussian_0.model_data_1d_via_xvalues_from(
 model_data = gaussian_0 + gaussian_1
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", linestyle=" ", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    color="k",
+    ecolor="k",
+    linestyle=" ",
+    elinewidth=1,
+    capsize=2,
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 plt.plot(range(data.shape[0]), gaussian_0, "--")
@@ -239,7 +260,9 @@ __Model x3 Gaussian__
 
 We now create a model to fit the data which consists of 3 Gaussians.
 """
-model = af.Collection(gaussian_0=af.ex.Gaussian, gaussian_1=af.ex.Gaussian, gaussian_2=af.ex.Gaussian)
+model = af.Collection(
+    gaussian_0=af.ex.Gaussian, gaussian_1=af.ex.Gaussian, gaussian_2=af.ex.Gaussian
+)
 
 """
 The `info` attribute shows the model consists of three `Gaussian`'s.
@@ -253,7 +276,7 @@ search = af.DynestyStatic(
     path_prefix=path.join("features", "model_comparison"),
     name="gaussian_x3",
     nlive=50,
-    iterations_per_update=3000
+    iterations_per_update=3000,
 )
 
 result_x3_gaussian = search.fit(model=model, analysis=analysis)
@@ -282,7 +305,14 @@ gaussian_2 = instance.gaussian_0.model_data_1d_via_xvalues_from(
 model_data = gaussian_0 + gaussian_1 + gaussian_2
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", linestyle=" ", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    color="k",
+    ecolor="k",
+    linestyle=" ",
+    elinewidth=1,
+    capsize=2,
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 plt.plot(range(data.shape[0]), gaussian_0, "--")

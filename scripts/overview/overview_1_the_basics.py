@@ -91,6 +91,8 @@ A model component is written as a Python class in *PyAutoFit** using the followi
   function. When we create instances of a `Gaussian` below, this is used to generate 1D representation of it as a 
   NumPy array.
 """
+
+
 class Gaussian:
     def __init__(
         self,
@@ -132,6 +134,7 @@ class Gaussian:
             np.divide(self.normalization, self.sigma * np.sqrt(2.0 * np.pi)),
             np.exp(-0.5 * np.square(np.divide(transformed_xvalues, self.sigma))),
         )
+
 
 """
 To compose a model using the `Gaussian` class above we use the `af.Model` object.
