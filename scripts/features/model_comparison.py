@@ -113,7 +113,7 @@ search = af.DynestyStatic(
 Perform the fit.
 """
 result_x1_gaussian = search.fit(model=model, analysis=analysis)
-ddd
+
 """
 The results are concisely summarised using the `result.info` property.
 
