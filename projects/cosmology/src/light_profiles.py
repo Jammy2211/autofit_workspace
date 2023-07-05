@@ -85,7 +85,8 @@ class LightDeVaucouleurs(LightProfile):
         grid_elliptical_radii = self.elliptical_radii_grid_from(grid=grid_transformed)
 
         return self.intensity * np.exp(
-            -7.66924 * ((grid_elliptical_radii / self.effective_radius) ** (1.0 / 7.66924) - 1.0)
+            -7.66924
+            * ((grid_elliptical_radii / self.effective_radius) ** (1.0 / 7.66924) - 1.0)
         )
 
 
@@ -136,5 +137,6 @@ class LightExponential(LightProfile):
         grid_elliptical_radii = self.elliptical_radii_grid_from(grid=grid_transformed)
 
         return self.intensity * np.exp(
-            -1.67838 * ((grid_elliptical_radii / self.effective_radius) ** (1.0 / 1.67838) - 1.0)
+            -1.67838
+            * ((grid_elliptical_radii / self.effective_radius) ** (1.0 / 1.67838) - 1.0)
         )

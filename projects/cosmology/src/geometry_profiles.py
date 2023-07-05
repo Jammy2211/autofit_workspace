@@ -51,7 +51,9 @@ class GeometryProfile:
         """
 
         shifted_grid = grid - self.centre
-        effective_radius = ((shifted_grid[:, :, 0] ** 2.0 + shifted_grid[:, :, 1] ** 2.0)) ** 0.5
+        effective_radius = (
+            (shifted_grid[:, :, 0] ** 2.0 + shifted_grid[:, :, 1] ** 2.0)
+        ) ** 0.5
 
         theta_coordinate_to_profile = np.arctan2(
             shifted_grid[:, :, 1], shifted_grid[:, :, 0]
@@ -59,8 +61,12 @@ class GeometryProfile:
 
         transformed_grid = np.zeros(grid.shape)
 
-        transformed_grid[:, :, 0] = effective_radius * np.cos(theta_coordinate_to_profile)
-        transformed_grid[:, :, 1] = effective_radius * np.sin(theta_coordinate_to_profile)
+        transformed_grid[:, :, 0] = effective_radius * np.cos(
+            theta_coordinate_to_profile
+        )
+        transformed_grid[:, :, 1] = effective_radius * np.sin(
+            theta_coordinate_to_profile
+        )
 
         return transformed_grid
 

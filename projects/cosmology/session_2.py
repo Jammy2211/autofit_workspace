@@ -304,9 +304,7 @@ __Model Data__
 To produce the `model_data`, we now convolution the overall image with the Point Spread Function (PSF) of our
 observations. This blurs the image to simulate the telescope optics and pixelization used to observe the image.
 """
-model_data = signal.convolve2d(
-    overall_image, psf, mode="same"
-)
+model_data = signal.convolve2d(overall_image, psf, mode="same")
 
 plot_array(array=model_data, title="Image of the overall Strong Lens System.")
 
@@ -338,7 +336,7 @@ Finally, we can compute the `log_likelihood` of this lens model, which we will u
 lens model to data with a non-linear search.
 """
 chi_squared = np.sum(chi_squared_map)
-noise_normalization = np.sum(np.log(2 * np.pi * noise_map ** 2.0))
+noise_normalization = np.sum(np.log(2 * np.pi * noise_map**2.0))
 
 log_likelihood = -0.5 * (chi_squared + noise_normalization)
 
@@ -524,8 +522,12 @@ lens.light_profile_list[0].axis_ratio = af.UniformPrior(
     lower_limit=0.7, upper_limit=0.9
 )
 lens.light_profile_list[0].angle = af.UniformPrior(lower_limit=0.0, upper_limit=180.0)
-lens.light_profile_list[0].intensity = af.LogUniformPrior(lower_limit=1e-4, upper_limit=1e4)
-lens.light_profile_list[0].effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=5.0)
+lens.light_profile_list[0].intensity = af.LogUniformPrior(
+    lower_limit=1e-4, upper_limit=1e4
+)
+lens.light_profile_list[0].effective_radius = af.UniformPrior(
+    lower_limit=0.0, upper_limit=5.0
+)
 
 lens.mass_profile_list[0].centre = (0.0, 0.0)
 lens.mass_profile_list[0].axis_ratio = 0.8
@@ -573,9 +575,7 @@ light.angle = af.UniformPrior(lower_limit=0.0, upper_limit=180.0)
 light.intensity = af.LogUniformPrior(lower_limit=1e-4, upper_limit=1e4)
 light.effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=1.0)
 
-source = af.Model(
-    cosmo.Galaxy, redshift=1.0, light_profile_list=[light]
-)
+source = af.Model(cosmo.Galaxy, redshift=1.0, light_profile_list=[light])
 
 print(source.info)
 
@@ -618,7 +618,10 @@ longer run-times of the model-fit.
 """
 
 search = af.DynestyStatic(
-    path_prefix=path.join("projects", "cosmology"), name="multi_level", nlive=50, iterations_per_update=2500
+    path_prefix=path.join("projects", "cosmology"),
+    name="multi_level",
+    nlive=50,
+    iterations_per_update=2500,
 )
 
 analysis = cosmo.Analysis(data=data, noise_map=noise_map, psf=psf, grid=grid)

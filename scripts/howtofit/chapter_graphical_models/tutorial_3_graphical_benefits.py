@@ -130,7 +130,6 @@ The `Result` is stored in the list `result_list`.
 result_list = []
 
 for i, analysis in enumerate(analysis_list):
-
     """
     Create the `DynestyStatic` non-linear search and use it to fit the data.
 

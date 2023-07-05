@@ -9,7 +9,9 @@ import autofit as af
 
 
 class Analysis(af.Analysis):
-    def __init__(self, data: np.ndarray, noise_map: np.ndarray, psf: np.ndarray, grid: np.ndarray):
+    def __init__(
+        self, data: np.ndarray, noise_map: np.ndarray, psf: np.ndarray, grid: np.ndarray
+    ):
         """
         The analysis class for the **PyAutoFit** example Astronomy project on gravitational lensing.
 
@@ -130,7 +132,6 @@ class Analysis(af.Analysis):
         chi_squared_map = (normalized_residual_map) ** 2.0
 
         def plot_array(array, name, title=None, norm=None):
-
             import os
 
             os.makedirs(paths.image_path, exist_ok=True)
@@ -143,10 +144,16 @@ class Analysis(af.Analysis):
 
         plot_array(array=self.data, title="Data", name="data")
         plot_array(array=self.noise_map, title="Noise Map", name="noise_map")
-        plot_array(array=model_data, title="Model Data" , name="model_data")
+        plot_array(array=model_data, title="Model Data", name="model_data")
         plot_array(array=residual_map, title="Residual Map", name="residual_map")
-        plot_array(array=normalized_residual_map, title="Normalized Residual Map",  name="normalized_residual_map")
-        plot_array(array=chi_squared_map, title="Chi-Squared Map", name="chi_squared_map")
+        plot_array(
+            array=normalized_residual_map,
+            title="Normalized Residual Map",
+            name="normalized_residual_map",
+        )
+        plot_array(
+            array=chi_squared_map, title="Chi-Squared Map", name="chi_squared_map"
+        )
 
     def traced_grid_from(self, instance) -> List[np.ndarray]:
         """
@@ -236,8 +243,6 @@ class Analysis(af.Analysis):
         # These lead to an ill-defined log likelihood, so we set them to zero.
         overall_image = np.nan_to_num(overall_image)
 
-        model_data = signal.convolve2d(
-            overall_image, self.psf, mode="same"
-        )
+        model_data = signal.convolve2d(overall_image, self.psf, mode="same")
 
         return model_data

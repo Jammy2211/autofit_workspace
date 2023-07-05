@@ -307,9 +307,7 @@ __Model Data__
 To produce the `model_data`, we now convolution the overall image with the Point Spread Function (PSF) of our
 observations. This blurs the image to simulate the telescope optics and pixelization used to observe the image.
 """
-model_data = signal.convolve2d(
-            overall_image, psf, mode="same"
-        )
+model_data = signal.convolve2d(overall_image, psf, mode="same")
 
 
 plot_array(array=model_data, title="Image of the overall Strong Lens System.")

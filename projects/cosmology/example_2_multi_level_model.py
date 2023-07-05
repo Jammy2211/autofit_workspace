@@ -161,8 +161,12 @@ lens.light_profile_list[0].axis_ratio = af.UniformPrior(
     lower_limit=0.7, upper_limit=0.9
 )
 lens.light_profile_list[0].angle = af.UniformPrior(lower_limit=0.0, upper_limit=180.0)
-lens.light_profile_list[0].intensity = af.LogUniformPrior(lower_limit=1e-4, upper_limit=1e4)
-lens.light_profile_list[0].effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=5.0)
+lens.light_profile_list[0].intensity = af.LogUniformPrior(
+    lower_limit=1e-4, upper_limit=1e4
+)
+lens.light_profile_list[0].effective_radius = af.UniformPrior(
+    lower_limit=0.0, upper_limit=5.0
+)
 
 lens.mass_profile_list[0].centre = (0.0, 0.0)
 lens.mass_profile_list[0].axis_ratio = 0.8
@@ -211,9 +215,7 @@ light.angle = af.UniformPrior(lower_limit=0.0, upper_limit=180.0)
 light.intensity = af.LogUniformPrior(lower_limit=1e-4, upper_limit=1e4)
 light.effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=1.0)
 
-source = af.Model(
-    cosmo.Galaxy, redshift=1.0, light_profile_list=[light]
-)
+source = af.Model(cosmo.Galaxy, redshift=1.0, light_profile_list=[light])
 
 print(source.info)
 
@@ -256,7 +258,10 @@ longer run-times of the model-fit.
 """
 
 search = af.DynestyStatic(
-    path_prefix=path.join("projects", "cosmology"), name="multi_level", nlive=50, iterations_per_update=2500
+    path_prefix=path.join("projects", "cosmology"),
+    name="multi_level",
+    nlive=50,
+    iterations_per_update=2500,
 )
 
 analysis = cosmo.Analysis(data=data, noise_map=noise_map, psf=psf, grid=grid)
