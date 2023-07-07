@@ -160,7 +160,7 @@ for dataset_name in dataset_name_list:
     )
 
     print(
-        f"Dynesty has begun running, checkout \n"
+        f"The non-linear search has begun running, checkout \n"
         f"autofit_workspace/output/howtofit/chapter_graphica_models/tutorial_1_individual_models/{dataset_name} for live \n"
         f"output of the results. This Jupyter notebook cell with progress once Dynesty has completed, this could take a \n"
         f"few minutes!"

@@ -256,7 +256,7 @@ just done the following instead?
  
 Yes, we could have. 
 
-However, the model composition API used above is designed to make composing complex models, made of multiple 
+However, the model composition API used above is designed to make composing complex models, consisting of multiple 
 components with many free parameters, straightforward and scalable.
 
 To illustrate this, lets end the tutorial by composing a model made of multiple Gaussians and also another 1D
@@ -282,7 +282,7 @@ class Exponential:
     def __init__(
         self,
         centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
-        normalization=1.0,  # <- are the Gaussian`s model parameters.
+        normalization=1.0,  # <- are the Exponential`s model parameters.
         rate=0.01,
     ):
         """
@@ -355,9 +355,10 @@ A `Collection` behaves analogous to a `Model`, but it contains a multiple model 
 We can see this by printing its `paths` attribute, where paths to all 6 free parameters via both model components
 are shown.
 
-The reason the paths have the entries `.gaussian.` and `.expoential.` is becuase these are the names we input into 
-the `af.Collection` object above. If you change the input from `gaussian=` to `gaussian_edited=` this will be reflected 
-in the `paths` below.
+The paths have the entries `.gaussian.` and `.exponential.`, which correspond to the names we input into  
+the `af.Collection` above. 
+
+If the input `gaussian=` were changed to `gaussian_edited=`, this will be reflected in the `paths` below.
 """
 print(model.paths)
 
@@ -367,8 +368,9 @@ A model instance can again be created by mapping an input `vector`, which now ha
 instance = model.instance_from_vector(vector=[0.1, 0.2, 0.3, 0.4, 0.5, 0.01])
 
 """
-This `instance` contains each of the model components we defined above, using the input argument name of the
-`Collection` to define the attributes in the `instance`:
+This `instance` contains each of the model components we defined above. 
+
+The argument names input into the `Collection` define the attribute names of the `instance`:
 """
 print("Instance Parameters \n")
 print("x (Gaussian) = ", instance.gaussian.centre)

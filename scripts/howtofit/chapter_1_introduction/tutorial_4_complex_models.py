@@ -300,15 +300,15 @@ analysis = Analysis(data=data, noise_map=noise_map)
 search = af.Emcee()
 
 print(
-    "Emcee has begun running. \n"
+    "The non-linear search has begun running. \n"
     "Checkout the autofit_workspace/output/howtofit/tutorial_5__gaussian_x1__exponential_x1 \n"
     "folder for live output of the results.\n"
-    "This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!"
+    "This Jupyter notebook cell with progress once the search has completed - this could take a few minutes!"
 )
 
 result = search.fit(model=model, analysis=analysis)
 
-print("Emcee has finished run - you may now continue the notebook.")
+print("The search has finished run - you may now continue the notebook.")
 
 """
 __Result__

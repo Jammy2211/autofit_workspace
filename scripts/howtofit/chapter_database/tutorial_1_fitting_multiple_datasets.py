@@ -234,9 +234,9 @@ for dataset_name in dataset_name_list:
     )
 
     print(
-        f"Emcee has begun running, checkout \n"
+        f"The non-linear search has begun running, checkout \n"
         f"autofit_workspace/output/howtofit/database/{dataset_name}/tutorial_1_fitting_multiple_datasets folder for live \n"
-        f"output of the results. This Jupyter notebook cell with progress once Emcee has completed, this could take a \n"
+        f"output of the results. This Jupyter notebook cell with progress once the search has completed, this could take a \n"
         f"few minutes!"
     )
 

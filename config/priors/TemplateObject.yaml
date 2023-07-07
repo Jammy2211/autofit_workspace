@@ -6,5 +6,9 @@ parameter1:
   type: Gaussian
   mean: 0.0
   sigma: 0.1
-  lower_limit: -inf
+  lower_limit: 0.0
   upper_limit: inf
+parameter2:
+  type: Uniform
+  lower_limit: 0.0
+  upper_limit: 10.0

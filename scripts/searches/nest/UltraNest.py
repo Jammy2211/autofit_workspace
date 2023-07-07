@@ -7,7 +7,7 @@ This example illustrates how to use the nested sampling algorithm UltraNest.
 UltraNest is an optional requirement and must be installed manually via the command `pip install ultranest`.
 It is optional as it has certain dependencies which are generally straight forward to install (e.g. Cython).
 
-Information about Dynesty can be found at the following links:
+Information about UltraNest can be found at the following links:
 
  - https://github.com/JohannesBuchner/UltraNest
  - https://johannesbuchner.github.io/UltraNest/readme.html
@@ -73,7 +73,7 @@ We manually specify all of the Dynesty settings, descriptions of which are provi
 """
 search = af.UltraNest(
     path_prefix="searches",
-    name="UltraNest7",
+    name="UltraNest",
     resume=True,
     run_num=None,
     num_test_samples=2,

@@ -127,7 +127,7 @@ for dataset_name in dataset_name_list:
     )
 
     print(
-        f"Dynesty has begun running. This Jupyter notebook cell with progress once Dynesty has completed, this could take a "
+        f"The non-linear search has begun running. This Jupyter notebook cell with progress once Dynesty has completed, this could take a "
         f"few minutes!"
     )
 

@@ -147,7 +147,7 @@ for i, analysis in enumerate(analysis_list):
     )
 
     print(
-        f"Dynesty has begun running, checkout \n"
+        f"The non-linear search has begun running, checkout \n"
         f"autofit_workspace/output/howtofit/chapter_graphical_models/tutorial_3_graphical_benefits/{dataset_name} for live \n"
         f"output of the results. This Jupyter notebook cell with progress once Dynesty has completed, this could take a \n"
         f"few minutes!"

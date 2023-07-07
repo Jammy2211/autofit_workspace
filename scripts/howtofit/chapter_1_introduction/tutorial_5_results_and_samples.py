@@ -173,16 +173,16 @@ search = af.Emcee(
 
 print(
     """
-    Emcee has begun running.
+    The non-linear search has begun running.
     Checkout the autofit_workspace/output/howtofit/tutorial_6__results_and_samples
     folder for live output of the results.
-    This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!
+    This Jupyter notebook cell with progress once the search has completed - this could take a few minutes!
     """
 )
 
 result = search.fit(model=model, analysis=analysis)
 
-print("Emcee has finished run - you may now continue the notebook.")
+print("The search has finished run - you may now continue the notebook.")
 
 """
 __Result__

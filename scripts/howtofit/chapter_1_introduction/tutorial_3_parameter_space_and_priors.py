@@ -247,43 +247,48 @@ Below is a suitable `Analysis` class for fitting a 1D gaussian to the data loade
 
 
 class Analysis(af.Analysis):
-    def __init__(self, data, noise_map):
+    def __init__(self, data : np. ndarray, noise_map : np.ndarray):
         """
-        In this example the `Analysis` object only contains the `data` and `noise-map`.
-
-        It can be easily extended, for more complex data-sets and model fitting problems.
+        The `Analysis` class acts as an interface between the data and model in **PyAutoFit**. 
+        
+        Its `log_likelihood_function` defines how the model is fitted to the data and it is called many times by
+        the non-linear search fitting algorithm.
+        
+        In this example the `Analysis` `__init__` constructor only contains the `data` and `noise-map`, but it can be 
+        easily extended to include other quantities.
 
         Parameters
         ----------
         data
-            A 1D numpy array containing the data (e.g. a noisy 1D Gaussian) fitted in the workspace examples.
+            A 1D numpy array containing the data (e.g. a noisy 1D signal) fitted in the workspace examples.
         noise_map
             A 1D numpy array containing the noise values of the data, used for computing the goodness of fit
-            metric.
+            metric, the log likelihood.
         """
         super().__init__()
 
         self.data = data
         self.noise_map = noise_map
 
-    def log_likelihood_function(self, instance):
+    def log_likelihood_function(self, instance) -> float:
         """
-        Returns the log likelihood of a fit of multiple 1D Gaussians to the dataset.
+        Returns the log likelihood of a fit of a 1D Gaussian to the dataset.
 
         The `instance` that comes into this method is an instance of the `Gaussian` model above. The parameter values
         are chosen by the non-linear search, based on where it thinks the high likelihood regions of parameter
         space are.
 
         The lines of Python code are commented out below to prevent excessive print statements when we run the
-        non-linear search, but feel free to uncomment them and run the search so you can see all the models it tries.
+        non-linear search, but feel free to uncomment them and run the search to see the parameters of every instance
+        that it fits.
 
         print("Gaussian Instance:")
         print("Centre = ", instance.centre)
         print("Normalization = ", instance.normalization)
         print("Sigma = ", instance.sigma)
 
-        We fit the data with the `Gaussian` instance, using its "model_data_1d_via_xvalues_from" function to create the
-        model data.
+        The data is fitted using an `instance` of the `Gaussian` class where its `model_data_1d_via_xvalues_from`
+        is called in order to create a model data representation of the Gaussian that is fitted to the data.
         """
         xvalues = np.arange(self.data.shape[0])
 
@@ -319,14 +324,14 @@ We begin the non-linear search by calling its `fit` method. This will take a min
 """
 print(
     """
-    Emcee has begun running.
-    This Jupyter notebook cell with progress once Emcee has completed - this could take a few minutes!
+    The non-linear search has begun running.
+    This Jupyter notebook cell with progress once the search has completed - this could take a few minutes!
     """
 )
 
 result = search.fit(model=model, analysis=analysis)
 
-print("Emcee has finished run - you may now continue the notebook.")
+print("The search has finished run - you may now continue the notebook.")
 
 """
 __Result__
