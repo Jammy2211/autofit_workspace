@@ -40,8 +40,6 @@ search = af.Emcee(
 
 result = search.fit(model=model, analysis=analysis)
 
-samples = result.samples
-
 """
 We now pass the samples to a `EmceePlotter` which will allow us to use emcee's in-built plotting libraries to 
 make figures.
@@ -57,6 +55,8 @@ The emcee readthedocs describes fully all of the methods used below
 In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are 
 described in the API docs.
 """
+samples = result.samples
+
 search_plotter = aplt.EmceePlotter(samples=samples)
 
 """

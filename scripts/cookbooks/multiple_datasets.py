@@ -25,9 +25,9 @@ __Example Source Code (`af.ex`)__
 
 The **PyAutoFit** source code has the following example objects (accessed via `af.ex`) used in this tutorial:
 
- - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and 
+ - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and
  `visualize` functions.
- 
+
  - `Gaussian`: a model component representing a 1D Gaussian profile.
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
@@ -117,7 +117,7 @@ model.sigma = af.GaussianPrior(
 __Analysis__
 
 We set up our three instances of the `Analysis` class, using the class described in `analysis.py`.
- 
+
 We set up an `Analysis` for each dataset one-by-one, using a for loop:
 """
 analysis_list = []
@@ -268,7 +268,7 @@ We now update the model using the summed `Analysis `objects to compose a model w
 
  - The `centre` and `normalization` values of the Gaussian fitted to every dataset in every `Analysis` object are
  identical. 
- 
+
  - The `sigma` value of the every Gaussian fitted to every dataset in every `Analysis` object are different.
 
 This means that the model has 5 free parameters in total, the shared `centre` and `normalization` and a unique
@@ -329,9 +329,9 @@ via a user defined relation.
 Below, we compose a model where the `sigma` value fitted to each dataset is computed according to:
 
  `y = m * x + c` : `sigma` = sigma_m * x + sigma_c`
- 
+
 Where x is an integer number specifying the index of the dataset (e.g. 1, 2 and 3).
- 
+
 By defining a relation of this form, `sigma_m` and `sigma_c` are the only free parameters of the model which vary
 across the datasets. 
 
