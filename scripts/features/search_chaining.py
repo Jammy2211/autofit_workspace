@@ -504,11 +504,11 @@ For example, lets define a `GaussianKurtosis` which is a `Gaussian` with an extr
 
 class GaussianKurtosis:
     def __init__(
-            self,
-            centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
-            normalization=1.0,  # <- are the Gaussian``s model parameters.
-            sigma=5.0,
-            kurtosis=1.0,
+        self,
+        centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
+        normalization=1.0,  # <- are the Gaussian``s model parameters.
+        sigma=5.0,
+        kurtosis=1.0,
     ):
         self.centre = centre
         self.normalization = normalization
@@ -587,9 +587,9 @@ However, for multi-level models with many components, it is a powerful tool to c
 
 class MultiLevelProfiles:
     def __init__(
-            self,
-            higher_level_centre=50.0,  # This is the centre of all Gaussians in this multi level component.
-            profile_list=None,  # This will contain a list of model-components
+        self,
+        higher_level_centre=50.0,  # This is the centre of all Gaussians in this multi level component.
+        profile_list=None,  # This will contain a list of model-components
     ):
         self.higher_level_centre = higher_level_centre
 

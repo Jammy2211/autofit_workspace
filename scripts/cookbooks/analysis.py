@@ -2,29 +2,18 @@
 Cookbook: Analysis
 ==================
 
+The `Analysis` class is the interface between the data and model, whereby a `log_likelihood_function` is defined
+and called by the non-linear search fitting to fit the model.
+
 This cookbook provides an overview of how to use and extend `Analysis` objects in **PyAutoFit**.
 
-It has the following sections:
+__Contents__
 
-It first covers standard options available for all non-linear searches, in the following sections:
-
- - Example Fit: A simple example of a non-linear search to remind us how it works.
- - Output To Hard-Disk: Output results to hard-disk so they can be inspected and used to restart a crashed search.
- - Unique Identifier: Ensure results are output in unique folders, so tthey do not overwrite each other.
- - Iterations Per Update: Control how often non-linear searches output results to hard-disk.
- - Parallelization: Use parallel processing to speed up the sampling of parameter space.
- - Plots: Perform non-linear search specific visualization using their in-built visualization tools.
-
-It then provides example code for using every search, in the following sections:
-
- - Emcee (MCMC): The Emcee ensemble sampler MCMC.
- - Zeus (MCMC): The Zeus ensemble sampler MCMC.
- - DynestyDynamic (Nested Sampling): The Dynesty dynamic nested sampler.
- - DynestyStatic (Nested Sampling): The Dynesty static nested sampler.
- - UltraNest (Nested Sampling): The UltraNest nested sampler.
- - PySwarmsGlobal (Particle Swarm Optimization): The global PySwarms particle swarm optimization
- - PySwarmsLocal (Particle Swarm Optimization): The local PySwarms particle swarm optimization.
- - LBFGS: The L-BFGS scipy optimization.
+ - Example: A simple example of an analysis class which can be adapted for you use-case.
+ - Customization: Customizing an analysis class with different data inputs and editing the `log_likelihood_function`.
+ - Visualization: Adding a `visualize` method to the analysis so that model-specific visuals are output to hard-disk.
+ - Custom Output: Add methods which output model-specific results to hard-disk in the `files` folder (e.g. as .json
+   files) to aid in the interpretation of results.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -32,6 +21,7 @@ It then provides example code for using every search, in the following sections:
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
 
+import json
 import numpy as np
 from os import path
 
@@ -41,8 +31,12 @@ import autofit.plot as aplt
 """
 __Example__
 
-An example of how to write a simple `Analysis` class, to remind ourselves of the basic structure and inputs.
+An example simple `Analysis` class, to remind ourselves of the basic structure and inputs.
+
+This can be adapted for your use case.
 """
+
+
 class Analysis(af.Analysis):
     def __init__(self, data: np.ndarray, noise_map: np.ndarray):
         """
@@ -82,10 +76,11 @@ class Analysis(af.Analysis):
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
         chi_squared = sum(chi_squared_map)
-        noise_normalization = np.sum(np.log(2 * np.pi * self.noise_map ** 2.0))
+        noise_normalization = np.sum(np.log(2 * np.pi * self.noise_map**2.0))
         log_likelihood = -0.5 * (chi_squared + noise_normalization)
 
         return log_likelihood
+
 
 """
 An instance of the analysis class is created as follows.
@@ -99,7 +94,7 @@ noise_map = af.util.numpy_array_from_json(
 analysis = Analysis(data=data, noise_map=noise_map)
 
 """
-__Analysis Customization__
+__Customization__
 
 The `Analysis` class can be fully customized to be suitable for your model-fit.
 
@@ -115,13 +110,15 @@ The example below includes three additional inputs:
  
  - A `kernel` is input which can account for certain blurring operations during data acquisition.
 """
+
+
 class Analysis(af.Analysis):
     def __init__(
-            self,
-            data: np.ndarray,
-            noise_covariance_matrix: np.ndarray,
-            mask: np.ndarray,
-            kernel: np.ndarray
+        self,
+        data: np.ndarray,
+        noise_covariance_matrix: np.ndarray,
+        mask: np.ndarray,
+        kernel: np.ndarray,
     ):
         """
         The `Analysis` class which has had its inputs edited for a different model-fit.
@@ -167,6 +164,7 @@ class Analysis(af.Analysis):
 
         return log_likelihood
 
+
 """
 An instance of the analysis class is created as follows.
 """
@@ -177,21 +175,25 @@ noise_covariance_matrix = np.ones(shape=(data.shape[0], data.shape[0]))
 mask = np.full(fill_value=False, shape=data.shape)
 kernel = np.full(fill_value=1.0, shape=data.shape)
 
-analysis = Analysis(data=data, noise_covariance_matrix=noise_covariance_matrix, mask=mask, kernel=kernel)
+analysis = Analysis(
+    data=data, noise_covariance_matrix=noise_covariance_matrix, mask=mask, kernel=kernel
+)
 
 """
 __Visualization__
 
 If a `name` is input into a non-linear search, all results are output to hard-disk in a folder.
 
-By extending the `Analysis` class with a `visualize` function, model specific visualization will also be output
-into an `image` folder, for example as `.png` files.
+By extending the `Analysis` class with a `visualize_before_fit` and / or `visualize` function, model specific 
+visualization will also be output into an `image` folder, for example as `.png` files.
 
 This uses the maximum log likelihood model of the model-fit inferred so far.
 
 Visualization of the results of the search, such as the corner plot of what is called the "Probability Density 
 Function", are also automatically output during the model-fit on the fly.
 """
+
+
 class Analysis(af.Analysis):
     def __init__(self, data, noise_map):
         """
@@ -217,7 +219,39 @@ class Analysis(af.Analysis):
 
         return log_likelihood
 
-    def visualize(self, paths, instance, during_analysis):
+    def visualize_before_fit(
+        self, paths: af.DirectoryPaths, model: af.AbstractPriorModel
+    ):
+        """
+        Before a model-fit, the `visualize_before_fit` method is called to perform visualization.
+
+        This can output visualization of quantities which do not change during the model-fit, for example the
+        data and noise-map.
+
+        The `paths` object contains the path to the folder where the visualization should be output, which is determined
+        by the non-linear search `name` and other inputs.
+        """
+
+        import matplotlib.pyplot as plt
+
+        xvalues = np.arange(self.data.shape[0])
+
+        plt.errorbar(
+            x=xvalues,
+            y=self.data,
+            yerr=self.noise_map,
+            color="k",
+            ecolor="k",
+            elinewidth=1,
+            capsize=2,
+        )
+        plt.title("Maximum Likelihood Fit")
+        plt.xlabel("x value of profile")
+        plt.ylabel("Profile Normalization")
+        plt.savefig(path.join(paths.image_path, f"data.png"))
+        plt.clf()
+
+    def visualize(self, paths: af.DirectoryPaths, instance, during_analysis):
         """
         During a model-fit, the `visualize` method is called throughout the non-linear search.
 
@@ -267,6 +301,114 @@ class Analysis(af.Analysis):
         plt.ylabel("Residual")
         plt.savefig(path.join(paths.image_path, f"model_fit.png"))
         plt.clf()
+
+
+"""
+__Custom Output__
+
+When performing fits which output results to hard-disc, a `files` folder is created containing .json / .csv files of 
+the model, samples, search, etc.
+
+These files are human readable and help one quickly inspect and interpret results. 
+
+By extending an `Analysis` class with the methods `save_attributes_for_aggregator` and `save_results_for_aggregator`, 
+custom files can be written to the `files` folder to further aid this inspection. 
+
+These files can then also be loaded via the database, as described in the database cookbook.
+"""
+
+
+class Analysis(af.Analysis):
+    def __init__(self, data: np.ndarray, noise_map: np.ndarray):
+        """
+        Standard Analysis class example used throughout PyAutoFit examples.
+        """
+        super().__init__()
+
+        self.data = data
+        self.noise_map = noise_map
+
+    def log_likelihood_function(self, instance) -> float:
+        """
+        Standard log likelihood function used throughout PyAutoFit examples.
+        """
+
+        xvalues = np.arange(self.data.shape[0])
+
+        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+
+        residual_map = self.data - model_data
+        chi_squared_map = (residual_map / self.noise_map) ** 2.0
+        chi_squared = sum(chi_squared_map)
+        noise_normalization = np.sum(np.log(2 * np.pi * self.noise_map**2.0))
+        log_likelihood = -0.5 * (chi_squared + noise_normalization)
+
+        return log_likelihood
+
+    def save_attributes_for_aggregator(self, paths: af.DirectoryPaths):
+        """
+        Before the non-linear search begins, this routine saves attributes of the `Analysis` object to the `files`
+        folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.
+
+        For this analysis, it uses the `AnalysisDataset` object's method to output the following:
+
+        - The dataset's data as a .json file.
+        - The dataset's noise-map as a .json file.
+
+        These are accessed using the aggregator via `agg.values("data")` and `agg.values("noise_map")`.
+
+        Parameters
+        ----------
+        paths
+            The PyAutoFit paths object which manages all paths, e.g. where the non-linear search outputs are stored,
+            visualization, and the pickled objects used by the aggregator output by this function.
+        """
+        # The path where data.json is saved, e.g. output/dataset_name/unique_id/files/data.json
+
+        file_path = (path.join(paths._json_path, "data.json"),)
+
+        with open(file_path, "w+") as f:
+            json.dump(self.data, f, indent=4)
+
+        # The path where noise_map.json is saved, e.g. output/noise_mapset_name/unique_id/files/noise_map.json
+
+        file_path = (path.join(paths._json_path, "noise_map.json"),)
+
+        with open(file_path, "w+") as f:
+            json.dump(self.noise_map, f, indent=4)
+
+    def save_results_for_aggregator(self, paths: af.AbstractPaths, result: af.Result):
+        """
+        At the end of a model-fit,  this routine saves attributes of the `Analysis` object to the `files`
+        folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.
+
+        For this analysis it outputs the following:
+
+        - The maximum log likelihood model data as a .json file.
+
+        This is accessed using the aggregator via `agg.values("model_data")`.
+
+        Parameters
+        ----------
+        paths
+            The PyAutoFit paths object which manages all paths, e.g. where the non-linear search outputs are stored,
+            visualization and the pickled objects used by the aggregator output by this function.
+        result
+            The result of a model fit, including the non-linear search, samples and maximum likelihood model.
+        """
+        xvalues = np.arange(self.data.shape[0])
+
+        instance = result.max_log_likelihood_instance
+
+        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+
+        # The path where model_data.json is saved, e.g. output/dataset_name/unique_id/files/model_data.json
+
+        file_path = (path.join(paths._json_path, "model_data.json"),)
+
+        with open(file_path, "w+") as f:
+            json.dump(model_data, f, indent=4)
+
 
 """
 Finish.

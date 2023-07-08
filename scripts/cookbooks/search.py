@@ -4,7 +4,9 @@ Cookbook: Searches
 
 This cookbook provides an overview of the non-linear searches available in **PyAutoFit**, and how to use them.
 
-It first covers standard options available for all non-linear searches, in the following sections:
+__Contents__
+
+It first covers standard options available for all non-linear searches:
 
  - Example Fit: A simple example of a non-linear search to remind us how it works.
  - Output To Hard-Disk: Output results to hard-disk so they can be inspected and used to restart a crashed search.
@@ -14,7 +16,7 @@ It first covers standard options available for all non-linear searches, in the f
  - Plots: Perform non-linear search specific visualization using their in-built visualization tools.
  - Start Point: Manually specify the start point of a non-linear search, or sample a specific region of parameter space.
 
-It then provides example code for using every search, in the following sections:
+It then provides example code for using every search:
 
  - Emcee (MCMC): The Emcee ensemble sampler MCMC.
  - Zeus (MCMC): The Zeus ensemble sampler MCMC.
@@ -80,10 +82,7 @@ The benefits of doing this include:
 
 These outputs are fully described in the scientific workflow example.
 """
-search = af.Emcee(
-    path_prefix=path.join("folder_0", "folder_1"),
-    name="example_mcmc"
-)
+search = af.Emcee(path_prefix=path.join("folder_0", "folder_1"), name="example_mcmc")
 
 """
 __Unique Identifier__
@@ -100,9 +99,7 @@ A `unique_tag` can be input into a search, which customizes the unique identifie
 For example, if you are performing many fits to different datasets, using an identical model and search, you may
 wish to provide a unique tag for each dataset such that the model-fit results are output into a different folder.
 """
-search = af.Emcee(
-    unique_tag="example_tag"
-)
+search = af.Emcee(unique_tag="example_tag")
 
 """
 __Iterations Per Update__
@@ -118,9 +115,7 @@ hard-disk. This is especially true if the time it takes for your non-linear sear
 evaluating the log likelihood is fast (e.g. < 0.1s) and you are confident your model-fit will find the global
 maximum solution given enough iterations.
 """
-search = af.Emcee(
-    iterations_per_update=1000
-)
+search = af.Emcee(iterations_per_update=1000)
 
 """
 __Parallelization__
@@ -451,4 +446,3 @@ search = af.LBFGS(
     iprint=-1,
     maxls=20,
 )
-

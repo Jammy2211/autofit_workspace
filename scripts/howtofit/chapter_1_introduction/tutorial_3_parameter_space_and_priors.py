@@ -247,14 +247,14 @@ Below is a suitable `Analysis` class for fitting a 1D gaussian to the data loade
 
 
 class Analysis(af.Analysis):
-    def __init__(self, data : np. ndarray, noise_map : np.ndarray):
+    def __init__(self, data: np.ndarray, noise_map: np.ndarray):
         """
-        The `Analysis` class acts as an interface between the data and model in **PyAutoFit**. 
-        
+        The `Analysis` class acts as an interface between the data and model in **PyAutoFit**.
+
         Its `log_likelihood_function` defines how the model is fitted to the data and it is called many times by
         the non-linear search fitting algorithm.
-        
-        In this example the `Analysis` `__init__` constructor only contains the `data` and `noise-map`, but it can be 
+
+        In this example the `Analysis` `__init__` constructor only contains the `data` and `noise-map`, but it can be
         easily extended to include other quantities.
 
         Parameters

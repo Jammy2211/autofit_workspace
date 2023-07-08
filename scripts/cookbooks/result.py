@@ -2,14 +2,32 @@
 Cookbook: Results
 =================
 
-This cookbook provides an overview of result manipulation, it has the following sections:
+After a non-linear search has completed, it returns a `Result` object that contains information on fit, such as
+the maximum likelihood model instance, the errors on each parameter and the Bayesian evidence.
 
-In this example, we'll repeat the fit of 1D data of a `Gaussian` profile with a 1D `Gaussian` model using the non-linear
-search emcee and inspect the *Result* object that is returned in detail.
+This cookbook provides an overview of using the results.
 
-If you haven't already, you should checkout the files `example/model.py`,`example/analysis.py` and `example/fit.py` to
-see how the fit is performed by the code below. The first section of code below is simmply repeating the commands in
-`example/fit.py`, so feel free to skip over it until you his the `Result`'s section.
+__Contents__
+
+ - Model Fit: Perform a simple model-fit to create a `Result` object.
+ - Info: Print the `info` attribute of the `Result` object to display a summary of the model-fit.
+ - Samples: The `Samples` object contained in the `Result`, containing all non-linear samples (e.g. parameters,
+   log likelihoods, etc.).
+ - Maximum Likelihood: The maximum likelihood model instance.
+ - Posterior / PDF: The median PDF model instance and PDF vectors of all model parameters via 1D marginalization.
+ - Errors: The errors on every parameter estimated from the PDF, computed via marginalized 1D PDFs at an input sigma.
+ - Sample Instance: The model instance of any accepted sample.
+ - Search Plots: Plots of the non-linear search, for example a corner plot or 1D PDF of every parameter.
+ - Bayesian Evidence: The log evidence estimated via a nested sampling algorithm.
+ - Collection: Results created from models defined via a `Collection` object.
+ - Lists: Extracting results as Python lists instead of instances.
+ - Latex: Producing latex tables of results (e.g. for a paper).
+
+The following sections outline how to use advanced features of the results, which you may skip on a first read:
+
+ - Derived Quantities: Computing quantities and errors for quantities and parameters not included directly in the model.
+ - Result Extension: Extend the `Result` object with new attributes and methods (e.g. `max_log_likelihood_model_data`).
+ - Samples Filtering: Filter the `Samples` object to only contain samples fulfilling certain criteria.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -129,9 +147,7 @@ print("Sigma = ", instance.sigma, "\n")
 """
 This makes it straight forward to plot the median PDF model:
 """
-model_data = instance.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
+model_data = instance.model_data_1d_via_xvalues_from(xvalues=np.arange(data.shape[0]))
 
 plt.plot(range(data.shape[0]), data)
 plt.plot(range(data.shape[0]), model_data)
@@ -218,11 +234,12 @@ search_plotter.corner()
 """
 __Bayesian Evidence__
 
-If a nested sampling `NonLinearSearch` is used, the evidence of the model is also available which enables Bayesian
+If a nested sampling non-linear search is used, the evidence of the model is also available which enables Bayesian
 model comparison to be performed (given we are using Emcee, which is not a nested sampling algorithm, the log evidence 
 is None).:
 """
 log_evidence = samples.log_evidence
+print(f"Log Evidence: {log_evidence}")
 
 """
 __Collection__
@@ -309,6 +326,31 @@ errors_at_upper_sigma = samples.errors_at_upper_sigma(sigma=3.0, as_instance=Fal
 errors_at_lower_sigma = samples.errors_at_lower_sigma(sigma=3.0, as_instance=False)
 
 """
+__Latex__
+
+If you are writing modeling results up in a paper, you can use PyAutoFit's inbuilt latex tools to create latex table 
+code which you can copy to your .tex document.
+
+By combining this with the filtering tools below, specific parameters can be included or removed from the latex.
+
+Remember that the superscripts of a parameter are loaded from the config file `notation/label.yaml`, providing high
+levels of customization for how the parameter names appear in the latex table. This is especially useful if your model
+uses the same model components with the same parameter, which therefore need to be distinguished via superscripts.
+"""
+latex = af.text.Samples.latex(
+    samples=result.samples,
+    median_pdf_model=True,
+    sigma=3.0,
+    name_to_label=True,
+    include_name=True,
+    include_quickmath=True,
+    prefix="Example Prefix ",
+    suffix=" \\[-2pt]",
+)
+
+print(latex)
+
+"""
 __Derived Errors (Advanced)__
 
 Computing the errors of a quantity like the `sigma` of the Gaussian is simple, because it is sampled by the non-linear 
@@ -347,31 +389,6 @@ median_fwhm, upper_fwhm, lower_fwhm = af.marginalize(
 )
 
 print(f"FWHM = {median_fwhm} ({upper_fwhm} {lower_fwhm}")
-
-"""
-__Latex__
-
-If you are writing modeling results up in a paper, you can use PyAutoFit's inbuilt latex tools to create latex table 
-code which you can copy to your .tex document.
-
-By combining this with the filtering tools below, specific parameters can be included or removed from the latex.
-
-Remember that the superscripts of a parameter are loaded from the config file `notation/label.yaml`, providing high
-levels of customization for how the parameter names appear in the latex table. This is especially useful if your model
-uses the same model components with the same parameter, which therefore need to be distinguished via superscripts.
-"""
-latex = af.text.Samples.latex(
-    samples=result.samples,
-    median_pdf_model=True,
-    sigma=3.0,
-    name_to_label=True,
-    include_name=True,
-    include_quickmath=True,
-    prefix="Example Prefix ",
-    suffix=" \\[-2pt]",
-)
-
-print(latex)
 
 """
 __Result Extensions (Advanced)__
@@ -456,15 +473,12 @@ to Collections meaning that our instances now have named entries.
 
 When you name your model components, you should make sure to give them descriptive and information names that make 
 the use of a result object clear and intuitive!
-"""
 
-"""
 __Database__
 
 For large-scaling model-fitting problems to large datasets, the results of the many model-fits performed can be output
 and stored in a queryable sqlite3 database. The `Result` and `Samples` objects have been designed to streamline the 
 analysis and interpretation of model-fits to large datasets using the database.
 
-Checkout `notebooks/features/database.ipynb` for an illustration of using
-this tool.
+Checkout the database cookbook for more details on how to use the database.
 """
