@@ -2,8 +2,6 @@
 Cookbook: Multi Level Models
 ============================
 
-This cookbook provides an overview of multi-level model composition.
-
 A multi level model is one where one or more of the input parameters in the model components `__init__`
 constructor are Python classes, as opposed to a float or tuple.
 
@@ -12,7 +10,9 @@ model components are grouped within other Python classes, in an object oriented 
 
 This enables complex models which are intiutive and extensible to be composed.
 
-The cookbook has the following sections:
+This cookbook provides an overview of multi-level model composition.
+
+__Contents__
 
  - Python Class Template: The template of multi level model components written as a Python class.
  - Model Composition: How to compose a multi-level model using the `af.Model()` object.
@@ -41,6 +41,8 @@ __Python Class Template__
 A multi-level model uses standard model components, which are written as a Python class with the usual format
 where the inputs of the `__init__` constructor are the model parameters.
 """
+
+
 class Gaussian:
     def __init__(
         self,
@@ -49,6 +51,7 @@ class Gaussian:
     ):
         self.normalization = normalization
         self.sigma = sigma
+
 
 """
 The unique aspect of a multi-level model is that a Python class can then be defined where the inputs
@@ -60,11 +63,13 @@ which takes as input a list of instances of the `Gaussian` class above.
 This class will represent many individual `Gaussian`'s, which share the same `centre` but have their own unique
 `normalization` and `sigma` values.
 """
+
+
 class MultiLevelGaussians:
     def __init__(
         self,
-        higher_level_centre : float = 50.0,  # The centre of all Gaussians in the multi level component.
-        gaussian_list : List[Gaussian] = None,  # Contains a list of Gaussians
+        higher_level_centre: float = 50.0,  # The centre of all Gaussians in the multi level component.
+        gaussian_list: List[Gaussian] = None,  # Contains a list of Gaussians
     ):
         self.higher_level_centre = higher_level_centre
 
@@ -129,6 +134,8 @@ __Why Use Multi Level Models?__
 
 An identical model in terms of functionality could of been created via the `Collection` object as follows:
 """
+
+
 class GaussianCentre:
     def __init__(
         self,
@@ -334,4 +341,3 @@ and `af.Collection()` objects.
 You should think carefully about whether your model fitting problem can use multi-level models, as they can make
 your model definition more concise and extensible.
 """
-

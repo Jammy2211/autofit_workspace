@@ -10,4 +10,3 @@ Folders
 Files
 -----
 
-- ``cookbook.py``: A cookbook **concisely** summarizing the different ways to use the **PyAutoFit** model composition API.

@@ -1,36 +1,45 @@
 """
-Feature: Multiple Datasets
-==========================
+Cookbook: Multiple Datasets
+===========================
 
-It is common to have multiple observations of the same signal. For the 1D Gaussian example, this would be multiple
-1D datasets of the same underlying Gaussian, with different noise-map realizations. In this situation, fitting the
-same model to all datasets simultaneously is desired, and would provide better constraints on the model.
+This cookbook illustrates how to fit multiple datasets simultaneously, where each dataset is fitted by a different
+`Analysis` class.
 
-On other occations, the signal may vary across the datasets in a way that requires that the model is updated
-accordingly. For example, a scenario where the centre of each Gaussian is the same across the datasets, but
-their `sigma` values are different in each dataset. A model where all Gaussians share the same `centre` is now required.
+The `Analysis` classes are summed together to give an overall log likelihood function that is the sum of the
+individual log likelihood functions, which is sampled by the non-linear search.
 
-This examples illustrates how to perform model-fits to multiple datasets simultaneously, including tools to customize
-the model composition such that specific parameters of the model vary across the datasets.
+If one has multiple observations of the same signal, it is often desirable to fit them simultaneously. This ensures
+that better constraints are placed on the model, as the full amount of information in the datasets is used.
 
-This uses the summing of `Analysis` object, which each have their own unique dataset and `log_likelihood_function`.
-Unique `Analysis` objects can be written for each dataset, meaning that we can perform model-fits to diverse datasets
-with different formats and structures.
+In some scenarios, the signal may vary across the datasets in a way that requires that the model is updated
+accordingly. **PyAutoFit** provides tools to customize the model composition such that specific parameters of the model
+vary across the datasets.
 
-It is also common for each individual dataset to only constrain specific aspects of a model. The high level of model
-customizaiton ensures that composing a model that is appropriate for fitting to such large datasets is straight
-forward.
+This cookbook illustrates using observations of 3 1D Gaussians, which have the same `centre` (which is the same
+for the model fitted to each dataset) but different `normalization and `sigma` values (which vary for the model
+fitted to each dataset).
 
-__Example Source Code (`af.ex`)__
+It is common for each individual dataset to only constrain specific aspects of a model. The high level of model
+customizaiton provided by **PyAutoFit** ensures that composing a model that is appropriate for fitting large and diverse
+datasets is straight forward. This is because different `Analysis` classes can be written for each dataset and summed.
 
-The **PyAutoFit** source code has the following example objects (accessed via `af.ex`) used in this tutorial:
+__Contents__
 
- - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and
- `visualize` functions.
-
- - `Gaussian`: a model component representing a 1D Gaussian profile.
-
-These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
+ - Model-Fit: Setup a model-fit to 3 datasets to illustrate multi-dataset fitting.
+ - Analysis Summing: Sum multiple `Analysis` classes to create a single `Analysis` class that fits all 3 datasets
+   simultaneously, including summing their individual log likelihood functions.
+ - Result List: Use the output of fits to multiple datasets which are a list of `Result` objects.
+ - Variable Model Across Datasets: Fit a model where certain parameters vary across the datasets whereas others
+   stay fixed.
+ - Relational Model: Fit models where certain parameters vary across the dataset as a user
+   defined relation (e.g. `y = mx + c`).
+ - Different Analysis Classes: Fit multiple datasets where each dataset is fitted by a different `Analysis` class,
+   meaning that datasets with different formats can be fitted simultaneously.
+ - Interpolation: Fit multiple datasets with a model one-by-one and interpolation over a smoothly varying parameter
+   (e.g. time) to infer the model between datasets.
+ - Individual Sequential Searches: Fit multiple datasets where each dataset is fitted one-by-one sequentially.
+ - Hierarchical / Graphical Models: Use hierarchical / graphical models to fit multiple datasets simultaneously,
+   which fit for global trends in the model across the datasets.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -46,16 +55,26 @@ import autofit as af
 import autofit.plot as aplt
 
 """
-__Data__
+__Model Fit__
 
-First, lets load 3 datasets of a 1D Gaussian, by loading them from .json files in the directory 
-`autofit_workspace/dataset/`.
+Load 3 1D Gaussian datasets from .json files in the directory `autofit_workspace/dataset/`.
 
-All three datasets contain an identical signal, meaning that it is appropriate to fit the same model to all three 
-datasets simultaneously.
+All three datasets contain an identical signal, therefore fitting the same model to all three datasets simultaneously
+is appropriate.
 
-Each dataset has a different noise realization, meaning that performing a simultaneously fit will offer improved 
-constraints over individual fits.
+Each dataset has a different noise realization, therefore fitting them simultaneously will offer improved constraints 
+over individual fits.
+
+__Example Source Code (`af.ex`)__
+
+The **PyAutoFit** source code has the following example objects (accessed via `af.ex`) used in this tutorial:
+
+ - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and
+ `visualize` functions.
+
+ - `Gaussian`: a model component representing a 1D Gaussian profile.
+
+These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 """
 dataset_size = 3
 
@@ -76,7 +95,7 @@ for dataset_index in range(dataset_size):
     noise_map_list.append(noise_map)
 
 """
-Now lets plot all 3 datasets, including their error bars. 
+Plot all 3 datasets, including their error bars. 
 """
 for data, noise_map in zip(data_list, noise_map_list):
     xvalues = range(data.shape[0])
@@ -95,18 +114,10 @@ for data, noise_map in zip(data_list, noise_map_list):
     plt.close()
 
 """
-__Model__
-
-Next, we create our model, which corresponds to a single 1D Gaussian, that is fitted to all 3 datasets simultaneously.
+Create our model corresponding to a single 1D Gaussian that is fitted to all 3 datasets simultaneously.
 """
 model = af.Model(af.ex.Gaussian)
 
-"""
-Checkout `autofit_workspace/config/priors/model.yaml`, this config file defines the default priors of the `Gaussian` 
-model component. 
-
-We overwrite the priors below to make them explicit.
-"""
 model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 model.normalization = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
 model.sigma = af.GaussianPrior(
@@ -114,11 +125,11 @@ model.sigma = af.GaussianPrior(
 )
 
 """
-__Analysis__
+__Analysis Summing__
 
-We set up our three instances of the `Analysis` class, using the class described in `analysis.py`.
+Set up three instances of the `Analysis` class which fit 1D Gaussian.
 
-We set up an `Analysis` for each dataset one-by-one, using a for loop:
+We set up an `Analysis` for each dataset one-by-one, using a for loop.
 """
 analysis_list = []
 
@@ -127,15 +138,13 @@ for data, noise_map in zip(data_list, noise_map_list):
     analysis_list.append(analysis)
 
 """
-__Analysis Summing__
-
 We now sum together every analysis in the list, to produce an overall analysis class which we fit with the non-linear
 search.
 
 By summing analysis objects the following happen:
 
  - The log likelihood values computed by the `log_likelihood_function` of each individual analysis class are summed to
-   give an overall log likelihood value that the non-linear search uses for model-fitting.
+   give an overall log likelihood value that the non-linear search samples when model-fitting.
 
  - The output path structure of the results goes to a single folder, which includes sub-folders for the visualization
    of every individual analysis object based on the `Analysis` object's `visualize` method.
@@ -148,13 +157,14 @@ We can alternatively sum a list of analysis objects as follows:
 analysis = sum(analysis_list)
 
 """
-The `log_likelihood_function`'s can be called in parallel over multiple cores by changing the `n_cores` parameter:
+The `log_likelihood_function`'s can be called in parallel over multiple cores by changing the `n_cores` parameter.
+
+This is beneficial when the model-fitting procedure is slow and the likelihood evaluation time of the different
+is roughly consistent.
 """
 analysis.n_cores = 1
 
 """
-__Search__
-
 To fit multiple datasets via a non-linear search we use this summed analysis object:
 """
 search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_simple")
@@ -162,13 +172,14 @@ search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_simple
 result_list = search.fit(model=model, analysis=analysis)
 
 """
-__Result__
+__Result List__
 
-The result object returned by the fit is a list of the `Result` objects you have used in other examples.
+The result object returned by the fit is a list of the `Result` objects, which is described in the result cookbook.
 
-In this example, the same model is fitted across all analyses, thus every `Result` in the `result_list` contains
-the same information on the samples and thus gives the same output from methods such 
-as `max_log_likelihood_instance`.
+Each `Result` in the list corresponds to each `Analysis` object in the `analysis_list` we passed to the fit.
+
+The same model was fitted across all analyses, thus every `Result` in the `result_list` contains the same information 
+on the samples and the same `max_log_likelihood_instance`.
 """
 print(result_list[0].max_log_likelihood_instance)
 print(result_list[1].max_log_likelihood_instance)
@@ -176,7 +187,7 @@ print(result_list[1].max_log_likelihood_instance)
 """
 We can plot the model-fit to each dataset by iterating over the results:
 """
-for result in result_list:
+for data, result in zip(data_list, result_list):
     instance = result.max_log_likelihood_instance
 
     model_data = instance.model_data_1d_via_xvalues_from(
@@ -202,13 +213,14 @@ for result in result_list:
 """
 __Variable Model Across Datasets__
 
-Above, the same model was fitted to every dataset simultaneously, which was possible because all 3 datasets contained 
-an identical signal with only the noise varying across the datasets.
+The same model was fitted to every dataset simultaneously because all 3 datasets contained an identical signal with 
+only the noise varying across the datasets.
 
-It is common for the signal in each dataset to be different and for it to constrain only certain aspects of the model.
-The model parameterization therefore needs to change in order to account for this.
+If the signal varied across the datasets, we would instead want to fit a different model to each dataset. The model
+composition can be updated using the summed `Analysis` object to do this.
 
-Lets look at an example of a dataset of 3 1D Gaussians where the signal varies across the datasets:
+We will use an example of 3 1D Gaussians which have the same `centre` but the `normalization` and `sigma` vary across 
+datasets:
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1_variable")
 
@@ -231,9 +243,7 @@ for dataset_name in dataset_name_list:
     noise_map_list.append(noise_map)
 
 """
-If we plot these datasets, we see that the `sigma` of each Gaussian decreases.
-
-We will illustrate models which vary over the data based on this `sigma` value. 
+Plotting these datasets shows that the `normalization` and` `sigma` of each Gaussian vary.
 """
 for data, noise_map in zip(data_list, noise_map_list):
     xvalues = range(data.shape[0])
@@ -241,14 +251,13 @@ for data, noise_map in zip(data_list, noise_map_list):
     af.ex.plot_profile_1d(xvalues=xvalues, profile_1d=data)
 
 """
-In this case, the `centre` and `normalization` of all three 1D Gaussians are the same in each dataset,
-but their `sigma` values are decreasing.
+The `centre` of all three 1D Gaussians are the same in each dataset, but their `normalization` and `sigma` values 
+are decreasing.
 
-We therefore wish to compose and to fit a model to all three datasets simultaneously, where the `centre` 
-and `normalization` are the same across all three datasets but the `sigma` value is unique for each dataset.
+We will therefore fit a model to all three datasets simultaneously, whose `centre` is the same for all 3 datasets but
+the `normalization` and `sigma` vary.
 
-To do that, we interface a model with a summed list of analysis objects, which we create below for this new
-dataset:
+To do that, we use a summed list of `Analysis` objects, where each `Analysis` object contains a different dataset.
 """
 analysis_list = []
 
@@ -259,44 +268,216 @@ for data, noise_map in zip(data_list, noise_map_list):
 analysis = sum(analysis_list)
 
 """
-We next compose a model of a 1D Gaussian, as performed frequently throughout the **PyAutoFit** examples:
+We next compose a model of a 1D Gaussian.
 """
 model = af.Collection(gaussian=af.Model(af.ex.Gaussian))
 
 """
 We now update the model using the summed `Analysis `objects to compose a model where: 
 
- - The `centre` and `normalization` values of the Gaussian fitted to every dataset in every `Analysis` object are
- identical. 
+ - The `centre` values of the Gaussian fitted to every dataset in every `Analysis` object are identical. 
 
- - The `sigma` value of the every Gaussian fitted to every dataset in every `Analysis` object are different.
+ - The`normalization` and `sigma` value of the every Gaussian fitted to every dataset in every `Analysis` object 
+   are different.
 
-This means that the model has 5 free parameters in total, the shared `centre` and `normalization` and a unique
-`sigma` value for every dataset.
+The model has 7 free parameters in total, x1 shared `centre`, x3 unique `normalization`'s and x3 unique `sigma`'s.
 """
-analysis = analysis.with_free_parameters(model.gaussian.sigma)
+analysis = analysis.with_free_parameters(
+    model.gaussian.normalization, model.gaussian.sigma
+)
 
 """
-To inspect this new model, with extra parameters for each dataset created, we have to extract the modified version of this model from the Analysis object.
-This occurs automatically when we begin a non-linear search, therefore the normal model we created above is what we input to the search.fit() method.
+To inspect this new model, with extra parameters for each dataset created, we extract a modified version of this 
+model from the summed `Analysis` object.
+
+This model modiciation occurs automatically when a non-linear search begins, therefore the normal model we created 
+above is input to the `search.fit()` method.
 """
 
 model_updated = analysis.modify_model(model)
 
-"""
-This means that the model has 5 free parameters in total, the shared `centre` and `normalization` and a unique
-`sigma` value for every dataset.
-"""
-print(model_updated.total_free_parameters)
+print(model_updated.info)
 
 """
-We can now fit this model to the data using the usual **PyAutoFit** tools:
+Fit this model to the data using dynesty.
 """
 search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_free_sigma")
 
+"""
+The `normalization` and `sigma` values of the maximum log likelihood models fitted to each dataset are different, 
+which is shown by printing the `sigma` values of the maximum log likelihood instances of each result.
+
+The `centre` values of the maximum log likelihood models fitted to each dataset are the same.
+"""
 result_list = search.fit(model=model, analysis=analysis)
 
+for result in result_list:
+    instance = result.max_log_likelihood_instance
+
+    print("Max Log Likelihood Model:")
+    print("Centre = ", instance.gaussian.centre)
+    print("Normalization = ", instance.gaussian.normalization)
+    print("Sigma = ", instance.gaussian.sigma)
+    print()
+
+
 """
+__Relational Model__
+
+In the model above, two extra free parameters (`normalization and `sigma`) were added for every dataset. 
+
+For just 3 datasets the model stays low dimensional and this is not a problem. However, for 30+ datasets the model
+will become complex and difficult to fit.
+
+In these circumstances, one can instead compose a model where the parameters vary smoothly across the datasets
+via a user defined relation.
+
+Below, we compose a model where the `sigma` value fitted to each dataset is computed according to:
+
+ `y = m * x + c` : `sigma` = sigma_m * x + sigma_c`
+
+Where x is an integer number specifying the index of the dataset (e.g. 1, 2 and 3).
+
+By defining a relation of this form, `sigma_m` and `sigma_c` are the only free parameters of the model which vary
+across the datasets. 
+
+Of more datasets are added the number of model parameters therefore does not increase.
+"""
+normalization_m = af.UniformPrior(lower_limit=-10.0, upper_limit=10.0)
+normalization_c = af.UniformPrior(lower_limit=-10.0, upper_limit=10.0)
+
+sigma_m = af.UniformPrior(lower_limit=-10.0, upper_limit=10.0)
+sigma_c = af.UniformPrior(lower_limit=-10.0, upper_limit=10.0)
+
+x_list = [1.0, 2.0, 3.0]
+
+analysis_with_relation_list = []
+
+for x, analysis in zip(x_list, analysis_list):
+    normalization_relation = (normalization_m * x) + normalization_c
+    sigma_relation = (sigma_m * x) + sigma_c
+
+    analysis_with_relation = analysis.with_model(
+        model.replacing(
+            {
+                model.gaussian.normalization: normalization_relation,
+                model.gaussian.sigma: sigma_relation,
+            }
+        ),
+    )
+
+    analysis_with_relation_list.append(analysis_with_relation)
+
+
+"""
+We can use division, subtraction and logorithms to create more complex relations and apply them to different parameters, 
+for example:
+
+ `y = m * log10(x) - log(z) + c` : `sigma` = sigma_m * log10(x) - log(z) + sigma_c` 
+ `y = m * (x / z)` : `centre` = centre_m * (x / z)`
+"""
+model = af.Collection(gaussian=af.Model(af.ex.Gaussian))
+
+sigma_m = af.UniformPrior(lower_limit=-0.1, upper_limit=0.1)
+sigma_c = af.UniformPrior(lower_limit=-10.0, upper_limit=10.0)
+
+centre_m = af.UniformPrior(lower_limit=-0.1, upper_limit=0.1)
+centre_c = af.UniformPrior(lower_limit=-10.0, upper_limit=10.0)
+
+x_list = [1.0, 10.0, 30.0]
+z_list = [2.0, 4.0, 6.0]
+
+analysis_with_relation_list = []
+
+for x, z, analysis in zip(x_list, z_list, analysis_list):
+    sigma_relation = (sigma_m * af.Log10(x) - af.Log(z)) + sigma_c
+    centre_relation = centre_m * (x / z)
+
+    analysis_with_relation = analysis.with_model(
+        model.replacing(
+            {
+                model.gaussian.sigma: sigma_relation,
+                model.gaussian.centre: centre_relation,
+            }
+        )
+    )
+
+    analysis_with_relation_list.append(analysis_with_relation)
+
+analysis_with_relation = sum(analysis_with_relation_list)
+
+model = analysis.modify_model(model)
+
+print(model.info)
+
+"""
+Analysis summing is performed after the model relations have been created.
+"""
+analysis_with_relation = sum(analysis_with_relation_list)
+
+
+"""
+The modified model's `info` attribute shows the model has been composed using this relation.
+"""
+
+model_updated = analysis.modify_model(model)
+
+print(model_updated.info)
+
+"""
+We can fit the model as per usual.
+"""
+
+search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_relation")
+
+result_list = search.fit(model=model, analysis=analysis_with_relation)
+
+"""
+The `normalization` and `sigma` values of the maximum log likelihood models fitted to each dataset are different, 
+which is shown by printing the `sigma` values of the maximum log likelihood instances of each result.
+
+They now follow the relation we defined above.
+
+The `centre` values of the maximum log likelihood models fitted to each dataset are the same.
+"""
+result_list = search.fit(model=model, analysis=analysis)
+
+for result in result_list:
+    instance = result.max_log_likelihood_instance
+
+    print("Max Log Likelihood Model:")
+    print("Centre = ", instance.gaussian.centre)
+    print("Normalization = ", instance.gaussian.normalization)
+    print("Sigma = ", instance.gaussian.sigma)
+    print()
+
+"""
+__Different Analysis Objects__
+
+For simplicity, this example summed together a single `Analysis` class which fitted 1D Gaussian's to 1D data.
+
+For many problems one may have multiple datasets which are quite different in their format and structure In this 
+situation, one can simply define unique `Analysis` objects for each type of dataset, which will contain a 
+unique `log_likelihood_function` and methods for visualization.
+
+The analysis summing API illustrated here can then be used to fit this large variety of datasets, noting that the 
+the model can also be customized as necessary for fitting models to multiple datasets that are different in their 
+format and structure. 
+
+__Interpolation__
+
+One may have many datasets which vary according to a smooth function, for example a dataset taken over time where
+the signal varies smoothly as a function of time.
+
+This could be fitted using the tools above, all at once. However, in many use cases this is not possible due to the
+model complexity, number of datasets or computational time.
+
+An alternative approach is to fit each dataset individually, and then interpolate the results over the smoothly
+varying parameter (e.g. time) to estimate the model parameters at any point.
+
+**PyAutoFit** has interpolation tools to do exactly this. These have not been documented yet, but if they sound
+useful to you please contact us on SLACK and we'll be happy to explain how they work.
+
 __Individual Sequential Searches__
 
 The API above is used to create a model with free parameters across ``Analysis`` objects, which are all fit
@@ -316,90 +497,20 @@ The benefit of this method is for complex high dimensionality models (e.g. when 
 to `` analysis.with_free_parameters``, it breaks the fit down into a series of lower dimensionality non-linear
 searches that may convergence on a solution more reliably.
 
-__Variable Parameters As Relationship__
+__Hierarchical / Graphical Models__
 
-In the model above, an extra free parameter `sigma` was added for every dataset. 
+A common class of models used for fitting complex models to large datasets are hierarchical and graphical models. 
 
-This was ok for the simple model fitted here to just 3 datasets, but for more complex models and problems with 10+
-datasets one will quick find that the model complexity increases dramatically.
-
-In these circumstances, one can instead compose a model where the parameters vary smoothly across the datasets
-via a user defined relation.
-
-Below, we compose a model where the `sigma` value fitted to each dataset is computed according to:
-
- `y = m * x + c` : `sigma` = sigma_m * x + sigma_c`
-
-Where x is an integer number specifying the index of the dataset (e.g. 1, 2 and 3).
-
-By defining a relation of this form, `sigma_m` and `sigma_c` are the only free parameters of the model which vary
-across the datasets. 
-
-Therefore, if more datasets are added the number of model parameter does not increase, like we saw above.
-"""
-sigma_m = af.UniformPrior(lower_limit=-10.0, upper_limit=10.0)
-sigma_c = af.UniformPrior(lower_limit=-10.0, upper_limit=10.0)
-
-x_list = [1.0, 2.0, 3.0]
-
-analysis_with_relation_list = []
-
-for x, analysis in zip(x_list, analysis_list):
-    sigma_relation = (sigma_m * x) + sigma_c
-
-    analysis_with_relation = analysis.with_model(
-        model.replacing({model.gaussian.sigma: sigma_relation})
-    )
-
-    analysis_with_relation_list.append(analysis_with_relation)
-
-"""
-We can fit this model as per usual, you may wish to checkout the `model.info` file to see how a schematic of this
-model's composition.
-"""
-analysis_with_relation = sum(analysis_with_relation_list)
-
-search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_relation")
-
-result_list = search.fit(model=model, analysis=analysis_with_relation)
-
-"""
-__Temporally Varying Models__
-
-An obvious example of fitting models which vary across datasets are time-varying models, where the datasets are
-observations of a signal which varies across time.
-
-In such circumstances, it is common for certain model parameters to be known to not vary as a function of time (and 
-therefore be fixed across the datasets) whereas other parameters are known to vary as a function of time (and therefore
-should be parameterized accordingly using the API illustrated here).
-
-__Different Analysis Objects__
-
-For simplicity, this example summed together only a single `Analysis` class. 
-
-For many problems one may have multiple datasets which are quite different in their format and structure (perhaps 
-one is a  1D signal whereas another dataset is an image). In this situation, one can simply define unique `Analysis`
-objects for each type of dataset, which will contain a unique `log_likelihood_function` and methods for visualization.
-
-Nevertheless, the analysis summing API illustrated here will still work, meaning that **PyAutoFit** makes it simple to 
-fit highly customized models to multiple datasets that are different in their format and structure. 
-
-__Graphical Models__
-
-A common class of models used for fitting complex models to large datasets are graphical models. 
-
-Graphical models can include addition parameters not specific to individual datasets describing the overall 
+These models can include addition parameters not specific to individual datasets describing the overall 
 relationship between different model components, thus allowing one to infer the global trends contained within a 
 dataset.
 
-**PyAutoFit** has a dedicated feature set for fitting graphical models and interested readers should
-checkout the graphical modeling chapter of **HowToFit** (https://pyautofit.readthedocs.io/en/latest/howtofit/chapter_graphical_models.html)
+**PyAutoFit** has a dedicated feature set for fitting hierarchical and graphical models and interested readers should
+checkout the hierarchical and graphical modeling 
+chapter of **HowToFit** (https://pyautofit.readthedocs.io/en/latest/howtofit/chapter_graphical_models.html)
 
 __Wrap Up__
 
 We have shown how **PyAutoFit** can fit large datasets simultaneously, using custom models that vary specific
 parameters across the dataset.
-
-The `autofit_workspace/*/model/cookbook_3_multiple_datasets` cookbook gives a concise API reference for model 
-composition when fitting multiple datasets.
 """

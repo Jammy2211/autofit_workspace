@@ -120,7 +120,7 @@ class Gaussian:
         self.normalization = normalization
         self.sigma = sigma
 
-    def model_data_1d_via_xvalues_from(self, xvalues : np.ndarray) -> np.ndarray:
+    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray) -> np.ndarray:
         """
         Returns the 1D Gaussian profile on a line of Cartesian x coordinates.
 
@@ -319,10 +319,11 @@ class Analysis(af.Analysis):
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
         chi_squared = sum(chi_squared_map)
-        noise_normalization = np.sum(np.log(2 * np.pi * self.noise_map ** 2.0))
+        noise_normalization = np.sum(np.log(2 * np.pi * self.noise_map**2.0))
         log_likelihood = -0.5 * (chi_squared + noise_normalization)
 
         return log_likelihood
+
 
 """
 Create an instance of the `Analysis` class by passing the `data` and `noise_map`.
@@ -446,6 +447,8 @@ plt.close()
 """
 We define a Python class for the `Exponential` model component, exactly as we did for the `Gaussian` above.
 """
+
+
 class Exponential:
     def __init__(
         self,
@@ -487,6 +490,7 @@ class Exponential:
         return self.normalization * np.multiply(
             self.rate, np.exp(-1.0 * self.rate * abs(transformed_xvalues))
         )
+
 
 """
 We can easily compose a model consisting of 1 `Gaussian` object and 1 `Exponential` object using the `af.Collection`
@@ -543,6 +547,8 @@ The `Analysis` class above assumed the `instance` contained only a single model-
 
 We update its `log_likelihood_function` to use both model components in the `instance` to fit the data.
 """
+
+
 class Analysis(af.Analysis):
     def __init__(self, data: np.ndarray, noise_map: np.ndarray):
         """
@@ -611,7 +617,10 @@ class Analysis(af.Analysis):
         summed overall model data.
         """
         model_data = sum(
-            [profile_1d.model_data_1d_via_xvalues_from(xvalues=xvalues) for profile_1d in instance]
+            [
+                profile_1d.model_data_1d_via_xvalues_from(xvalues=xvalues)
+                for profile_1d in instance
+            ]
         )
 
         """
@@ -620,10 +629,11 @@ class Analysis(af.Analysis):
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
         chi_squared = sum(chi_squared_map)
-        noise_normalization = np.sum(np.log(2 * np.pi * noise_map ** 2.0))
+        noise_normalization = np.sum(np.log(2 * np.pi * noise_map**2.0))
         log_likelihood = -0.5 * (chi_squared + noise_normalization)
 
         return log_likelihood
+
 
 """
 We can now fit this model to the data using the same API we did before.

@@ -1,32 +1,50 @@
 """
-Feature: Database
-=================
+Cookbook: Database
+==================
 
-The default behaviour of **PyAutoFit** is for model-fitting results to be output to hard-disc in folders, which are
-straight forward to navigate and manually check. For small model-fitting tasks this is sufficient, however many users
-have a need to perform many model fits to very large datasets, making manual inspection of results time consuming.
+The default behaviour of model-fitting results output is to be written to hard-disc in folders. These are simple to 
+navigate and manually check. 
 
-PyAutoFit's database feature outputs all model-fitting results as a
-sqlite3 (https://docs.python.org/3/library/sqlite3.html) relational database, such that all results
-can be efficiently loaded into a Jupyter notebook or Python script for inspection, analysis and interpretation. This
-database supports advanced querying, so that specific model-fits (e.g., which fit a certain model or dataset) can be
-loaded.
+For small model-fitting tasks this is sufficient, however it does not scale well when performing many model fits to 
+large datasets, because manual inspection of results becomes time consuming.
 
-This example extends our example of fitting a 1D `Gaussian` profile and fits 3 independent datasets each containing a
-1D Gaussian. The results will be written to a `.sqlite` database, which we will load to demonstrate the database.
+All results can therefore be output to an sqlite3 (https://docs.python.org/3/library/sqlite3.html) relational database,
+meaning that results can be loaded into a Jupyter notebook or Python script for inspection, analysis and interpretation. 
+This database supports advanced querying, so that specific model-fits (e.g., which fit a certain model or dataset) can 
+be loaded.
 
-A full description of PyAutoFit's database tools is provided in the database chapter of the `HowToFit` lectures.
+This cookbook provides a concise reference to the database API.
 
-__Example Source Code (`af.ex`)__
+__Contents__
 
-The **PyAutoFit** source code has the following example objects (accessed via `af.ex`) used in this tutorial:
+Ann overview of database functionality is given in the following sections:
 
- - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and
- `visualize` functions.
+ - Unique Identifiers: How unique identifiers are used to ensure every entry of the database is unique.
+ - Info: Passing an `info` dictionary to the search to include information on the model-fit that is not part of the
+   model-fit itself, which can be loaded via the database.
+ - Session: Set up a database session so results are written directly to the .sqlite database.
+ - Building Database via Directory: Build a database from results already written to hard-disk in an output folder.
+ - Files: The files that are stored in the database that can be loaded and inspected.
+ - Generators: Why the database uses Python generators to load results.
 
- - `Gaussian`: a model component representing a 1D Gaussian profile.
+The results that can be loaded via the database are described in the following sections:
 
-These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
+ - Model: The model fitted by the non-linear search.
+ - Search: The search used to perform the model-fit.
+ - Samples: The samples of the non-linear search (e.g. all parameter values, log likelihoods, etc.).
+ - Samples Summary: A summary of the samples of the non-linear search (e.g. the maximum log likelihood model) which can
+   be faster to load than the full set of samples.
+ - Info: The `info` dictionary passed to the search.
+ - Custom Output: Extend `Analysis` classes to output additional information which can be loaded via the database (e.g.
+   the data, maximum likelihood model data, etc.).
+
+Using queries to load specific results is described in the following sections:
+
+ - Querying Datasets: Query based on the name of the dataset.
+ - Querying Searches: Query based on the name of the search.
+ - Querying Models: Query based on the model that is fitted.
+ - Querying Results: Query based on the results of the model-fit.
+ - Querying Logic: Use logic to combine queries to load specific results (e.g. AND, OR, etc.).
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -34,6 +52,7 @@ These are functionally identical to the `Analysis` and `Gaussian` objects you ha
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
 
+import json
 from os import path
 import numpy as np
 
@@ -41,34 +60,47 @@ import autofit as af
 import autofit.plot as aplt
 
 """
-__Dataset Names__
+__Unique Identifiers__
 
-For each dataset we load it from hard-disc, set up its `Analysis` class and fit it with a non-linear search. 
+Results output to hard-disk by **PyAutoFit** are contained in a folder named via a unique identifier (a 
+random collection of characters, e.g. `8hds89fhndlsiuhnfiusdh`). The unique identifier changes if the model or 
+search change, to ensure different fits to not overwrite one another on hard-disk.
 
-The 3 datasets are in the `autofit_workspace/dataset/example_1d` folder.
+Each unique identifier is used to define every entry of the database as it is built. Unique identifiers therefore play 
+the same vital role for the database of ensuring that every set of results written to it are unique.
 
-We want each results to be stored in the database with an entry specific to the dataset, by generating the unique
-identifier using the name of the dataset. We'll use the `dataset_name` string to do this, so lets create a list of 
-the 3 dataset names.
-"""
-dataset_name_list = ["gaussian_x1_0", "gaussian_x1_1", "gaussian_x1_2"]
+In this example, we fit 3 different datasets with the same search and model. Each `dataset_name` is therefore passed
+in as the search's `unique_tag` to ensure 3 separate sets of results for each model-fit are written to the .sqlite
+database.
 
-"""
 __Info__
 
-Information about our model-fit that isn't part of the model-fit can be made accessible to the database, by passing 
-an `info` dictionary. 
+Information about the model-fit that is not part included in the model-fit itself can be made accessible via the 
+database by passing an `info` dictionary. 
 
-For example, below we write info on the dataset`s (hypothetical) data of observation and exposure time, which the
-database will be able to access.
+Below we write info on the dataset`s (hypothetical) data of observation and exposure time, which we will later show
+the database can access. 
+
+For fits to large datasets this ensures that all relevant information for interpreting results is accessible.
 """
 info = {"date_of_observation": "01-02-18", "exposure_time": 1000.0}
 
 """
-__Model__
+__Session__
 
-Next, we create our model, which again corresponds to a single `Gaussian` with manual priors.
+We now perform a simple model-fit to 3 datasets, where the results are written directly a sqlite3 database.
+
+To do this, we start a session, which includes the name of the database `.sqlite` file where results are stored.
 """
+session = af.db.open_database("database.sqlite")
+
+"""
+For each dataset we load it from hard-disc, set up a model and analysis and fit it with a non-linear search. 
+
+Note how the `session` is passed to the `Dynesty` search.
+"""
+dataset_name_list = ["gaussian_x1_0", "gaussian_x1_1", "gaussian_x1_2"]
+
 model = af.Collection(gaussian=af.ex.Gaussian)
 
 model.gaussian.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
@@ -77,23 +109,7 @@ model.gaussian.sigma = af.GaussianPrior(
     mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=np.inf
 )
 
-"""
-___Session__
-
-To output results directly to the database, we start a session, which includes the name of the database `.sqlite` file
-where results are stored.
-"""
-session = af.db.open_database("database.sqlite")
-
-"""
-This for loop runs over every dataset, checkout the comments below for how we set up the database entry of each fit.
-
-Note how the `session` is passed to the `Dynesty` search.
-"""
 for dataset_name in dataset_name_list:
-    """
-    The code below loads the dataset and sets up the Analysis class.
-    """
     dataset_path = path.join("dataset", "example_1d", dataset_name)
 
     data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
@@ -103,21 +119,6 @@ for dataset_name in dataset_name_list:
 
     analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
-    """
-    In all examples so far, results were written to the `autofit_workspace/output` folder with a path and folder 
-    named after a unique identifier, which was derived from the non-linear search and model. This unique identifier
-    plays a vital role in the database: it is used to ensure every entry in the database is unique. 
-    
-    In this example, results are written directly to the `database.sqlite` file after the model-fit is complete and 
-    only stored in the output folder during the model-fit. This can be important for performing large model-fitting 
-    tasks on high performance computing facilities where there may be limits on the number of files allowed, or there
-    are too many results to make navigating the output folder manually feasible.
-    
-    The `unique_tag` below uses the `dataset_name` to alter the unique identifier, which as we have seen is also 
-    generated depending on the search settings and model. In this example, all three model fits use an identical 
-    search and model, so this `unique_tag` is key for ensuring 3 separate sets of results for each model-fit are 
-    stored in the output folder and written to the .sqlite database. 
-    """
     search = af.DynestyStatic(
         name="database_example",
         path_prefix=path.join("features", "database"),
@@ -127,47 +128,96 @@ for dataset_name in dataset_name_list:
     )
 
     print(
-        f"The non-linear search has begun running. This Jupyter notebook cell with progress once Dynesty has completed, this could take a "
-        f"few minutes!"
+        """
+        The non-linear search has begun running. 
+        This Jupyter notebook cell with progress once search has completed, this could take a few minutes!
+        """
     )
 
     result = search.fit(model=model, analysis=analysis, info=info)
 
-print("Dynesty has finished run - you may now continue the notebook.")
+print("Search has finished run - you may now continue the notebook.")
 
 """
-The results are not contained in the `output` folder after each search completes. Instead, they are
-contained in the `database.sqlite` file, which we can load using the `Aggregator`.
+If you inspect the `output` folder, you will see a `database.sqlite` file which contains the results.
+
+We can load the database using the `Aggregator`.
 """
 agg = af.Aggregator.from_database("database.sqlite")
 
 """
+__Building Database via Directory__
+
+The fits above directly wrote the results to the .sqlite file, which we loaded above. However, you may have results
+already written to hard-disk in an output folder, which you wish to build your .sqlite file from.
+
+This can be done via the following code, which is commented out below to avoid us deleting the existing .sqlite file.
+
+Below, the `database_name` corresponds to the name of your output folder and is also the name of the `.sqlite` file
+that is created.
+
+If you are fitting a relatively small number of datasets (e.g. 10-100) having all results written
+to hard-disk (e.g. for quick visual inspection) but using the database for sample-wide analysis may be benefitial.
+"""
+# database_name = "database"
+
+# agg = af.Aggregator.from_database(
+#    filename=f"{database_name}.sqlite", completed_only=False
+# )
+
+# agg.add_directory(directory=path.join("output", database_name)))
+
+"""
+__Files__
+
+When performing fits which output results to hard-disc, a `files` folder is created containing .json / .csv files of 
+the model, samples, search, etc.
+
+These are the files that are written to the database, and the aggregator load them via the database in order
+to make them accessible in a Python script or Jupyter notebook.
+
+Below, we will access these results using the aggregator's `values` method. A full list of what can be loaded is
+as follows:
+
+ - model: The `model` defined above and used in the model-fit (`model.json`).
+ - search: The non-linear search settings of the fit (`search.json`).
+ - samples: The non-linear search samples of the fit (`samples.csv`).
+ - samples_summary: A summary of the samples results of the fit (`samples_summary.json`).
+ - info: The info dictionary passed to the search (`info.json`).
+ - covariance: The covariance matrix of the fit (`covariance.csv`).
+ 
+The `samples` and `samples_summary` results contain a lot of repeated information. The `samples` result contains
+the full non-linear search samples, for example every parameter sample and its log likelihood. The `samples_summary`
+contains a summary of the results, for example the maximum log likelihood model and error estimates on parameters
+at 1 and 3 sigma confidence.
+
+Accessing results via the `samples_summary` is therefore a lot faster, as it does reperform calculations using the
+full list of samples. Therefore, if the result you want is accessible via the `samples_summary` you should use it
+but if not you can revert to the `samples.
+
 __Generators__
 
-Before using the aggregator to inspect results, let me quickly cover Python generators. A generator is an object that 
-iterates over a function when it is called. The aggregator creates all of the objects that it loads from the database 
-as generators (as opposed to a list, or dictionary, or other Python type).
+Before using the aggregator to inspect results, lets discuss Python generators. 
 
-Why? Because lists and dictionaries store every entry in memory simultaneously. If you fit many datasets, this will use 
-a lot of memory and crash your laptop! On the other hand, a generator only stores the object in memory when it is used; 
-Python is then free to overwrite it afterwards. Thus, your laptop won't crash!
+A generator is an object that iterates over a function when it is called. The aggregator creates all of the objects 
+that it loads from the database as generators (as opposed to a list, or dictionary, or another Python type).
 
-There are two things to bare in mind with generators:
+This is because generators are memory efficient, as they do not store the entries of the database in memory 
+simultaneously. This contrasts objects like lists and dictionaries, which store all entries in memory all at once. 
+If you fit a large number of datasets, lists and dictionaries will use a lot of memory and could crash your computer!
 
- 1) A generator has no length and to determine how many entries it contains you first must turn it into a list.
+Once we use a generator in the Python code, it cannot be used again. To perform the same task twice, the 
+generator must be remade it. This cookbook therefore rarely stores generators as variables and instead uses the 
+aggregator to create each generator at the point of use.
 
- 2) Once we use a generator, we cannot use it again and need to remake it. For this reason, we typically avoid 
- storing the generator as a variable and instead use the aggregator to create them on use.
-
-We can now create a `samples` generator of every fit. The `results` example scripts show how , an instance of 
-the `Samples` class acts as an interface to the results of the non-linear search.
+To create a generator of a specific set of results, we use the `values` method. This takes the `name` of the
+object we want to create a generator of, for example inputting `name=samples` will return the results `Samples`
+object.
 """
 samples_gen = agg.values("samples")
 
 """
-__Samples__
-
-When we convert this generator to a list and it, the outputs are 3 different SamplesMCMC instances. These correspond to 
+By converting this generator to a list and printing it, it is a list of 3 `SamplesDynesty` objects, corresponding to 
 the 3 model-fits performed above.
 """
 print("Dynesty Samples:\n")
@@ -175,55 +225,216 @@ print(samples_gen)
 print("Total Samples Objects = ", len(agg), "\n")
 
 """
-The `Samples` class is described in the `result.py` example script. Using the `Aggregator` we can access all of the 
-attributes described in that example, for example the value of every parameter.
+__Model__
 
-Refer to `result.py` for all the properties that are accessible via the `Aggregator`.
+The model used to perform the model fit for each of the 3 datasets can be loaded via the aggregator and printed.
+"""
+model_gen = agg.values("model")
+
+for model in model_gen:
+    print(model.info)
+
+"""
+__Search__
+
+The non-linear search used to perform the model fit can be loaded via the aggregator and printed.
+"""
+search_gen = agg.values("search")
+
+for search in search_gen:
+    print(search.info)
+
+"""
+__Samples__
+
+The `Samples` class contains all information on the non-linear search samples, for example the value of every parameter
+sampled using the fit or an instance of the maximum likelihood model.
+
+The `Samples` class is described fully in the results cookbook.
 """
 for samples in agg.values("samples"):
-    print("All parameters of the very first sample")
-    print(samples.parameter_lists[0])
     print("The tenth sample`s third parameter")
     print(samples.parameter_lists[9][2], "\n")
 
+    instance = samples.max_log_likelihood()
+
+    print("Max Log Likelihood `Gaussian` Instance:")
+    print("Centre = ", instance.centre)
+    print("Normalization = ", instance.normalization)
+    print("Sigma = ", instance.sigma, "\n")
+
 """
-__Querying__
+__Samples Summary__
 
-We can use the `Aggregator`'s to query the database and return only specific fits that we are interested in. We first 
-do this, using the `info` object, whereby we can query any of its entries, for example the `dataset_name` string we 
-input into the model-fit above. 
+The samples summary contains a subset of results access via the `Samples`, for example the maximum likelihood model
+and parameter error estimates.
 
-By querying using the string `gaussian_x1_1` the model-fit to only the second `Gaussian` dataset is returned:
+Using the samples method above can be slow, as the quantities have to be computed from all non-linear search samples
+(e.g. computing errors requires that all samples are marginalized over). This information is stored directly in the
+samples summary and can therefore be accessed instantly.
+"""
+# for samples_summary in agg.values("samples_summary"):
+#
+#     instance = samples_summary.max_log_likelihood()
+#
+#     print("Max Log Likelihood `Gaussian` Instance:")
+#     print("Centre = ", instance.centre)
+#     print("Normalization = ", instance.normalization)
+#     print("Sigma = ", instance.sigma, "\n")
+
+"""
+__Info__
+
+The info dictionary passed to the search, discussed earlier in this cookbook, is accessible.
+"""
+for info in agg.values("info"):
+    print(info["date_of_observation"])
+    print(info["exposure_time"])
+
+"""
+The API for querying is fairly self explanatory. Through the combination of info based queries, model based
+queries and result based queries a user has all the tools they need to fit extremely large datasets with many different
+models and load only the results they are interested in for inspection and analysis.
+
+__Custom Output__
+
+The results accessible via the database (e.g. `model`, `samples`) are those contained in the `files` folder.
+
+By extending an `Analysis` class with the methods `save_attributes_for_aggregator` and `save_results_for_aggregator`, 
+custom files can be written to the `files` folder and become accessible via the database.
+"""
+
+class Analysis(af.Analysis):
+    def __init__(self, data: np.ndarray, noise_map: np.ndarray):
+        """
+        Standard Analysis class example used throughout PyAutoFit examples.
+        """
+        super().__init__()
+
+        self.data = data
+        self.noise_map = noise_map
+
+    def log_likelihood_function(self, instance) -> float:
+        """
+        Standard log likelihood function used throughout PyAutoFit examples.
+        """
+
+        xvalues = np.arange(self.data.shape[0])
+
+        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+
+        residual_map = self.data - model_data
+        chi_squared_map = (residual_map / self.noise_map) ** 2.0
+        chi_squared = sum(chi_squared_map)
+        noise_normalization = np.sum(np.log(2 * np.pi * self.noise_map**2.0))
+        log_likelihood = -0.5 * (chi_squared + noise_normalization)
+
+        return log_likelihood
+
+    def save_attributes_for_aggregator(self, paths: af.DirectoryPaths):
+        """
+        Before the non-linear search begins, this routine saves attributes of the `Analysis` object to the `files`
+        folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.
+
+        For this analysis, it uses the `AnalysisDataset` object's method to output the following:
+
+        - The dataset's data as a .json file.
+        - The dataset's noise-map as a .json file.
+
+        These are accessed using the aggregator via `agg.values("data")` and `agg.values("noise_map")`.
+
+        Parameters
+        ----------
+        paths
+            The PyAutoFit paths object which manages all paths, e.g. where the non-linear search outputs are stored,
+            visualization, and the pickled objects used by the aggregator output by this function.
+        """
+        # The path where data.json is saved, e.g. output/dataset_name/unique_id/files/data.json
+
+        file_path = (path.join(paths._json_path, "data.json"),)
+
+        with open(file_path, "w+") as f:
+            json.dump(self.data, f, indent=4)
+
+        # The path where noise_map.json is saved, e.g. output/noise_mapset_name/unique_id/files/noise_map.json
+
+        file_path = (path.join(paths._json_path, "noise_map.json"),)
+
+        with open(file_path, "w+") as f:
+            json.dump(self.noise_map, f, indent=4)
+
+    def save_results_for_aggregator(self, paths: af.AbstractPaths, result: af.Result):
+        """
+        At the end of a model-fit,  this routine saves attributes of the `Analysis` object to the `files`
+        folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.
+
+        For this analysis it outputs the following:
+
+        - The maximum log likelihood model data as a .json file.
+
+        This is accessed using the aggregator via `agg.values("model_data")`.
+
+        Parameters
+        ----------
+        paths
+            The PyAutoFit paths object which manages all paths, e.g. where the non-linear search outputs are stored,
+            visualization and the pickled objects used by the aggregator output by this function.
+        result
+            The result of a model fit, including the non-linear search, samples and maximum likelihood model.
+        """
+        xvalues = np.arange(self.data.shape[0])
+
+        instance = result.max_log_likelihood_instance
+
+        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+
+        # The path where model_data.json is saved, e.g. output/dataset_name/unique_id/files/model_data.json
+
+        file_path = (path.join(paths._json_path, "model_data.json"),)
+
+        with open(file_path, "w+") as f:
+            json.dump(model_data, f, indent=4)
+
+
+"""
+__Querying Datasets__
+
+The aggregator can query the database, returning only specific fits of interested. 
+
+We can query using the `dataset_name` string we input into the model-fit above, in order to get the results
+of a fit to a specific dataset. 
+
+For example, querying using the string `gaussian_x1_1` returns results for only the fit using the 
+second `Gaussian` dataset.
 """
 unique_tag = agg.search.unique_tag
 agg_query = agg.query(unique_tag == "gaussian_x1_1")
 
 """
-As expected, this list now has only 1 SamplesMCMC corresponding to the second dataset.
+As expected, this list has only 1 `SamplesDynesty` corresponding to the second dataset.
 """
 print(agg_query.values("samples"))
 print("Total Samples Objects via dataset_name Query = ", len(agg_query), "\n")
 
 """
-__Unique Tag__
-
-If we query using an incorrect dataset name we get no results:
+If we query using an incorrect dataset name we get no results.
 """
 unique_tag = agg.search.unique_tag
 agg_query = agg.query(unique_tag == "incorrect_name")
 samples_gen = agg_query.values("samples")
 
 """
-__Search Name__
+__Querying Searches__
 
-We can also use the `name` of the search used to fit to the model as a query. 
+We can query using the `name` of the non-linear search used to fit the model. 
 
-In this example, all three fits used the same search, which had the `name` `database_example`. Thus, using it as a 
-query in this example is somewhat pointless. However, querying based on the search name is very useful for model-fits
-which use search chaining (see chapter 3 **HowToLens**), where the results of a particular fit in the chain can be
-instantly loaded.
+In this cookbook, all three fits used the same search, named `database_example`. Query based on search name in this 
+example is therefore somewhat pointless. 
 
-As expected, this query contains all 3 results.
+However, querying based on the search name is useful for model-fits which use a range of searches, for example
+if different non-linear searches are used multiple times.
+
+As expected, the query using search name below contains all 3 results.
 """
 name = agg.search.name
 agg_query = agg.query(name == "database_example")
@@ -232,15 +443,15 @@ print(agg_query.values("samples"))
 print("Total Samples Objects via name Query = ", len(agg_query), "\n")
 
 """
-__Model__
+__Querying Models__
 
-We can also query based on the model fitted. 
+We can query based on the model fitted. 
 
 For example, we can load all results which fitted a `Gaussian` model-component, which in this simple example is all
 3 model-fits.
  
-The ability to query via the model is extremely powerful. It enables a user to perform many model-fits with many 
-different model parameterizations to large datasets and efficiently load and inspect the results. 
+Querying via the model is useful for loading results after performing many model-fits with many different model 
+parameterizations to large (e.g. Bayesian model comparison).  
 
 [Note: the code `agg.model.gaussian` corresponds to the fact that in the `Collection` above, we named the model
 component `gaussian`. If this `Collection` had used a different name the code below would change 
@@ -252,16 +463,24 @@ agg_query = agg.query(gaussian == af.ex.Gaussian)
 print("Total Samples Objects via `Gaussian` model query = ", len(agg_query), "\n")
 
 """
-Queries using the results of model-fitting are also supported. Below, we query the database to find all fits where the 
-inferred value of `sigma` for the `Gaussian` is less than 3.0 (which returns only the first of the three model-fits).
+__Querying Results__
+
+We can query based on the results of the model-fit.
+
+Below, we query the database to find all fits where the inferred value of `sigma` for the `Gaussian` is less 
+than 3.0 (which returns only the first of the three model-fits).
 """
 gaussian = agg.model.gaussian
 agg_query = agg.query(gaussian.sigma < 3.0)
 print("Total Samples Objects In Query `gaussian.sigma < 3.0` = ", len(agg_query), "\n")
 
 """
-Advanced queries can be constructed using logic, for example we below we combine the two queries above to find all
-results which fitted a `Gaussian` AND (using the & symbol) inferred a value of sigma less than 3.0. 
+__Querying with Logic__
+
+Advanced queries can be constructed using logic. 
+
+Below, we combine the two queries above to find all results which fitted a `Gaussian` AND (using the & symbol) 
+inferred a value of sigma less than 3.0. 
 
 The OR logical clause is also supported via the symbol |.
 """
@@ -272,18 +491,7 @@ print(
 )
 
 """
-The Probability Density Functions of the results can be plotted using Dynesty's in-built visualization tools, 
-which are wrapped via the `DynestyPlotter` object.
-"""
-for samples in agg.values("samples"):
-    search_plotter = aplt.DynestyPlotter(samples=samples)
-    search_plotter.cornerplot()
-    search_plotter.runplot()
-
-"""
-The API for querying is fairly self explanatory. Through the combination of info based queries, model based
-queries and result based queries a user has all the tools they need to fit extremely large datasets with many different
-models and load only the results they are interested in for inspection and analysis.
+__HowToFit__
 
 The Database chapter of the **HowToFit** Jupyter notebooks give a full description of the database feature, including 
 examples of advanced queries and how to load and plot the results of a model-fit in more detail.

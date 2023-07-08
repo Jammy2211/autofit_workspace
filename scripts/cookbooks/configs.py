@@ -13,7 +13,7 @@ following tasks:
 This cookbook illustrates how to create configuration files for your own model components, so that they can be used
 with **PyAutoFit**.
 
-It has the following sections:
+__Contents__
 
  - No Config Behaviour: An example of what happens when a model component does not have a config file.
  - Template: A template config file for specifying default model component priors.
@@ -43,6 +43,8 @@ error.
 Lets illustrate this by setting up the usual Gaussian object, but naming it `GaussianNoConfig` so that it does
 not have a config file.
 """
+
+
 class GaussianNoConfig:
     def __init__(
         self,
@@ -57,7 +59,7 @@ class GaussianNoConfig:
         self.normalization = normalization
         self.sigma = sigma
 
-    def model_data_1d_via_xvalues_from(self, xvalues : np.ndarray) -> np.ndarray:
+    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray) -> np.ndarray:
         """
         The usual method that returns the 1D data of the `Gaussian` profile.
         """

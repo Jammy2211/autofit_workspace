@@ -2,7 +2,12 @@
 Cookbook: Models
 ================
 
+Model composition is the process of defining a probabilistic model as a collection of model components, which are
+ultimate fitted to a dataset via a non-linear search.
+
 This cookbook provides an overview of basic model composition tools.
+
+__Contents__
 
 If first describes how to use the `af.Model` object to define models with a single model component from single
 Python classes, with the following sections:
@@ -51,12 +56,14 @@ A model component is written as a Python class using the following format:
 
 We define a 1D Gaussian model component to illustrate model composition in PyAutoFit.
 """
+
+
 class Gaussian:
     def __init__(
-            self,
-            centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
-            normalization=1.0,  # <- are the Gaussian``s model parameters.
-            sigma=5.0,
+        self,
+        centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
+        normalization=1.0,  # <- are the Gaussian``s model parameters.
+        sigma=5.0,
     ):
         self.centre = centre
         self.normalization = normalization
@@ -89,7 +96,7 @@ __Priors (Model)__
 
 The model has a set of default priors, which have been loaded from a config file in the PyAutoFit workspace.
 
-The ? cookbook describes how to setup config files in order to produce custom priors, which means that you do not
+The config cookbook describes how to setup config files in order to produce custom priors, which means that you do not
 need to manually specify priors in your Python code every time you compose a model.
 
 If you do not setup config files, all priors must be manually specified before you fit the model, as shown below.
@@ -172,7 +179,9 @@ We can fix a free parameter to a specific value (reducing the dimensionality of 
 model = af.Model(Gaussian)
 model.centre = 0.0
 
-print(f"\n Model Total Free Parameters After Fixing Centre = {model.total_free_parameters}")
+print(
+    f"\n Model Total Free Parameters After Fixing Centre = {model.total_free_parameters}"
+)
 
 """
 We can link two parameters together such they always assume the same value (reducing the dimensionality of 
@@ -181,7 +190,9 @@ parameter space by 1):
 model = af.Model(Gaussian)
 model.centre = model.normalization
 
-print(f"\n Model Total Free Parameters After Linking Parameters = {model.total_free_parameters}")
+print(
+    f"\n Model Total Free Parameters After Linking Parameters = {model.total_free_parameters}"
+)
 
 """
 Offsets between linked parameters or with certain values are possible:
@@ -189,7 +200,9 @@ Offsets between linked parameters or with certain values are possible:
 model = af.Model(Gaussian)
 model.centre = model.normalization + model.sigma
 
-print(f"Model Total Free Parameters After Linking Parameters = {model.total_free_parameters}")
+print(
+    f"Model Total Free Parameters After Linking Parameters = {model.total_free_parameters}"
+)
 
 """
 Assertions remove regions of parameter space (but do not reduce the dimensionality of parameter space):
@@ -253,6 +266,8 @@ __Model Composition (Collection)__
 
 To illustrate `Collection` objects we define a second model component, representing a `Exponential` profile.
 """
+
+
 class Exponential:
     def __init__(
         self,
@@ -263,6 +278,7 @@ class Exponential:
         self.centre = centre
         self.normalization = normalization
         self.rate = rate
+
 
 """
 
