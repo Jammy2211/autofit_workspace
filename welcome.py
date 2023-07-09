@@ -65,7 +65,7 @@ input(
     "###############################\n\n"
     """
     PyAutoFit is now set up and you can begin exploring the workspace.  We recommend new users begin by following the
-    'introduction.ipynb' notebook, which gives an overview of PyAutoFit and the workspace.
+    'overview_1_the_basics' notebook, which gives an overview of PyAutoFit and the workspace.
 
     Examples are provided as both Jupyter notebooks in the 'notebooks' folder and Python scripts in the 'scripts'
     folder. It is up to you how you would prefer to use PyAutoFit. With these folders, you can find the following

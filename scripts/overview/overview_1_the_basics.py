@@ -13,14 +13,11 @@ If you have previous experience performing model-fitting and Bayesian inference 
 we'll highlight some benefits of using **PyAutoFit** instead of setting up the modeling manually yourself (e.g. by
 wrapping an MCMC library with your likelihood function).
 
-The biggest benefits of using **PyAutoFit** are presented in the next two overviews after we've introduced the API,
-but these can be summarized as follows:
+The biggest benefits of using **PyAutoFit** are presented after we've introduced the API and can be summarized as follows:
 
-- The scientific workflow: streamline detailed modeling and analysis of small datasets with tools enabling the scaling
-  up to large datasets.
+- **The scientific workflow**: streamline detailed modeling and analysis of small datasets with tools enabling the scaling up to large datasets.
 
-- Statistical Inference Methods: Dedicated functionality for many advanced statical inference methods, including
-  Bayesian hierarchical analysis, model comparison and graphical models.
+- **Statistical Inference Methods**: Dedicated functionality for many advanced statical inference methods, including Bayesian hierarchical analysis, model comparison and graphical models.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -89,11 +86,9 @@ A model component is written as a Python class using the following format:
 
 - The name of the class is the name of the model component, in this case, "Gaussian".
 
-- The input arguments of the constructor (the `__init__` method) are the parameters of the model, in this case
- `centre`, `normalization` and `sigma`.
+- The input arguments of the constructor (the `__init__` method) are the parameters of the model, in this case `centre`, `normalization` and `sigma`.
   
-- The default values of the input arguments define whether a parameter is a single-valued `float` or a 
-  multi-valued `tuple`. In this case, all 3 input parameters are floats.
+- The default values of the input arguments define whether a parameter is a single-valued `float` or a  multi-valued `tuple`. In this case, all 3 input parameters are floats.
   
 - It includes functions associated with that model component, which will be used when fitting the model to data.
 """
@@ -107,8 +102,9 @@ class Gaussian:
         sigma=0.01,
     ):
         """
-        Represents a 1D `Gaussian` profile, which can be treated as a PyAutoFit model-component whose free
-        parameters (centre, normalization and sigma) are fitted for by a non-linear search.
+        Represents a 1D `Gaussian` profile, which can be treated as a PyAutoFit
+        model-component whose free parameters (centre, normalization and sigma)
+        are fitted for by a non-linear search.
 
         Parameters
         ----------
@@ -127,10 +123,11 @@ class Gaussian:
         """
         Returns the 1D Gaussian profile on a line of Cartesian x coordinates.
 
-        The input xvalues are translated to a coordinate system centred on the Gaussian, by subtracting its centre.
+        The input xvalues are translated to a coordinate system centred on the
+        Gaussian, by subtracting its centre.
 
-        The output is referred to as the `model_data` to signify that it is a representation of the data from the
-        model.
+        The output is referred to as the `model_data` to signify that it is
+        a representation of the data from the model.
 
         Parameters
         ----------
@@ -246,11 +243,9 @@ Now we've defined our model, we need to inform **PyAutoFit** how to fit it to da
 
 We therefore define an `Analysis` class, which includes:
 
- - An `__init__` constructor, which takes as input the `data` and `noise_map`. This could be extended to include 
- anything else necessary to fit the model to the data.
+ - An `__init__` constructor, which takes as input the `data` and `noise_map`. This could be extended to include anything else necessary to fit the model to the data.
 
- - A `log_likelihood_function`, which defines how given an `instance` of the model we fit it to the data and return a 
- log likelihood value.
+ - A `log_likelihood_function`, which defines how given an `instance` of the model we fit it to the data and return a log likelihood value.
 
 Read the comments and docstrings of the `Analysis` object below in detail for more insights into how this object
 works.
@@ -698,11 +693,16 @@ fit.
 The following cookbooks give a concise API reference for using **PyAutoFit**, and you should use them as you define
 your own model to get a fit going:
 
- - Model Cookbook:
- - Searches Cookbook:
- - Analysis Cookbook:
- - Results Cookbook:
+- Model Cookbook: https://pyautofit.readthedocs.io/en/latest/cookbooks/model.html
+- Searches Cookbook: https://pyautofit.readthedocs.io/en/latest/cookbooks/analysis.html
+- Analysis Cookbook: https://pyautofit.readthedocs.io/en/latest/cookbooks/search.html
+- Results Cookbook: https://pyautofit.readthedocs.io/en/latest/cookbooks/result.html
+
+__What Next?__
 
 The next overview describes how to set up a scientific workflow, where many other tasks required to perform detailed but
 scalable model-fitting can be delegated to **PyAutoFit**. 
+
+After that, we'll give a run-through of **PyAutoFit**'s advanced statistical inference features, including tools
+to scale Bayesian Hierarchical Analysis to large datasets.
 """

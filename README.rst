@@ -11,71 +11,72 @@ PyAutoFit Workspace
 
 `Installation Guide <https://pyautofit.readthedocs.io/en/latest/installation/overview.html>`_ |
 `readthedocs <https://pyautofit.readthedocs.io/en/latest/index.html>`_ |
-`Introduction on Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/release?filepath=introduction.ipynb>`_ |
+`Introduction on Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/release?filepath=notebooks/overview/overview_1_the_basics.ipynb>`_ |
 `HowToFit <https://pyautofit.readthedocs.io/en/latest/howtofit/howtofit.html>`_
 
-Welcome to the **PyAutoFit** Workspace. You can get started right away by going to the `autofit workspace
-Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/release?filepath=introduction.ipynb>`_.
-Alternatively, you can get set up by following the installation guide on our `readthedocs <https://pyautofit.readthedocs.io>`_.
+Welcome to the **PyAutoFit** Workspace! 
 
 Getting Started
 ---------------
 
-If you haven't already, install `PyAutoFit via pip or conda <https://pyautofit.readthedocs.io/en/latest/installation/overview.html>`_.
+You can get set up on your personal computer by following the installation guide on
+our `readthedocs <https://pyautofit.readthedocs.io/>`_.
 
-Next, clone the ``autofit workspace`` (the line ``--depth 1`` clones only the most recent branch on
-the ``autofit_workspace``, reducing the download size):
+Alternatively, you can try **PyAutoFit** out in a web browser by going to the `autofit workspace
+Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/release?filepath=notebooks/overview/overview_1_the_basics.ipynb>`_.
 
-.. code-block:: bash
+Where To Go?
+------------
 
-   cd /path/on/your/computer/you/want/to/put/the/autofit_workspace
-   git clone https://github.com/Jammy2211/autofit_workspace --depth 1
-   cd autofit_workspace
+We recommend that you start with the ``autofit_workspace/notebooks/overview/overview_1_the_basics.ipynb``
+notebook, which will give you a concise overview of **PyAutoFit**'s core features and API.
 
-Run the ``welcome.py`` script to get started!
+Next, read through the overview example notebooks of features you are interested in, in the folder: ``autofit_workspace/notebooks/overview``.
 
-.. code-block:: bash
+Then, you may wish to implement your own model in **PyAutoFit**, using the ``cookbooks`` for help with the API. Alternative,
+you may want to checkout the ``features`` package for a list of advanced statistical modeling features.
 
-   python3 welcome.py
+HowToFit
+--------
+
+For users less familiar with Bayesian inference and scientific analysis you may wish to read through
+the **HowToFits** lectures. These teach you the basic principles of Bayesian inference, with the
+content pitched at undergraduate level and above.
+
+A complete overview of the lectures `is provided on the HowToFit readthedocs page <https://pyautofit.readthedocs.io/en/latest/howtofit/howtofit.htmll>`_
 
 Workspace Structure
-===================
+-------------------
 
 The workspace includes the following main directories:
 
-- ``notebooks`` - **PyAutoFit** examples written as Jupyter notebooks.
-- ``scipts`` - **PyAutoFit** examples written as Python scripts.
-- ``projects`` - Example projects which use **PyAutoFit**, which serve as a illustration of model-fitting problems and the **PyAutoFit** API.
-- ``config`` - Configuration files which customize **PyAutoFit**'s behaviour.
-- ``dataset`` - Where data is stored, including example datasets distributed with **PyAutoFit**.
-- ``output`` - Where the **PyAutoFit** analysis and visualization are output.
+- ``notebooks``: **PyAutoFit** examples written as Jupyter notebooks.
+- ``scipts``: **PyAutoFit** examples written as Python scripts.
+- ``projects``: Example projects which use **PyAutoFit**, which serve as a illustration of model-fitting problems and the **PyAutoFit** API.
+- ``config``: Configuration files which customize **PyAutoFit**'s behaviour.
+- ``dataset``: Where data is stored, including example datasets distributed with **PyAutoFit**.
+- ``output``: Where the **PyAutoFit** analysis and visualization are output.
 
 The **examples** in the notebooks and scripts folders are structured as follows:
 
-- ``overview`` - Examples using **PyAutoFit** to compose and fit a model to data via a non-linear search.
-- ``howtofit`` - Detailed step-by-step tutorials.
-- ``model`` - Model composition cookbooks that offer a concise API reference.
-- ``searches`` - Example scripts of every non-linear search supported by **PyAutoFit**.
-- ``plot`` - An API reference guide for **PyAutoFits**'s plotting tools.
-- ``features`` - Examples of **PyAutoFit**'s advanced modeling features.
+- ``overview``: Examples using **PyAutoFit** to compose and fit a model to data via a non-linear search.
+- ``cookbooks``: Concise API reference guides for **PyAutoFit**'s core features.
+- ``features``: Examples of **PyAutoFit**'s advanced modeling features.
+- ``howtofit``: Detailed step-by-step tutorials.
+- ``searches``: Example scripts of every non-linear search supported by **PyAutoFit**.
+- ``plot``: An API reference guide for **PyAutoFits**'s plotting tools.
 
 The following **projects** are available in the project folder:
 
- - ``astro`` - An Astronomy project which fits images of gravitationally lensed galaxies.
-
-Getting Started
-===============
-
-We recommend new users begin with the example notebooks / scripts in the *overview* folder and the **HowToFit**
-tutorials.
+- ``astro``: An Astronomy project which fits images of gravitationally lensed galaxies.
 
 Workspace Version
-=================
+-----------------
 
 This version of the workspace are built and tested for using **PyAutoFit v2023.7.5.2**.
 
 Support
-=======
+-------
 
 Support for installation issues and integrating your modeling software with **PyAutoFit** is available by
 `raising an issue on the autofit_workspace GitHub page <https://github.com/Jammy2211/autofit_workspace/issues>`_. or
