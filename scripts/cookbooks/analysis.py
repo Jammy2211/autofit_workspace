@@ -377,7 +377,7 @@ class Analysis(af.Analysis):
         with open(file_path, "w+") as f:
             json.dump(self.noise_map, f, indent=4)
 
-    def save_results_for_aggregator(self, paths: af.AbstractPaths, result: af.Result):
+    def save_results_for_aggregator(self, paths: af.DirectoryPaths, result: af.Result):
         """
         At the end of a model-fit,  this routine saves attributes of the `Analysis` object to the `files`
         folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.

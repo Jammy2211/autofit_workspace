@@ -249,6 +249,12 @@ group_level.higher_level_centre = 1.0
 group_level.gaussian_list[2].normalization = group_level.gaussian_list[1].normalization
 
 """
+The `info` shows how the customization of the model has been performed:
+"""
+print(group_level.info)
+
+
+"""
 __Alternative API__
 
 A multi-level model can be instantiated where each model sub-component is setup using a name (as opposed to a list).

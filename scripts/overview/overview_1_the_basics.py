@@ -58,6 +58,9 @@ xvalues = range(data.shape[0])
 plt.errorbar(
     x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
 )
+plt.title("Example Data")
+plt.xlabel("x values of data (pixels)")
+plt.ylabel("Signal Value")
 plt.show()
 plt.close()
 
@@ -342,6 +345,7 @@ available in **PyAutoFit** (see ?).
 """
 search = af.DynestyStatic(
     nlive=100,
+    sample="rwalk",
     number_of_cores=1,
 )
 
@@ -441,6 +445,9 @@ xvalues = range(data.shape[0])
 plt.errorbar(
     x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
 )
+plt.title("Example Data With Multiple Components")
+plt.xlabel("x values of data (pixels)")
+plt.ylabel("Signal Value")
 plt.show()
 plt.close()
 
@@ -642,6 +649,7 @@ analysis = Analysis(data=data, noise_map=noise_map)
 
 search = af.DynestyStatic(
     nlive=100,
+    sample="rwalk",
     number_of_cores=1,
 )
 
@@ -679,7 +687,7 @@ plt.show()
 plt.close()
 
 """
-__Wrap Up__
+__Cookbooks__
 
 This overview shows the basics of model-fitting with **PyAutoFit**.
 

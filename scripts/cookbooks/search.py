@@ -205,9 +205,9 @@ We now define the start point of certain parameters in the model as follows.
 """
 initializer = af.SpecificRangeInitializer(
     {
-        model.gaussian.centre: (49.0, 51.0),
-        model.gaussian.sigma: (4.0, 6.0),
-        model.exponential.centre: (49.0, 51.0),
+        model.centre: (49.0, 51.0),
+        model.normalization: (4.0, 6.0),
+        model.sigma: (1.0, 2.0),
     }
 )
 

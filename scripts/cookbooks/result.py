@@ -258,7 +258,7 @@ search = af.Emcee(
     number_of_cores=1,
 )
 
-result_collection = search.fit(model=model, analysis=analysis)
+result = search.fit(model=model, analysis=analysis)
 
 """
 The `result.info` shows the result for the model with both a `Gaussian` and `Exponential` profile.
@@ -274,6 +274,8 @@ However, because our fit uses a `Collection` the `instance` has attribues named 
 For complex models, with a large number of model components and parameters, this offers a readable API to interpret
 the results.
 """
+samples = result.samples
+
 instance = samples.max_log_likelihood()
 
 print("Max Log Likelihood `Gaussian` Instance:")
@@ -378,7 +380,7 @@ fwhm_list = []
 for sample in samples.sample_list:
     instance = sample.instance_for_model(model=samples.model)
 
-    sigma = instance.sigma
+    sigma = instance.gaussian.sigma
 
     fwhm = 2 * np.sqrt(2 * np.log(2)) * sigma
 
