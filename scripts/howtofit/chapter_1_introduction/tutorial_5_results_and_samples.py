@@ -1,5 +1,5 @@
 """
-Tutorial 6: Results And Samples
+Tutorial 5: Results And Samples
 ===============================
 
 In this tutorial, we'll cover all of the output that comes from a non-linear search's `Result`  object.
@@ -158,16 +158,109 @@ __Model Fit__
 
 Now lets run the non-linear search to get ourselves a `Result`.
 """
-import profiles as p
+
+
+class Gaussian:
+    def __init__(
+        self,
+        centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
+        normalization=1.0,  # <- are the Gaussian`s model parameters.
+        sigma=5.0,
+    ):
+        """
+        Represents a 1D Gaussian profile.
+
+        This is a model-component of example models in the **HowToFit** lectures and is used to fit example datasets
+        via a non-linear search.
+
+        Parameters
+        ----------
+        centre
+            The x coordinate of the profile centre.
+        normalization
+            Overall normalization of the profile.
+        sigma
+            The sigma value controlling the size of the Gaussian.
+        """
+        self.centre = centre
+        self.normalization = normalization
+        self.sigma = sigma
+
+    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray):
+        """
+
+        Returns a 1D Gaussian on an input list of Cartesian x coordinates.
+
+        The input xvalues are translated to a coordinate system centred on the Gaussian, via its `centre`.
+
+        The output is referred to as the `model_data` to signify that it is a representation of the data from the
+        model.
+
+        Parameters
+        ----------
+        xvalues
+            The x coordinates in the original reference frame of the data.
+        """
+        transformed_xvalues = np.subtract(xvalues, self.centre)
+        return np.multiply(
+            np.divide(self.normalization, self.sigma * np.sqrt(2.0 * np.pi)),
+            np.exp(-0.5 * np.square(np.divide(transformed_xvalues, self.sigma))),
+        )
+
+class Exponential:
+    def __init__(
+        self,
+        centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
+        normalization=1.0,  # <- are the Exponential`s model parameters.
+        rate=0.01,
+    ):
+        """
+        Represents a 1D Exponential profile.
+
+        This is a model-component of example models in the **HowToFit** lectures and is used to fit example datasets
+        via a non-linear search.
+
+        Parameters
+        ----------
+        centre
+            The x coordinate of the profile centre.
+        normalization
+            Overall normalization of the profile.
+        ratw
+            The decay rate controlling has fast the Exponential declines.
+        """
+        self.centre = centre
+        self.normalization = normalization
+        self.rate = rate
+
+    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray):
+        """
+        Returns a 1D Gaussian on an input list of Cartesian x coordinates.
+
+        The input xvalues are translated to a coordinate system centred on the Gaussian, via its `centre`.
+
+        The output is referred to as the `model_data` to signify that it is a representation of the data from the
+        model.
+
+        Parameters
+        ----------
+        xvalues
+            The x coordinates in the original reference frame of the data.
+        """
+        transformed_xvalues = np.subtract(xvalues, self.centre)
+        return self.normalization * np.multiply(
+            self.rate, np.exp(-1.0 * self.rate * abs(transformed_xvalues))
+        )
+
 
 model = af.Collection(
-    gaussian=af.Model(p.Gaussian), exponential=af.Model(p.Exponential)
+    gaussian=af.Model(Gaussian), exponential=af.Model(Exponential)
 )
 
 analysis = Analysis(data=data, noise_map=noise_map)
 
 search = af.Emcee(
-    name="tutorial_6_results_and_samples",
+    name="tutorial_5_results_and_samples",
     path_prefix=path.join("howtofit", "chapter_1"),
 )
 

@@ -242,7 +242,7 @@ The non-linear search used to perform the model fit can be loaded via the aggreg
 search_gen = agg.values("search")
 
 for search in search_gen:
-    print(search.info)
+    print(search)
 
 """
 __Samples__
@@ -259,9 +259,9 @@ for samples in agg.values("samples"):
     instance = samples.max_log_likelihood()
 
     print("Max Log Likelihood `Gaussian` Instance:")
-    print("Centre = ", instance.centre)
-    print("Normalization = ", instance.normalization)
-    print("Sigma = ", instance.sigma, "\n")
+    print("Centre = ", instance.gaussian.centre)
+    print("Normalization = ", instance.gaussian.normalization)
+    print("Sigma = ", instance.gaussian.sigma, "\n")
 
 """
 __Samples Summary__
@@ -303,6 +303,7 @@ The results accessible via the database (e.g. `model`, `samples`) are those cont
 By extending an `Analysis` class with the methods `save_attributes_for_aggregator` and `save_results_for_aggregator`, 
 custom files can be written to the `files` folder and become accessible via the database.
 """
+
 
 class Analysis(af.Analysis):
     def __init__(self, data: np.ndarray, noise_map: np.ndarray):
@@ -363,7 +364,7 @@ class Analysis(af.Analysis):
         with open(file_path, "w+") as f:
             json.dump(self.noise_map, f, indent=4)
 
-    def save_results_for_aggregator(self, paths: af.AbstractPaths, result: af.Result):
+    def save_results_for_aggregator(self, paths: af.DirectoryPaths, result: af.Result):
         """
         At the end of a model-fit,  this routine saves attributes of the `Analysis` object to the `files`
         folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.

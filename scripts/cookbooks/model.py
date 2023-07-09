@@ -102,7 +102,7 @@ need to manually specify priors in your Python code every time you compose a mod
 If you do not setup config files, all priors must be manually specified before you fit the model, as shown below.
 """
 model = af.Model(Gaussian)
-model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=1.0)
+model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 model.normalization = af.LogUniformPrior(lower_limit=1e-4, upper_limit=1e4)
 model.sigma = af.GaussianPrior(mean=0.0, sigma=1.0, lower_limit=0.0, upper_limit=1e5)
 
@@ -113,7 +113,7 @@ Instances of the model components above (created via `af.Model`) can be created,
 parameters is mapped to create an instance of the Python class of the model.
 
 We first need to know the order of parameters in the model, so we know how to define the input `vector`. This
-information is contained in the models `paths` attribute:
+information is contained in the models `paths` attribute.
 """
 print(model.paths)
 
@@ -122,10 +122,10 @@ We create an `instance` of the `Gaussian` class via the model where `centre=30.0
 """
 instance = model.instance_from_vector(vector=[30.0, 2.0, 3.0])
 
-print("Model Instance: \n")
+print("\nModel Instance:")
 print(instance)
 
-print("Instance Parameters \n")
+print("\nInstance Parameters:\n")
 print("centre = ", instance.centre)
 print("normalization = ", instance.normalization)
 print("sigma = ", instance.sigma)
@@ -138,17 +138,17 @@ The inputs of 0.5 below are mapped as follows:
 
  - `centre`: goes to 0.5 because this is the midpoint of a `UniformPrior` with `lower_limit=0.0` and `upper_limit=1.0`.
 
- - `normalization` goes to ? because this is the midpoint of the `LogUniformPrior`' with `lower_limit=1e-4` 
+ - `normalization` goes to 1.0 because this is the midpoint of the `LogUniformPrior`' with `lower_limit=1e-4` 
  and `upper_limit=1e4`, corresponding to log10 space.
 
  - `sigma`: goes to 0.0 because this is the `mean` of the `GaussianPrior`.
 """
 instance = model.instance_from_unit_vector(unit_vector=[0.5, 0.5, 0.5])
 
-print("Model Instance: \n")
+print("\nModel Instance:")
 print(instance)
 
-print("Instance Parameters \n")
+print("\nInstance Parameters:\n")
 print("centre = ", instance.centre)
 print("normalization = ", instance.normalization)
 print("sigma = ", instance.sigma)
@@ -158,7 +158,7 @@ We can create instances of the `Gaussian` using the median value of the prior of
 """
 instance = model.instance_from_prior_medians()
 
-print("Instance Parameters \n")
+print("\nInstance Parameters:\n")
 print("centre = ", instance.centre)
 print("normalization = ", instance.normalization)
 print("sigma = ", instance.sigma)
@@ -187,7 +187,6 @@ print(
 We can link two parameters together such they always assume the same value (reducing the dimensionality of 
 parameter space by 1):
 """
-model = af.Model(Gaussian)
 model.centre = model.normalization
 
 print(
@@ -197,7 +196,6 @@ print(
 """
 Offsets between linked parameters or with certain values are possible:
 """
-model = af.Model(Gaussian)
 model.centre = model.normalization + model.sigma
 
 print(
@@ -207,9 +205,13 @@ print(
 """
 Assertions remove regions of parameter space (but do not reduce the dimensionality of parameter space):
 """
-model = af.Model(Gaussian)
 model.add_assertion(model.sigma > 5.0)
 model.add_assertion(model.centre > model.normalization)
+
+"""
+The customized model can be inspected by printing its `info` attribute.
+"""
+print(model.info)
 
 """
 The overwriting of priors shown above can be achieved via the following alternative API:
@@ -309,7 +311,7 @@ __Priors (Collection)__
 
 The model has a set of default priors, which have been loaded from a config file in the PyAutoFit workspace.
 
-The ? cookbook describes how to setup config files in order to produce custom priors, which means that you do not
+The configs cookbook describes how to setup config files in order to produce custom priors, which means that you do not
 need to manually specify priors in your Python code every time you compose a model.
 
 If you do not setup config files, all priors must be manually specified before you fit the model, as shown below.
@@ -351,16 +353,16 @@ Because we passed the key word arguments `gaussian` and `exponential` above, the
 instances created using this model (e.g. this is why we write `instance.gaussian`):
 """
 
-print("Model Instance: \n")
+print("\nModel Instance:")
 print(instance)
 
-print("Instance Parameters \n")
+print("\nInstance Parameters:\n")
 print("centre (Gaussian) = ", instance.gaussian.centre)
 print("normalization (Gaussian)  = ", instance.gaussian.normalization)
 print("sigma (Gaussian)  = ", instance.gaussian.sigma)
 print("centre (Exponential) = ", instance.exponential.centre)
 print("normalization (Exponential) = ", instance.exponential.normalization)
-print("sigma (Exponential) = ", instance.exponential.rate)
+print("rate (Exponential) = ", instance.exponential.rate)
 
 """
 Alternatively, the instance's variables can also be accessed as a list, whereby instead of using attribute names
@@ -377,7 +379,7 @@ print("normalization (Gaussian)  = ", instance[0].normalization)
 print("sigma (Gaussian)  = ", instance[0].sigma)
 print("centre (Gaussian) = ", instance[1].centre)
 print("normalization (Gaussian) = ", instance[1].normalization)
-print("sigma (Exponential) = ", instance[1].rate)
+print("rate (Exponential) = ", instance[1].rate)
 
 """
 __Model Customization (Collection)__
@@ -396,6 +398,7 @@ model = af.Collection(gaussian=gaussian, exponential=exponential)
 
 print(model.info)
 
+ddd
 """
 Below is an alternative API that can be used to create the same model as above.
 
@@ -431,8 +434,6 @@ A `Collection` has a `dict` attribute, which express all information about the m
 
 By printing this dictionary we can therefore get a concise summary of the model.
 """
-model = af.Model(Gaussian)
-
 print(model.dict())
 
 """
@@ -483,7 +484,6 @@ The two models created below are identical - one uses the API detailed above whe
 model = af.Collection(gaussian_0=Gaussian, gaussian_1=Gaussian)
 print(model.info)
 
-
 model_dict = {"gaussian_0": Gaussian, "gaussian_1": Gaussian}
 model = af.Collection(**model_dict)
 print(model.info)
@@ -494,10 +494,10 @@ names of the attributes of instances of the model.
 """
 instance = model.instance_from_vector(vector=[1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 
-print("Model Instance: \n")
+print("\nModel Instance:")
 print(instance)
 
-print("Instance Parameters \n")
+print("\nInstance Parameters:\n")
 print("centre (Gaussian) = ", instance.gaussian_0.centre)
 print("normalization (Gaussian)  = ", instance.gaussian_0.normalization)
 print("sigma (Gaussian)  = ", instance.gaussian_0.sigma)
@@ -520,10 +520,10 @@ The `instance` therefore can only be accessed via list indexing.
 """
 instance = model.instance_from_vector(vector=[1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 
-print("Model Instance: \n")
+print("\nModel Instance:")
 print(instance)
 
-print("Instance Parameters \n")
+print("\nInstance Parameters:\n")
 print("centre (Gaussian) = ", instance[0].centre)
 print("normalization (Gaussian)  = ", instance[0].normalization)
 print("sigma (Gaussian)  = ", instance[0].sigma)

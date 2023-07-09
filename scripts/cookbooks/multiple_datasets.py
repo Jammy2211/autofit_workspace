@@ -167,7 +167,9 @@ analysis.n_cores = 1
 """
 To fit multiple datasets via a non-linear search we use this summed analysis object:
 """
-search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_simple")
+search = af.DynestyStatic(
+    path_prefix="features", sample="rwalk", name="multiple_datasets_simple"
+)
 
 result_list = search.fit(model=model, analysis=analysis)
 
@@ -181,8 +183,13 @@ Each `Result` in the list corresponds to each `Analysis` object in the `analysis
 The same model was fitted across all analyses, thus every `Result` in the `result_list` contains the same information 
 on the samples and the same `max_log_likelihood_instance`.
 """
-print(result_list[0].max_log_likelihood_instance)
-print(result_list[1].max_log_likelihood_instance)
+print(result_list[0].max_log_likelihood_instance.centre)
+print(result_list[0].max_log_likelihood_instance.normalization)
+print(result_list[0].max_log_likelihood_instance.sigma)
+
+print(result_list[1].max_log_likelihood_instance.centre)
+print(result_list[1].max_log_likelihood_instance.normalization)
+print(result_list[1].max_log_likelihood_instance.sigma)
 
 """
 We can plot the model-fit to each dataset by iterating over the results:
@@ -301,7 +308,9 @@ print(model_updated.info)
 """
 Fit this model to the data using dynesty.
 """
-search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_free_sigma")
+search = af.DynestyStatic(
+    path_prefix="features", sample="rwalk", name="multiple_datasets_free_sigma"
+)
 
 """
 The `normalization` and `sigma` values of the maximum log likelihood models fitted to each dataset are different, 
@@ -406,10 +415,6 @@ for x, z, analysis in zip(x_list, z_list, analysis_list):
 
 analysis_with_relation = sum(analysis_with_relation_list)
 
-model = analysis.modify_model(model)
-
-print(model.info)
-
 """
 Analysis summing is performed after the model relations have been created.
 """
@@ -420,7 +425,7 @@ analysis_with_relation = sum(analysis_with_relation_list)
 The modified model's `info` attribute shows the model has been composed using this relation.
 """
 
-model_updated = analysis.modify_model(model)
+model_updated = analysis_with_relation.modify_model(model)
 
 print(model_updated.info)
 
@@ -428,9 +433,11 @@ print(model_updated.info)
 We can fit the model as per usual.
 """
 
-search = af.DynestyStatic(path_prefix="features", name="multiple_datasets_relation")
+search = af.DynestyStatic(
+    path_prefix="features", sample="rwalk", name="multiple_datasets_relation"
+)
 
-result_list = search.fit(model=model, analysis=analysis_with_relation)
+# result_list = search.fit(model=model, analysis=analysis_with_relation)
 
 """
 The `normalization` and `sigma` values of the maximum log likelihood models fitted to each dataset are different, 
@@ -440,16 +447,14 @@ They now follow the relation we defined above.
 
 The `centre` values of the maximum log likelihood models fitted to each dataset are the same.
 """
-result_list = search.fit(model=model, analysis=analysis)
-
-for result in result_list:
-    instance = result.max_log_likelihood_instance
-
-    print("Max Log Likelihood Model:")
-    print("Centre = ", instance.gaussian.centre)
-    print("Normalization = ", instance.gaussian.normalization)
-    print("Sigma = ", instance.gaussian.sigma)
-    print()
+# for result in result_list:
+#     instance = result.max_log_likelihood_instance
+#
+#     print("Max Log Likelihood Model:")
+#     print("Centre = ", instance.gaussian.centre)
+#     print("Normalization = ", instance.gaussian.normalization)
+#     print("Sigma = ", instance.gaussian.sigma)
+#     print()
 
 """
 __Different Analysis Objects__
@@ -487,8 +492,12 @@ Each ``Analysis`` can be fitted one-by-one, using a series of multiple non-linea
 the ``fit_sequential`` method.
 """
 search = af.DynestyStatic(
-    path_prefix="features", name="multiple_datasets_free_sigma__sequential"
+    path_prefix="features",
+    sample="rwalk",
+    name="multiple_datasets_free_sigma__sequential",
 )
+
+analysis = sum(analysis_list)
 
 result_list = search.fit_sequential(model=model, analysis=analysis)
 

@@ -81,16 +81,16 @@ error.
 model = af.Model(GaussianNoConfig)
 
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
-data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.yaml"))
+data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
 noise_map = af.util.numpy_array_from_json(
-    file_path=path.join(dataset_path, "noise_map.yaml")
+    file_path=path.join(dataset_path, "noise_map.json")
 )
 
-analysis = af.Analysis(data=data, noise_map=noise_map)
+analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
 search = af.DynestyStatic()
 
-result = search.fit(model=model, analysis=analysis)
+# result = search.fit(model=model, analysis=analysis)
 
 """
 In all other examples, the fits runs because the priors have been defined in one of two ways:
@@ -181,16 +181,16 @@ You may need to reset your Jupyter notebook's kernel for the changes to the `.ya
 model = af.Model(GaussianNoConfig)
 
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
-data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.yaml"))
+data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
 noise_map = af.util.numpy_array_from_json(
-    file_path=path.join(dataset_path, "noise_map.yaml")
+    file_path=path.join(dataset_path, "noise_map.json")
 )
 
-analysis = af.Analysis(data=data, noise_map=noise_map)
+analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
 search = af.DynestyStatic()
 
-result = search.fit(model=model, analysis=analysis)
+# result = search.fit(model=model, analysis=analysis)
 
 """
 __Modules__
