@@ -60,7 +60,7 @@ We can use the `Aggregator` to load a generator of every fit`s data, by changing
 `data` attribute at the end of the aggregator.
 
 Note that in the `Analysis` class of tutorial 1, we specified that the `data` object would be saved to hard-disc using
-the `save_attributes_for_aggregator` method, so that the `Aggregator` can load it.
+the `save_attributes` method, so that the `Aggregator` can load it.
 """
 print(len(agg))
 data_gen = agg.values("data")
@@ -139,8 +139,8 @@ task as above.
 
 
 def plot_residuals_from(fit):
-    data = fit.value(name="data")
-    noise_map = fit.value(name="noise_map")
+    data = fit.value(name="dataset.data")
+    noise_map = fit.value(name="dataset.noise_map")
 
     xvalues = np.arange(data.shape[0])
 

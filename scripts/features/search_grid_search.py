@@ -140,7 +140,7 @@ If you ran the fit above, you can now plot the result.
 """
 instance = result.max_log_likelihood_instance
 
-gaussian_main = instance.gaussian_0.model_data_1d_via_xvalues_from(
+gaussian_main = instance.gaussian_main.model_data_1d_via_xvalues_from(
     xvalues=np.arange(data.shape[0])
 )
 gaussian_feature = instance.gaussian_feature.model_data_1d_via_xvalues_from(
@@ -172,7 +172,8 @@ search = af.DynestyStatic(
     path_prefix=path.join("features", "search_grid_search"),
     nlive=100,
     maxcall=30000,
-    force_x1_cpu=True,  # ensures parallelizing over grid search works.
+    number_of_cores=2
+    #   force_x1_cpu=True,  # ensures parallelizing over grid search works.
 )
 
 """
@@ -244,7 +245,7 @@ By plotting the `best_model` we can confirm the grid search fitted the feature a
 """
 instance = grid_search_result.best_result.instance
 
-gaussian_main = instance.gaussian_0.model_data_1d_via_xvalues_from(
+gaussian_main = instance.gaussian_main.model_data_1d_via_xvalues_from(
     xvalues=np.arange(data.shape[0])
 )
 gaussian_feature = instance.gaussian_feature.model_data_1d_via_xvalues_from(

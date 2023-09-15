@@ -3,7 +3,7 @@ Plots: UltraNestPlotter
 =======================
 
 This example illustrates how to plot visualization summarizing the results of a ultranest non-linear search using
-a `ZeusPlotter`.
+a `UltraNestPlotter`.
 
 Installation
 ------------
@@ -37,7 +37,7 @@ model = af.Model(af.ex.Gaussian)
 
 analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
-search = af.UltraNest(path_prefix="plot", name="UltraNestPlotter")
+search = af.UltraNest(path_prefix="plot", name="UltraNestPlotter", max_ncalls=10)
 
 result = search.fit(model=model, analysis=analysis)
 

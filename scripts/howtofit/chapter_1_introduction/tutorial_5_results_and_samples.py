@@ -207,6 +207,7 @@ class Gaussian:
             np.exp(-0.5 * np.square(np.divide(transformed_xvalues, self.sigma))),
         )
 
+
 class Exponential:
     def __init__(
         self,
@@ -253,9 +254,7 @@ class Exponential:
         )
 
 
-model = af.Collection(
-    gaussian=af.Model(Gaussian), exponential=af.Model(Exponential)
-)
+model = af.Collection(gaussian=af.Model(Gaussian), exponential=af.Model(Exponential))
 
 analysis = Analysis(data=data, noise_map=noise_map)
 
@@ -537,7 +536,7 @@ Computing the errors of a quantity like the `sigma` of the Gaussian is simple, b
 search. Thus, to get their errors above we used the `Samples` object to simply marginalize over all over parameters 
 via the 1D Probability Density Function (PDF).
 
-Computing errors on derived quantitys is more tricky, because it is not sampled directly by the non-linear search. 
+Computing errors on derived quantities is more tricky, because they are not sampled directly by the non-linear search. 
 For example, what if we want the error on the full width half maximum (FWHM) of the Gaussian? In order to do this
 we need to create the PDF of that derived quantity, which we can then marginalize over using the same function we
 use to marginalize model parameters.
@@ -598,7 +597,7 @@ print(samples.max_log_likelihood(as_instance=False))
 """
 Above, we specified each path as a list of tuples of strings. 
 
-This is how the PyAutoFit source code stores the path to different components of the model, but it is not 
+This is how the source code internally stores the path to different components of the model, but it is not 
 in-profile_1d with the PyAutoFIT API used to compose a model.
 
 We can alternatively use the following API:
@@ -634,7 +633,7 @@ print(samples.parameter_lists[0])
 """
 __Latex__
 
-If you are writing modeling results up in a paper, you can use PyAutoFit's inbuilt latex tools to create latex table 
+If you are writing modeling results up in a paper, you can use inbuilt latex tools to create latex table 
 code which you can copy to your .tex document.
 
 By combining this with the filtering tools below, specific parameters can be included or removed from the latex.

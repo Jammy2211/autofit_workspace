@@ -44,7 +44,7 @@ have seen and used elsewhere throughout the workspace.
 
 __Analysis__
 
-The `Analysis` class below has a new method, `save_attributes_for_aggregator`, which specifies the properties of the 
+The `Analysis` class below has a new method, `save_attributes`, which specifies the properties of the 
 fit that are output to hard-disc so that we can load them using the database in the next tutorials.
 
 In particular, note how we output the `data` and `noise_map`, these will be loaded in tutorial 4.
@@ -138,7 +138,7 @@ class Analysis(af.Analysis):
             output_filename="chi_squared_map",
         )
 
-    def save_attributes_for_aggregator(self, paths):
+    def save_attributes(self, paths):
         """
         Save files like the data and noise-map as pickle files so they can be loaded in the `Aggregator`
         """

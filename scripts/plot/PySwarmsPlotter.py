@@ -3,7 +3,7 @@ Plots: PySwarmsPlotter
 ======================
 
 This example illustrates how to plot visualization summarizing the results of a pyswarms non-linear search using
-a `ZeusPlotter`.
+a `PySwarmsPlotter`.
 """
 # %matplotlib inline
 # from pyprojroot import here

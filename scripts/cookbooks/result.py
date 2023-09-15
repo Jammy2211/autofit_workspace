@@ -13,11 +13,12 @@ __Contents__
  - Info: Print the `info` attribute of the `Result` object to display a summary of the model-fit.
  - Samples: The `Samples` object contained in the `Result`, containing all non-linear samples (e.g. parameters,
    log likelihoods, etc.).
- - Maximum Likelihood: The maximum likelihood model instance.
+ - Instances: Returning instances of the model corresponding to a particular sample (e.g. the maximum log likelihood).
  - Posterior / PDF: The median PDF model instance and PDF vectors of all model parameters via 1D marginalization.
  - Errors: The errors on every parameter estimated from the PDF, computed via marginalized 1D PDFs at an input sigma.
  - Sample Instance: The model instance of any accepted sample.
  - Search Plots: Plots of the non-linear search, for example a corner plot or 1D PDF of every parameter.
+ - Maximum Likelihood: The maximum log likelihood model value.
  - Bayesian Evidence: The log evidence estimated via a nested sampling algorithm.
  - Collection: Results created from models defined via a `Collection` object.
  - Lists: Extracting results as Python lists instead of instances.
@@ -84,7 +85,7 @@ __Samples__
 The result contains a `Samples` object, which contains all samples of the non-linear search.
 
 Each sample corresponds to a set of model parameters that were evaluated and accepted by the non linear search, 
-in this example emcee. 
+in this example `emcee.` 
 
 This includes their log likelihoods, which are used for computing additional information about the model-fit,
 for example the error on every parameter. 
@@ -97,6 +98,8 @@ print("MCMC Samples: \n")
 print(samples)
 
 """
+__Parameters__
+
 The parameters are stored as a list of lists, where:
 
  - The outer list is the size of the total number of samples.
@@ -110,7 +113,9 @@ print("Sample 10`s third parameter value (Gaussian -> sigma)")
 print(samples.parameter_lists[9][2], "\n")
 
 """
-The Samples class contains the log likelihood, log prior, log posterior and weight_list of every accepted sample, where:
+__Figures of Merit__
+
+The `Samples` class contains the log likelihood, log prior, log posterior and weight_list of every accepted sample, where:
 
 - The `log_likelihood` is the value evaluated in the `log_likelihood_function`.
 
@@ -121,7 +126,7 @@ The Samples class contains the log likelihood, log prior, log posterior and weig
 - The `weight` gives information on how samples are combined to estimate the posterior, which depends on type of search
   used (for `Emcee` they are all 1's meaning they are weighted equally).
 
-Lets inspect the last 10 values of each for the analysis.     
+Lets inspect these values for the tenth sample.
 """
 print("log(likelihood), log(prior), log(posterior) and weight of the tenth sample.")
 print(samples.log_likelihood_list[9])
@@ -130,12 +135,15 @@ print(samples.log_posterior_list[9])
 print(samples.weight_list[9])
 
 """
-__Maximum Likelihood__
+__Instances__
 
-Using the `Samples` object many results can be returned as an instance of the model, using the Python class structure
-of the model composition.
+Many results can be returned as an instance of the model, using the Python class structure of the model composition.
 
 For example, we can return the model parameters corresponding to the maximum log likelihood sample.
+
+The attributes of the `instance` (`centre`, `normalization` and `sigma`) have these names due to how we composed 
+the `Gaussian` class via the `Model` above. They would be named structured and named differently if we hd 
+used a `Collection` and different names.
 """
 instance = samples.max_log_likelihood()
 
@@ -163,6 +171,9 @@ __Posterior / PDF__
 The result contains the full posterior information of our non-linear search, which can be used for parameter 
 estimation. 
 
+PDF stands for "Probability Density Function" and it quantifies probability of each model parameter having values
+that are sampled. It therefore enables error estimation via a process called marginalization.
+
 The median pdf vector is available, which estimates every parameter via 1D marginalization of their PDFs.
 """
 instance = samples.median_pdf()
@@ -178,6 +189,9 @@ __Errors__
 Methods for computing error estimates on all parameters are provided. 
 
 This again uses 1D marginalization, now at an input sigma confidence limit. 
+
+By inputting `sigma=3.0` margnialization find the values spanning 99.7% of 1D PDF. Changing this to `sigma=1.0`
+would give the errors at the 68.3% confidence limit.
 """
 instance_upper_sigma = samples.errors_at_upper_sigma(sigma=3.0)
 instance_lower_sigma = samples.errors_at_lower_sigma(sigma=3.0)
@@ -225,18 +239,37 @@ print("Sigma = ", instance.sigma, "\n")
 """
 __Search Plots__
 
-The Probability Density Functions (PDF's) of the results can be plotted using the Emcee's visualization 
-tool `corner.py`, which is wrapped via the `EmceePlotter` object.
+The Probability Density Functions (PDF's) of the results can be plotted using the non-linear search in-built 
+visualization tools.
+
+This fit used `Emcee` therefore we use the `EmceePlotter` for visualization, which wraps the Python library `corner.py`.
+
+The `autofit_workspace/*/plots` folder illustrates other packages that can be used to make these plots using
+the standard output results formats (e.g. `GetDist.py`).
 """
 search_plotter = aplt.EmceePlotter(samples=result.samples)
 search_plotter.corner()
+
+"""
+__Maximum Likelihood__
+
+The maximum log likelihood value of the model-fit can be estimated by simple taking the maximum of all log
+likelihoods of the samples.
+
+If different models are fitted to the same dataset, this value can be compared to determine which model provides
+the best fit (e.g. which model has the highest maximum likelihood)?
+"""
+print("Maximum Log Likelihood: \n")
+print(max(samples.log_likelihood_list))
 
 """
 __Bayesian Evidence__
 
 If a nested sampling non-linear search is used, the evidence of the model is also available which enables Bayesian
 model comparison to be performed (given we are using Emcee, which is not a nested sampling algorithm, the log evidence 
-is None).:
+is None).
+
+A full discussion of Bayesian model comparison is given in `autofit_workspace/*/features/bayes_model_comparison.py`.
 """
 log_evidence = samples.log_evidence
 print(f"Log Evidence: {log_evidence}")
@@ -330,8 +363,8 @@ errors_at_lower_sigma = samples.errors_at_lower_sigma(sigma=3.0, as_instance=Fal
 """
 __Latex__
 
-If you are writing modeling results up in a paper, you can use PyAutoFit's inbuilt latex tools to create latex table 
-code which you can copy to your .tex document.
+If you are writing modeling results up in a paper, you can use inbuilt latex tools to create latex table code which 
+you can copy to your .tex document.
 
 By combining this with the filtering tools below, specific parameters can be included or removed from the latex.
 
@@ -359,7 +392,7 @@ Computing the errors of a quantity like the `sigma` of the Gaussian is simple, b
 search. Thus, to get their errors above we used the `Samples` object to simply marginalize over all over parameters 
 via the 1D Probability Density Function (PDF).
 
-Computing errors on derived quantitys is more tricky, because it is not sampled directly by the non-linear search. 
+Computing errors on derived quantities is more tricky, because they are not sampled directly by the non-linear search. 
 For example, what if we want the error on the full width half maximum (FWHM) of the Gaussian? In order to do this
 we need to create the PDF of that derived quantity, which we can then marginalize over using the same function we
 use to marginalize model parameters.
@@ -399,7 +432,7 @@ You might be wondering what else the results contains, as nearly everything we d
 `samples` property! The answer is, not much, however the result can be extended to include  model-specific results for 
 your project. 
 
-We detail how to do this in the **HowToFit** lectures, but for the example of fitting a 1D Gaussian we could extend
+We detail how to do this in analysis cookbook, but for the example of fitting a 1D Gaussian we could extend
 the result to include the maximum log likelihood profile:
 
 (The commented out functions below are llustrative of the API we can create by extending a result).
@@ -432,10 +465,10 @@ print("Maximum Log Likelihood Model Instances (containing only the Gaussian cent
 print(samples.max_log_likelihood(as_instance=False))
 
 """
-Above, we specified each path as a list of tuples of strings. 
+We specified each path as a list of tuples of strings. 
 
-This is how the PyAutoFit source code stores the path to different components of the model, but it is not 
-in-profile_1d with the PyAutoFIT API used to compose a model.
+This is how the source code internally stores the path to different components of the model, but it is not 
+consistent with the API used to compose a model.
 
 We can alternatively use the following API:
 """
@@ -447,7 +480,7 @@ print("All parameters of the very first sample (containing only the Gaussian cen
 print(samples.parameter_lists[0])
 
 """
-Above, we filtered the `Samples` but asking for all parameters which included the path ("gaussian", "centre").
+We filtered the `Samples` above by asking for all parameters which included the path ("gaussian", "centre").
 
 We can alternatively filter the `Samples` object by removing all parameters with a certain path. Below, we remove
 the Gaussian's `centre` to be left with 2 parameters; the `normalization` and `sigma`.

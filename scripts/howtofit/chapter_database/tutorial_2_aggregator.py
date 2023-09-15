@@ -247,7 +247,7 @@ print(samples.max_log_likelihood(as_instance=False))
 """
 Above, we specified each path as a list of tuples of strings. 
 
-This is how the PyAutoFit source code stores the path to different components of the model, but it is not in-line 
+This is how the source code internally stores the path to different components of the model, but it is not in-line 
 with the PyAutoFIT API used to compose a model.
 
 We can alternatively use the following API:
