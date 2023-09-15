@@ -62,7 +62,7 @@ import autofit.plot as aplt
 """
 __Unique Identifiers__
 
-Results output to hard-disk by **PyAutoFit** are contained in a folder named via a unique identifier (a 
+Results output to hard-disk are contained in a folder named via a unique identifier (a 
 random collection of characters, e.g. `8hds89fhndlsiuhnfiusdh`). The unique identifier changes if the model or 
 search change, to ensure different fits to not overwrite one another on hard-disk.
 
@@ -121,7 +121,7 @@ for dataset_name in dataset_name_list:
 
     search = af.DynestyStatic(
         name="database_example",
-        path_prefix=path.join("features", "database"),
+        path_prefix=path.join("cookbooks", "database"),
         unique_tag=dataset_name,  # This makes the unique identifier use the dataset name
         session=session,  # This instructs the search to write to the .sqlite database.
         nlive=50,
@@ -173,26 +173,29 @@ __Files__
 When performing fits which output results to hard-disc, a `files` folder is created containing .json / .csv files of 
 the model, samples, search, etc.
 
-These are the files that are written to the database, and the aggregator load them via the database in order
-to make them accessible in a Python script or Jupyter notebook.
+These are the files that are written to the database, which the aggregator loads via the database in order to make 
+them accessible in a Python script or Jupyter notebook.
 
 Below, we will access these results using the aggregator's `values` method. A full list of what can be loaded is
 as follows:
 
- - model: The `model` defined above and used in the model-fit (`model.json`).
- - search: The non-linear search settings of the fit (`search.json`).
- - samples: The non-linear search samples of the fit (`samples.csv`).
- - samples_summary: A summary of the samples results of the fit (`samples_summary.json`).
- - info: The info dictionary passed to the search (`info.json`).
- - covariance: The covariance matrix of the fit (`covariance.csv`).
+ - `model`: The `model` defined above and used in the model-fit (`model.json`).
+ - `search`: The non-linear search settings (`search.json`).
+ - `samples`: The non-linear search samples (`samples.csv`).
+ - `samples_info`: Additional information about the samples (`samples_info.json`).
+ - `samples_summary`: A summary of key results of the samples (`samples_summary.json`).
+ - `info`: The info dictionary passed to the search (`info.json`).
+ - `covariance`: The inferred covariance matrix (`covariance.csv`).
+ - `data`: The 1D noisy data used that is fitted (`data.json`).
+ - `noise_map`: The 1D noise-map fitted (`noise_map.json`).
  
 The `samples` and `samples_summary` results contain a lot of repeated information. The `samples` result contains
 the full non-linear search samples, for example every parameter sample and its log likelihood. The `samples_summary`
 contains a summary of the results, for example the maximum log likelihood model and error estimates on parameters
 at 1 and 3 sigma confidence.
 
-Accessing results via the `samples_summary` is therefore a lot faster, as it does reperform calculations using the
-full list of samples. Therefore, if the result you want is accessible via the `samples_summary` you should use it
+Accessing results via the `samples_summary` is much faster, because as it does reperform calculations using the full 
+list of samples. Therefore, if the result you want is accessible via the `samples_summary` you should use it
 but if not you can revert to the `samples.
 
 __Generators__
@@ -217,10 +220,10 @@ object.
 samples_gen = agg.values("samples")
 
 """
-By converting this generator to a list and printing it, it is a list of 3 `SamplesDynesty` objects, corresponding to 
+By converting this generator to a list and printing it, it is a list of 3 `SamplesNest` objects, corresponding to 
 the 3 model-fits performed above.
 """
-print("Dynesty Samples:\n")
+print("Samples:\n")
 print(samples_gen)
 print("Total Samples Objects = ", len(agg), "\n")
 
@@ -264,6 +267,17 @@ for samples in agg.values("samples"):
     print("Sigma = ", instance.gaussian.sigma, "\n")
 
 """
+__Samples Info__
+
+The samples info contains additional information on the samples, which depends on the non-linear search used. 
+
+For example, for a nested sampling algorithm it contains information on the number of live points, for a MCMC
+algorithm it contains information on the number of steps, etc.
+"""
+for samples_info in agg.values("samples_info"):
+    print(samples_info)
+
+"""
 __Samples Summary__
 
 The samples summary contains a subset of results access via the `Samples`, for example the maximum likelihood model
@@ -300,8 +314,12 @@ __Custom Output__
 
 The results accessible via the database (e.g. `model`, `samples`) are those contained in the `files` folder.
 
-By extending an `Analysis` class with the methods `save_attributes_for_aggregator` and `save_results_for_aggregator`, 
+By extending an `Analysis` class with the methods `save_attributes` and `save_results`, 
 custom files can be written to the `files` folder and become accessible via the database.
+
+To save the objects in a human readable and loaded .json format, the `data` and `noise_map`, which are natively stored
+as 1D numpy arrays, are converted to a suitable dictionary output format. This uses the **PyAutoConf** method
+`to_dict`.
 """
 
 
@@ -332,7 +350,7 @@ class Analysis(af.Analysis):
 
         return log_likelihood
 
-    def save_attributes_for_aggregator(self, paths: af.DirectoryPaths):
+    def save_attributes(self, paths: af.DirectoryPaths):
         """
         Before the non-linear search begins, this routine saves attributes of the `Analysis` object to the `files`
         folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.
@@ -344,27 +362,21 @@ class Analysis(af.Analysis):
 
         These are accessed using the aggregator via `agg.values("data")` and `agg.values("noise_map")`.
 
+        They are saved using the paths function `save_json`, noting that this saves outputs appropriate for the
+        sqlite3 database.
+
         Parameters
         ----------
         paths
             The PyAutoFit paths object which manages all paths, e.g. where the non-linear search outputs are stored,
             visualization, and the pickled objects used by the aggregator output by this function.
         """
-        # The path where data.json is saved, e.g. output/dataset_name/unique_id/files/data.json
+        from autoconf.dictable import to_dict
 
-        file_path = (path.join(paths._json_path, "data.json"),)
+        paths.save_json(name="data", object_dict=to_dict(self.data))
+        paths.save_json(name="noise_map", object_dict=to_dict(self.noise_map))
 
-        with open(file_path, "w+") as f:
-            json.dump(self.data, f, indent=4)
-
-        # The path where noise_map.json is saved, e.g. output/noise_mapset_name/unique_id/files/noise_map.json
-
-        file_path = (path.join(paths._json_path, "noise_map.json"),)
-
-        with open(file_path, "w+") as f:
-            json.dump(self.noise_map, f, indent=4)
-
-    def save_results_for_aggregator(self, paths: af.DirectoryPaths, result: af.Result):
+    def save_results(self, paths: af.DirectoryPaths, result: af.Result):
         """
         At the end of a model-fit,  this routine saves attributes of the `Analysis` object to the `files`
         folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.
@@ -412,7 +424,7 @@ unique_tag = agg.search.unique_tag
 agg_query = agg.query(unique_tag == "gaussian_x1_1")
 
 """
-As expected, this list has only 1 `SamplesDynesty` corresponding to the second dataset.
+As expected, this list has only 1 `SamplesNest` corresponding to the second dataset.
 """
 print(agg_query.values("samples"))
 print("Total Samples Objects via dataset_name Query = ", len(agg_query), "\n")

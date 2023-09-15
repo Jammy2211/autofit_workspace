@@ -3,7 +3,7 @@ Plots: EmceePlotter
 ===================
 
 This example illustrates how to plot visualization summarizing the results of a emcee non-linear search using
-a `ZeusPlotter`.
+a `EmceePlotter`.
 """
 # %matplotlib inline
 # from pyprojroot import here

@@ -68,7 +68,7 @@ We manually specify all of the Dynesty settings, descriptions of which are provi
  https://dynesty.readthedocs.io/en/latest/api.html#module-dynesty.nestedsamplers
 """
 search = af.DynestyStatic(
-    path_prefix="searches",
+    path_prefix=path.join("searches"),
     name="DynestyStatic",
     nlive=50,
     bound="multi",
@@ -81,7 +81,7 @@ search = af.DynestyStatic(
     slices=5,
     fmove=0.9,
     max_move=100,
-    iterations_per_update=25,
+    iterations_per_update=2500,
     number_of_cores=1,
 )
 

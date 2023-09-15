@@ -3,7 +3,7 @@ Plots: DynestyPlotter
 =====================
 
 This example illustrates how to plot visualization summarizing the results of a dynesty non-linear search using
-a `ZeusPlotter`.
+a `DynestyPlotter`.
 """
 # %matplotlib inline
 # from pyprojroot import here
