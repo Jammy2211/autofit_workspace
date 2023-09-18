@@ -69,6 +69,7 @@ https://github.com/johannesulf/nautilus
 search = af.Nautilus(
     path_prefix=path.join("searches"),
     name="Nautilus",
+    number_of_cores=4,
     n_live=100,  # Number of so-called live points. New bounds are constructed so that they encompass the live points.
     n_update=None,  # The maximum number of additions to the live set before a new bound is created
     enlarge_per_dim=1.1,  # Along each dimension, outer ellipsoidal bounds are enlarged by this factor.
