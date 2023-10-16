@@ -144,13 +144,6 @@ for dataset_name in dataset_name_list:
 print("Search has finished run - you may now continue the notebook.")
 
 """
-If you inspect the `output` folder, you will see a `database.sqlite` file which contains the results.
-
-We can load the database using the `Aggregator`.
-"""
-agg = af.Aggregator.from_database("database.sqlite")
-
-"""
 __Building a Database File From an Output Folder__
 
 The fits above wrote the results to hard-disk in folders, not as an .sqlite database file. 
@@ -196,6 +189,14 @@ to large samples by writing directly to the database.
 #     session=session,  # This can instruct the search to write to the .sqlite database.
 #     n_live=100,
 # )
+
+"""
+If you run the above code and inspect the `output` folder, you will see a `database.sqlite` file which contains 
+the results.
+
+We can load the database using the `Aggregator` as we did above.
+"""
+# agg = af.Aggregator.from_database("database.sqlite")
 
 """
 __Files__
