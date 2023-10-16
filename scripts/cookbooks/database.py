@@ -164,7 +164,7 @@ agg = af.Aggregator.from_database(
    filename=f"{database_name}.sqlite", completed_only=False
 )
 
-agg.add_directory(directory=path.join("output", database_name))
+agg.add_directory(directory=path.join("output", "cookbooks", database_name))
 
 """
 __Writing Directly To Database__
