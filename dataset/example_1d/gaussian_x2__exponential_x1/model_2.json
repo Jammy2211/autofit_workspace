@@ -1,6 +1,9 @@
 {
-    "type": "autofit.example.model.Exponential",
-    "centre": 70.0,
-    "normalization": 40.0,
-    "rate": 0.005
+    "type": "instance",
+    "class_path": "autofit.example.model.Exponential",
+    "arguments": {
+        "normalization": 40.0,
+        "centre": 70.0,
+        "rate": 0.005
+    }
 }
