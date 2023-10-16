@@ -225,7 +225,7 @@ def simulate_function(instance, simulate_path):
     print(instance.perturbation.normalization)
     print(instance.perturbation.sigma)
 
-    model_line = instance.gaussian_0.model_data_1d_via_xvalues_from(
+    model_line = instance.gaussian_main.model_data_1d_via_xvalues_from(
         xvalues=xvalues
     ) + instance.perturbation.model_data_1d_via_xvalues_from(xvalues=xvalues)
 
