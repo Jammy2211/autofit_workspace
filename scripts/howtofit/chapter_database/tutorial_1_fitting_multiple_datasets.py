@@ -230,7 +230,7 @@ for dataset_name in dataset_name_list:
         name="database_example",
         path_prefix=path.join("howtofit", "chapter_database", dataset_name),
         unique_tag=dataset_name,  # This makes the unique identifier use the dataset name
-        session=session,  # This instructs the search to write to the .sqlite database.
+        session=session,  # This can instruct the search to write to the .sqlite database.
     )
 
     print(
