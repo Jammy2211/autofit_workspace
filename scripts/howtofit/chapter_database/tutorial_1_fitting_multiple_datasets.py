@@ -185,12 +185,18 @@ database. For example, below we write info on the dataset`s (hypothetical) data 
 info = {"date_of_observation": "01-02-18", "exposure_time": 1000.0}
 
 """
-___Session__
+__Results From Hard Disk__
 
-To output results directly to the database, we start a session, which includes the name of the database `.sqlite` file
-where results are stored.
+We now perform a simple model-fit to 3 datasets, where the results are written to hard-disk using the standard 
+output directory structure and we will then build the database from these results. This behaviour is governed 
+by us inputting `session=None`.
+
+If you have existing results you wish to build a database for, you can therefore adapt this example you to do this.
+
+Later in this example we show how results can also also be output directly to an .sqlite database, saving on hard-disk 
+space. This will be acheived by setting `session` to something that is not `None`.
 """
-session = af.db.open_database("database_howtofit.sqlite")
+session = None
 
 """
 __Model Fit__
@@ -226,7 +232,7 @@ for dataset_name in dataset_name_list:
     use an identical search and model, so this `unique_tag` is key in ensuring 3 separate sets of results for each
     model-fit are stored in the output folder and written to the .sqlite database. 
     """
-    dynesty = af.DynestyStatic(
+    search = af.DynestyStatic(
         name="database_example",
         path_prefix=path.join("howtofit", "chapter_database", dataset_name),
         unique_tag=dataset_name,  # This makes the unique identifier use the dataset name
@@ -240,7 +246,63 @@ for dataset_name in dataset_name_list:
         f"few minutes!"
     )
 
-    dynesty.fit(model=model, analysis=analysis, info=info)
+    search.fit(model=model, analysis=analysis, info=info)
+
+
+"""
+__Building a Database File From an Output Folder__
+
+The fits above wrote the results to hard-disk in folders, not as an .sqlite database file. 
+
+We build the database below, where the `database_name` corresponds to the name of your output folder and is also the 
+name of the `.sqlite` database file that is created.
+
+If you are fitting a relatively small number of datasets (e.g. 10-100) having all results written to hard-disk (e.g. 
+for quick visual inspection) and using the database for sample wide analysis is beneficial.
+
+We can optionally only include completed model-fits but setting `completed_only=True`.
+
+If you inspect the `output` folder, you will see a `database.sqlite` file which contains the results.
+"""
+database_name = "chapter_database"
+
+agg = af.Aggregator.from_database(
+   filename=f"{database_name}.sqlite", completed_only=False
+)
+
+agg.add_directory(directory=path.join("output", "howtofit", database_name))
+
+"""
+__Writing Directly To Database__
+
+Results can be written directly to the .sqlite database file, skipping output to hard-disk entirely, by creating
+a session and passing this to the non-linear search.
+
+The code below shows how to do this, but it is commented out to avoid rerunning the non-linear searches.
+
+This is ideal for tasks where model-fits to hundreds or thousands of datasets are performed, as it becomes unfeasible
+to inspect the results of all fits on the hard-disk. 
+
+Our recommended workflow is to set up database analysis scripts using ~10 model-fits, and then scaling these up
+to large samples by writing directly to the database.
+"""
+# session = af.db.open_database("chapter_database.sqlite")
+#
+# search = af.Nautilus(
+#     path_prefix=path.join("database"),
+#     name="database_example",
+#     unique_tag=dataset_name,  # This makes the unique identifier use the dataset name
+#     session=session,  # This can instruct the search to write to the .sqlite database.
+#     n_live=100,
+# )
+
+"""
+If you run the above code and inspect the `output` folder, you will see a `database.sqlite` file which contains 
+the results.
+
+We can load the database using the `Aggregator` as we did above.
+"""
+# agg = af.Aggregator.from_database("chapter_database.sqlite")
 
 """
 __Wrap Up__

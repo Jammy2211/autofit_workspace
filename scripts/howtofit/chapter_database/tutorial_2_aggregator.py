@@ -14,6 +14,7 @@ notebook. The API for using a `Result` is described fully in tutorial 6 of chapt
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
 
+from os import path
 import autofit as af
 
 """
@@ -27,33 +28,21 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 
 These are functionally identical to the `Gaussian` and `plot_profile_1d` objects and functions you 
 have seen and used elsewhere throughout the workspace.
-
-__Database File__
-
-The results are not contained in the `output` folder after each search completes. Instead, they are
-contained in the `database_howtofit.sqlite` file, which we can load using the `Aggregator`.
 """
-database_file = "database_howtofit.sqlite"
-agg = af.Aggregator.from_database(filename=database_file)
 
 """
 __Building a Database File From an Output Folder__
 
-In the previous tutorials, we directly wrote the results to the .sqlite file, which we loaded above. However, you may
-have results already written to hard-disk in an output folder, which you wish to build your .sqlite file from.
+In the previous tutorials, we built the database file `chapter_database.sqlite` via the results output to
+hard-disk.
 
-This can be done via the following code, which is commented out below to avoid us deleting the existing .sqlite file.
-
-Below, the `database_name` corresponds to the name of your output folder and is also the name of the `.sqlite` file
-that is created.
+We can therefore simply load this database from the hard-disk in order to use the aggregator.
 """
-# database_name = "database"
+database_name = "chapter_database"
 
-# agg = af.Aggregator.from_database(
-#    filename=f"{database_name}.sqlite", completed_only=False
-# )
-
-# agg.add_directory(directory=path.join("output", database_name)))
+agg = af.Aggregator.from_database(
+   filename=f"{database_name}.sqlite", completed_only=False
+)
 
 """
 __Generators__
@@ -123,6 +112,7 @@ __Instances__
 We can use the `Aggregator` to create a list of the `max_log_likelihood` instances of every fit.
 """
 max_lh_instance_list = [samps.max_log_likelihood() for samps in agg.values("samples")]
+
 print("Maximum Log Likelihood Model Instances:\n")
 print(max_lh_instance_list, "\n")
 
