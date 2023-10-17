@@ -398,7 +398,6 @@ model = af.Collection(gaussian=gaussian, exponential=exponential)
 
 print(model.info)
 
-ddd
 """
 Below is an alternative API that can be used to create the same model as above.
 
