@@ -119,8 +119,7 @@ for dataset_name, analysis in zip(dataset_name_list, analysis_list):
     Create the `DynestyStatic` non-linear search and use it to fit the data.
     """
     dynesty = af.DynestyStatic(
-        name="",
-        path_prefix=path.join("tutorial_optional_hierarchical_individual"),
+        name="tutorial_optional_hierarchical_individual",
         unique_tag=dataset_name,
         nlive=200,
         dlogz=1e-4,
