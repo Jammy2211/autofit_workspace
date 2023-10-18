@@ -161,7 +161,7 @@ If you inspect the `output` folder, you will see a `database.sqlite` file which 
 database_name = "database"
 
 agg = af.Aggregator.from_database(
-   filename=f"{database_name}.sqlite", completed_only=False
+    filename=f"{database_name}.sqlite", completed_only=False
 )
 
 agg.add_directory(directory=path.join("output", "cookbooks", database_name))

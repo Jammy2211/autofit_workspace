@@ -1,3 +1,5 @@
+from autoconf.dictable import to_dict
+
 import autofit as af
 
 import json
@@ -61,13 +63,13 @@ def simulate_dataset_1d_via_gaussian_from(gaussian, dataset_path):
 
     """
     __Model Json__
-    
+
     Output the model to a .json file so we can refer to its parameters in the future.
     """
     model_file = path.join(dataset_path, "model.json")
 
     with open(model_file, "w+") as f:
-        json.dump(gaussian.dict(), f, indent=4)
+        json.dump(to_dict(gaussian), f, indent=4)
 
 
 def simulate_data_1d_with_kernel_via_gaussian_from(gaussian, dataset_path):
@@ -153,7 +155,7 @@ def simulate_data_1d_with_kernel_via_gaussian_from(gaussian, dataset_path):
     model_file = path.join(dataset_path, "model.json")
 
     with open(model_file, "w+") as f:
-        json.dump(gaussian.dict(), f, indent=4)
+        json.dump(to_dict(gaussian), f, indent=4)
 
 
 def simulate_dataset_1d_via_profile_1d_list_from(profile_1d_list, dataset_path):
@@ -227,7 +229,7 @@ def simulate_dataset_1d_via_profile_1d_list_from(profile_1d_list, dataset_path):
         model_file = path.join(dataset_path, f"model_{i}.json")
 
         with open(model_file, "w+") as f:
-            json.dump(profile.dict(), f, indent=4)
+            json.dump(to_dict(profile), f, indent=4)
 
 
 def simulate_data_1d_with_kernel_via_profile_1d_list_from(
@@ -322,4 +324,4 @@ def simulate_data_1d_with_kernel_via_profile_1d_list_from(
         model_file = path.join(dataset_path, f"model_{i}.json")
 
         with open(model_file, "w+") as f:
-            json.dump(profile.dict(), f, indent=4)
+            json.dump(to_dict(profile), f, indent=4)

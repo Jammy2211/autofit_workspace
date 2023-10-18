@@ -41,7 +41,7 @@ We can therefore simply load this database from the hard-disk in order to use th
 database_name = "chapter_database"
 
 agg = af.Aggregator.from_database(
-   filename=f"{database_name}.sqlite", completed_only=False
+    filename=f"{database_name}.sqlite", completed_only=False
 )
 
 """
