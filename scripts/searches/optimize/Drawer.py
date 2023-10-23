@@ -79,7 +79,7 @@ We manually specify all of the Drawer settings, descriptions of which are provid
 
 https://github.com/rhayes777/PyAutoFit/blob/main/autofit/non_linear/optimize/drawer/drawer.py
 """
-search = af.Drawer(path_prefix="searches", name="Drawer2", total_draws=3)
+search = af.Drawer(path_prefix="searches", name="Drawer", total_draws=3)
 
 result = search.fit(model=model, analysis=analysis)
 
