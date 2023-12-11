@@ -3,7 +3,7 @@
     "class_path": "autofit.example.model.Gaussian",
     "arguments": {
         "sigma": 0.5,
-        "normalization": 0.3,
-        "centre": 70.0
+        "centre": 70.0,
+        "normalization": 0.3
     }
 }

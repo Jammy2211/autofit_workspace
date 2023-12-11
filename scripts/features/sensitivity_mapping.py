@@ -7,13 +7,16 @@ quantify which model objectively gives the best-fit following the principles of 
 
 However, a complex model may not be favoured by model comparison not because it is the 'wrong' model, but simply
 because the dataset being fitted is not of a sufficient quality for the more complex model to be favoured. Sensitivity
-mapping allows us to address what quality of data would be needed for the more complex model to be favoured or
-alternatively for what sets of model parameter values it would be favoured for data of a given quality.
+mapping addresses what quality of data would be needed for the more complex model to be favoured.
 
 In order to do this, sensitivity mapping involves us writing a function that uses the model(s) to simulate a dataset.
-We then use this function to simulate many datasets, for many different models, and fit each dataset using the same
-model-fitting procedure we used to perform Bayesian model comparison. This allows us to infer how much of a Bayesian
-evidence increase we should expect for datasets of varying quality and / or models with different parameters.
+We then use this function to simulate many datasets, for many different models, and fit each dataset to quantify
+how much the change in the model led to a measurable change in the data. This is called computing the sensitivity.
+
+How we compute the sensitivity is chosen by us, the user. In this example, we will perform multiple model-fits
+with a nested sampling search, and therefore perform Bayesian model comparison to compute the sensitivity. This allows 
+us to infer how much of a Bayesian evidence increase we should expect for datasets of varying quality and / or models 
+with different parameters.
 
 __Example Source Code (`af.ex`)__
 
@@ -123,9 +126,11 @@ __Sensitivity Mapping__
 The model comparison above shows that in this dataset, the `Gaussian` feature was detectable and that it increased the 
 Bayesian evidence by ~25. Furthermore, the normalization of this `Gaussian` was ~0.3. 
 
-A lower value of normalization makes the `Gaussian` fainter and harder to detect. We will demonstrate sensitivity mapping 
-by answering the following question, at what value of normalization does the `Gaussian` feature become undetectable and
-not provide us with a noticeable increase in Bayesian evidence?
+A lower value of normalization makes the `Gaussian` fainter and harder to detect. We will demonstrate sensitivity 
+mapping by answering the following question, at what value of normalization does the `Gaussian` feature become 
+undetectable and not provide us with a noticeable increase in Bayesian evidence?
+
+__Base Model__
 
 To begin, we define the `base_model` that we use to perform sensitivity mapping. This model is used to simulate every 
 dataset. It is also fitted to every simulated dataset without the extra model component below, to give us the Bayesian
@@ -136,30 +141,37 @@ The `base_model` corresponds to the `gaussian_main` above.
 base_model = af.Collection(gaussian_main=af.ex.Gaussian)
 
 """
-We now define the `perturbation_model`, which is the model component whose parameters we iterate over to perform 
-sensitivity mapping. Many instances of the `perturbation_model` are created and used to simulate the many datasets 
-that we fit. However, it is only included in half of the model-fits; corresponding to the more complex models whose
-Bayesian evidence we compare to the simpler model-fits consisting of just the `base_model`.
+__Perturb Model__
 
-The `perturbation_model` is therefore another `Gaussian` but now corresponds to the `gaussian_feature` above.
+We now define the `perturb_model`, which is the model component whose parameters we iterate over to perform 
+sensitivity mapping. Many instances of the `perturb_model` are created and used to simulate the many datasets 
+that we fit. However, it is only included in half of the sensitivity mapping models, corresponding to the more complex 
+models whose Bayesian evidence we compare to the simpler model-fits consisting of just the `base_model`.
+
+The `perturb_model` is therefore another `Gaussian` but now corresponds to the `gaussian_feature` above.
 
 By fitting both of these models to every simulated dataset, we will therefore infer the Bayesian evidence of every
-model to every dataset. Sensitivity mapping therefore maps out for what values of `normalization` in the `gaussian_feature`
- does the more complex model-fit provide higher values of Bayesian evidence than the simpler model-fit.
+model to every dataset. Sensitivity mapping therefore maps out for what values of `normalization` in 
+the `gaussian_feature` does the more complex model-fit provide higher values of Bayesian evidence than the simpler
+model-fit.
 """
-perturbation_model = af.Model(af.ex.Gaussian)
+perturb_model = af.Model(af.ex.Gaussian)
 
 """
-Sensitivity mapping is typically performed over a large range of parameters. However, to make this demonstration quick
-and clear we are going to fix the `centre` and `sigma` values to the true values of the `gaussian_feature`. We will 
-also iterate over just two `normalization` values corresponding to 0.01 and 100.0, which will clearly exhaggerate the
+__Mapping Grid__
+
+Sensitivity mapping is performed over a large grid of model parameters. To make this demonstration quick and clear we 
+are going to fix the `centre` and `sigma` values to the true values of the `gaussian_feature`. We will also iterate 
+over just two `normalization` values corresponding to 0.01 and 100.0, which will exhaggerate the difference in
 sensitivity between the models at these two values.
 """
-perturbation_model.centre = 70.0
-perturbation_model.sigma = 0.5
-perturbation_model.normalization = af.UniformPrior(lower_limit=0.01, upper_limit=100.0)
+perturb_model.centre = 70.0
+perturb_model.sigma = 0.5
+perturb_model.normalization = af.UniformPrior(lower_limit=0.01, upper_limit=100.0)
 
 """
+__Simulation Instance__
+
 We are performing sensitivity mapping to determine how bright the `gaussian_feature` needs to be in order to be 
 detectable. However, every simulated dataset must include the `main_gaussian`, as its presence in the data will effect
 the detectability of the `gaussian_feature`.
@@ -171,12 +183,17 @@ performed above.
 simulation_instance = result_single.instance
 
 """
-We are about to write a `simulate_function` that simulates examples of 1D `Gaussian` datasets that are fitted to
+__Simulate Function Class__
+
+We are about to write a `simulate_cls` that simulates examples of 1D `Gaussian` datasets that are fitted to
 perform sensitivity mapping.
 
 To pass each simulated data through **PyAutoFit**'s sensitivity mapping tools, the function must return a single 
 Python object. We therefore define a `Dataset` class that combines the `data` and `noise_map` that are to be 
-output by this `simulate_function`.
+output by this `simulate_cls`.
+
+It is also convenient to define a `Analysis` class, which behaves analogously to the `Analysis` class used in
+PyAutoFit to fit a model to data. In this example it makes it easy to define how we fit each simulated dataset.
 """
 
 
@@ -186,129 +203,303 @@ class Dataset:
         self.noise_map = noise_map
 
 
-"""
-We now write the `simulate_function`, which takes the `simulation_instance` of our model (defined above) and uses it to 
-simulate a dataset which is subsequently fitted.
-
-Note that when this dataset is simulated, the quantity `instance.perturbation` is used in the `simulate_function`.
-This is an instance of the `gaussian_feature`, and it is different every time the `simulate_function` is called. 
-
-In this example, this `instance.perturbation` corresponds to two different `gaussian_feature` with values of
-`normalization` of 0.01 and 100.0, such that our simulated datasets correspond to a very faint and very bright gaussian 
-features .
-"""
-
-
-def simulate_function(instance, simulate_path):
-    """
-    The `simulate_path` specifies the folder the results of sensitivity mapping of this simulated dataset is output to.
-    It can be used to output information specific to this simulation, such as visualization of the dataset, etc.
-    """
-    print(simulate_path)
-
-    """
-    Specify the number of pixels used to create the xvalues on which the 1D line of the profile is generated using and
-    thus defining the number of data-points in our data.
-    """
-    pixels = 100
-    xvalues = np.arange(pixels)
-
-    """
-    Evaluate the `Gaussian` and Exponential model instances at every xvalues to create their model profile and sum
-    them together to create the overall model profile.
-    
-    This print statement will show that, when you run `Sensitivity` below the values of the perturbation use fixed 
-    values of `centre=70` and `sigma=0.5`, whereas the normalization varies over the `number_of_steps` based on its prior.
-    """
-
-    print(instance.perturbation.centre)
-    print(instance.perturbation.normalization)
-    print(instance.perturbation.sigma)
-
-    model_line = instance.gaussian_main.model_data_1d_via_xvalues_from(
-        xvalues=xvalues
-    ) + instance.perturbation.model_data_1d_via_xvalues_from(xvalues=xvalues)
-
-    """
-    Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
-    """
-    signal_to_noise_ratio = 25.0
-    noise = np.random.normal(0.0, 1.0 / signal_to_noise_ratio, pixels)
-
-    """
-    Add this noise to the model line to create the line data that is fitted, using the signal-to-noise ratio to compute
-    noise-map of our data which is required when evaluating the chi-squared value of the likelihood.
-    """
-    data = model_line + noise
-    noise_map = (1.0 / signal_to_noise_ratio) * np.ones(pixels)
-
-    return Dataset(data=data, noise_map=noise_map)
-
-
-"""
-Each model-fit performed by sensitivity mapping creates a new instance of an `Analysis` class, which contains the
-data simulated by the `simulate_function` for that model.
-
-This requires us to write a wrapper around the `Analysis` class that we used to fit the model above, so that is uses
-the `Dataset` object above.
-"""
-
-
 class Analysis(af.ex.Analysis):
     def __init__(self, dataset):
         super().__init__(data=dataset.data, noise_map=dataset.noise_map)
 
 
 """
-We next specify the search used to perform each model fit by the sensitivity mapper.
+We now write the `simulate_cls`, which takes the `simulation_instance` of our model (defined above) and uses it to 
+simulate a dataset which is subsequently fitted. 
+
+Additional attributes required to simulate the data can be passed to the `__init__` method, and the simulation is 
+performed in the `__call__` method.
+
+Note that when this dataset is simulated, the quantity `instance.perturb` is used in `__call__`.
+This is an instance of the `gaussian_feature`, and it is different every time the `simulate_cls` is called. 
+
+In this example, this `instance.perturb` corresponds to two different `gaussian_feature` with values of
+`normalization` of 0.01 and 100.0, such that our simulated datasets correspond to a very faint and very bright gaussian 
+features .
 """
-search = af.DynestyStatic(
-    path_prefix=path.join("features", "sensitivity_mapping", "sensitivity_map"),
-    nlive=100,
-)
+
+
+class Simulate:
+    def __init__(self):
+        """
+        Class used to simulate every dataset used for sensitivity mapping.
+
+        This `__init__` constructor can be extended with new inputs which can be used to control how the dataset is
+        simulated in the `__call__` simulate_function below.
+
+        In this example we leave it empty as our `simulate_function` does not require any additional information.
+        """
+        pass
+
+    def __call__(self, instance, simulate_path):
+        """
+        The `simulate_function` called by the `Sensitivity` class which simulates each dataset fitted
+        by the sensitivity mapper.
+
+        The simulation procedure is as follows:
+
+        1) Use the input sensitivity `instance` to simulate the data with the small Gaussian feature.
+
+        2) Output information about the simulation to hard-disk.
+
+        3) Return the data for the sensitivity mapper to fit.
+
+        Parameters
+        ----------
+        instance
+            The sensitivity instance, which includes the Gaussian feature parameters are varied to perform sensitivity.
+            The Gaussian feature in this instance changes for every iteration of the sensitivity mapping.
+        simulate_path
+            The path where the simulated dataset is output, contained within each sub-folder of the sensitivity
+            mapping.
+
+        Returns
+        -------
+        A simulated image of a Gaussian, which i input into the fits of the sensitivity mapper.
+        """
+
+        """
+        Specify the number of pixels used to create the xvalues on which the 1D line of the profile is generated 
+        using and thus defining the number of data-points in our data.
+        """
+        pixels = 100
+        xvalues = np.arange(pixels)
+
+        """
+        Evaluate the `Gaussian` and Exponential model instances at every xvalues to create their model profile 
+        and sum them together to create the overall model profile.
+
+        This print statement will show that, when you run `Sensitivity` below the values of the perturbation 
+        use fixed  values of `centre=70` and `sigma=0.5`, whereas the normalization varies over the `number_of_steps` 
+        based on its prior.
+        """
+
+        print(instance.perturb.centre)
+        print(instance.perturb.normalization)
+        print(instance.perturb.sigma)
+
+        model_line = instance.gaussian_main.model_data_1d_via_xvalues_from(
+            xvalues=xvalues
+        ) + instance.perturb.model_data_1d_via_xvalues_from(xvalues=xvalues)
+
+        """
+        Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
+        """
+        signal_to_noise_ratio = 25.0
+        noise = np.random.normal(0.0, 1.0 / signal_to_noise_ratio, pixels)
+
+        """
+        Add this noise to the model line to create the line data that is fitted, using the signal-to-noise ratio 
+        to compute noise-map of our data which is required when evaluating the chi-squared value of the likelihood.
+        """
+        data = model_line + noise
+        noise_map = (1.0 / signal_to_noise_ratio) * np.ones(pixels)
+
+        return Dataset(data=data, noise_map=noise_map)
+
+
+"""
+__Base Fit__
+
+We have defined a `Simulate` class that will be used to simulate every dataset simulated by the sensitivity mapper.
+Each simulated dataset will have a unique set of parameters for the `gaussian_feature` (e.g. due to different values of
+`perturb_model`.
+
+We will fit each simulated dataset using the `base_model`, which quantifies whether not including the Gaussian feature
+in the model changes the goodness-of-fit and therefore indicates if we are sensitive to the Gaussian feature.
+
+We now write a `BaseFit` class, defining how the `base_model` is fitted to each simulated dataset and 
+the goodness-of-fit used to quantify whether the model fits the data well. As above, the `__init__` method can be
+extended with new inputs to control how the model is fitted and the `__call__` method performs the fit.
+
+In this example, we use a full non-linear search to fit the `base_model` to the simulated data and return
+the `log_evidence` of the model fit as the goodness-of-fit. This fit could easily be something much simpler and
+more computationally efficient, for example performing a single log likelihood evaluation of the `base_model` fit
+to the simulated data.
+"""
+
+
+class BaseFit:
+    def __init__(self, analysis_cls):
+        """
+        Class used to fit every dataset used for sensitivity mapping with the base model (the model without the
+        perturbed feature sensitivity mapping maps out).
+
+        In this example, the base model therefore does not include the extra Gaussian feature, but the simulated
+        dataset includes one.
+
+        The base fit is repeated for every parameter on the sensitivity grid and compared to the perturbed fit. This
+        maps out the sensitivity of every parameter is (e.g. the sensitivity of the normalization of the Gaussian
+        feature).
+
+        The `__init__` constructor can be extended with new inputs which can be used to control how the dataset is
+        fitted, below we include an input `analysis_cls` which is the `Analysis` class used to fit the model to the
+        dataset.
+
+        Parameters
+        ----------
+        analysis_cls
+            The `Analysis` class used to fit the model to the dataset.
+        """
+        self.analysis_cls = analysis_cls
+
+    def __call__(self, dataset, model, paths):
+        """
+        The base fitting function which fits every dataset used for sensitivity mapping with the base model.
+
+        This function receives as input each simulated dataset of the sensitivity map and fits it, in order to
+        quantify how sensitive the model is to the perturbed feature.
+
+        In this example, a full non-linear search is performed to determine how well the model fits the dataset.
+        The `log_evidence` of the fit is returned which acts as the sensitivity map figure of merit.
+
+        Parameters
+        ----------
+        dataset
+            The dataset which is simulated with the perturbed model and which is fitted.
+        model
+            The model instance which is fitted to the dataset, which does not include the perturbed feature.
+        paths
+            The `Paths` instance which contains the path to the folder where the results of the fit are written to.
+        """
+
+        search = af.DynestyStatic(
+            paths=paths.for_sub_analysis(analysis_name="[base]"),
+            nlive=50,
+            iterations_per_update=50000,
+        )
+
+        analysis = self.analysis_cls(dataset=dataset)
+
+        return search.fit(model=model, analysis=analysis)
+
+
+"""
+__Perturb Fit__
+
+We now define a `PerturbFit` class, which defines how the `perturb_model` is fitted to each simulated dataset. This
+behaves analogously to the `BaseFit` class above, but now fits the `perturb_model` to the simulated data (as
+opposed to the `base_model`).
+
+Again, in this example we use a full non-linear search to fit the `perturb_model` to the simulated data and return
+the `log_evidence` of the model fit as the goodness-of-fit. This fit could easily be something much simpler and
+more computationally efficient, for example performing a single log likelihood evaluation of the `perturb_model` fit
+to the simulated data.
+"""
+
+
+class PerturbFit:
+    def __init__(self, analysis_cls):
+        """
+        Class used to fit every dataset used for sensitivity mapping with the perturbed model (the model with the
+        perturbed feature sensitivity mapping maps out).
+
+        In this example, the perturbed model therefore includes the extra Gaussian feature, which is also in the
+        simulated dataset.
+
+        The perturbed fit is repeated for every parameter on the sensitivity grid and compared to the base fit. This
+        maps out the sensitivity of every parameter is (e.g. the sensitivity of the normalization of the Gaussian
+        feature).
+
+        The `__init__` constructor can be extended with new inputs which can be used to control how the dataset is
+        fitted, below we include an input `analysis_cls` which is the `Analysis` class used to fit the model to the
+        dataset.
+
+        Parameters
+        ----------
+        analysis_cls
+            The `Analysis` class used to fit the model to the dataset.
+        """
+        self.analysis_cls = analysis_cls
+
+    def __call__(self, dataset, model, paths):
+        """
+        The perturbed fitting function which fits every dataset used for sensitivity mapping with the perturbed model.
+
+        This function receives as input each simulated dataset of the sensitivity map and fits it, in order to
+        quantify how sensitive the model is to the perturbed feature.
+
+        In this example, a full non-linear search is performed to determine how well the model fits the dataset.
+        The `log_evidence` of the fit is returned which acts as the sensitivity map figure of merit.
+
+        Parameters
+        ----------
+        dataset
+            The dataset which is simulated with the perturbed model and which is fitted.
+        model
+            The model instance which is fitted to the dataset, which includes the perturbed feature.
+        paths
+            The `Paths` instance which contains the path to the folder where the results of the fit are written to.
+        """
+
+        search = af.DynestyStatic(
+            paths=paths.for_sub_analysis(analysis_name="[perturbed]"),
+            nlive=50,
+            iterations_per_update=50000,
+        )
+
+        analysis = self.analysis_cls(dataset=dataset)
+
+        return search.fit(model=model, analysis=analysis)
+
 
 """
 We can now combine all of the objects created above and perform sensitivity mapping. The inputs to the `Sensitivity`
 object below are:
 
-- `simulation_instance`: This is an instance of the model used to simulate every dataset that is fitted. In this example it 
-contains an instance of the `gaussian_main` model component.
+- `simulation_instance`: This is an instance of the model used to simulate every dataset that is fitted. In this 
+example it contains an instance of the `gaussian_main` model component.
 
-- `base_model`: This is the simpler model that is fitted to every simulated dataset, which in this example is composed of 
-a single `Gaussian` called the `gaussian_main`.
+- `base_model`: This is the simpler model that is fitted to every simulated dataset, which in this example is composed 
+of a single `Gaussian` called the `gaussian_main`.
 
-- `perturbation_model`: This is the extra model component that alongside the `base_model` is fitted to every simulated 
-dataset, which in this example  is composed of two `Gaussians` called the `gaussian_main` and `gaussian_feature`.
+- `perturb_model`: This is the extra model component that has two roles: (i) based on the sensitivity grid parameters
+it is added to the `simulation_instance` to simulate each dataset ; (ii) it is added to the`base_model` and fitted to 
+every simulated dataset (in this example every `simulation_instance` and `perturb_model` there has two `Gaussians` 
+called the `gaussian_main` and `gaussian_feature`).
 
-- `simulate_function`: This is the function that uses the `simulation_instance` and many instances of the `perturbation_model` 
-to simulate many datasets that are fitted with the `base_model` and `base_model` + `perturbation_model`.
+- `simulate_cls`: This is the function that uses the `simulation_instance` and many instances of the `perturb_model` 
+to simulate many datasets which are fitted with the `base_model` and `base_model` + `perturb_model`.
 
-- `analysis_class`: The wrapper `Analysis` class that passes each simulated dataset to the `Analysis` class that fits 
-the data.
+- `base_fit_cls`: This is the function that fits the `base_model` to every simulated dataset and returns the
+goodness-of-fit of the model to the data.
 
-- `number_of_steps`: The number of steps over which the parameters in the `perturbation_model` are iterated. In this 
+- `perturb_fit_cls`: This is the function that fits the `base_model` + `perturb_model` to every simulated dataset and
+returns the goodness-of-fit of the model to the data.
+
+- `number_of_steps`: The number of steps over which the parameters in the `perturb_model` are iterated. In this 
 example, normalization has a `LogUniformPrior` with lower limit 1e-4 and upper limit 1e2, therefore the `number_of_steps` 
 of 2 wills imulate and fit just 2 datasets where the intensities between 1e-4 and 1e2.
 
 - `number_of_cores`: The number of cores over which the sensitivity mapping is performed, enabling parallel processing
 if set above 1.
 """
-from autofit.non_linear.grid import sensitivity as s
+paths = af.DirectoryPaths(
+    path_prefix=path.join("features"),
+    name="sensitivity_mapping",
+)
 
-sensitivity = s.Sensitivity(
-    search=search,
+sensitivity = af.Sensitivity(
+    paths=paths,
     simulation_instance=simulation_instance,
     base_model=base_model,
-    perturbation_model=perturbation_model,
-    simulate_function=simulate_function,
-    analysis_class=Analysis,
+    perturb_model=perturb_model,
+    simulate_cls=Simulate(),
+    base_fit_cls=BaseFit(analysis_cls=Analysis),
+    perturb_fit_cls=PerturbFit(analysis_cls=Analysis),
     number_of_steps=2,
     number_of_cores=2,
 )
-
 sensitivity_result = sensitivity.run()
 
 """
+__Results__
+
 You should now look at the results of the sensitivity mapping in the folder `output/features/sensitivity_mapping`. 
 
 You will note the following 4 model-fits have been performed:
@@ -316,13 +507,13 @@ You will note the following 4 model-fits have been performed:
  - The `base_model` is fitted to a simulated dataset where the `simulation_instance` and 
  a `perturbation` with `normalization=0.01` are used.
 
- - The `base_model` + `perturbation_model`  is fitted to a simulated dataset where the `simulation_instance` and 
+ - The `base_model` + `perturb_model`  is fitted to a simulated dataset where the `simulation_instance` and 
  a `perturbation` with `normalization=0.01` are used.
 
  - The `base_model` is fitted to a simulated dataset where the `simulation_instance` and 
  a `perturbation` with `normalization=100.0` are used.
 
- - The `base_model` + `perturbation_model`  is fitted to a simulated dataset where the `simulation_instance` and 
+ - The `base_model` + `perturb_model`  is fitted to a simulated dataset where the `simulation_instance` and 
  a `perturbation` with `normalization=100.0` are used.
 
 The fit produced a `sensitivity_result`. 
