@@ -69,7 +69,10 @@ def simulate_dataset_1d_via_gaussian_from(gaussian, dataset_path):
     model_file = path.join(dataset_path, "model.json")
 
     with open(model_file, "w+") as f:
-        json.dump(to_dict(gaussian), f, indent=4)
+        try:
+            json.dump(to_dict(gaussian), f, indent=4)
+        except (TypeError, ValueError):
+            pass
 
 
 def simulate_data_1d_with_kernel_via_gaussian_from(gaussian, dataset_path):
@@ -229,7 +232,10 @@ def simulate_dataset_1d_via_profile_1d_list_from(profile_1d_list, dataset_path):
         model_file = path.join(dataset_path, f"model_{i}.json")
 
         with open(model_file, "w+") as f:
-            json.dump(to_dict(profile), f, indent=4)
+            try:
+                json.dump(to_dict(profile), f, indent=4)
+            except (TypeError, ValueError):
+                pass
 
 
 def simulate_data_1d_with_kernel_via_profile_1d_list_from(
