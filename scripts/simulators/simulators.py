@@ -145,17 +145,34 @@ util.simulate_dataset_1d_via_profile_1d_list_from(
 """
 __Gaussian x1 time__
 """
-dataset_path = path.join("dataset", "example_1d", "gaussian_x1_variable", "time_0")
+dataset_path = path.join("dataset", "example_1d", "gaussian_x1_time", "time_0")
 gaussian = af.ex.Gaussian(centre=40.0, normalization=50.0, sigma=20.0)
 util.simulate_dataset_1d_via_gaussian_from(gaussian=gaussian, dataset_path=dataset_path)
 
-dataset_path = path.join("dataset", "example_1d", "gaussian_x1_variable", "time_1")
+dataset_path = path.join("dataset", "example_1d", "gaussian_x1_time", "time_1")
 gaussian = af.ex.Gaussian(centre=50.0, normalization=50.0, sigma=20.0)
 util.simulate_dataset_1d_via_gaussian_from(gaussian=gaussian, dataset_path=dataset_path)
 
-dataset_path = path.join("dataset", "example_1d", "gaussian_x1_variable", "time_2")
+dataset_path = path.join("dataset", "example_1d", "gaussian_x1_time", "time_2")
 gaussian = af.ex.Gaussian(centre=60.0, normalization=50.0, sigma=20.0)
 util.simulate_dataset_1d_via_gaussian_from(gaussian=gaussian, dataset_path=dataset_path)
+
+
+"""
+__Gaussian x1 time__
+"""
+dataset_path = path.join("dataset", "example_1d", "gaussian_x1_variable", "sigma_0")
+gaussian = af.ex.Gaussian(centre=50.0, normalization=50.0, sigma=10.0)
+util.simulate_dataset_1d_via_gaussian_from(gaussian=gaussian, dataset_path=dataset_path)
+
+dataset_path = path.join("dataset", "example_1d", "gaussian_x1_variable", "sigma_1")
+gaussian = af.ex.Gaussian(centre=50.0, normalization=50.0, sigma=20.0)
+util.simulate_dataset_1d_via_gaussian_from(gaussian=gaussian, dataset_path=dataset_path)
+
+dataset_path = path.join("dataset", "example_1d", "gaussian_x1_variable", "sigma_2")
+gaussian = af.ex.Gaussian(centre=50.0, normalization=50.0, sigma=30.0)
+util.simulate_dataset_1d_via_gaussian_from(gaussian=gaussian, dataset_path=dataset_path)
+
 """
 Finish.
 """
