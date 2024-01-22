@@ -59,7 +59,7 @@ time_list = []
 for time in range(3):
     dataset_name = f"time_{time}"
 
-    dataset_prefix_path = path.join("dataset", "example_1d", "gaussian_time")
+    dataset_prefix_path = path.join("dataset", "example_1d", "gaussian_x1_time")
 
     dataset_path = path.join(dataset_prefix_path, dataset_name)
 
