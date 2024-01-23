@@ -225,26 +225,26 @@ You should see that the highest likelihood and evidence values correspond to run
 centre parameter ran from 60 -> 80 and therefore captured the true value of 70.0.
 """
 print(grid_search_result.physical_centres_lists)
-print(grid_search_result.log_likelihoods_native)
-print(grid_search_result.log_evidences_native)
+print(grid_search_result.log_likelihoods().native)
+print(grid_search_result.log_evidences().native)
 
 """
-We can also access the `best_result` and `best_model`.
+We can also access the `best_samples` and their maximum likelihood instance.
 """
-print(grid_search_result.best_result)
-print(grid_search_result.best_model)
-print(grid_search_result.best_model.gaussian_main.centre)
-print(grid_search_result.best_model.gaussian_main.normalization)
-print(grid_search_result.best_model.gaussian_main.sigma)
-print(grid_search_result.best_model.gaussian_feature.centre)
-print(grid_search_result.best_model.gaussian_feature.normalization)
-print(grid_search_result.best_model.gaussian_feature.sigma)
+print(grid_search_result.best_samples)
+
+instance = grid_search_result.best_samples.instance
+
+print(instance.gaussian_main.centre)
+print(instance.gaussian_main.normalization)
+print(instance.gaussian_main.sigma)
+print(instance.gaussian_feature.centre)
+print(instance.gaussian_feature.normalization)
+print(instance.gaussian_feature.sigma)
 
 """
-By plotting the `best_model` we can confirm the grid search fitted the feature at pixel 70.
+By plotting the `best` instance we can confirm the grid search fitted the feature at pixel 70.
 """
-instance = grid_search_result.best_result.instance
-
 gaussian_main = instance.gaussian_main.model_data_1d_via_xvalues_from(
     xvalues=np.arange(data.shape[0])
 )
