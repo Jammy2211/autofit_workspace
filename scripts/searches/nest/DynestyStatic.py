@@ -112,3 +112,12 @@ plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.show()
 plt.close()
+
+
+print(search.paths.output_path)
+
+from autoconf.dictable import output_to_json, from_json
+
+search = from_json(file_path=search.paths._files_path / "search.json")
+
+print(search.paths.output_path)

@@ -563,7 +563,7 @@ for sample in samples.sample_list:
 
     fwhm_list.append(fwhm)
 
-median_fwhm, upper_fwhm, lower_fwhm = af.marginalize(
+median_fwhm, lower_fwhm, upper_fwhm = af.marginalize(
     parameter_list=fwhm_list, sigma=3.0, weight_list=samples.weight_list
 )
 

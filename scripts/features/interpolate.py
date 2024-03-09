@@ -6,7 +6,7 @@ It is common to fit a model to many similar datasets, where it is anticipated th
 smoothly across the datasets.
 
 For example, the datasets may be taken at different times, where the signal in the data and therefore model parameters
-vary smoothly as a function of time. Alternaitvely, the datasets may be taken at different wavelengths, with the signal
+vary smoothly as a function of time. Alternatively, the datasets may be taken at different wavelengths, with the signal
 varying smoothly as a function of wavelength.
 
 In any of these cases, it may be desireable to fit the datasets one-by-one and then interpolate the results in order

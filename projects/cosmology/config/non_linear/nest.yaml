@@ -1,8 +1,7 @@
 # Configuration files that customize the default behaviour of non-linear searches.
 
-# **PyAutoFit** supports the following nested sampling algorithms:
-
 # - Dynesty: https://github.com/joshspeagle/dynesty / https://dynesty.readthedocs.io/en/latest/index.html
+# - Nautilus https://https://github.com/johannesulf/nautilus / https://nautilus-sampler.readthedocs.io/en/stable/index.html
 # - UltraNest: https://github.com/JohannesBuchner/UltraNest / https://johannesbuchner.github.io/UltraNest/readme.html
 
 # Settings in the [search] and [run] entries are specific to each nested algorithm and should be determined by

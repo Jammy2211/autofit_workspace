@@ -16,9 +16,9 @@
                                     "type": "instance",
                                     "class_path": "autofit.example.model.Gaussian",
                                     "arguments": {
-                                        "sigma": 19.63463872671127,
-                                        "normalization": 49.72889187489627,
-                                        "centre": 39.98318612575531
+                                        "normalization": 49.39860658469913,
+                                        "centre": 40.06649607927556,
+                                        "sigma": 19.61170769855144
                                     }
                                 },
                                 "time": 0
@@ -37,9 +37,9 @@
                                     "type": "instance",
                                     "class_path": "autofit.example.model.Gaussian",
                                     "arguments": {
-                                        "sigma": 19.85102742910385,
-                                        "normalization": 50.03581490065356,
-                                        "centre": 49.71884489059448
+                                        "normalization": 50.06437119907787,
+                                        "centre": 50.30377466483201,
+                                        "sigma": 20.19947611166003
                                     }
                                 },
                                 "time": 1
@@ -58,9 +58,9 @@
                                     "type": "instance",
                                     "class_path": "autofit.example.model.Gaussian",
                                     "arguments": {
-                                        "sigma": 19.94885057210922,
-                                        "normalization": 49.49219164495366,
-                                        "centre": 59.88868474960327
+                                        "normalization": 50.764728883045926,
+                                        "centre": 59.9007313098795,
+                                        "sigma": 20.11398754103806
                                     }
                                 },
                                 "time": 2

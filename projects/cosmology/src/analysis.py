@@ -155,7 +155,7 @@ class Analysis(af.Analysis):
             array=chi_squared_map, title="Chi-Squared Map", name="chi_squared_map"
         )
 
-    def traced_grid_from(self, instance) -> List[np.ndarray]:
+    def traced_grid_2d_from(self, instance) -> List[np.ndarray]:
         """
         This function performs ray-tracing calculations describing how light is gravitationally lensed
         on its path through the Universe by a foreground galaxy.
@@ -211,7 +211,7 @@ class Analysis(af.Analysis):
         main thing to note is that it allows us to create a model lensed image of a strong lens model.
 
         Nevertheless, if you are curious, it simply computes deflected (y,x) Cartesian grids by performing ray-tracing
-        using the `grids_via_ray_tracing_from` function and uses each galaxy's light profile, based on where these
+        using the `grids_via_tracer_from` function and uses each galaxy's light profile, based on where these
         deflected grids fall on the image, to evaluate the appearance of each galaxy. This is summed to create the
         overall image of the strong lens system.
 
@@ -234,7 +234,7 @@ class Analysis(af.Analysis):
         lens_image = lens.image_from_grid(grid=self.grid)
 
         source = instance.galaxies[1]
-        traced_grid = self.traced_grid_from(instance=instance)
+        traced_grid = self.traced_grid_2d_from(instance=instance)
         source_image = source.image_from_grid(grid=traced_grid)
 
         overall_image = lens_image + source_image
