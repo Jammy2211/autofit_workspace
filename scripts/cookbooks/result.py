@@ -16,6 +16,8 @@ __Contents__
  - Instances: Returning instances of the model corresponding to a particular sample (e.g. the maximum log likelihood).
  - Posterior / PDF: The median PDF model instance and PDF vectors of all model parameters via 1D marginalization.
  - Errors: The errors on every parameter estimated from the PDF, computed via marginalized 1D PDFs at an input sigma.
+ - Samples Summary: A summary of the samples of the non-linear search (e.g. the maximum log likelihood model) which can
+   be faster to load than the full set of samples.
  - Sample Instance: The model instance of any accepted sample.
  - Search Plots: Plots of the non-linear search, for example a corner plot or 1D PDF of every parameter.
  - Maximum Likelihood: The maximum log likelihood model value.
@@ -65,6 +67,7 @@ model = af.Model(af.ex.Gaussian)
 analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
 search = af.Emcee(
+    name="cookbook_result",
     nwalkers=30,
     nsteps=1000,
     number_of_cores=1,
@@ -223,6 +226,18 @@ print("Normalization = ", instance_lower_values.normalization)
 print("Sigma = ", instance_lower_values.sigma, "\n")
 
 """
+__Samples Summary__
+
+The samples summary contains a subset of results access via the `Samples`, for example the maximum likelihood model
+and parameter error estimates.
+
+Using the samples method above can be slow, as the quantities have to be computed from all non-linear search samples
+(e.g. computing errors requires that all samples are marginalized over). This information is stored directly in the
+samples summary and can therefore be accessed instantly.
+"""
+print(samples.summary().max_log_likelihood_sample)
+
+"""
 __Sample Instance__
 
 A non-linear search retains every model that is accepted during the model-fit.
@@ -301,7 +316,7 @@ print(result.info)
 """
 Result instances again use the Python classes used to compose the model. 
 
-However, because our fit uses a `Collection` the `instance` has attribues named according to the names given to the
+However, because our fit uses a `Collection` the `instance` has attributes named according to the names given to the
 `Collection`, which above were `gaussian` and `exponential`.
 
 For complex models, with a large number of model components and parameters, this offers a readable API to interpret
@@ -386,27 +401,98 @@ latex = af.text.Samples.latex(
 print(latex)
 
 """
-__Derived Errors (Advanced)__
+__Derived Quantities__
 
-Computing the errors of a quantity like the `sigma` of the Gaussian is simple, because it is sampled by the non-linear 
-search. Thus, to get their errors above we used the `Samples` object to simply marginalize over all over parameters 
-via the 1D Probability Density Function (PDF).
+The parameters `centre`, `normalization` and `sigma` are the model parameters of the `Gaussian`. They are sampled
+directly by the non-linear search and we can therefore use the `Samples` object to easily determine their values and 
+errors.
 
-Computing errors on derived quantities is more tricky, because they are not sampled directly by the non-linear search. 
-For example, what if we want the error on the full width half maximum (FWHM) of the Gaussian? In order to do this
-we need to create the PDF of that derived quantity, which we can then marginalize over using the same function we
-use to marginalize model parameters.
+Derived quantities (also called latent variables) are those which are not sampled directly by the non-linear search, 
+but one may still wish to know their values and errors after the fit is complete. For example, what if we want the 
+error on the full width half maximum (FWHM) of the Gaussian? 
 
-Below, we compute the FWHM of every accepted model sampled by the non-linear search and use this determine the PDF 
-of the FWHM. When combining the FWHM's we weight each value by its `weight`. For Emcee, an MCMC algorithm, the
-weight of every sample is 1, but weights may take different values for other non-linear searches.
+This is achieved by adding each derived quantity to the `Model` objects with the `@derived_quantity` decorator, with
+an example for the `Gaussian` model component given below:
+"""
+
+
+class Gaussian:
+    def __init__(
+        self,
+        centre: float = 0.0,  # <- PyAutoFit recognises these constructor arguments
+        normalization: float = 0.1,  # <- are the Gaussian`s model parameters.
+        sigma: float = 0.01,
+    ):
+        """
+        Represents a 1D `Gaussian` profile, which may be treated as a model-component of PyAutoFit the
+        parameters of which are fitted for by a non-linear search.
+
+        Parameters
+        ----------
+        centre
+            The x coordinate of the profile centre.
+        normalization
+            Overall normalization normalisation of the `Gaussian` profile.
+        sigma
+            The sigma value controlling the size of the Gaussian.
+        """
+        self.centre = centre
+        self.normalization = normalization
+        self.sigma = sigma
+
+    @af.derived_quantity
+    def fwhm(self):
+        return 2.0 * np.sqrt(2.0 * np.log(2.0)) * self.sigma
+
+
+"""
+The fit performed above used a `Gaussian` object a `fwhm` `derived_property`. 
+
+This leads to a number of noteworthy outputs:
+
+ - A `model.derived` file is output to the results folder, which includes the value and error of all derived quantities 
+   based on the non-linear search samples (in this example only the `fwhm`).
+   
+ - A `derived_quantities.csv` is output which lists every accepted sample's value of every derived quantity, which is again
+   analogous to the `samples.csv` file (in this example only the `fwhm`). 
+     
+ - A `derived_summary.json` is output which acts analogously to `samples_summary.json` but for the derived quantities 
+   of the model (in this example only the `fwhm`).
+
+Derived quantities are also accessible via the `Samples` object, following a similar API to the model parameters:
+"""
+instance = samples.max_log_likelihood()
+
+print(f"Max Likelihood FWHM: {instance.fwhm}")
+
+instance = samples.median_pdf()
+
+print(f"Median PDF FWHM {instance.fwhm}")
+
+"""
+The summary of the derived quantities can be output using the `derived_quantities_summary_dict` method:
+"""
+print(samples.derived_quantities_summary_dict())
+
+"""
+__Derived Errors Manual (Advanced)__
+
+The derived quantities decorator above provides a simple interface for computing the errors of a derived quantity and
+ensuring all results are easily inspected in the output results folder.
+
+However, you may wish to compute the errors of a derived quantity manually. For example, if it is a quantity that 
+you did not decorate before performing the fit, or if it is computationally expensive to compute and you only want
+to compute it specific circumstances.
+
+Below, we create the PDF of the derived quantity, the FWHM, manually, which we marginalize over using the same function 
+we use to marginalize model parameters. We compute the FWHM of every accepted model sampled by the non-linear search 
+and use this determine the PDF of the FWHM. 
+
+When combining the FWHM's we weight each value by its `weight`. For Emcee, an MCMC algorithm, the weight of every 
+sample is 1, but weights may take different values for other non-linear searches.
 
 In order to pass these samples to the function `marginalize`, which marginalizes over the PDF of the FWHM to compute 
 its error, we also pass the weight list of the samples.
-
-(Computing the error on the FWHM could be done in much simpler ways than creating its PDF from the list of every
-sample. We chose this example for simplicity, in order to show this functionality, which can easily be extended to more
-complicated derived quantities.)
 """
 fwhm_list = []
 
@@ -419,11 +505,40 @@ for sample in samples.sample_list:
 
     fwhm_list.append(fwhm)
 
-median_fwhm, upper_fwhm, lower_fwhm = af.marginalize(
+median_fwhm, lower_fwhm, upper_fwhm = af.marginalize(
     parameter_list=fwhm_list, sigma=3.0, weight_list=samples.weight_list
 )
 
 print(f"FWHM = {median_fwhm} ({upper_fwhm} {lower_fwhm}")
+
+"""
+The calculation above could be computationally expensive, if there are many samples and the derived quantity is
+slow to compute.
+
+An alternative approach, which will provide comparable accuracy provided enough draws are used, is to sample 
+points randomy from the PDF of the model and use these to compute the derived quantity.
+
+Draws are from the PDF of the model, so the weights of the samples are accounted for and we therefore do not
+pass them to the `marginalize` function (it essentially treats all samples as having equal weight).
+"""
+random_draws = 50
+
+fwhm_list = []
+
+for i in range(random_draws):
+    instance = samples.draw_randomly_via_pdf()
+
+    sigma = instance.gaussian.sigma
+
+    fwhm = 2 * np.sqrt(2 * np.log(2)) * sigma
+
+    fwhm_list.append(fwhm)
+
+median_fwhm, lower_fwhm, upper_fwhm = af.marginalize(
+    parameter_list=fwhm_list, sigma=3.0, weight_list=samples.weight_list
+)
+
+print(f"fwhm = {median_fwhm} ({upper_fwhm} {lower_fwhm}")
 
 """
 __Result Extensions (Advanced)__

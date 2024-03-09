@@ -81,10 +81,11 @@ search = af.Nautilus(
     vectorized=False,  # If True, the likelihood function can receive multiple input sets at once.
     seed=None,  # Seed for random number generation used for reproducible results accross different runs.
     f_live=0.01,  # Maximum fraction of the evidence contained in the live set before building the initial shells terminates.
-    n_shell=None,  # Minimum number of points in each shell. The algorithm will sample from the shells until this is reached. Default is the batch size of the sampler which is 100 unless otherwise specified.
+    n_shell=1,  # Minimum number of points in each shell. The algorithm will sample from the shells until this is reached. Default is 1.
     n_eff=500,  # Minimum effective sample size. The algorithm will sample from the shells until this is reached. Default is 10000.
     discard_exploration=False,  # Whether to discard points drawn in the exploration phase. This is required for a fully unbiased posterior and evidence estimate.
     verbose=True,  # Whether to print information about the run.
+    n_like_max=np.inf,  # Maximum number of likelihood evaluations. Regardless of progress, the sampler will stop if this value is reached. Default is infinity.
 )
 
 result = search.fit(model=model, analysis=analysis)
