@@ -1,9 +1,9 @@
 """
-Plots: NautilusPlotter
+Plots: NestPlotter
 ======================
 
 This example illustrates how to plot visualization summarizing the results of a nautilus non-linear search using
-a `ZeusPlotter`.
+a `MCMCPlotter`.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -33,7 +33,7 @@ analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
 search = af.Nautilus(
     path_prefix="plot",
-    name="NautilusPlotter",
+    name="NestPlotter",
     n_live=100,  # Number of so-called live points. New bounds are constructed so that they encompass the live points.
 )
 
@@ -42,7 +42,7 @@ result = search.fit(model=model, analysis=analysis)
 samples = result.samples
 
 """
-We now pass the samples to a `NautilusPlotter` which will allow us to use nautilus's in-built plotting libraries to 
+We now pass the samples to a `NestPlotter` which will allow us to use nautilus's in-built plotting libraries to 
 make figures.
 
 The nautilus readthedocs describes fully all of the methods used below 
@@ -61,15 +61,14 @@ we:
 There are other `_kwargs` inputs we pass as None, you should check out the Nautilus docs if you need to customize your
 figure.
 """
-search_plotter = aplt.NautilusPlotter(
+plotter = aplt.NestPlotter(
     samples=samples,
-    #   output=aplt.Output(path=".", filename="cornerplot", format="png"),
 )
 
 """
-The `cornerplot` method produces a triangle of 1D and 2D PDF's of every parameter in the model fit.
+The `corner` method produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
 """
-search_plotter.cornerplot(
+plotter.corner_cornerpy(
     panelsize=3.5,
     yticksize=16,
     xticksize=16,

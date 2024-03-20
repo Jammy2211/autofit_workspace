@@ -3,13 +3,10 @@ The ``search`` folder contains example scripts which plot the results of differe
 Files
 -----
 
-- ``DynestyPlotter.py``: Plots results of a Dynesty fit (e.g. cornerplot).
-- ``EmceePlotter.py``: Plots results of an Emcee fit (e.g. cornerplot).
+- ``DynestyPlotter.py``: Plots results of a Dynesty fit (e.g. corner).
+- ``EmceePlotter.py``: Plots results of an Emcee fit (e.g. corner).
 - ``PySwarmsPlotter.py``: Plots results of a PySwarms fit (e.g. contour).
-- ``UltraNest.py``: Plots results of an UltraNest fit (e.g. cornerplot).
-- ``ZeusPlotter.py``: Plots results of a Zeus fit (e.g. cornerplot).
+- ``UltraNest.py``: Plots results of an UltraNest fit (e.g. corner).
+- ``ZeusPlotter.py``: Plots results of a Zeus fit (e.g. corner).
 
 - ``GetDist.py``: Plot results of any MCMC / nested sampler non-linear search using the library GetDist.
-
-- ``analysis.py``: Not an example, an ``Analysis`` class used in the examples.
-- ``model.py``: Not an example, defines the model component used in the examples.

@@ -1,0 +1,15 @@
+{
+    "type": "instance",
+    "class_path": "autofit.example.model.Gaussian",
+    "arguments": {
+        "normalization": 1.0,
+        "centre": 60.0,
+        "sigma": {
+            "type": "ndarray",
+            "array": [
+                13.890046734904212
+            ],
+            "dtype": "float64"
+        }
+    }
+}

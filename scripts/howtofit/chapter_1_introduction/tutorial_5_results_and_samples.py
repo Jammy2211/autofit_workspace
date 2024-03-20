@@ -479,10 +479,10 @@ print("Sigma = ", values_at_lower_sigma_instance.gaussian.sigma, "\n")
 __PDF__
 
 The Probability Density Functions (PDF's) of the results can be plotted using the Emcee's visualization 
-tool `corner.py`, which is wrapped via the `EmceePlotter` object.
+tool `corner.py`, which is wrapped via the `MCMCPlotter` object.
 """
-search_plotter = aplt.EmceePlotter(samples=result.samples)
-search_plotter.corner()
+plotter = aplt.MCMCPlotter(samples=result.samples)
+plotter.corner_cornerpy()
 
 """
 __Other Results__

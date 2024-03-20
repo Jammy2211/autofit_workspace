@@ -1,9 +1,9 @@
 """
-Plots: PySwarmsPlotter
+Plots: OptimizePlotter
 ======================
 
 This example illustrates how to plot visualization summarizing the results of a pyswarms non-linear search using
-a `PySwarmsPlotter`.
+a `OptimizePlotter`.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -35,7 +35,7 @@ model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=30.0)
 analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
 search = af.PySwarmsGlobal(
-    path_prefix=path.join("plot"), name="PySwarmsPlotter", n_particles=50, iters=10
+    path_prefix=path.join("plot"), name="OptimizePlotter", n_particles=50, iters=10
 )
 
 result = search.fit(model=model, analysis=analysis)
@@ -43,7 +43,7 @@ result = search.fit(model=model, analysis=analysis)
 samples = result.samples
 
 """
-We now pass the samples to a `PySwarmsPlotter` which will allow us to use pyswarms's in-built plotting libraries to 
+We now pass the samples to a `OptimizePlotter` which will allow us to use pyswarms's in-built plotting libraries to 
 make figures.
 
 The pyswarms readthedocs describes fully all of the methods used below 
@@ -53,35 +53,7 @@ The pyswarms readthedocs describes fully all of the methods used below
 In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are 
 described in the API docs.
 """
-pyswarms_plotter = aplt.PySwarmsPlotter(samples=samples)
-
-"""
-The `contour` method shows a 2D projection of the particle trajectories.
-"""
-pyswarms_plotter.contour(
-    canvas=None,
-    title="trajectories",
-    mark=None,
-    designer=None,
-    mesher=None,
-    animator=None,
-)
-
-
-"""
-The `cost history` shows in 1D the evolution of each parameters estimated highest likelihood.
-"""
-pyswarms_plotter.cost_history(ax=None, title="Cost History", designer=None)
-
-"""
-The `trajectories` method shows the likelihood of every parameter as a function of parameter value.
-"""
-pyswarms_plotter.trajectories()
-
-"""
-The `time_series` method shows the likelihood of every parameter as a function of step number.
-"""
-pyswarms_plotter.time_series()
+plotter = aplt.OptimizePlotter(samples=samples)
 
 """
 Finish.

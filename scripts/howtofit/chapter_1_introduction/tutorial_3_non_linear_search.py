@@ -388,14 +388,14 @@ print(result.samples.log_likelihood_list[10])
 
 """
 The Probability Density Functions (PDF's) of the results can be plotted using the Emcee's visualization 
-tool `corner.py`, which is wrapped via the `EmceePlotter` object.
+tool `corner.py`, which is wrapped via the `MCMCPlotter` object.
 
 The PDF shows the 1D and 2D probabilities estimated for every parameter after the model-fit. The two dimensional 
 figures can show the degeneracies between different parameters, for example how increasing $\sigma$ and decreasing 
 the normalization $I$ can lead to similar likelihoods and probabilities.
 """
-search_plotter = aplt.EmceePlotter(samples=result.samples)
-search_plotter.corner()
+plotter = aplt.MCMCPlotter(samples=result.samples)
+plotter.corner_cornerpy()
 
 """
 A more detailed description of the `Result` object will be given in tutorial 5.

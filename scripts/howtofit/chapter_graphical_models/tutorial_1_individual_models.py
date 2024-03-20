@@ -210,8 +210,8 @@ We can show this by plotting the 1D and 2D PDF's of each model fit
 """
 
 for samples in samples_list:
-    search_plotter = aplt.DynestyPlotter(samples=samples)
-    search_plotter.cornerplot()
+    plotter = aplt.NestPlotter(samples=samples)
+    plotter.corner_cornerpy()
 
 """
 We can also print the values of each centre estimate, including their estimates at 3.0 sigma.

@@ -219,8 +219,8 @@ two shared parameters we are trying to estimate, which are degenerate with one a
 We can see this by inspecting the probability distribution function (PDF) of the fit, placing particular focus on the 
 2D degeneracy between the Gaussians centres. 
 """
-search_plotter = aplt.DynestyPlotter(samples=result_list[0].samples)
-search_plotter.cornerplot()
+plotter = aplt.NestPlotter(samples=result_list[0].samples)
+plotter.corner_cornerpy()
 
 """
 The problem is that the simple approach of taking a weighted average does not capture the curved banana-like shape
