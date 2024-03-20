@@ -109,3 +109,30 @@ plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.show()
 plt.close()
+
+"""
+__Search Internal__
+
+The result also contains the internal representation of the non-linear search.
+
+The internal representation of the non-linear search ensures that all sampling info is available in its native form.
+This can be passed to functions which take it as input, for example if the sampling package has bespoke visualization 
+functions.
+
+For `PySwarms`, this is an instance of the `Sampler` object (`from pyswarms import LocalBestPSO`).
+"""
+search_internal = result.search_internal
+
+print(search_internal)
+
+"""
+The internal search is by default not saved to hard-disk, because it can often take up quite a lot of hard-disk space
+(significantly more than standard output files).
+
+This means that the search internal will only be available the first time you run the search. If you rerun the code 
+and the search is bypassed because the results already exist on hard-disk, the search internal will not be available.
+
+If you are frequently using the search internal you can have it saved to hard-disk by changing the `search_internal`
+setting in `output.yaml` to `True`. The result will then have the search internal available as an attribute, 
+irrespective of whether the search is re-run or not.
+"""

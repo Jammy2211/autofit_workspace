@@ -1,9 +1,9 @@
 """
-Plots: EmceePlotter
+Plots: MCMCPlotter
 ===================
 
 This example illustrates how to plot visualization summarizing the results of a emcee non-linear search using
-a `EmceePlotter`.
+a `MCMCPlotter`.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -35,13 +35,13 @@ model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=30.0)
 analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
 search = af.Emcee(
-    path_prefix=path.join("plot"), name="EmceePlotter", nwalkers=100, nsteps=500
+    path_prefix=path.join("plot"), name="MCMCPlotter", nwalkers=100, nsteps=500
 )
 
 result = search.fit(model=model, analysis=analysis)
 
 """
-We now pass the samples to a `EmceePlotter` which will allow us to use emcee's in-built plotting libraries to 
+We now pass the samples to a `MCMCPlotter` which will allow us to use emcee's in-built plotting libraries to 
 make figures.
 
 The emcee readthedocs describes fully all of the methods used below 
@@ -57,12 +57,12 @@ described in the API docs.
 """
 samples = result.samples
 
-search_plotter = aplt.EmceePlotter(samples=samples)
+plotter = aplt.MCMCPlotter(samples=samples)
 
 """
-The `corner` method produces a triangle of 1D and 2D PDF's of every parameter in the model fit.
+The `corner` method produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
 """
-search_plotter.corner(
+plotter.corner_cornerpy(
     bins=20,
     range=None,
     color="k",
@@ -94,23 +94,6 @@ search_plotter.corner(
     divergences_kwargs=None,
     labeller=None,
 )
-
-"""
-The `trajectories` method shows the likelihood of every parameter as a function of parameter value, colored by every
-individual walker.
-"""
-search_plotter.trajectories()
-
-"""
-The `likelihood_series` method shows the likelihood as a function of step number, colored by every individual walker.
-"""
-search_plotter.time_series()
-
-"""
-The `time_series` method shows the likelihood of every parameter as a function of step number, colored by every
-individual walker.
-"""
-search_plotter.likelihood_series()
 
 """
 Finish.

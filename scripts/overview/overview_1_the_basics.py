@@ -415,10 +415,10 @@ This includes parameter samples, log likelihood values, posterior information an
 algorithm (e.g. the internal dynesty samples).
 
 This is described fully in the results overview, below we use the samples to plot the probability density function
-cornerplot of the results.
+corner of the results.
 """
-search_plotter = aplt.DynestyPlotter(samples=result.samples)
-search_plotter.cornerplot()
+plotter = aplt.NestPlotter(samples=result.samples)
+plotter.corner_cornerpy()
 
 """
 __Extending Models__
