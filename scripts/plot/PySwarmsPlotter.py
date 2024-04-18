@@ -11,6 +11,7 @@ a `OptimizePlotter`.
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
 
+import matplotlib.pyplot as plt
 from os import path
 
 import autofit as af
@@ -43,6 +44,18 @@ result = search.fit(model=model, analysis=analysis)
 samples = result.samples
 
 """
+__Notation__
+
+Plot are labeled with short hand parameter names (e.g. the `centre` parameters are plotted using an `x`). 
+
+The mappings of every parameter to its shorthand symbol for plots is specified in the `config/notation.yaml` file 
+and can be customized.
+
+Each label also has a superscript corresponding to the model component the parameter originates from. For example,
+Gaussians are given the superscript `g`. This can also be customized in the `config/notation.yaml` file.
+
+__Plotting__
+
 We now pass the samples to a `OptimizePlotter` which will allow us to use pyswarms's in-built plotting libraries to 
 make figures.
 
@@ -54,6 +67,44 @@ In all the examples below, we use the `kwargs` of this function to pass in any o
 described in the API docs.
 """
 plotter = aplt.OptimizePlotter(samples=samples)
+
+"""
+__Search Specific Visualization__
+
+PySwarms has bespoke in-built visualization tools that can be used to plot its results.
+
+The first time you run a search, the `search_internal` attribute will be available because it is passed ot the
+result via memory. 
+
+If you rerun the fit on a completed result, it will not be available in memory, and therefore
+will be loaded from the `files/search_internal` folder. The `search_internal` entry of the `output.yaml` must be true 
+for this to be possible.
+"""
+search_internal = result.search_internal
+
+"""
+The `contour` method shows a 2D projection of the particle trajectories.
+"""
+from pyswarms.utils import plotters
+
+plotters.plot_contour(
+    pos_history=search_internal,
+    canvas=None,
+    title="Trajectories",
+    mark=None,
+    designer=None,
+    mesher=None,
+    animator=None,
+)
+plt.show()
+
+plotters.plot_cost_history(
+    cost_history=search_internal.cost_history,
+    ax=None,
+    title="Cost History",
+    designer=None
+)
+plt.show()
 
 """
 Finish.

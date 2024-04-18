@@ -6,7 +6,7 @@ This cookbook illustrates how to fit multiple datasets simultaneously, where eac
 `Analysis` class.
 
 The `Analysis` classes are summed together to give an overall log likelihood function that is the sum of the
-individual log likelihood functions, which is sampled by the non-linear search.
+individual log likelihood functions, which a single model is fitted to via non-linear search.
 
 If one has multiple observations of the same signal, it is often desirable to fit them simultaneously. This ensures
 that better constraints are placed on the model, as the full amount of information in the datasets is used.
