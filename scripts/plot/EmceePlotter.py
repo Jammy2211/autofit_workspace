@@ -11,6 +11,7 @@ a `MCMCPlotter`.
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
 
+import matplotlib.pyplot as plt
 from os import path
 
 import autofit as af
@@ -41,6 +42,18 @@ search = af.Emcee(
 result = search.fit(model=model, analysis=analysis)
 
 """
+__Notation__
+
+Plot are labeled with short hand parameter names (e.g. the `centre` parameters are plotted using an `x`). 
+
+The mappings of every parameter to its shorthand symbol for plots is specified in the `config/notation.yaml` file 
+and can be customized.
+
+Each label also has a superscript corresponding to the model component the parameter originates from. For example,
+Gaussians are given the superscript `g`. This can also be customized in the `config/notation.yaml` file.
+
+__Plotting__
+
 We now pass the samples to a `MCMCPlotter` which will allow us to use emcee's in-built plotting libraries to 
 make figures.
 
@@ -94,6 +107,67 @@ plotter.corner_cornerpy(
     divergences_kwargs=None,
     labeller=None,
 )
+
+"""
+__Search Specific Visualization__
+
+The internal sampler can be used to plot the results of the non-linear search. 
+
+We do this using the `search_internal` attribute which contains the sampler in its native form.
+
+The first time you run a search, the `search_internal` attribute will be available because it is passed ot the
+result via memory. 
+
+If you rerun the fit on a completed result, it will not be available in memory, and therefore
+will be loaded from the `files/search_internal` folder. The `search_internal` entry of the `output.yaml` must be true 
+for this to be possible.
+"""
+search_internal = result.search_internal
+
+"""
+The method below shows a 2D projection of the walker trajectories.
+"""
+fig, axes = plt.subplots(result.model.prior_count, figsize=(10, 7))
+
+for i in range(result.model.prior_count):
+
+    for walker_index in range(search_internal.get_log_prob().shape[1]):
+        ax = axes[i]
+        ax.plot(search_internal.get_chain()[:, walker_index, i], search_internal.get_log_prob()[:, walker_index], alpha=0.3)
+
+    ax.set_ylabel("Log Likelihood")
+    ax.set_xlabel(result.model.parameter_labels_with_superscripts_latex[i])
+
+plt.show()
+
+"""
+This method shows the likelihood as a series of steps.
+"""
+
+fig, axes = plt.subplots(1, figsize=(10, 7))
+
+for walker_index in range(search_internal.get_log_prob().shape[1]):
+
+    axes.plot(search_internal.get_log_prob()[:, walker_index], alpha=0.3)
+
+axes.set_ylabel("Log Likelihood")
+axes.set_xlabel("step number")
+
+plt.show()
+
+"""
+This method shows the parameter values of every walker at every step.
+"""
+fig, axes = plt.subplots(result.samples.model.prior_count, figsize=(10, 7), sharex=True)
+
+for i in range(result.samples.model.prior_count):
+    ax = axes[i]
+    ax.plot(search_internal.get_chain()[:, :, i], alpha=0.3)
+    ax.set_ylabel(result.model.parameter_labels_with_superscripts_latex[i])
+
+axes[-1].set_xlabel("step number")
+
+plt.show()
 
 """
 Finish.
