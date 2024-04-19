@@ -130,10 +130,13 @@ The method below shows a 2D projection of the walker trajectories.
 fig, axes = plt.subplots(result.model.prior_count, figsize=(10, 7))
 
 for i in range(result.model.prior_count):
-
     for walker_index in range(search_internal.get_log_prob().shape[1]):
         ax = axes[i]
-        ax.plot(search_internal.get_chain()[:, walker_index, i], search_internal.get_log_prob()[:, walker_index], alpha=0.3)
+        ax.plot(
+            search_internal.get_chain()[:, walker_index, i],
+            search_internal.get_log_prob()[:, walker_index],
+            alpha=0.3,
+        )
 
     ax.set_ylabel("Log Likelihood")
     ax.set_xlabel(result.model.parameter_labels_with_superscripts_latex[i])
@@ -147,7 +150,6 @@ This method shows the likelihood as a series of steps.
 fig, axes = plt.subplots(1, figsize=(10, 7))
 
 for walker_index in range(search_internal.get_log_prob().shape[1]):
-
     axes.plot(search_internal.get_log_prob()[:, walker_index], alpha=0.3)
 
 axes.set_ylabel("Log Likelihood")

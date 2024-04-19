@@ -102,7 +102,7 @@ plotters.plot_cost_history(
     cost_history=search_internal.cost_history,
     ax=None,
     title="Cost History",
-    designer=None
+    designer=None,
 )
 plt.show()
 

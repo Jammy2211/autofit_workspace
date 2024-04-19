@@ -1,5 +1,10 @@
 The ``searches`` folder contains example scripts which fit a model using the different non-linear searches supported by **PyAutoFit**:
 
+Files
+-----
+
+- ``start_point.py``: Set the start-point of certain parameters in a model-fit.
+
 Folders
 -------
 
