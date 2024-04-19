@@ -198,13 +198,12 @@ This uses the maximum log likelihood model of the model-fit inferred so far.
 Visualization of the results of the search, such as the corner plot of what is called the "Probability Density 
 Function", are also automatically output during the model-fit on the fly.
 """
-class Visualizer(af.Visualizer):
 
+
+class Visualizer(af.Visualizer):
     @staticmethod
     def visualize_before_fit(
-        analysis,
-        paths: af.DirectoryPaths,
-        model: af.AbstractPriorModel
+        analysis, paths: af.DirectoryPaths, model: af.AbstractPriorModel
     ):
         """
         Before a model-fit, the `visualize_before_fit` method is called to perform visualization.
@@ -239,12 +238,7 @@ class Visualizer(af.Visualizer):
         plt.clf()
 
     @staticmethod
-    def visualize(
-        analysis,
-        paths: af.DirectoryPaths,
-        instance,
-        during_analysis
-    ):
+    def visualize(analysis, paths: af.DirectoryPaths, instance, during_analysis):
         """
         During a model-fit, the `visualize` method is called throughout the non-linear search.
 
@@ -298,10 +292,12 @@ class Visualizer(af.Visualizer):
         plt.savefig(path.join(paths.image_path, f"model_fit.png"))
         plt.clf()
 
+
 """
 The `Analysis` class is defined following the same API as before, but now with its `Visualizer` class attribute
 overwritten with the `Visualizer` class above.
 """
+
 
 class Analysis(af.Analysis):
 
@@ -313,6 +309,7 @@ class Analysis(af.Analysis):
 
     It has been extended with visualize methods that output visuals specific to the fitting of `1D` data.
     """
+
     Visualizer = Visualizer
 
     def __init__(self, data, noise_map):
@@ -339,6 +336,7 @@ class Analysis(af.Analysis):
 
         return log_likelihood
 
+
 """
 __Custom Result__
 
@@ -358,8 +356,9 @@ In other examples, this quantity has been manually computed after the model-fit 
 The custom result API allows us to do this. First, we define a custom `Result` class, which includes the property
 `max_log_likelihood_model_data_1d`.
 """
-class ResultExample(af.Result):
 
+
+class ResultExample(af.Result):
     @property
     def max_log_likelihood_model_data_1d(self) -> np.ndarray:
         """
@@ -372,6 +371,7 @@ class ResultExample(af.Result):
 
         return self.instance.model_data_1d_via_xvalues_from(instance=xvalues)
 
+
 """
 The custom result has access to the analysis class, meaning that we can use any of its methods or properties to 
 compute custom result properties.
@@ -379,11 +379,14 @@ compute custom result properties.
 To make it so that the `ResultExample` object above is returned by the search we overwrite the `Result` class attribute 
 of the `Analysis` and define a `make_result` object describing what we want it to contain:
 """
+
+
 class Analysis(af.Analysis):
 
     """
     This overwrite means the `ResultExample` class is returned after the model-fit.
     """
+
     Result = ResultExample
 
     def __init__(self, data, noise_map):
@@ -471,8 +474,9 @@ class Analysis(af.Analysis):
             paths=paths,
             samples=samples,
             search_internal=search_internal,
-            analysis=self
+            analysis=self,
         )
+
 
 """
 For the sake of brevity, we do not run the code below, but the following code would work:
@@ -495,6 +499,7 @@ the `samples.csv` file.
 There may also be a `latent.results` and `latent_summary.json` files output. The `output.yaml` config file contains
 settings customizing what files are output and how often.
 """
+
 
 class Analysis(af.Analysis):
     def __init__(self, data, noise_map):
@@ -548,9 +553,8 @@ class Analysis(af.Analysis):
         A dictionary mapping every latent variable name to its value.
 
         """
-        return {
-            "fwhm": instance.fwhm
-        }
+        return {"fwhm": instance.fwhm}
+
 
 """
 Outputting latent variables manually after a fit is complete is simple, just call 

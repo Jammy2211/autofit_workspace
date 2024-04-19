@@ -52,6 +52,7 @@ If any code in this script is unclear, refer to the `modeling/start_here.ipynb` 
 import matplotlib.pyplot as plt
 from os import path
 import autofit as af
+
 """
 __Data__
 
@@ -110,10 +111,7 @@ For all parameters where the start-point is not specified (in this case the `nor
 parameter values are drawn randomly from the prior when determining the initial locations of the parameters.
 """
 initializer = af.SpecificRangeInitializer(
-    {
-        model.centre: (49.0, 51.0),
-        model.sigma: (9.0, 100.0)
-    }
+    {model.centre: (49.0, 51.0), model.sigma: (9.0, 100.0)}
 )
 
 """

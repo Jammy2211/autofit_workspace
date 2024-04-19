@@ -100,4 +100,3 @@ __Plots__
 
 UltraNest example plots are not shown explicitly below, so checkout their docs for examples!
 """
-
