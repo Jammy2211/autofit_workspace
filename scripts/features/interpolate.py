@@ -9,8 +9,8 @@ For example, the datasets may be taken at different times, where the signal in t
 vary smoothly as a function of time. Alternatively, the datasets may be taken at different wavelengths, with the signal
 varying smoothly as a function of wavelength.
 
-In any of these cases, it may be desireable to fit the datasets one-by-one and then interpolate the results in order
-to determine the most likely model parameters at any point in time (or at any wavelength).
+It may be desirable to fit the datasets one-by-one and then interpolate the results in order to determine the most
+likely model parameters at any point in time (or at any wavelength).
 
 This example illustrates model interpolation functionality in **PyAutoFit** using the example of fitting 3 noisy
 1D Gaussians, where these data are assumed to have been taken at 3 different times. The `centre` of each `Gaussian`
