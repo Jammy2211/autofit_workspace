@@ -10,7 +10,7 @@ because the dataset being fitted is not of a sufficient quality for the more com
 mapping addresses what quality of data would be needed for the more complex model to be favoured.
 
 In order to do this, sensitivity mapping involves us writing a function that uses the model(s) to simulate a dataset.
-We then use this function to simulate many datasets, for many different models, and fit each dataset to quantify
+We then use this function to simulate many datasets, for different models, and fit each dataset to quantify
 how much the change in the model led to a measurable change in the data. This is called computing the sensitivity.
 
 How we compute the sensitivity is chosen by us, the user. In this example, we will perform multiple model-fits
