@@ -474,68 +474,34 @@ Derived quantities (also called latent variables) are those which are not sample
 but one may still wish to know their values and errors after the fit is complete. For example, what if we want the 
 error on the full width half maximum (FWHM) of the Gaussian? 
 
-This is achieved by adding each derived quantity to the `Model` objects with the `@derived_quantity` decorator, with
-an example for the `Gaussian` model component given below:
-"""
+This is achieved by adding them to the `compute_latent_variables` method of the `Analysis` class, which is called
+after the non-linear search has completed. The analysis cookbook illustrates how to do this.
 
-
-class Gaussian:
-    def __init__(
-        self,
-        centre: float = 0.0,  # <- PyAutoFit recognises these constructor arguments
-        normalization: float = 0.1,  # <- are the Gaussian`s model parameters.
-        sigma: float = 0.01,
-    ):
-        """
-        Represents a 1D `Gaussian` profile, which may be treated as a model-component of PyAutoFit the
-        parameters of which are fitted for by a non-linear search.
-
-        Parameters
-        ----------
-        centre
-            The x coordinate of the profile centre.
-        normalization
-            Overall normalization normalisation of the `Gaussian` profile.
-        sigma
-            The sigma value controlling the size of the Gaussian.
-        """
-        self.centre = centre
-        self.normalization = normalization
-        self.sigma = sigma
-
-    @af.derived_quantity
-    def fwhm(self):
-        return 2.0 * np.sqrt(2.0 * np.log(2.0)) * self.sigma
-
-
-"""
-The fit performed above used a `Gaussian` object a `fwhm` `derived_property`. 
+The example analysis used above includes a `compute_latent_variables` method that computes the FWHM of the Gaussian
+profile. 
 
 This leads to a number of noteworthy outputs:
 
- - A `model.derived` file is output to the results folder, which includes the value and error of all derived quantities 
+ - A `latent.results` file is output to the results folder, which includes the value and error of all derived quantities 
    based on the non-linear search samples (in this example only the `fwhm`).
    
- - A `derived_quantities.csv` is output which lists every accepted sample's value of every derived quantity, which is again
+ - A `latent/samples.csv` is output which lists every accepted sample's value of every derived quantity, which is again
    analogous to the `samples.csv` file (in this example only the `fwhm`). 
      
- - A `derived_summary.json` is output which acts analogously to `samples_summary.json` but for the derived quantities 
-   of the model (in this example only the `fwhm`).
+ - A `latent/samples_summary.json` is output which acts analogously to `samples_summary.json` but for the derived 
+   quantities of the model (in this example only the `fwhm`).
 
 Derived quantities are also accessible via the `Samples` object, following a similar API to the model parameters:
 """
-instance = samples.max_log_likelihood()
+latent = analysis.compute_latent_samples(result.samples)
 
-print(f"Max Likelihood FWHM: {instance.fwhm}")
+instance = latent.max_log_likelihood()
 
-instance = samples.median_pdf()
+print(f"Max Likelihood FWHM: {instance.gaussian.fwhm}")
 
-print(f"Median PDF FWHM {instance.fwhm}")
+instance = latent.median_pdf()
 
-"""
-The summary of the derived quantities can be output using the `derived_quantities_summary_dict` method:
-"""
-print(samples.derived_quantities_summary_dict())
+print(f"Median PDF FWHM {instance.gaussian.fwhm}")
 
 """
 __Derived Errors Manual (Advanced)__
