@@ -135,7 +135,7 @@ dyplot.boundplot(
     results=search_internal.results,
     labels=model.parameter_labels_with_superscripts_latex,
     dims=(2, 2),
-    it=100,
+    it=-1,  # The iteration number to make the plot.
     idx=None,
     prior_transform=None,
     periodic=None,
@@ -163,7 +163,7 @@ specific dead point during the course of a run, projected onto all pairs of dime
 dyplot.cornerbound(
     results=search_internal.results,
     labels=model.parameter_labels_with_superscripts_latex,
-    it=100,
+    it=-1,  # The iteration number to make the plot.
     idx=None,
     dims=None,
     prior_transform=None,
