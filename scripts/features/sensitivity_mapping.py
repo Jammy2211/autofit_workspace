@@ -283,9 +283,9 @@ class Simulate:
         print(instance.perturb.normalization)
         print(instance.perturb.sigma)
 
-        model_line = instance.gaussian_main.model_data_1d_via_xvalues_from(
+        model_line = instance.gaussian_main.model_data_from(
             xvalues=xvalues
-        ) + instance.perturb.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        ) + instance.perturb.model_data_from(xvalues=xvalues)
 
         """
         Determine the noise (at a specified signal to noise level) in every pixel of our model profile.

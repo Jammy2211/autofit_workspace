@@ -19,7 +19,7 @@ def simulate_dataset_1d_via_gaussian_from(gaussian, dataset_path):
     """
     Evaluate this `Gaussian` model instance at every xvalues to create its model profile.
     """
-    model_data_1d = gaussian.model_data_1d_via_xvalues_from(xvalues=xvalues)
+    model_data_1d = gaussian.model_data_from(xvalues=xvalues)
 
     """
     Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
@@ -83,7 +83,7 @@ def simulate_data_1d_with_kernel_via_gaussian_from(gaussian, dataset_path):
     """
     Evaluate this `Gaussian` model instance at every xvalues to create its model profile.
     """
-    model_data_1d = gaussian.model_data_1d_via_xvalues_from(xvalues=xvalues)
+    model_data_1d = gaussian.model_data_from(xvalues=xvalues)
 
     """
     Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
@@ -171,8 +171,7 @@ def simulate_dataset_1d_via_profile_1d_list_from(profile_1d_list, dataset_path):
     them together to create the overall model profile.
     """
     model_data_1d_list = [
-        profile_1d.model_data_1d_via_xvalues_from(xvalues=xvalues)
-        for profile_1d in profile_1d_list
+        profile_1d.model_data_from(xvalues=xvalues) for profile_1d in profile_1d_list
     ]
 
     model_data_1d = sum(model_data_1d_list)
@@ -249,7 +248,7 @@ def simulate_data_1d_with_kernel_via_profile_1d_list_from(
     model_data_1d = np.zeros(shape=pixels)
 
     for profile in profile_1d_list:
-        model_data_1d += profile.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data_1d += profile.model_data_from(xvalues=xvalues)
 
     """
     Create a Gaussian kernel which the model line will be convolved with.

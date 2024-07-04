@@ -106,6 +106,20 @@ util.simulate_dataset_1d_via_profile_1d_list_from(
 )
 
 """
+__Gaussian x5__
+"""
+gaussian_0 = af.ex.Gaussian(centre=50.0, normalization=20.0, sigma=1.0)
+gaussian_1 = af.ex.Gaussian(centre=50.0, normalization=40.0, sigma=5.0)
+gaussian_2 = af.ex.Gaussian(centre=50.0, normalization=60.0, sigma=10.0)
+gaussian_3 = af.ex.Gaussian(centre=50.0, normalization=80.0, sigma=15.0)
+gaussian_4 = af.ex.Gaussian(centre=50.0, normalization=100.0, sigma=20.0)
+dataset_path = path.join("dataset", "example_1d", "gaussian_x5")
+util.simulate_dataset_1d_via_profile_1d_list_from(
+    profile_1d_list=[gaussian_0, gaussian_1, gaussian_2, gaussian_3, gaussian_4],
+    dataset_path=dataset_path,
+)
+
+"""
 __Gaussian x1 unconvolved__
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1_unconvolved")

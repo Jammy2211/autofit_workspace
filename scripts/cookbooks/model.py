@@ -17,6 +17,7 @@ Python classes, with the following sections:
  - Priors (Model): How the default priors of a model are set and how to customize them.
  - Instances (Model): Creating an instance of a model via input parameters.
  - Model Customization (Model): Customizing a model (e.g. fixing parameters or linking them to one another).
+ - Tuple Parameters (Model): Defining model components with parameters that are tuples.
  - Json Output (Model): Output a model in human readable text via a .json file and loading it back again.
 
 It then describes how to use the `af.Collection` object to define models with many model components from multiple
@@ -39,6 +40,7 @@ Python classes, with the following sections:
 import json
 import os
 from os import path
+from typing import Tuple
 
 import autofit as af
 
@@ -51,8 +53,8 @@ A model component is written as a Python class using the following format:
 
  - The input arguments of the constructor are the parameters of the mode (here `centre`, `normalization` and `sigma`).
 
- - The default values of the input arguments tell PyAutoFit whether a parameter is a single-valued float or a
- multi-valued tuple.
+ - The default values and typing of the input arguments tell PyAutoFit whether a parameter is a single-valued float or 
+   a multi-valued tuple.
 
 We define a 1D Gaussian model component to illustrate model composition in PyAutoFit.
 """
@@ -61,9 +63,9 @@ We define a 1D Gaussian model component to illustrate model composition in PyAut
 class Gaussian:
     def __init__(
         self,
-        centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
-        normalization=1.0,  # <- are the Gaussian``s model parameters.
-        sigma=5.0,
+        centre: float = 30.0,  # <- **PyAutoFit** recognises these constructor arguments
+        normalization: float = 1.0,  # <- are the Gaussian``s model parameters.
+        sigma: float = 5.0,
     ):
         self.centre = centre
         self.normalization = normalization
@@ -227,6 +229,58 @@ model = af.Model(
 This API can also be used for fixing a parameter to a certain value:
 """
 model = af.Model(Gaussian, centre=0.0)
+
+
+"""
+__Tuple Parameters__
+
+The `Gaussian` model component above only has parameters that are single-valued floats. 
+
+Parameters can also be tuples, which is useful for defining model components where certain parameters are naturally
+grouped together.
+
+For example, we can define a 2D Gaussian with a center that has two coordinates and therefore free parameters, (x, y), 
+using a tuple.
+"""
+
+
+class Gaussian2D:
+    def __init__(
+        self,
+        centre: Tuple[float, float] = (0.0, 0.0),
+        normalization: float = 0.1,
+        sigma: float = 1.0,
+    ):
+        self.centre = centre
+        self.normalization = normalization
+        self.sigma = sigma
+
+
+"""
+The model's `total_free_parameters` attribute now includes 4 free parameters, as the tuple `centre` parameter accounts
+for 2 free parameters.
+"""
+model = af.Model(Gaussian2D)
+
+print(f"Model Total Free Parameters = {model.total_free_parameters}")
+
+"""
+This information is again displayed in the `info` attribute:
+"""
+print("\nInfo:")
+print(model.info)
+
+"""
+Here are examples of how model customization can be applied to a model with tuple parameters:
+"""
+model = af.Model(Gaussian2D)
+model.centre = (0.0, 0.0)
+
+model.centre_0 = model.normalization
+
+model.centre_1 = model.normalization + model.sigma
+
+model.add_assertion(model.centre_0 > model.normalization)
 
 """
 __Json Outputs (Model)__

@@ -140,10 +140,8 @@ If you ran the fit above, you can now plot the result.
 """
 instance = result.max_log_likelihood_instance
 
-gaussian_main = instance.gaussian_main.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
-gaussian_feature = instance.gaussian_feature.model_data_1d_via_xvalues_from(
+gaussian_main = instance.gaussian_main.model_data_from(xvalues=np.arange(data.shape[0]))
+gaussian_feature = instance.gaussian_feature.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 model_data = gaussian_main + gaussian_feature
@@ -245,10 +243,8 @@ print(instance.gaussian_feature.sigma)
 """
 By plotting the `best` instance we can confirm the grid search fitted the feature at pixel 70.
 """
-gaussian_main = instance.gaussian_main.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
-gaussian_feature = instance.gaussian_feature.model_data_1d_via_xvalues_from(
+gaussian_main = instance.gaussian_main.model_data_from(xvalues=np.arange(data.shape[0]))
+gaussian_feature = instance.gaussian_feature.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 model_data = gaussian_main + gaussian_feature

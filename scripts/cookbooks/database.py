@@ -371,7 +371,7 @@ class Analysis(af.Analysis):
 
         xvalues = np.arange(self.data.shape[0])
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
 
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
@@ -430,7 +430,7 @@ class Analysis(af.Analysis):
 
         instance = result.max_log_likelihood_instance
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
 
         # The path where model_data.json is saved, e.g. output/dataset_name/unique_id/files/model_data.json
 
