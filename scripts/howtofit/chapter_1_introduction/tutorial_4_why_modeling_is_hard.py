@@ -20,6 +20,23 @@ In this tutorial, we will fit complex models with up to 15 free parameters and c
 - Strategies for ensuring the non-linear search estimates the correct solution.
 
 - What drives the run-times of a model fit and how to carefully balance run-times with model complexity.
+
+__Contents__
+
+**Data**: Load and plot the 1D Gaussian dataset we'll fit, which is more complex than the previous tutorial.
+**Model**: The `Gaussian` model component that we will fit to the data.
+**Analysis**: The log likelihood function used to fit the model to the data.
+**Collection**: The `Collection` model used to compose the model-fit.
+**Model Fit**: Perform the model-fit and examine the results.
+**Result**: Determine if the model-fit was successful and what can be done to ensure a good model-fit.
+**Why Modeling is Hard**: Introduce the concept of randomness and local maxima and why they make model-fitting challenging.
+**Prior Tuning**: Adjust the priors of the model to help the non-linear search find the global maxima solution.
+**Reducing Complexity**: Simplify the model to reduce the dimensionality of the parameter space.
+**Search More Thoroughly**: Adjust the non-linear search settings to search parameter space more thoroughly.
+**Run Times**: Discuss how the likelihood function and complexity of a model impacts the run-time of a model-fit.
+**Model Mismatches**: Introduce the concept of model mismatches and how it makes inferring the correct model challenging.
+**Astronomy Example**: How the concepts of this tutorial are applied to real astronomical problems.
+**Wrap Up**: A summary of the key takeaways of this tutorial.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -27,11 +44,11 @@ In this tutorial, we will fit complex models with up to 15 free parameters and c
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
 
-import autofit as af
-import os
 from os import path
 import numpy as np
 import matplotlib.pyplot as plt
+
+import autofit as af
 
 """
 __Data__
@@ -356,7 +373,9 @@ To clarify this, the residual map introduced in tutorial 2 is useful. It provide
 the differences between the model and data exceed the noise level.
 
 Regions where the black error bars do not align with the zero line in the residual map indicate areas where the model 
-did not fit the data well and is inconsistent with the data above the noise level.
+did not fit the data well and is inconsistent with the data above the noise level. Furthermore, regions where
+larger values of residuals are next to one another indicate that the model failed to accurate fit that
+region of the data.
 """
 residual_map = data - model_data
 plt.plot(range(data.shape[0]), np.zeros(data.shape[0]), "--", color="b")
@@ -396,14 +415,11 @@ plt.title(f"Normalized Residuals (log likelihood = {result.log_likelihood})")
 plt.xlabel("x values of profile")
 plt.ylabel("Normalized Residuals ($\sigma$)")
 plt.savefig("normalized_residual_map.png")
+plt.show()
 plt.clf()
 plt.close()
 
 """
-Certainly! Here's a clearer version of the text:
-
----
-
 So, did you achieve a good fit? Maybe a bad one? Or just an okay one?
 
 The truth is, I don't know, and I can't tell you for sure. Modeling is inherently random. It's not uncommon to 
@@ -412,16 +428,20 @@ fit the same model to the same dataset using the same non-linear search and get 
 When I ran the model fit above, that's exactly what happened. It produced a range of fits: some bad, some okay, and 
 some good, as shown in the images below:
 
-![Bad Fit](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/bad_fit.png?raw=true)
-![Okay Fit](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/okay_fit.png?raw=true)
-![Good Fit](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/good_fit.png?raw=true)
+<table><tr>
+<td> <img src="https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/bad_fit.png?raw=true" width="400" height="400"></td>
+<td> <img src="https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/okay_fit.png?raw=true" width="400" height="400">  </td>
+<td> <img src="https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/good_fit.png?raw=true" width="400" height="400"> </td>
+</tr></table>
 
 Distinguishing between the good and okay fit is difficult, however the normalized residuals make this easier. They show
 that for the okay fit there are residuals above 3.0 sigma, indicating that the model did not perfectly fit the data.
 
-![Bad Fit](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/bad_normalized_residual_map.png?raw=true)
-![Okay Fit](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/okay_normalized_residual_map.png?raw=true)
-![Good Fit](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/good_normalized_residual_map.png?raw=true)
+<table><tr>
+<td> <img src="https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/bad_normalized_residual_map.png?raw=true" width="400" height="400"></td>
+<td> <img src="https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/okay_normalized_residual_map.png?raw=true" width="400" height="400">  </td>
+<td> <img src="https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/good_normalized_residual_map.png?raw=true" width="400" height="400"> </td>
+</tr></table>
 
 You should quickly rerun the code above a couple of times to see this variability for yourself.
 
@@ -554,6 +574,7 @@ plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.savefig("fit.png")
 plt.show()
+plt.clf()
 plt.close()
 
 residual_map = data - model_data
@@ -563,6 +584,7 @@ plt.title(f"Normalized Residuals (log likelihood = {result.log_likelihood})")
 plt.xlabel("x values of profile")
 plt.ylabel("Normalized Residuals ($\sigma$)")
 plt.savefig("normalized_residual_map.png")
+plt.show()
 plt.clf()
 plt.close()
 
@@ -662,6 +684,7 @@ plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.savefig("fit.png")
 plt.show()
+plt.clf()
 plt.close()
 
 residual_map = data - model_data
@@ -671,6 +694,7 @@ plt.title(f"Normalized Residuals (log likelihood = {result.log_likelihood})")
 plt.xlabel("x values of profile")
 plt.ylabel("Normalized Residuals ($\sigma$)")
 plt.savefig("normalized_residual_map.png")
+plt.show()
 plt.clf()
 plt.close()
 
@@ -695,10 +719,10 @@ In approaches 1 and 2, we assisted our non-linear search to find the highest log
 space. In approach 3, we're simply going to tell the search to look more thoroughly through parameter space.
 
 Every non-linear search has settings that control how thoroughly it explores parameter space. For Dynesty, the 
-primary setting is the number of live points `n_live`. The more thoroughly the search examines the space, the more 
+primary setting is the number of live points `nlive`. The more thoroughly the search examines the space, the more 
 likely it is to find the global maximum model. However, this also means the search will take longer!
 
-Below, we configure a more thorough Dynesty search with `n_live=500`. It is currently unclear what changing
+Below, we configure a more thorough Dynesty search with `nlive=500`. It is currently unclear what changing
 this setting actually does and what the number of live points actually means. These will be covered in chapter 2
 of the **HowToFit** lectures, where we will also expand on how a non-linear search actually works and the different
 types of methods that can be used to search parameter space. 
@@ -770,6 +794,7 @@ plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.savefig("fit.png")
 plt.show()
+plt.clf()
 plt.close()
 
 residual_map = data - model_data
@@ -779,6 +804,7 @@ plt.title(f"Normalized Residuals (log likelihood = {result.log_likelihood})")
 plt.xlabel("x values of profile")
 plt.ylabel("Normalized Residuals ($\sigma$)")
 plt.savefig("normalized_residual_map.png")
+plt.show()
 plt.clf()
 plt.close()
 
@@ -833,9 +859,27 @@ may take of order seconds, or longer, because it comprises a number of expensive
 2D convolution, etc.). Depending on the model complexity, this means that the non-linear search may take hours, days 
 or even weeks to fit the model.
 
+Run times are also dictated by the complexity of the model and the nature of the log likelihood function. For models
+with many more dimensions than the simple 1D model used in this tutorial (e.g. hundreds or thousands of free parameters),
+non-linear search may take tens or hundreds of more iterations to converge on a solution. This is because the parameter
+space is significantly more complex and difficult to sample accurately. More iterations mean longer run times,
+which in combination with a slow likelihood function can make model-fitting infeasible.
+
 Whether or not run times will pose a challenge to your model-fitting task depends on the complexity of the model and
 nature of the log likelihood function. If your problem is computationally expensive, **PyAutoFit** provides many
 tools to help, which will be the topic of tutorials in chapter 2 of the **HowToFit** lectures. 
+
+**PyAutoFit** provides tools to profile the run-time of your log likelihood function, which can be used to
+assess the computational expense of your model-fit and plan accordingly. Below is an example of the simplest use
+of these tools, an estimate of the run-time of the log likelihood function using one random instance of the model.
+
+
+Feature still being developed, IGNORE FOR NOW.
+
+run_time_dict, info_dict = analysis.profile_log_likelihood_function(
+    instance=model.random_instance()
+)
+print(f"Log Likelihood Evaluation Time (second) = {run_time_dict['fit_time']}")
 
 __Model Mismatch__
 

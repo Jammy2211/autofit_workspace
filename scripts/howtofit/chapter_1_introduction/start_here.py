@@ -1,6 +1,7 @@
 """
 HowToFit Lectures
 =================
+
 Welcome to the HowToFit Jupyter Notebook lectures!
 
 At the core of data science is fitting a model to data. This process extracts meaningful patterns, relationships,
