@@ -139,9 +139,7 @@ By plotting the result we can see we have fitted the left `Gaussian` reasonably 
 """
 instance = result_1.max_log_likelihood_instance
 
-model_data = instance.gaussian_left.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
+model_data = instance.gaussian_left.model_data_from(xvalues=np.arange(data.shape[0]))
 
 plt.errorbar(
     x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
@@ -208,10 +206,8 @@ By plotting the result we can see we have fitted the right `Gaussian` reasonably
 """
 instance = result_2.max_log_likelihood_instance
 
-gaussian_left = instance.gaussian_left.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
-gaussian_right = instance.gaussian_right.model_data_1d_via_xvalues_from(
+gaussian_left = instance.gaussian_left.model_data_from(xvalues=np.arange(data.shape[0]))
+gaussian_right = instance.gaussian_right.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 
@@ -268,10 +264,8 @@ By plotting the result we can now see we have fitted both `Gaussian`'s accuratel
 """
 instance = result_3.max_log_likelihood_instance
 
-gaussian_left = instance.gaussian_left.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
-gaussian_right = instance.gaussian_right.model_data_1d_via_xvalues_from(
+gaussian_left = instance.gaussian_left.model_data_from(xvalues=np.arange(data.shape[0]))
+gaussian_right = instance.gaussian_right.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 

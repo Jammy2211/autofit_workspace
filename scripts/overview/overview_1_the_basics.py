@@ -119,7 +119,7 @@ class Gaussian:
         self.normalization = normalization
         self.sigma = sigma
 
-    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray) -> np.ndarray:
+    def model_data_from(self, xvalues: np.ndarray) -> np.ndarray:
         """
         Returns the 1D Gaussian profile on a line of Cartesian x coordinates.
 
@@ -219,12 +219,12 @@ print("normalization = ", instance.normalization)
 print("sigma = ", instance.sigma)
 
 """
-We can use functions associated with the class, specifically the `model_data_1d_via_xvalues_from` function, to 
+We can use functions associated with the class, specifically the `model_data_from` function, to 
 create a realization of the `Gaussian` and plot it.
 """
 xvalues = np.arange(0.0, 100.0, 1.0)
 
-model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+model_data = instance.model_data_from(xvalues=xvalues)
 
 plt.plot(xvalues, model_data, color="r")
 plt.title("1D Gaussian Model Data.")
@@ -280,7 +280,7 @@ class Analysis(af.Analysis):
         """
         Returns the log likelihood of a fit of a 1D Gaussian to the dataset.
 
-        The data is fitted using an `instance` of the `Gaussian` class where its `model_data_1d_via_xvalues_from`
+        The data is fitted using an `instance` of the `Gaussian` class where its `model_data_from`
         is called in order to create a model data representation of the Gaussian that is fitted to the data.
         """
 
@@ -309,7 +309,7 @@ class Analysis(af.Analysis):
         """
         Use these xvalues to create model data of our Gaussian.
         """
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
 
         """
         Fit the model gaussian line data to the observed data, computing the residuals, chi-squared and log likelihood.
@@ -392,7 +392,7 @@ A benefit of the result being an instance is that we can use any of its methods 
 
 Below, we use the maximum likelihood instance to compare the maximum likelihood `Gaussian` to the data.
 """
-model_data = result.max_log_likelihood_instance.model_data_1d_via_xvalues_from(
+model_data = result.max_log_likelihood_instance.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 
@@ -474,7 +474,7 @@ class Exponential:
         self.normalization = normalization
         self.rate = rate
 
-    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray):
+    def model_data_from(self, xvalues: np.ndarray):
         """
         Returns the symmetric 1D Exponential on an input list of Cartesian x coordinates.
 
@@ -580,7 +580,7 @@ class Analysis(af.Analysis):
         Returns the log likelihood of a fit of a 1D Gaussian to the dataset.
 
         The data is fitted using an `instance` of multiple 1D profiles (e.g. a `Gaussian`, `Exponential`) where
-        their `model_data_1d_via_xvalues_from` methods are called and sumed in order to create a model data
+        their `model_data_from` methods are called and sumed in order to create a model data
         representation that is fitted to the data.
         """
 
@@ -615,14 +615,11 @@ class Analysis(af.Analysis):
         """
         Internally, the `instance` variable is a list of all model components pass to the `Collection` above.
         
-        we can therefore iterate over them and use their `model_data_1d_via_xvalues_from` methods to create the
+        we can therefore iterate over them and use their `model_data_from` methods to create the
         summed overall model data.
         """
         model_data = sum(
-            [
-                profile_1d.model_data_1d_via_xvalues_from(xvalues=xvalues)
-                for profile_1d in instance
-            ]
+            [profile_1d.model_data_from(xvalues=xvalues) for profile_1d in instance]
         )
 
         """
@@ -661,10 +658,8 @@ data.
 """
 instance = result.max_log_likelihood_instance
 
-model_gaussian = instance.gaussian.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
-model_exponential = instance.exponential.model_data_1d_via_xvalues_from(
+model_gaussian = instance.gaussian.model_data_from(xvalues=np.arange(data.shape[0]))
+model_exponential = instance.exponential.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 model_data = model_gaussian + model_exponential

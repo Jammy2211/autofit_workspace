@@ -238,10 +238,8 @@ instance = model.instance_from_prior_medians()
 
 print("Strong Lens Model Instance:")
 print("Lens Galaxy = ", instance.galaxies.lens)
-print("Lens Galaxy Light = ", instance.galaxies.lens.light_profile_list)
-print(
-    "Lens Galaxy Light Centre = ", instance.galaxies.lens.light_profile_list[0].centre
-)
+print("Lens Galaxy Light = ", instance.galaxies.lens.profile_list)
+print("Lens Galaxy Light Centre = ", instance.galaxies.lens.profile_list[0].centre)
 print("Lens Galaxy Mass Centre = ", instance.galaxies.lens.mass_profile_list[0].centre)
 print("Source Galaxy = ", instance.galaxies.source)
 

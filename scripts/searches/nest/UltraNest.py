@@ -114,7 +114,7 @@ __Result__
 The result object returned by the fit provides information on the results of the non-linear search. Lets use it to
 compare the maximum log likelihood `Gaussian` to the data.
 """
-model_data = result.max_log_likelihood_instance.model_data_1d_via_xvalues_from(
+model_data = result.max_log_likelihood_instance.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 

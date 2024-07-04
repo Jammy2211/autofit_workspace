@@ -109,12 +109,7 @@ for data, noise_map, samples in zip(data_gen, noise_map_gen, samples_gen):
 
     xvalues = np.arange(data.shape[0])
 
-    model_data = sum(
-        [
-            profile.model_data_1d_via_xvalues_from(xvalues=xvalues)
-            for profile in instance
-        ]
-    )
+    model_data = sum([profile.model_data_from(xvalues=xvalues) for profile in instance])
 
     residual_map = data - model_data
 
@@ -145,10 +140,7 @@ def plot_residuals_from(fit):
     xvalues = np.arange(data.shape[0])
 
     model_data = sum(
-        [
-            profile.model_data_1d_via_xvalues_from(xvalues=xvalues)
-            for profile in fit.instance
-        ]
+        [profile.model_data_from(xvalues=xvalues) for profile in fit.instance]
     )
 
     residual_map = data - model_data

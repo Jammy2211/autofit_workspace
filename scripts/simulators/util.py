@@ -19,7 +19,7 @@ def simulate_dataset_1d_via_gaussian_from(gaussian, dataset_path):
     """
     Evaluate this `Gaussian` model instance at every xvalues to create its model profile.
     """
-    model_data_1d = gaussian.model_data_1d_via_xvalues_from(xvalues=xvalues)
+    model_data_1d = gaussian.model_data_from(xvalues=xvalues)
 
     """
     Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
@@ -86,7 +86,7 @@ def simulate_data_1d_with_kernel_via_gaussian_from(gaussian, dataset_path):
     """
     Evaluate this `Gaussian` model instance at every xvalues to create its model profile.
     """
-    model_data_1d = gaussian.model_data_1d_via_xvalues_from(xvalues=xvalues)
+    model_data_1d = gaussian.model_data_from(xvalues=xvalues)
 
     """
     Determine the noise (at a specified signal to noise level) in every pixel of our model profile.
@@ -174,8 +174,7 @@ def simulate_dataset_1d_via_profile_1d_list_from(profile_1d_list, dataset_path):
     them together to create the overall model profile.
     """
     model_data_1d_list = [
-        profile_1d.model_data_1d_via_xvalues_from(xvalues=xvalues)
-        for profile_1d in profile_1d_list
+        profile_1d.model_data_from(xvalues=xvalues) for profile_1d in profile_1d_list
     ]
 
     model_data_1d = sum(model_data_1d_list)
@@ -237,6 +236,16 @@ def simulate_dataset_1d_via_profile_1d_list_from(profile_1d_list, dataset_path):
             except (TypeError, ValueError):
                 pass
 
+    """
+    __Max Log Likelihood__
+    """
+    chi_squared = np.sum(((data - model_data_1d) / noise_map) ** 2)
+    noise_normalization = np.sum(np.log(2 * np.pi * noise_map**2.0))
+    log_likelihood = -0.5 * (chi_squared + noise_normalization)
+
+    with open(path.join(dataset_path, "max_log_likelihood.json"), "w+") as f:
+        json.dump({"log_likelihood": log_likelihood}, f, indent=4)
+
 
 def simulate_data_1d_with_kernel_via_profile_1d_list_from(
     profile_1d_list, dataset_path
@@ -255,7 +264,7 @@ def simulate_data_1d_with_kernel_via_profile_1d_list_from(
     model_data_1d = np.zeros(shape=pixels)
 
     for profile in profile_1d_list:
-        model_data_1d += profile.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data_1d += profile.model_data_from(xvalues=xvalues)
 
     """
     Create a Gaussian kernel which the model line will be convolved with.

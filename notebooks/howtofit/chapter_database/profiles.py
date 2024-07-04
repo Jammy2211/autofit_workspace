@@ -79,7 +79,7 @@ class Gaussian(Profile):
 
         self.sigma = sigma  # We still need to set sigma for the Gaussian, of course.
 
-    def model_data_1d_via_xvalues_from(self, xvalues):
+    def model_data_from(self, xvalues):
         """
         Calculate the 1D Gaussian profile on a line of Cartesian x coordinates.
 
@@ -123,7 +123,7 @@ class Exponential(Profile):
 
         self.rate = rate
 
-    def model_data_1d_via_xvalues_from(self, xvalues):
+    def model_data_from(self, xvalues):
         """
         Calculate the 1D Gaussian profile on a line of Cartesian x coordinates.
 

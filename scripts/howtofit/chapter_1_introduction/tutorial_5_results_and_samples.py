@@ -92,12 +92,7 @@ class Analysis(af.Analysis):
         """
         xvalues = np.arange(self.data.shape[0])
 
-        return sum(
-            [
-                profile.model_data_1d_via_xvalues_from(xvalues=xvalues)
-                for profile in instance
-            ]
-        )
+        return sum([profile.model_data_from(xvalues=xvalues) for profile in instance])
 
     def visualize(self, paths, instance, during_analysis):
         """
@@ -186,7 +181,7 @@ class Gaussian:
         self.normalization = normalization
         self.sigma = sigma
 
-    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray):
+    def model_data_from(self, xvalues: np.ndarray):
         """
 
         Returns a 1D Gaussian on an input list of Cartesian x coordinates.
@@ -234,7 +229,7 @@ class Exponential:
         self.normalization = normalization
         self.rate = rate
 
-    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray):
+    def model_data_from(self, xvalues: np.ndarray):
         """
         Returns a 1D Gaussian on an input list of Cartesian x coordinates.
 
@@ -422,10 +417,10 @@ __Plot__
 Because results are returned as instances, it is straight forward to use them and their associated functionality
 to make plots of the results:
 """
-model_gaussian = max_lh_instance.gaussian.model_data_1d_via_xvalues_from(
+model_gaussian = max_lh_instance.gaussian.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
-model_exponential = max_lh_instance.exponential.model_data_1d_via_xvalues_from(
+model_exponential = max_lh_instance.exponential.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 model_data = model_gaussian + model_exponential

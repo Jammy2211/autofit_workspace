@@ -76,12 +76,7 @@ class Analysis(af.Analysis):
         """
         xvalues = np.arange(self.data.shape[0])
 
-        return sum(
-            [
-                profile.model_data_1d_via_xvalues_from(xvalues=xvalues)
-                for profile in instance
-            ]
-        )
+        return sum([profile.model_data_from(xvalues=xvalues) for profile in instance])
 
     def visualize(self, paths, instance, during_analysis):
         """

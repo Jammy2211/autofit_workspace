@@ -68,13 +68,13 @@ class Analysis(af.Analysis):
         """
         Returns the log likelihood of a fit of a 1D Gaussian to the dataset.
 
-        The data is fitted using an `instance` of the `Gaussian` class where its `model_data_1d_via_xvalues_from`
+        The data is fitted using an `instance` of the `Gaussian` class where its `model_data_from`
         is called in order to create a model data representation of the Gaussian that is fitted to the data.
         """
 
         xvalues = np.arange(self.data.shape[0])
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
 
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
@@ -253,7 +253,7 @@ class Visualizer(af.Visualizer):
         """
         xvalues = np.arange(analysis.data.shape[0])
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
         residual_map = analysis.data - model_data
 
         """
@@ -327,7 +327,7 @@ class Analysis(af.Analysis):
         """
         xvalues = np.arange(self.data.shape[0])
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
         chi_squared = sum(chi_squared_map)
@@ -369,7 +369,7 @@ class ResultExample(af.Result):
         """
         xvalues = np.arange(self.analysis.data.shape[0])
 
-        return self.instance.model_data_1d_via_xvalues_from(instance=xvalues)
+        return self.instance.model_data_from(instance=xvalues)
 
 
 """
@@ -404,7 +404,7 @@ class Analysis(af.Analysis):
         """
         xvalues = np.arange(self.data.shape[0])
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
         chi_squared = sum(chi_squared_map)
@@ -517,7 +517,7 @@ class Analysis(af.Analysis):
         """
         xvalues = np.arange(self.data.shape[0])
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
         chi_squared = sum(chi_squared_map)
@@ -609,7 +609,7 @@ class Analysis(af.Analysis):
 
         xvalues = np.arange(self.data.shape[0])
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
 
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
@@ -674,7 +674,7 @@ class Analysis(af.Analysis):
 
         instance = result.max_log_likelihood_instance
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
 
         # The path where model_data.json is saved, e.g. output/dataset_name/unique_id/files/model_data.json
 

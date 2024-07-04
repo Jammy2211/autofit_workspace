@@ -139,9 +139,7 @@ Based on visual inspection, the model therefore provides a poor fit to the data.
 """
 instance = result_x1_gaussian.max_log_likelihood_instance
 
-gaussian_0 = instance.gaussian_0.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
+gaussian_0 = instance.gaussian_0.model_data_from(xvalues=np.arange(data.shape[0]))
 model_data = gaussian_0
 
 plt.errorbar(
@@ -211,12 +209,8 @@ a more complex model than one with 2 Gaussians can provide a better fit.
 """
 instance = result_x2_gaussian.max_log_likelihood_instance
 
-gaussian_0 = instance.gaussian_0.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
-gaussian_1 = instance.gaussian_0.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
+gaussian_0 = instance.gaussian_0.model_data_from(xvalues=np.arange(data.shape[0]))
+gaussian_1 = instance.gaussian_0.model_data_from(xvalues=np.arange(data.shape[0]))
 model_data = gaussian_0 + gaussian_1
 
 plt.errorbar(
@@ -293,15 +287,9 @@ By eye, this fit is as good as the 2 Gaussian model above.
 """
 instance = result_x3_gaussian.max_log_likelihood_instance
 
-gaussian_0 = instance.gaussian_0.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
-gaussian_1 = instance.gaussian_0.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
-gaussian_2 = instance.gaussian_0.model_data_1d_via_xvalues_from(
-    xvalues=np.arange(data.shape[0])
-)
+gaussian_0 = instance.gaussian_0.model_data_from(xvalues=np.arange(data.shape[0]))
+gaussian_1 = instance.gaussian_0.model_data_from(xvalues=np.arange(data.shape[0]))
+gaussian_2 = instance.gaussian_0.model_data_from(xvalues=np.arange(data.shape[0]))
 model_data = gaussian_0 + gaussian_1 + gaussian_2
 
 plt.errorbar(

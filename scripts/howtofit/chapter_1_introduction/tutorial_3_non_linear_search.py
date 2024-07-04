@@ -2,111 +2,145 @@
 Tutorial 3: Non Linear Search
 =============================
 
-In the previous tutorials, we defined a model and fitted it to data via fitting functions. We quantified the goodness
-of fit via the log likliehood and showed that for models with only a few free parameters, we could find good fits to
-the data by manually guessing parameter values. However, for more complex models, this approach was infeasible.
+In the previous tutorials, we laid the groundwork by defining a model and manually fitting it to data using fitting
+functions. We quantified the goodness of fit using the log likelihood and demonstrated that for models with only a few
+free parameters, we could achieve satisfactory fits by manually guessing parameter values. However, as the complexity
+of our models increased, this approach quickly became impractical.
 
-In this tutorial, we will learn how to fit the model to data properly, using a technique that can scale up to
-models with 10s or 100s of parameters.
+In this tutorial, we will delve into a more systematic approach for fitting models to data. This technique is designed
+to handle models with a larger number of parameters—ranging from tens to hundreds. By adopting this approach, we aim
+to achieve more efficient and reliable model fits, ensuring that our models accurately capture the underlying
+structure of the data.
+
+This approach not only improves the accuracy of our fits but also allows us to explore more complex models that better
+represent the systems we are studying.
+
+__Overview__
+
+In this tutorial, we will use a non-linear search to fit a 1D Gaussian profile to noisy data. Specifically, we will:
+
+- Introduce concept like a "parameter space", "likelihood surface" and "priors", and relate them to how a non-linear
+  search works.
+
+- Introduce the `Analysis` class, which defines the `log_likelihood_function` that quantifies the goodness of fit of a
+  model instance to the data.
+
+- Fit a 1D Gaussian model to 1D data with a non-linear search, specifically with the nested sampling algorithm
+  `Dynesty`.
+
+All these steps utilize **PyAutoFit**'s API for model-fitting.
+
+__Contents_
+
+This tutorial is split into the following sections:
+
+**Parameter Space**: Introduce the concept of a "parameter space" and how it relates to model-fitting.
+**Non-Linear Search**: Introduce the concept of a "non-linear search" and how it fits models to data.
+**Nested Sampling**: Introduce the nested sampling method used in this tutorial.
+**Deeper Background**: Provide links to resources that more thoroughly describe the statistical principles that underpin non-linear searches.
+**Data**: Load and plot the 1D Gaussian dataset we'll fit.
+**Model**: Introduce the 1D `Gaussian` model we'll fit to the data.
+**Priors**: Introduce priors and how they are used to define the parameter space and guide the non-linear search.
+**Analysis**: Introduce the `Analysis` class, which contains the `log_likelihood_function` used to fit the model to the data.
+**Search**: Perform the model-fit using a non-linear search.
+**Result**: The result of the model-fit, including the maximum likelihood model.
+**Samples**: The samples of the non-linear search, used to compute parameter estimates and uncertainties.
+**Customizing Searches**: How to customize the settings of the non-linear search.
+**Wrap Up**: A summary of the concepts introduced in this tutorial.
 
 __Parameter Space__
 
-In mathematics, we can write a function as follows:
+In mathematics, a function is defined by its parameters, which relate inputs to outputs.
 
-$f(x) = x^2$
+For example, consider a simple function:
 
-In this function, when we input the parameter $x$ in to the function $f$, it returns a value $f(x)$.
+\[ f(x) = x^2 \]
 
-This mapping between values of $x$ and $f(x)$ define the "parameter space" of this function (which fot
-the function $f(x) = x^2$ is a parabola).
+Here, \( x \) is the parameter input into the function \( f \), and \( f(x) \) returns \( x^2 \). This
+mapping between \( x \) and \( f(x) \) defines the "parameter space" of the function, which in this case is a parabola.
 
-A function can have multiple parameters, for 3 parameters, $x$, $y$ and $z$:
+Functions can have multiple parameters, such as \( x \), \( y \), and \( z \):
 
-$f(x, y, z) = x + y^2 - z^3$
+\[ f(x, y, z) = x + y^2 - z^3 \]
 
-The mapping between values of $x$, $y$ and $z$ and $f(x, y, z)$ define another parameter space, albeit it now
-has 3 dimensions.
+Here, the mapping between \( x \), \( y \), \( z \), and \( f(x, y, z) \) defines a parameter space with three
+dimensions.
 
-The concept of a parameter space relates closely to how in the previous tutorial we use instances of a 1D Gaussian
-profile, with parameters $(x, I, \sigma)$ to fit data with a model and compute a log likelihood.
+This concept of a parameter space relates closely to how we define and use instances of models in model-fitting.
+For instance, in our previous tutorial, we used instances of a 1D Gaussian profile with
+parameters \( (x, I, \sigma) \) to fit data and compute a log likelihood. This process can be thought of as a
+function \( f(x, I, \sigma) \), where the output value is the log likelihood.
 
-This process can be thought of as a function $f (x, I, \sigma)$, where the value returned by this function is the
-log likelihood.
+By expressing the likelihood in this manner, we can consider our model as having a parameter space -— a
+multidimensional surface that spans all possible values of the model parameters \( x, I, \sigma \).
 
-With that, we have introduced one of the most important concepts in model-fitting,
-the "log likelihood function". This function describes how we use an instance of the model (e.g. where the
-parameters have values) to compute a log likelihood describing good of a fit to the data it is.
+This surface is often referred to as the "likelihood surface", and our objective during model-fitting is to find
+its peak.
 
-We can write this log likelihood function as follows:
+This parameter space is "non-linear", meaning the relationship between the input parameters and the log likelihood
+does not behave linearly. This non-linearity implies that we cannot predict the log likelihood from a set of model
+parameters without actually performing a fit to the data by performing the forward model calculation.
 
-$f(x, N, \sigma) = log_likelihood$
+__Non-Linear Search__
 
-By expressing the likelihood in this way, we can therefore now think of our model as having a parameter space. This
-parameter space consists of an N dimensional surface (where N is the number of free parameters) spanning all possible
-values of model parameters. This surface itself can be considered the "likelihood surface", and finding the peak of
-this surface is our goal when we perform model-fitting.
+Now that we understand our problem in terms of a non-linear parameter space with a likelihood surface, we can
+introduce the method used to fit the model to the data—the "non-linear search".
 
-This parameter space is "non-linear", meaning that the relationship between input parameters and log likelihood does
-not behave linearly. This simply means that it is not possible to predict what a log likelihood will be from a set of
-model parameters, unless a whole fit to the data is performed in order to compute the value.
+Previously, our approach involved manually guessing models until finding one with a good fit and high log likelihood.
+Surprisingly, this random guessing forms the basis of how model-fitting using a non-linear search actually works!
 
-__Non Linear Search__
+A non-linear search involves systematically guessing many models while tracking their log likelihoods. As the
+algorithm progresses, it tends to favor models with parameter combinations that have previously yielded higher
+log likelihoods. This iterative refinement helps to efficiently explore the vast parameter space.
 
-Now that we are thinking about the problem in terms of a non-linear parameter space with a likelihood surface, we can
-now introduce the method used to fit the model to the data, the "non-linear search".
+There are two key differences between guessing random models and using a non-linear search:
 
-Previously, we tried a basic approach, randomly guessing models until we found one that gave a good fit and
-high `log_likelihood`. Surprisingly, this is the basis of how model fitting using a non-linear search actually works!
+- **Computational Efficiency**: The non-linear search can evaluate the log likelihood of a model parameter
+  combinations in milliseconds and therefore many thousands of models in minutes. This computational speed enables
+  it to thoroughly sample potential solutions, which would be impractical for a human.
 
-The non-linear search guesses lots of models, tracking the log likelihood of these models. As the algorithm
-progresses, it preferentially tries more models using parameter combinations that gave higher log likelihood solutions
-previously. The rationale is that if a parameters set provided a good fit to the data, models with similar values will
-too.
+- **Effective Sampling**: The search algorithm maintains a robust memory of previously guessed models and their log
+  likelihoods. This memory allows it to sample potential solutions more thoroughly and converge on the highest
+  likelihood solutions more efficiently, which is again impractical for a human.
 
-There are two key differences between guessing random models to find a good fit and a non-linear search:
+Think of the non-linear search as systematically exploring parameter space to pinpoint regions with the highest log
+likelihood values. Its primary goal is to identify and converge on the parameter values that best describe the data.
 
- - The non-linear search fits the model to the data in mere miliseconds. It therefore can compute the log likelihood
-   of tens of thousands of different model parameter combinations in order to find the highest likelihood solutions.
-   This would have been impractical for a human.
+__Nested Sampling__
 
- - The non-linear search has a much better tracking system to remember which models it guess previously and what
-   their log likelihoods were. This means it can sample all possible solutions more thoroughly, whilst honing in on
-   those which give the highest likelihood more quickly.
+There are various non-linear search algorithms, each exploring parameter space differently. This tutorial utilizes a
+Nested Sampling method called `Dynesty` (https://www.imperial.ac.uk/media/imperial-college/research-centres-and-groups/astrophysics/public/icic/data-analysis-workshop/2016/NestedSampling_JRP.pdf
 
-We can think of our non-linear search as "searching" parameter space, trying to find the regions of parameter space
-with the highest log likelihood values. Its goal is to find them, and then converge on the highest log likelihood
-solutions possible. In doing so, it can tell us what model parameters best-fit the data.
+For now, we won't delve into the specifics of how nested samlping methods work; instead, we'll stick with the simplified
+overview provided above.
 
-This picture of how a non-linear search is massively simplified, and omits key details on how statistical principles
-are upheld to ensure that results are statistically robust. The goal of this chapter is to teach you how to fit a
-model to data, not the underlying principles of Bayesian inference on which model-fitting is based.
+__Deeper Background__
 
-If you are interested, more infrmation can be found at the following web links:
+This very simplified explanation of how a non-linear search works overlooks many of the underlying statistical
+principles that ensure robust results and enable it to sample parameter space effectively.
 
-https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo
+The focus of the HowToFit lectures are to give you a phenomenological understanding how to fit a model to data,
+rather than delving into the intricacies of Bayesian inference and statistical sampling.
 
-https://twiecki.io/blog/2015/11/10/mcmc-sampling/
+If you're interested in learning more about these principles, you can explore resources such as:
 
-https://towardsdatascience.com/a-zero-math-introduction-to-markov-chain-monte-carlo-methods-dcba889e0c50
-
-__MCMC__
-
-There are many different non-linear search algorithms, which search parameter space in different ways. This tutorial
-uses a a Markov Chain Monte Carlo (MCMC) method alled `Emcee`. For now, lets not worry about the details of how
-an MCMC method actually works, and just use the simplified picture we painted above.
+- [Nested Sampling](https://www.imperial.ac.uk/media/imperial-college/research-centres-and-groups/astrophysics/public/icic/data-analysis-workshop/2016/NestedSampling_JRP.pdf)
+- [Markov Chain Monte Carlo (MCMC)](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo)
+- [Introduction to MCMC Sampling](https://twiecki.io/blog/2015/11/10/mcmc-sampling/)
+- [A Zero-Math Introduction to MCMC Methods](https://towardsdatascience.com/a-zero-math-introduction-to-markov-chain-monte-carlo-methods-dcba889e0c50)
 """
-import autofit as af
 import autofit.plot as aplt
 import numpy as np
 import matplotlib.pyplot as plt
+from os import path
+
+import autofit as af
 
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
-
-from os import path
 
 """
 __Data__
@@ -120,7 +154,6 @@ noise_map = af.util.numpy_array_from_json(
 )
 
 xvalues = np.arange(data.shape[0])
-print(xvalues)
 
 plt.errorbar(
     xvalues, data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
@@ -134,22 +167,22 @@ plt.clf()
 """
 __Model__
 
-Lets again define our 1D `Gaussian` model. 
+Create the `Gaussian` class from which we will compose model components using the standard format.
 """
 
 
 class Gaussian:
     def __init__(
         self,
-        centre=30.0,  # <- **PyAutoFit** recognises these constructor arguments
-        normalization=1.0,  # <- are the Gaussian`s model parameters.
-        sigma=5.0,
+        centre: float = 30.0,  # <- **PyAutoFit** recognises these constructor arguments
+        normalization: float = 1.0,  # <- are the Gaussian`s model parameters.
+        sigma: float = 5.0,
     ):
         """
         Represents a 1D Gaussian profile.
 
-        This is a model-component of example models in the **HowToFit** lectures and is used to fit example datasets
-        via a non-linear search.
+        This is a model-component of example models in the **HowToFit** lectures and is used to perform model-fitting
+        of example datasets.
 
         Parameters
         ----------
@@ -164,9 +197,8 @@ class Gaussian:
         self.normalization = normalization
         self.sigma = sigma
 
-    def model_data_1d_via_xvalues_from(self, xvalues: np.ndarray):
+    def model_data_from(self, xvalues: np.ndarray) -> np.ndarray:
         """
-
         Returns a 1D Gaussian on an input list of Cartesian x coordinates.
 
         The input xvalues are translated to a coordinate system centred on the Gaussian, via its `centre`.
@@ -178,6 +210,11 @@ class Gaussian:
         ----------
         xvalues
             The x coordinates in the original reference frame of the data.
+
+        Returns
+        -------
+        np.array
+            The Gaussian values at the input x coordinates.
         """
         transformed_xvalues = np.subtract(xvalues, self.centre)
         return np.multiply(
@@ -196,32 +233,30 @@ print(model.info)
 """
 __Priors__
 
-When we print its `.info`, we see that the parameters have priors (e.g. `UniformPrior`). We have so far not worried 
-about what these meant, but now we understand how a non-linear search works we can now discuss what priors are.
+When we examine the `.info` of our model, we notice that each parameter (like `centre`, `normalization`, 
+and `sigma` in our Gaussian model) is associated with priors, such as `UniformPrior`. These priors define the 
+range of permissible values that each parameter can assume during the model fitting process.
 
-A parameter, for example the `centre` of the `Gaussian`, could take any value between negative and positive infinity. 
-However, when we inspect the data it is clearly confined to values between 0.0 and 100.0. Our model parameter space 
-should reflect this, and only contain solutions with these physically plausible values between 0.0 --> 100.0.
+For instance, consider the `centre` parameter of our Gaussian. In theory, it could take on any value from 
+negative to positive infinity. However, upon inspecting our dataset, we observe that valid values for `centre` 
+fall strictly between 0.0 and 100.0. By using a `UniformPrior` with `lower_limit=0.0` and `upper_limit=100.0`, 
+we restrict our parameter space to include only physically plausible values.
 
-One role of priors is to define where parameter space has valid solutions. The `centre` parameter has 
-a `UniformPrior` with a  `lower_limit=0.0` and `upper_limit=100.0`. It therefore is already confined to the values 
-discussed above.
+Priors serve two primary purposes:
 
-Priors have a second role: they encode our previous beliefs about a model and what values we expect the parameters 
-to have. 
+**Defining Valid Parameter Space:** Priors specify the range of parameter values that constitute valid solutions. 
+This ensures that our model explores only those solutions that are consistent with our observed data and physical 
+constraints.
 
-For example, imagine we had multiple datasets observing the same signal and we had already fitted the model to the 
-first signal already. We may set priors that reflect this result, as we have prior knowledge of what the parameters
-will likely be. 
+**Incorporating Prior Knowledge:** Priors also encapsulate our prior beliefs or expectations about the model 
+parameters. For instance, if we have previously fitted a similar model to another dataset and obtained certain 
+parameter values, we can incorporate this knowledge into our priors for a new dataset. This approach guides the 
+model fitting process towards parameter values that are more probable based on our prior understanding.
 
-Setting priros in this way actually changes the result inferred when fitting the second dataset, because the priors 
-partly constrain the result based on the information learned in the first fit. Other types of priors you will 
-see throughout the autofit workspace (e.g `GaussianPrior`, `LogUniformPrior`) allow one to encode this type of 
-information in a fit..
-
-In this tutorial, we will stick to uniform priors, as they are conceptually the most simple.
-
-Lets manually set the priors of the model we fit in this example.
+While we are using `UniformPriors` in this tutorial due to their simplicity, **PyAutoFit** offers various other 
+priors like `GaussianPrior` and `LogUniformPrior`. These priors are useful for encoding different forms of prior 
+information, such as normally distributed values around a mean (`GaussianPrior`) or parameters spanning multiple 
+orders of magnitude (`LogUniformPrior`).
 """
 model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 model.normalization = af.UniformPrior(lower_limit=0.0, upper_limit=10.0)
@@ -230,18 +265,20 @@ model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=10.0)
 """
 __Analysis__
 
-The non-linear search requires an `Analysis` class, which:
+In **PyAutoFit**, the `Analysis` class plays a crucial role in interfacing between the data being fitted and the 
+model under consideration. Its primary responsibilities include:
 
- 1) Receives the data that the model fits.
+**Receiving Data:** The `Analysis` class is initialized with the data (`data`) and noise map (`noise_map`) that 
+ the model aims to fit. 
 
- 2) Defines the `log_likelihood_function`, which computes a `log_likelihood` from a model instance. 
+**Defining the Log Likelihood Function:** The `Analysis` class defines the `log_likelihood_function`, which 
+ computes the log likelihood of a model instance given the data. It evaluates how well the model, for a given set of 
+ parameters, fits the observed data. 
 
- 3) Provides an interface between the non-linear search and the `log_likelihood_function`, so the search can determine
-    the goodness of fit of any set of model parameters.
+**Interface with Non-linear Search:** The `log_likelihood_function` is repeatedly called by the non-linear search 
+ algorithm to assess the goodness of fit of different parameter combinations. The search algorithm call this function
+ many times and maps out regions of parameter space that yield high likelihood solutions.
     
-The non-linear search calls the `log_likelihood_function` many times, enabling it map out the high likelihood regions 
-of parameter space and converges on the highest log likelihood solutions.
-
 Below is a suitable `Analysis` class for fitting a 1D gaussian to the data loaded above.
 """
 
@@ -287,12 +324,12 @@ class Analysis(af.Analysis):
         print("Normalization = ", instance.normalization)
         print("Sigma = ", instance.sigma)
 
-        The data is fitted using an `instance` of the `Gaussian` class where its `model_data_1d_via_xvalues_from`
+        The data is fitted using an `instance` of the `Gaussian` class where its `model_data_from`
         is called in order to create a model data representation of the Gaussian that is fitted to the data.
         """
         xvalues = np.arange(self.data.shape[0])
 
-        model_data = instance.model_data_1d_via_xvalues_from(xvalues=xvalues)
+        model_data = instance.model_data_from(xvalues=xvalues)
         residual_map = self.data - model_data
         chi_squared_map = (residual_map / self.noise_map) ** 2.0
         chi_squared = sum(chi_squared_map)
@@ -310,17 +347,32 @@ analysis = Analysis(data=data, noise_map=noise_map)
 """
 __Search__
 
-To use the non-linear search `Emcee` we simply create an instance of the `af.Emcee` object and pass the analysis
-and model to its `fit` method.
+To use the non-linear search `Dynesty` we simply create an instance of the `af.DynestyStatic` object. The word
+static refers to us using the static variant of the Dynesty algorithm, rather than the dynamic variant. You don't
+need to worry about this for now.
+
+No inputs are specified for the `Dynesty` object, even though it (and all non-linear searches) have many tunable
+parameters that control the behaviour of the non-linear search. The next tutorials describes how a search's settings
+can change the behaviour of the non-linear search and your results.
+
+The default settings of the non-linear search are specified in **PyAutoFit** configuration files found in the
+`autofit_workspace/config/non_linear` folder. 
+
+For now, we use the default configuration settings, which are sufficient for simple model fitting problems. In 
+chapter 2, we will consider how and when these settings should be manually specified for your model fitting problem.
+
+In this example, non-linear search results are stored in memory rather and not written to hard disk because the fits 
+are fast and can therefore be easily regenerated. The next tutorial will perform fits which write results to the
+hard-disk.
 """
-model = af.Model(Gaussian)
-
-search = af.Emcee()
+search = af.DynestyStatic(
+    sample="rwalk",  # This makes dynesty run faster, dont worry about what it means for now!
+)
 
 """
-__Model Fit__
+To begin the model-fit via the non-linear search, we pass it our model and analysis and begin the fit.
 
-We begin the non-linear search by calling its `fit` method. This will take a minute or so to run.
+The fit will take a minute or so to run.
 """
 print(
     """
@@ -328,6 +380,8 @@ print(
     This Jupyter notebook cell with progress once the search has completed - this could take a few minutes!
     """
 )
+
+model = af.Model(Gaussian)
 
 result = search.fit(model=model, analysis=analysis)
 
@@ -347,8 +401,8 @@ the `model.info` attribute display optimally on your computer. This attribute al
 print(result.info)
 
 """
-The result has a "maximum log likelihood instance", which is the instance of the model (e.g. the `Gaussian`) with
-the model parameters that gave the highest overall log likelihood out of any model trialed by the non-linear search.
+The result has a "maximum log likelihood instance", which refers to the specific set of model parameters (e.g., 
+for a `Gaussian`) that yielded the highest log likelihood among all models tested by the non-linear search.
 """
 print("Maximum Likelihood Model:\n")
 max_log_likelihood_instance = result.samples.max_log_likelihood()
@@ -359,14 +413,14 @@ print("Sigma = ", max_log_likelihood_instance.sigma)
 """
 We can use this to plot the maximum log likelihood fit over the data and confirm that a good fit was inferred:
 """
-model_data = result.max_log_likelihood_instance.model_data_1d_via_xvalues_from(
+model_data = result.max_log_likelihood_instance.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 plt.errorbar(
     x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.plot(xvalues, model_data, color="r")
-plt.title("Emcee model fit to 1D Gaussian dataset.")
+plt.title("Dynesty model fit to 1D Gaussian dataset.")
 plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.show()
@@ -375,35 +429,53 @@ plt.close()
 """
 __Samples__
 
-Above, we used the `Result`'s `samples` property, which in this case is a `SamplesMCMC` object:
+Above, we used the `Result`'s `samples` property, which in this case is a `SamplesNest` object:
 """
 print(result.samples)
 
 """
-This object acts as an interface between the `Emcee` output results on your hard-disk and this Python code. For
-example, we can use it to get the parameters and log likelihood of an accepted emcee sample.
+This object acts as an interface between the `Dynesty` output results and your Jupyter Notebook or Python code. 
+
+For example, we can use it to get the parameters and log likelihood of an accepted Dynesty sample.
 """
 print(result.samples.parameter_lists[10][:])
 print(result.samples.log_likelihood_list[10])
 
 """
-The Probability Density Functions (PDF's) of the results can be plotted using the Emcee's visualization 
-tool `corner.py`, which is wrapped via the `MCMCPlotter` object.
+You can visualize the "Probability Density Functions (PDFs)" of the results using a software package called 
+`anesthetic` through the `NestPlotter` object in Dynesty. 
 
-The PDF shows the 1D and 2D probabilities estimated for every parameter after the model-fit. The two dimensional 
-figures can show the degeneracies between different parameters, for example how increasing $\sigma$ and decreasing 
-the normalization $I$ can lead to similar likelihoods and probabilities.
+These plots display the 1D and 2D probabilities estimated for each parameter after fitting the model. The 2D 
+figures reveal parameter degeneracies, such as how changes in one parameter (like increasing \(\sigma\) while 
+decreasing normalization \(I\)) can result in similar likelihoods and probabilities.
 """
-plotter = aplt.MCMCPlotter(samples=result.samples)
-plotter.corner_cornerpy()
+plotter = aplt.NestPlotter(samples=result.samples)
+plotter.corner_anesthetic()
 
 """
-A more detailed description of the `Result` object will be given in tutorial 5.
+A more detailed description of the `Result` object is given in tutorial 5 of this chapter.
 
 __Wrap Up__
 
-This tutorial introduced a lot of concepts: the parameter space, likelihood surface, non-linear search, priors, 
-and much more. 
+This tutorial has laid the foundation with several fundamental concepts in model fitting and statistical inference:
 
-Make sure you are confident in your understanding of them, however the next tutorial will expand on them all.
+1. **Parameter Space**: This refers to the range of possible values that each parameter in a model can take. It 
+defines the dimensions over which the likelihood of different parameter values is evaluated.
+
+2. **Likelihood Surface**: This surface represents how the likelihood of the model varies across the parameter space. 
+It helps in identifying the best-fit parameters that maximize the likelihood of the model given the data.
+
+3. **Non-linear Search**: This is an optimization technique used to explore the parameter space and find the 
+combination of parameter values that best describe the data. It iteratively adjusts the parameters to maximize the likelihood.
+
+4. **Priors**: Priors are probabilities assigned to different values of parameters before considering the data. 
+They encapsulate our prior knowledge or assumptions about the parameter values. Priors can constrain the parameter 
+space, making the search more efficient and realistic.
+
+5. **Model Fitting**: The process of adjusting model parameters to minimize the difference between model predictions 
+and observed data, quantified by the likelihood function.
+
+Understanding these concepts is crucial as they form the backbone of model fitting and parameter estimation in 
+scientific research and data analysis. In the next tutorials, these concepts will be further expanded upon to 
+deepen your understanding and provide more advanced techniques for model fitting and analysis.
 """
