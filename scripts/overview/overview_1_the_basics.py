@@ -2,22 +2,27 @@
 Overview: The Basics
 --------------------
 
-PyAutoFit is a Python based probabilistic programming language which enables detailed Bayesian analysis of scientific
-datasets, with everything necessary to scale-up Bayesian analysis to complex models and big datasets.
+**PyAutoFit** is a Python based probabilistic programming language for model fitting and Bayesian inference
+of large datasets.
 
-In this overview, we introduce the basic API for model-fitting with **PyAutoFit**, including how to define a likelihood
-function, compose a probabilistic model, and fit it to data via a non-linear fitting algorithm (e.g.
-Markov Chain Monta Carlo (MCMC), maximum likelihood estimator, nested sampling).
+The basic **PyAutoFit** API allows us a user to quickly compose a probabilistic model and fit it to data via a
+log likelihood function, using a range of non-linear search algorithms (e.g. MCMC, nested sampling).
 
-If you have previous experience performing model-fitting and Bayesian inference this will all be very familiar, but
-we'll highlight some benefits of using **PyAutoFit** instead of setting up the modeling manually yourself (e.g. by
-wrapping an MCMC library with your likelihood function).
+This overview gives a run through of:
 
-The biggest benefits of using **PyAutoFit** are presented after we've introduced the API and can be summarized as follows:
+ - **Models**: Use Python classes to compose the model which is fitted to data.
+ - **Instances**: Create instances of the model via its Python class.
+ - **Analysis**: Define an ``Analysis`` class which includes the log likelihood function that fits the model to the data.
+ - **Searches**: Choose an MCMC, nested sampling or maximum likelihood estimator non-linear search algorithm that fits the model to the data.
+ - **Model Fit**: Fit the model to the data using the chosen non-linear search, with on-the-fly results and visualization.
+ - **Results**: Use the results of the search to interpret and visualize the model fit.
+- **Samples**: Use the samples of the search to inspect the parameter samples and visualize the probability density function of the results.
+- **Multiple Datasets**: Dedicated support for simultaneously fitting multiple datasets, enabling scalable analysis of large datasets.
 
-- **The scientific workflow**: streamline detailed modeling and analysis of small datasets with tools enabling the scaling up to large datasets.
+This overviews provides a high level of the basic API, with more advanced functionality described in the following
+overviews and the **PyAutoFit** cookbooks.
 
-- **Statistical Inference Methods**: Dedicated functionality for many advanced statical inference methods, including Bayesian hierarchical analysis, model comparison and graphical models.
+To begin, lets import ``autofit`` (and ``numpy``) using the convention below:
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -30,16 +35,12 @@ import autofit.plot as aplt
 
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 from os import path
 
 """
 __Example Use Case__
 
-To illustrate **PyAutoFit** we'll use the example modeling problem of fitting a noisy 1D signal. 
-
-We load the example 1D data containing this noisy signal below, which is included with the `autofit_workspace`
-in .json files.
+To illustrate **PyAutoFit** we'll use the example modeling problem of fitting a 1D Gaussian profile to noisy data.
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
 data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
@@ -48,7 +49,7 @@ noise_map = af.util.numpy_array_from_json(
 )
 
 """
-We plot the data containing the noisy 1D signal.
+We plot the data with error bars below, showing the noisy 1D signal.
 """
 xvalues = range(data.shape[0])
 
@@ -70,27 +71,19 @@ g(x, I, \sigma) = \frac{N}{\sigma\sqrt{2\pi}} \exp{(-0.5 (x / \sigma)^2)}
 
 Where:
 
-`x`: Is the x-axis coordinate where the `Gaussian` is evaluated.
+ ``x``: The x-axis coordinate where the ``Gaussian`` is evaluated.
 
-`N`: Describes the overall normalization of the Gaussian.
+ ``N``: The overall normalization of the Gaussian.
 
-$\sigma$: Describes the size of the Gaussian (Full Width Half Maximum = $\mathrm {FWHM}$ = $2{\sqrt {2\ln 2}}\;\sigma$)
+ ``sigma``: Describes the size of the Gaussian.
 
-Our modeling task is to fit the signal with a 1D Gaussian and recover its parameters (`x`, `N`, `sigma`).
+Our modeling task is to fit the data with a 1D Gaussian and recover its parameters (``x``, ``N``, ``sigma``).
 
 __Model__
 
-We therefore need to define a 1D Gaussian as a "model component" in **PyAutoFit**.
+We therefore need to define a 1D Gaussian as a **PyAutoFit** model.
 
-A model component is written as a Python class using the following format:
-
-- The name of the class is the name of the model component, in this case, "Gaussian".
-
-- The input arguments of the constructor (the `__init__` method) are the parameters of the model, in this case `centre`, `normalization` and `sigma`.
-  
-- The default values of the input arguments define whether a parameter is a single-valued `float` or a  multi-valued `tuple`. In this case, all 3 input parameters are floats.
-  
-- It includes functions associated with that model component, which will be used when fitting the model to data.
+We do this by writing it as the following Python class:
 """
 
 
@@ -143,6 +136,16 @@ class Gaussian:
 
 
 """
+The **PyAutoFit** model above uses the following format:
+
+- The name of the class is the name of the model, in this case, "Gaussian".
+
+- The input arguments of the constructor (the ``__init__`` method) are the parameters of the model, in this case ``centre``, ``normalization`` and ``sigma``.
+  
+- The default values of the input arguments define whether a parameter is a single-valued ``float`` or a multi-valued ``tuple``. In this case, all 3 input parameters are floats.
+  
+- It includes functions associated with that model component, which are used when fitting the model to data.
+
 To compose a model using the `Gaussian` class above we use the `af.Model` object.
 """
 model = af.Model(Gaussian)
@@ -170,7 +173,7 @@ appear in a notebook).]
 print(model.info)
 
 """
-The priors can be manually altered as follows, noting that these updated files will be used below when we fit the
+The priors can be manually altered as follows, noting that these updated priors will be used below when we fit the
 model to data.
 """
 model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
@@ -183,29 +186,28 @@ Printing the `model.info` displayed these updated priors.
 print(model.info)
 
 """
+The example above uses the most basic PyAutoFit API to compose a simple model. The API is highly extensible and
+can scale to models with thousands of parameters, complex hierarchies and relationships between parameters.
+A complete overview is given in the `model cookbook <https://pyautofit.readthedocs.io/en/latest/cookbooks/model.html>`_.
+
 __Instances__
 
-Instances of the model components above (created via `af.Model`) can be created, where an input `vector` of
-parameters is mapped to create an instance of the Python class of the model.
+Instances of a **PyAutoFit** model (created via `af.Model`) can be generated by mapping an input `vector` of parameter 
+values to create an instance of the model's Python class.
 
-We first need to know the order of parameters in the model, so we know how to define the input `vector`. This
-information is contained in the models `paths` attribute:
+To define the input `vector` correctly, we need to know the order of parameters in the model. This information is 
+contained in the model's `paths` attribute.
 """
 print(model.paths)
 
 """
-We input values for the 3 free parameters of our model following the order of paths above:
- 
- 1) `centre=30.0`
- 2) `normalization=2.0` 
- 3) `sigma=3.0` 
- 
-This creates an `instance` of the Gaussian class via the model. 
+We input values for the three free parameters of our model in the order specified by the `paths` 
+attribute (i.e., `centre=30.0`, `normalization=2.0`, and `sigma=3.0`):
 """
 instance = model.instance_from_vector(vector=[30.0, 2.0, 3.0])
 
 """
-This is an instance of the `Gaussian` class.
+This is an instance of the ``Gaussian`` class.
 """
 print("Model Instance: \n")
 print(instance)
@@ -237,17 +239,22 @@ plt.clf()
 This "model mapping", whereby models map to an instances of their Python classes, is integral to the core **PyAutoFit**
 API for model composition and fitting.
 
+Mapping models to instance of their Python classes is an integral part of the core **PyAutoFit** API. It enables
+the advanced model composition and results management tools illustrated in the following overviews and cookbooks.
+
 __Analysis__
 
-Now we've defined our model, we need to inform **PyAutoFit** how to fit it to data.
+We now tell **PyAutoFit** how to fit the model to the data.
 
-We therefore define an `Analysis` class, which includes:
+We define an `Analysis` class, which includes:
 
- - An `__init__` constructor, which takes as input the `data` and `noise_map`. This could be extended to include anything else necessary to fit the model to the data.
+- An `__init__` constructor that takes `data` and `noise_map` as inputs (this can be extended with additional elements 
+  necessary for fitting the model to the data).
+  
+- A `log_likelihood_function` that defines how to fit an `instance` of the model to the data and return a log 
+  likelihood value.
 
- - A `log_likelihood_function`, which defines how given an `instance` of the model we fit it to the data and return a log likelihood value.
-
-Read the comments and docstrings of the `Analysis` object below in detail for more insights into how this object
+Read the comments and docstrings of the `Analysis` class in detail for a full description of how the analysis works.
 works.
 """
 
@@ -329,22 +336,34 @@ Create an instance of the `Analysis` class by passing the `data` and `noise_map`
 analysis = Analysis(data=data, noise_map=noise_map)
 
 """
+The `Analysis` class shown above is the simplest example possible. The API is highly extensible and can include
+model-specific output, visualization and latent variable calculations. A complete overview is given in the
+analysis cookbook <https://pyautofit.readthedocs.io/en/latest/cookbooks/analysis.html>`_.
+
 __Non Linear Search__
 
-We have defined the model that we want to fit the data, and the analysis class that performs this fit.
+We now have a model ready to fit the data and an analysis class that performs this fit.
 
-We now choose our fitting algorithm, called the "non-linear search", and fit the model to the data.
+Next, we need to select a fitting algorithm, known as a "non-linear search," to fit the model to the data.
 
-For this example, we choose the nested sampling algorithm Dynesty. A wide variety of non-linear searches are 
-available in **PyAutoFit** (see ?).
+**PyAutoFit** supports various non-linear searches, which can be broadly categorized into three types: 
+MCMC (Markov Chain Monte Carlo), nested sampling, and maximum likelihood estimators.
+
+For this example, we will use the nested sampling algorithm called Dynesty.
 """
 search = af.DynestyStatic(
-    nlive=100,
-    sample="rwalk",
-    number_of_cores=1,
+    nlive=100,  # Example how to customize the search settings
 )
 
 """
+The default settings of the non-linear search are specified in the configuration files of **PyAutoFit**, just
+like the default priors of the model components above. The ensures the basic API of your code is concise and
+readable, but with the flexibility to customize the search to your specific model-fitting problem.
+
+PyAutoFit supports a wide range of non-linear searches, including detailed visualuzation, support for parallel
+processing, and GPU and gradient based methods using the library JAX (https://jax.readthedocs.io/en/latest/).
+A complete overview is given in the `searches cookbook <https://pyautofit.readthedocs.io/en/latest/cookbooks/search.html>`_.
+
 __Model Fit__
 
 We begin the non-linear search by calling its `fit` method. 
@@ -409,19 +428,82 @@ plt.close()
 """
 __Samples__
 
-The results object also contains a `Samples` object, which contains all information on the non-linear search.
+The results object also contains a ``Samples`` object, which contains all information on the non-linear search.
 
 This includes parameter samples, log likelihood values, posterior information and results internal to the specific
 algorithm (e.g. the internal dynesty samples).
 
-This is described fully in the results overview, below we use the samples to plot the probability density function
-corner of the results.
+Below we use the samples to plot the probability density function cornerplot of the results.
 """
 plotter = aplt.NestPlotter(samples=result.samples)
-plotter.corner_cornerpy()
+plotter.corner_anesthetic()
 
 """
+The `results cookbook <https://pyautofit.readthedocs.io/en/latest/cookbooks/result.html>`_ also provides 
+a run through of the samples object API.
+
+__Multiple Datasets__
+
+Many model-fitting problems require multiple datasets to be fitted simultaneously in order to provide the best
+constraints on the model.
+
+In **PyAutoFit**, all you have to do to fit multiple datasets is sum your ``Analysis`` classes together:
+"""
+# For illustration purposes, we'll input the same data and noise-map as the example, but for a realistic example
+# you would input different datasets and noise-maps to each analysis.
+
+analysis_0 = Analysis(data=data, noise_map=noise_map)
+analysis_1 = Analysis(data=data, noise_map=noise_map)
+
+# This means the model is fitted to both datasets simultaneously.
+
+analysis = analysis_0 + analysis_1
+
+# summing a list of analysis objects is also a valid API:
+
+analysis = sum([analysis_0, analysis_1])
+
+"""
+__Wrap Up__
+
+This overview covers the basic functionality of **PyAutoFit** using a simple model, dataset, and model-fitting problem, 
+demonstrating the fundamental aspects of its API.
+
+By now, you should have a clear understanding of how to define and compose your own models, fit them to data using 
+a non-linear search, and interpret the results.
+
+The **PyAutoFit** API introduced here is highly extensible and customizable, making it adaptable to a wide range 
+of model-fitting problems.
+
+The next overview will delve into setting up a scientific workflow with **PyAutoFit**, utilizing its API to 
+optimize model-fitting efficiency and scalability for large datasets. This approach ensures that detailed scientific 
+interpretation of the results remains feasible and insightful.
+
+__Resources__
+
+The `autofit_workspace: <https://github.com/Jammy2211/autofit_workspace/>`_ repository on GitHub provides numerous 
+examples demonstrating more complex model-fitting tasks.
+
+This includes cookbooks, which provide a concise reference guide to the **PyAutoFit** API for advanced model-fitting:
+
+- [Model Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/model.html): Learn how to compose complex models using multiple Python classes, lists, dictionaries, and customize their parameterization. 
+
+- [Analysis Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/search.html): Customize the analysis with model-specific output and visualization to gain deeper insights into your model fits. 
+
+- [Searches Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/analysis.html): Choose from a variety of non-linear searches and customize their behavior. This includes options like outputting results to hard disk and parallelizing the search process. 
+
+- [Results Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/result.html): Explore the various results available from a fit, such as parameter estimates, error estimates, model comparison metrics, and customizable visualizations. 
+
+- [Configs Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/configs.html): Customize default settings using configuration files. This allows you to set priors, search settings, visualization preferences, and more. 
+
+- [Multiple Dataset Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/multiple_datasets.html): Learn how to fit multiple datasets simultaneously by combining their analysis classes so that their log likelihoods are summed. 
+
+These cookbooks provide detailed guides and examples to help you leverage the **PyAutoFit** API effectively for a wide range of model-fitting tasks.
+
 __Extending Models__
+
+The main overview is now complete, howeveer below we provide an example of how to compose and fit a model
+consisting of multiple components, which is a common requirement in many model-fitting problems.
 
 The model composition API is designed to  make composing complex models, consisting of multiple components with many 
 free parameters, straightforward and scalable.
@@ -677,27 +759,5 @@ plt.show()
 plt.close()
 
 """
-__Cookbooks__
-
-This overview shows the basics of model-fitting with **PyAutoFit**.
-
-The API is designed to be intuitive and extensible, and you should have a good feeling for how you would define
-and compose your own model, fit it to data with a chosen non-linear search, and use the results to interpret the
-fit.
-
-The following cookbooks give a concise API reference for using **PyAutoFit**, and you should use them as you define
-your own model to get a fit going:
-
-- Model Cookbook: https://pyautofit.readthedocs.io/en/latest/cookbooks/model.html
-- Searches Cookbook: https://pyautofit.readthedocs.io/en/latest/cookbooks/analysis.html
-- Analysis Cookbook: https://pyautofit.readthedocs.io/en/latest/cookbooks/search.html
-- Results Cookbook: https://pyautofit.readthedocs.io/en/latest/cookbooks/result.html
-
-__What Next?__
-
-The next overview describes how to set up a scientific workflow, where many other tasks required to perform detailed but
-scalable model-fitting can be delegated to **PyAutoFit**. 
-
-After that, we'll give a run-through of **PyAutoFit**'s advanced statistical inference features, including tools
-to scale Bayesian Hierarchical Analysis to large datasets.
+Finish.
 """
