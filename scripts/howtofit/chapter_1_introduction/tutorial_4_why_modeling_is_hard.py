@@ -744,10 +744,10 @@ print(model.info)
 __Search__
 
 We again use the nested sampling algorithm Dynesty to fit the model to the data, but now increase the number of live 
-points to 500 meaning it will search parameter space more thoroughly.
+points to 300 meaning it will search parameter space more thoroughly.
 """
 search = af.DynestyStatic(
-    nlive=500,
+    nlive=300,
     sample="rwalk",  # This makes dynesty run faster, don't worry about what it means for now!
 )
 

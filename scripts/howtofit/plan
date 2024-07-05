@@ -1,5 +1,7 @@
 Chapter 1:
 
+Note yet used the term "degeneracy" or referred to a corner plot.
+
 - `tutorial_1_models.py`: What a probabilistic model is and how to compose a model using PyAutoFit.
 - `tutorial_2_fitting_data.py`: Fitting a model to data and quantifying its goodness-of-fit.
 - `tutorial_3_non_linear_search.py`: Searching a non-linear parameter spaces to find the model that best fits the data.
@@ -12,7 +14,7 @@ Chapter 1:
 Chapter 2:
 
 - `tutorial_1_output`: Outputting as much information as possible about the model-fit to the hard-disk.
-- `tutorial_2_loading_results`: Loading the results of a model-fit from the hard-disk (with and wthout database).
+- `tutorial_2_loading_results`: Loading the results of a model-fit from the hard-disk (with and without database).
 - `tutorial_3_model_customization`: Customizing the model in a way that enables more detailed analysis of the results.
 - `tutorial_4_searches`: Customizing the search used to perform the model-fit.
 - `tutorial_5_config`: Customizing the configuration of the model-fit.

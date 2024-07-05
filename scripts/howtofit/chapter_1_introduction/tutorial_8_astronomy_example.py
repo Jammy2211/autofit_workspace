@@ -78,6 +78,8 @@ __Plot__
 We will plot a lot of arrays of 2D data and grids of 2D coordinates in this example, so lets make a convenience 
 functions.
 """
+
+
 def plot_array(array, title=None, norm=None, filename=None):
     plt.imshow(array, norm=norm)
     plt.colorbar()
@@ -95,6 +97,7 @@ def plot_grid(grid, title=None):
     plt.show()
     plt.clf()
     plt.close()
+
 
 """
 __Data__
@@ -187,6 +190,8 @@ This is a common object-oriented programming feature in Python, but is not somet
 use **PyAutoFit**. If the code below is confusing, don't worry about it for now, it won't impact your ability to use
 **PyAutoFit**.
 """
+
+
 class GeometryProfile:
     def __init__(
         self,
@@ -384,7 +389,8 @@ class LightBulgey(LightProfile):
         grid_elliptical_radii = self.elliptical_radii_grid_from(grid=grid_transformed)
 
         return self.intensity * np.exp(
-            -7.66924 * ((grid_elliptical_radii / self.effective_radius) ** (1.0 / 7.66924) - 1.0)
+            -7.66924
+            * ((grid_elliptical_radii / self.effective_radius) ** (1.0 / 7.66924) - 1.0)
         )
 
 
@@ -435,8 +441,10 @@ class LightDisky(LightProfile):
         grid_elliptical_radii = self.elliptical_radii_grid_from(grid=grid_transformed)
 
         return self.intensity * np.exp(
-            -1.67838 * ((grid_elliptical_radii / self.effective_radius) ** (1.0 / 1.67838) - 1.0)
+            -1.67838
+            * ((grid_elliptical_radii / self.effective_radius) ** (1.0 / 1.67838) - 1.0)
         )
+
 
 """
 Here is an example of an image of a `LightDisky` profile, using the `image_from_grid` method and the
@@ -455,9 +463,7 @@ __Model Data__
 To produce the `model_data`, we now convolve the overall image with the Point Spread Function (PSF) of our observations. 
 This blurs the image to simulate the effects of the telescope optics and pixelization used to capture the image.
 """
-model_data = signal.convolve2d(
-    light_image, psf, mode="same"
-)
+model_data = signal.convolve2d(light_image, psf, mode="same")
 
 plot_array(array=model_data, title="Model Data of the Light Profile.")
 
@@ -488,7 +494,7 @@ Finally, we compute the `log_likelihood` of this model, which will be used next 
 a non-linear search.
 """
 chi_squared = np.sum(chi_squared_map)
-noise_normalization = np.sum(np.log(2 * np.pi * noise_map ** 2.0))
+noise_normalization = np.sum(np.log(2 * np.pi * noise_map**2.0))
 
 log_likelihood = -0.5 * (chi_squared + noise_normalization)
 
@@ -503,9 +509,7 @@ This allows us to treat the light profile as a model component that can be used 
 Although we are currently using only one light profile in this example, we structure it within a `Collection` for 
 potential extension with multiple light profiles.
 """
-model = af.Collection(
-    light_0=af.Model(LightDisky)
-)
+model = af.Collection(light_0=af.Model(LightDisky))
 
 """
 The `model` operates the same as the model components we've utilized previously. 
@@ -520,7 +524,9 @@ This reduces the number of free parameters and simplifies the complexity of the 
 """
 model.light_0.centre_0 = 0.0
 model.light_0.centre_1 = 0.0
-model.light_0.axis_ratio = af.UniformPrior(lower_limit=0.7, upper_limit=1.0)
+model.light_0.angle = af.UniformPrior(lower_limit=70.0, upper_limit=140.0)
+model.light_0.axis_ratio = af.UniformPrior(lower_limit=0.3, upper_limit=1.0)
+model.light_0.effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=3.0)
 
 """
 The model info contains information on all of the model components and priors, including the updates above.
@@ -535,8 +541,17 @@ We now define the `Analysis` class for this astronomy example, which will fit th
 Checkout all the docstrings in this class for details on how the fit is performed to 2D imaging data, including
 the role of the mask and PSF.
 """
+
+
 class Analysis(af.Analysis):
-    def __init__(self, data: np.ndarray, noise_map: np.ndarray, psf: np.ndarray, grid: np.ndarray, mask:np.ndarray):
+    def __init__(
+        self,
+        data: np.ndarray,
+        noise_map: np.ndarray,
+        psf: np.ndarray,
+        grid: np.ndarray,
+        mask: np.ndarray,
+    ):
         """
         The analysis class for the **PyAutoFit** example Astronomy project on galaxy fitting.
 
@@ -617,7 +632,6 @@ class Analysis(af.Analysis):
         # print("Light Profile = ", instance.light)
         # print("Light Profile Centre= ", instance.light.centre)
 
-
         """
         Generate the model data from the instance using the functions of the light profile class above.
         
@@ -641,7 +655,10 @@ class Analysis(af.Analysis):
         data can be made.
         """
         residual_map = np.subtract(
-            self.data, model_data, out=np.zeros_like(data), where=np.asarray(self.mask) == 0
+            self.data,
+            model_data,
+            out=np.zeros_like(data),
+            where=np.asarray(self.mask) == 0,
         )
 
         normalized_residual_map = np.divide(
@@ -661,7 +678,9 @@ class Analysis(af.Analysis):
         )
 
         chi_squared = float(np.sum(chi_squared_map[np.asarray(self.mask) == 0]))
-        noise_normalization = float(np.sum(np.log(2 * np.pi * noise_map[np.asarray(mask) == 0] ** 2.0)))
+        noise_normalization = float(
+            np.sum(np.log(2 * np.pi * noise_map[np.asarray(mask) == 0] ** 2.0))
+        )
 
         log_likelihood = -0.5 * (chi_squared + noise_normalization)
 
@@ -695,13 +714,12 @@ class Analysis(af.Analysis):
         for light_profile in instance:
             overall_image += light_profile.image_from_grid(grid=self.grid)
 
-        model_data = signal.convolve2d(
-            overall_image, self.psf, mode="same"
-        )
+        model_data = signal.convolve2d(overall_image, self.psf, mode="same")
 
         model_data[self.mask == 1] = 0.0
 
         return model_data
+
 
 """
 __Model Fit__
@@ -756,7 +774,9 @@ For 2D data, we visualize the model image, residual-map, normalized residual-map
 These quantities still have the same meanings as their 1D counterparts. For example, normalized residual-map values 
 still represent the sigma values of the residuals, with values greater than 3.0 indicating a poor fit to the data.
 """
-model_data = analysis.model_data_from_instance(instance=result.max_log_likelihood_instance)
+model_data = analysis.model_data_from_instance(
+    instance=result.max_log_likelihood_instance
+)
 
 residual_map = np.subtract(
     data, model_data, out=np.zeros_like(data), where=np.asarray(mask) == 0
@@ -778,14 +798,24 @@ chi_squared_map = np.square(
     )
 )
 
-plot_array(array=model_data, title="Model Data of the Light Profile.", filename="astro_model_data.png")
-plot_array(array=residual_map, title="Residual Map of fit", filename="astro_residual_map.png")
+plot_array(
+    array=model_data,
+    title="Model Data of the Light Profile.",
+    filename="astro_model_data.png",
+)
+plot_array(
+    array=residual_map, title="Residual Map of fit", filename="astro_residual_map.png"
+)
 plot_array(
     array=normalized_residual_map,
     title="Normalized Residual Map of fit",
-    filename="astro_normalized_residual_map.png"
+    filename="astro_normalized_residual_map.png",
 )
-plot_array(array=chi_squared_map, title="Chi Squared Map of fit", filename="astro_chi_squared_map.png")
+plot_array(
+    array=chi_squared_map,
+    title="Chi Squared Map of fit",
+    filename="astro_chi_squared_map.png",
+)
 
 """
 __Bulgey__
@@ -799,9 +829,7 @@ or a late-type galaxy.
 """
 result_disk = result
 
-model = af.Collection(
-    light_0=af.Model(LightBulgey)
-)
+model = af.Collection(light_0=af.Model(LightBulgey))
 
 model.light_0.centre_0 = 0.0
 model.light_0.centre_1 = 0.0
@@ -827,7 +855,9 @@ lower and the chi-squared-map values are closer to 0.0.
 
 This suggests that the galaxy is more likely to be an early-type galaxy with a bulge-like light profile.
 """
-model_data = analysis.model_data_from_instance(instance=result.max_log_likelihood_instance)
+model_data = analysis.model_data_from_instance(
+    instance=result.max_log_likelihood_instance
+)
 
 residual_map = np.subtract(
     data, model_data, out=np.zeros_like(data), where=np.asarray(mask) == 0
@@ -849,14 +879,24 @@ chi_squared_map = np.square(
     )
 )
 
-plot_array(array=model_data, title="Model Data of the Light Profile.", filename="astro_model_data2.png")
-plot_array(array=residual_map, title="Residual Map of fit", filename="astro_residual_map2.png")
+plot_array(
+    array=model_data,
+    title="Model Data of the Light Profile.",
+    filename="astro_model_data2.png",
+)
+plot_array(
+    array=residual_map, title="Residual Map of fit", filename="astro_residual_map2.png"
+)
 plot_array(
     array=normalized_residual_map,
     title="Normalized Residual Map of fit",
-    filename="astro_normalized_residual_map2.png"
+    filename="astro_normalized_residual_map2.png",
 )
-plot_array(array=chi_squared_map, title="Chi Squared Map of fit", filename="astro_chi_squared_map2.png")
+plot_array(
+    array=chi_squared_map,
+    title="Chi Squared Map of fit",
+    filename="astro_chi_squared_map2.png",
+)
 
 """
 To make certain of our interpretation, we should compare the log likelihoods of the two fits. The fit with the
@@ -878,10 +918,102 @@ I don't provide code examples of how to tackle these extensions with model-fitti
 how **PyAutoFit** could be used to address these problems and go ahead and give them a go yourself if you're feeling
 adventurous!
 
-The first extension is a common problem in astronomy: fitting a galaxy with multiple light profiles. Galaxies often
-have both a disk-like and a bulge-like component, which must be fitted simultaneously to accurately represent the
-galaxy's light distribution.
+**Multiple Components**: 
 
-In fact, the galaxy could have other structures, such as a bar or spiral arms. Heres an example of a galaxy
-with a bulge, disk and bar:
+The model above fitted a single light profile to the galaxy, which turned out to be a bulge-like component. 
+
+However, galaxies often have multiple components, for example a disk and bulge, but also structures such as a bar or
+spiral arms. Here is a galaxy with a bulge, disk, bar and spiral arms:
+
+![ngc](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/ngc1300.jpg?raw=true)
+ 
+To model this galaxy, we would add many different Python classes with their own parameters and light profiles 
+representing each component of the galaxy. They would then be combined into a single model, whose model image
+would be the summed image of each component, the total number of parameters would be in the twenties or thirties
+and the degeneracies between the parameters would be challenging to sample accurately. 
+
+Here is a snippet of rougyly what our model composition would look like:
+
+model = af.Collection(
+    bulge=LightBulge,
+    disk=LightDisk,
+    bar=LightBar,
+    spiral_arms=LightSpiralArms
+)
+
+This is a great example of how quickly model-fitting can become complex and how keeping track of the speed and
+efficiency of the non-linear search becomes crucial. Furthermore, with so many different light profiles to fit,
+**PyAutoFit**'s model composition API becomes invaluable.
+
+
+**Multiple Galaxies**:
+
+There is no reason our imaging data need contain only one galaxy. The data could include multiple galaxies, each
+of which we want to fit with its own light profile.
+
+Two galaxies close together are called galaxy mergers, and here is a beautiful example of a pair of merging galaxies:
+
+![merger](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/merger.jpg?raw=true)
+
+This would pretty much double the model complexity, as each galaxy would have its own model and light profile.
+All the usual issues then become doubly important, such as ensuring the likelihood function is efficient, that
+the search can sample parameter space accurately and that the results are interpreted correctly.
+
+The model composition would again change, and might look something like:
+
+model = af.Collection(
+    bulge_0=LightBulge,
+    disk_0=LightDisk,
+    bulge_1=LightBulge,
+    disk_1=LightDisk
+)
+
+model.bulge_0.centre_0 = 2.0
+model.bulge_0.centre_1 = 0.0
+model.disk_0.centre_0 = 2.0
+model.disk_0.centre_1 = 0.0
+
+model.bulge_1.centre_0 = -2.0
+model.bulge_1.centre_1 = 0.0
+model.disk_1.centre_0 = -2.0
+model.disk_1.centre_1 = 0.0
+
+In order to keep the model slightly more simple, the centres of the light profiles have been fixed to where
+they peak in the image. 
+
+**PyAutoFit** extensible model composition API actually has much better tools for composing complex models like this
+than the example above. You can find a concise run through of these in the model cookbook, but they will
+also be the focus on a tutorial in the next chapter of the **HowToFit** lectures.
+
+
+**Multiple Wavelengths**:
+
+Galaxies emit light in many wavelengths, for example ultraviolet, optical, infrared, radio and X-ray. Each wavelength
+provides different information about the galaxy, for example the ultraviolet light tells us about star formation,
+the optical light about the stars themselves and the infrared about dust.
+
+The image below shows observations of the same galaxy at different wavelengths:
+
+![multiband](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/multiwavelength.jpg?raw=true)
+
+In tutorial 6, we learn how to perform fits to multiple datasets simultaneously, and how to change the model
+parameterization to account for the variation across datasets. 
+
+Multi-wavelength modeling of galaxies is a great example of where this is useful, as it allows us to fit the galaxy
+with certain parameters shared across all wavelengths (e.g., its centre) and other parameters varied (e.g., its
+intensity and effective radius). A child project of **PyAutoFit**, called **PyAutoGalaxy**, uses this functionality
+to achieve exactly this.
+
+__Chapter Wrap Up__
+
+We have now completed the first chapter of **HowToFit**, which has taught you the basics of model-fitting.
+
+Its now time you take everything you've learnt and apply it to your own model-fitting problem. Think carefully
+about the key concepts of this chapter, for example how to compose a model, how to create an analysis class and
+how to overcome challenges that arise when fitting complex models.
+
+Once you are familiar with these concepts, and confident that you have some simple model-fitting problems under
+your belt, you should move on to the next chapter. This covers how to build a scientific workflow around your
+model-fitting, so that you can begin to scale up your model-fitting to more complex models, larger datasets and
+more difficult problems. Checkout the `start_here.ipynb` notebook in chapter 2 to get started!
 """
