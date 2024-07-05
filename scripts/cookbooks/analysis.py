@@ -369,7 +369,7 @@ class ResultExample(af.Result):
         """
         xvalues = np.arange(self.analysis.data.shape[0])
 
-        return self.instance.model_data_from(instance=xvalues)
+        return self.instance.model_data_from(xvalues=xvalues)
 
 
 """

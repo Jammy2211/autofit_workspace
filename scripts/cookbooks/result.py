@@ -1,37 +1,61 @@
 """
-Cookbook: Results
-=================
+Cookbook: Result
+================
 
-After a non-linear search has completed, it returns a `Result` object that contains information on fit, such as
-the maximum likelihood model instance, the errors on each parameter and the Bayesian evidence.
+A non-linear search fits a model to a dataset, returning a `Result` object that contains a lot of information on the
+model-fit. 
 
-This cookbook provides an overview of using the results.
+This cookbook provides a concise reference to the result API.
+
+The cookbook then describes how the results of a search can be output to hard-disk and loaded back into Python,
+either using the `Aggregator` object or by building an sqlite database of results. Result loading supports
+queries, so that only the results of interest are returned.
+
+The samples of the non-linear search, which are used to estimate quantities the maximum likelihood model and 
+parameter errors, are described separately in the `samples.py` cookbook.
 
 __Contents__
 
- - Model Fit: Perform a simple model-fit to create a `Result` object.
+An overview of the `Result` object's functionality is given in the following sections:
+
  - Info: Print the `info` attribute of the `Result` object to display a summary of the model-fit.
+ - Max Log Likelihood Instance: Getting the maximum likelihood model instance.
+ - Samples: Getting the samples of the non-linear search from a result.
+ - Custom Result: Extending the `Result` object with custom attributes specific to the model-fit.
+
+The cookbook next describes how results can be output to hard-disk and loaded back into Python via the `Aggregator`:
+
+ - Output To Hard-Disk: Output results to hard-disk so they can be inspected and used to restart a crashed search.
+ - Files: The files that are stored in the `files` folder that is created when results are output to hard-disk.
  - Loading From Hard-disk: Loading results from hard-disk to Python variables via the aggregator.
- - Samples: The `Samples` object contained in the `Result`, containing all non-linear samples (e.g. parameters,
-   log likelihoods, etc.).
- - Instances: Returning instances of the model corresponding to a particular sample (e.g. the maximum log likelihood).
- - Posterior / PDF: The median PDF model instance and PDF vectors of all model parameters via 1D marginalization.
- - Errors: The errors on every parameter estimated from the PDF, computed via marginalized 1D PDFs at an input sigma.
- - Samples Summary: A summary of the samples of the non-linear search (e.g. the maximum log likelihood model) which can
-   be faster to load than the full set of samples.
- - Sample Instance: The model instance of any accepted sample.
- - Search Plots: Plots of the non-linear search, for example a corner plot or 1D PDF of every parameter.
- - Maximum Likelihood: The maximum log likelihood model value.
- - Bayesian Evidence: The log evidence estimated via a nested sampling algorithm.
- - Collection: Results created from models defined via a `Collection` object.
- - Lists: Extracting results as Python lists instead of instances.
- - Latex: Producing latex tables of results (e.g. for a paper).
+ - Generators: Why loading results uses Python generators to ensure memory efficiency.
 
-The following sections outline how to use advanced features of the results, which you may skip on a first read:
+The cookbook next gives examples of how to load all the following results from the database:
 
- - Derived Quantities: Computing quantities and errors for quantities and parameters not included directly in the model.
- - Result Extension: Extend the `Result` object with new attributes and methods (e.g. `max_log_likelihood_model_data`).
- - Samples Filtering: Filter the `Samples` object to only contain samples fulfilling certain criteria.
+ - Loading Samples: The samples of the non-linear search (e.g. all parameter values, log likelihoods, etc.).
+ - Loading Model: The model fitted by the non-linear search.
+ - Loading Search: The search used to perform the model-fit.
+ - Loading Samples Info: Additional information on the samples.
+ - Loading Samples Summary: A summary of the samples of the non-linear search (e.g. the maximum log likelihood model).
+ - Loading Info: The `info` dictionary passed to the search.
+
+The output of results to hard-disk is customizeable and described in the following section:
+
+ - Custom Output: Extend `Analysis` classes to output additional information which can be loaded via the aggregator.
+
+Using queries to load specific results is described in the following sections:
+
+ - Querying Datasets: Query based on the name of the dataset.
+ - Querying Searches: Query based on the name of the search.
+ - Querying Models: Query based on the model that is fitted.
+ - Querying Results: Query based on the results of the model-fit.
+ - Querying Logic: Use logic to combine queries to load specific results (e.g. AND, OR, etc.).
+
+The final section describes how to use results built in an sqlite database file:
+
+ - Database: Building a database file from the output folder.
+ - Unique Identifiers: The unique identifier of each model-fit.
+ - Writing Directly To Database: Writing results directly to the database.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -39,23 +63,18 @@ The following sections outline how to use advanced features of the results, whic
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
 
+import json
+from os import path
+import numpy as np
+from typing import Optional
+
 import autofit as af
 import autofit.plot as aplt
 
-from os import path
-import matplotlib.pyplot as plt
-import numpy as np
-
 """
-__Model Fit__
+__Simple Fit__
 
-To illustrate results, we need to perform a model-fit in order to create a `Result` object.
-
-We do this below using the standard API and noisy 1D signal example, which you should be familiar with from other 
-example scripts.
-
-Note that the `Gaussian` and `Analysis` classes come via the `af.ex` module, which contains example model components
-that are identical to those found throughout the examples.
+To illustrate the API of the result object, we first fit a 1D `Gaussian` profile with a `Gaussian` model.
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
 data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
@@ -68,10 +87,8 @@ model = af.Model(af.ex.Gaussian)
 analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
 search = af.Emcee(
-    name="cookbook_result",
     nwalkers=30,
     nsteps=1000,
-    number_of_cores=1,
 )
 
 result = search.fit(model=model, analysis=analysis)
@@ -84,18 +101,219 @@ Printing the `info` attribute shows the overall result of the model-fit in a hum
 print(result.info)
 
 """
-__Loading From Hard-disk__
+__Max Log Likelihood Instance__
 
-When performing fits which output results to hard-disk, a `files` folder is created containing .json / .csv files of 
-the model, samples, search, etc. You should check it out now for a completed fit on your hard-disk if you have
-not already!
+The `max_log_likelihood_instance` is the model instance of the maximum log likelihood model, which is the model
+that maximizes the likelihood of the data given the model.
+"""
+instance = result.max_log_likelihood_instance
 
-These files can be loaded from hard-disk to Python variables via the aggregator, making them accessible in a 
-Python script or Jupyter notebook. They are loaded as the internal **PyAutoFit** objects we are familiar with,
-for example the `model` is loaded as the `Model` object we passed to the search above.
+print("Max Log Likelihood `Gaussian` Instance:")
+print("Centre = ", instance.centre)
+print("Normalization = ", instance.normalization)
+print("Sigma = ", instance.sigma)
 
-Below, we will access these results using the aggregator's `values` method. A full list of what can be loaded is
-as follows:
+"""
+__Samples__
+
+The `Samples` class contains all information on the non-linear search samples, for example the value of every parameter
+sampled using the fit or an instance of the maximum likelihood model.
+"""
+print(result.samples)
+
+"""
+The samples are described in detail separately in the `samples.py` cookbook.
+
+__Custom Result__
+
+The result can be can be customized to include additional information about the model-fit that is specific to your 
+model-fitting problem.
+
+For example, for fitting 1D profiles, the `Result` could include the maximum log likelihood model 1D data: 
+
+`print(result.max_log_likelihood_model_data_1d)`
+
+In other examples, this quantity has been manually computed after the model-fit has completed.
+
+The custom result API allows us to do this. First, we define a custom `Result` class, which includes the property
+`max_log_likelihood_model_data_1d`.
+"""
+
+
+class ResultExample(af.Result):
+    @property
+    def max_log_likelihood_model_data_1d(self) -> np.ndarray:
+        """
+        Returns the maximum log likelihood model's 1D model data.
+
+        This is an example of how we can pass the `Analysis` class a custom `Result` object and extend this result
+        object with new properties that are specific to the model-fit we are performing.
+        """
+        xvalues = np.arange(self.analysis.data.shape[0])
+
+        return self.instance.model_data_from(xvalues=xvalues)
+
+
+"""
+The custom result has access to the analysis class, meaning that we can use any of its methods or properties to 
+compute custom result properties.
+
+To make it so that the `ResultExample` object above is returned by the search we overwrite the `Result` class attribute 
+of the `Analysis` and define a `make_result` object describing what we want it to contain:
+"""
+
+
+class Analysis(af.ex.Analysis):
+
+    """
+    This overwrite means the `ResultExample` class is returned after the model-fit.
+    """
+
+    Result = ResultExample
+
+    def make_result(
+        self,
+        samples_summary: af.SamplesSummary,
+        paths: af.AbstractPaths,
+        samples: Optional[af.SamplesPDF] = None,
+        search_internal: Optional[object] = None,
+        analysis: Optional[object] = None,
+    ) -> Result:
+        """
+        Returns the `Result` of the non-linear search after it is completed.
+
+        The result type is defined as a class variable in the `Analysis` class (see top of code under the python code
+        `class Analysis(af.Analysis)`.
+
+        The result can be manually overwritten by a user to return a user-defined result object, which can be extended
+        with additional methods and attribute specific to the model-fit.
+
+        This example class does example this, whereby the analysis result has been overwritten with the `ResultExample`
+        class, which contains a property `max_log_likelihood_model_data_1d` that returns the model data of the
+        best-fit model. This API means you can customize your result object to include whatever attributes you want
+        and therefore make a result object specific to your model-fit and model-fitting problem.
+
+        The `Result` object you return can be customized to include:
+
+        - The samples summary, which contains the maximum log likelihood instance and median PDF model.
+
+        - The paths of the search, which are used for loading the samples and search internal below when a search
+        is resumed.
+
+        - The samples of the non-linear search (e.g. MCMC chains) also stored in `samples.csv`.
+
+        - The non-linear search used for the fit in its internal representation, which is used for resuming a search
+        and making bespoke visualization using the search's internal results.
+
+        - The analysis used to fit the model (default disabled to save memory, but option may be useful for certain
+        projects).
+
+        Parameters
+        ----------
+        samples_summary
+            The summary of the samples of the non-linear search, which include the maximum log likelihood instance and
+            median PDF model.
+        paths
+            An object describing the paths for saving data (e.g. hard-disk directories or entries in sqlite database).
+        samples
+            The samples of the non-linear search, for example the chains of an MCMC run.
+        search_internal
+            The internal representation of the non-linear search used to perform the model-fit.
+        analysis
+            The analysis used to fit the model.
+
+        Returns
+        -------
+        Result
+            The result of the non-linear search, which is defined as a class variable in the `Analysis` class.
+        """
+        return self.Result(
+            samples_summary=samples_summary,
+            paths=paths,
+            samples=samples,
+            search_internal=search_internal,
+            analysis=self,
+        )
+
+
+"""
+Using the `Analysis` class above, the `Result` object returned by the search is now a `ResultExample` object.
+"""
+analysis = af.ex.Analysis(data=data, noise_map=noise_map)
+
+search = af.Emcee(
+    nwalkers=30,
+    nsteps=1000,
+)
+
+result = search.fit(model=model, analysis=analysis)
+
+print(result.max_log_likelihood_model_data_1d)
+
+"""
+__Output To Hard-Disk__
+
+By default, a non-linear search does not output its results to hard-disk and its results can only be inspected
+in Python via the `result` object. 
+
+However, the results of any non-linear search can be output to hard-disk by passing the `name` and / or `path_prefix`
+attributes, which are used to name files and output the results to a folder on your hard-disk.
+
+This cookbook now runs the three searches with output to hard-disk enabled, so you can see how the results are output
+to hard-disk and to then illustrate how they can be loaded back into Python.
+
+Note that an `info` dictionary is also passed to the search, which includes the date of the model-fit and the exposure
+time of the dataset. This information is stored output to hard-disk and can be loaded to help interpret the results.
+"""
+info = {"date_of_observation": "01-02-18", "exposure_time": 1000.0}
+
+dataset_name_list = ["gaussian_x1_0", "gaussian_x1_1", "gaussian_x1_2"]
+
+model = af.Collection(gaussian=af.ex.Gaussian)
+
+model.gaussian.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
+model.gaussian.normalization = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
+model.gaussian.sigma = af.GaussianPrior(
+    mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=np.inf
+)
+
+for dataset_name in dataset_name_list:
+    dataset_path = path.join("dataset", "example_1d", dataset_name)
+
+    data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
+    noise_map = af.util.numpy_array_from_json(
+        file_path=path.join(dataset_path, "noise_map.json")
+    )
+
+    analysis = af.ex.Analysis(data=data, noise_map=noise_map)
+
+    search = af.DynestyStatic(
+        name="multi_result_example",
+        path_prefix=path.join("cookbooks", "result"),
+        unique_tag=dataset_name,  # This makes the unique identifier use the dataset name
+        nlive=50,
+    )
+
+    print(
+        """
+        The non-linear search has begun running. 
+        This Jupyter notebook cell with progress once search has completed, this could take a few minutes!
+        """
+    )
+
+    result = search.fit(model=model, analysis=analysis, info=info)
+
+print("Search has finished run - you may now continue the notebook.")
+
+"""
+__Files__
+
+By outputting results to hard-disk, a `files` folder is created containing .json / .csv files of the model, 
+samples, search, etc, for each fit.
+
+You should check it out now for the completed fits on your hard-disk.
+
+A description of all files is as follows:
 
  - `model`: The `model` defined above and used in the model-fit (`model.json`).
  - `search`: The non-linear search settings (`search.json`).
@@ -106,7 +324,7 @@ as follows:
  - `covariance`: The inferred covariance matrix (`covariance.csv`).
  - `data`: The 1D noisy data used that is fitted (`data.json`).
  - `noise_map`: The 1D noise-map fitted (`noise_map.json`).
- 
+
 The `samples` and `samples_summary` results contain a lot of repeated information. The `samples` result contains
 the full non-linear search samples, for example every parameter sample and its log likelihood. The `samples_summary`
 contains a summary of the results, for example the maximum log likelihood model and error estimates on parameters
@@ -115,11 +333,18 @@ at 1 and 3 sigma confidence.
 Accessing results via the `samples_summary` is much faster, because as it does not reperform calculations using the full 
 list of samples. Therefore, if the result you want is accessible via the `samples_summary` you should use it
 but if not you can revert to the `samples.
+
+__Loading From Hard-disk__
+
+The multi-fits above wrote the results to hard-disk in three distinct folders, one for each dataset.
+
+Their results are loaded using the `Aggregator` object, which finds the results in the output directory and can
+load them into Python objects.
 """
 from autofit.aggregator.aggregator import Aggregator
 
 agg = Aggregator.from_directory(
-    directory=path.join("output", "cookbook_result"),
+    directory=path.join("multi_result_example"),
 )
 
 """
@@ -148,148 +373,66 @@ for samples in agg.values("samples"):
 """
 __Samples__
 
-The result contains a `Samples` object, which contains all samples of the non-linear search.
-
-Each sample corresponds to a set of model parameters that were evaluated and accepted by the non linear search, 
-in this example `emcee.` 
-
-This includes their log likelihoods, which are used for computing additional information about the model-fit,
-for example the error on every parameter. 
-
-Our model-fit used the MCMC algorithm Emcee, so the `Samples` object returned is a `SamplesMCMC` object.
+By converting this generator to a list and printing it, it is a list of 3 `SamplesNest` objects, corresponding to 
+the 3 model-fits performed above.
 """
-samples = result.samples
-
-print("MCMC Samples: \n")
-print(samples)
+print("Samples:\n")
+samples_gen = agg.values("samples")
+print(samples_gen)
+print("Total Samples Objects = ", len(agg), "\n")
 
 """
-__Parameters__
+__Loading Model__
 
-The parameters are stored as a list of lists, where:
-
- - The outer list is the size of the total number of samples.
- - The inner list is the size of the number of free parameters in the fit.
+The model used to perform the model fit for each of the 3 datasets can be loaded via the aggregator and printed.
 """
-samples = result.samples
+model_gen = agg.values("model")
 
-print("Sample 5's second parameter value (Gaussian -> normalization):")
-print(samples.parameter_lists[4][1])
-print("Sample 10`s third parameter value (Gaussian -> sigma)")
-print(samples.parameter_lists[9][2], "\n")
+for model in model_gen:
+    print(model.info)
 
 """
-__Figures of Merit__
+__Loading Search__
 
-The `Samples` class contains the log likelihood, log prior, log posterior and weight_list of every accepted sample, where:
-
-- The `log_likelihood` is the value evaluated in the `log_likelihood_function`.
-
-- The `log_prior` encodes information on how parameter priors map log likelihood values to log posterior values.
-
-- The `log_posterior` is `log_likelihood + log_prior`.
-
-- The `weight` gives information on how samples are combined to estimate the posterior, which depends on type of search
-  used (for `Emcee` they are all 1's meaning they are weighted equally).
-
-Lets inspect these values for the tenth sample.
+The non-linear search used to perform the model fit can be loaded via the aggregator and printed.
 """
-print("log(likelihood), log(prior), log(posterior) and weight of the tenth sample.")
-print(samples.log_likelihood_list[9])
-print(samples.log_prior_list[9])
-print(samples.log_posterior_list[9])
-print(samples.weight_list[9])
+search_gen = agg.values("search")
+
+for search in search_gen:
+    print(search)
 
 """
-__Instances__
+__Loading Samples__
 
-Many results can be returned as an instance of the model, using the Python class structure of the model composition.
+The `Samples` class contains all information on the non-linear search samples, for example the value of every parameter
+sampled using the fit or an instance of the maximum likelihood model.
 
-For example, we can return the model parameters corresponding to the maximum log likelihood sample.
-
-The attributes of the `instance` (`centre`, `normalization` and `sigma`) have these names due to how we composed 
-the `Gaussian` class via the `Model` above. They would be named structured and named differently if we hd 
-used a `Collection` and different names.
+The `Samples` class is described fully in the results cookbook.
 """
-instance = samples.max_log_likelihood()
+for samples in agg.values("samples"):
+    print("The tenth sample`s third parameter")
+    print(samples.parameter_lists[9][2], "\n")
 
-print("Max Log Likelihood `Gaussian` Instance:")
-print("Centre = ", instance.centre)
-print("Normalization = ", instance.normalization)
-print("Sigma = ", instance.sigma, "\n")
+    instance = samples.max_log_likelihood()
 
-"""
-This makes it straight forward to plot the median PDF model:
-"""
-model_data = instance.model_data_from(xvalues=np.arange(data.shape[0]))
-
-plt.plot(range(data.shape[0]), data)
-plt.plot(range(data.shape[0]), model_data)
-plt.title("Illustrative model fit to 1D `Gaussian` profile data.")
-plt.xlabel("x values of profile")
-plt.ylabel("Profile normalization")
-plt.show()
-plt.close()
+    print("Max Log Likelihood `Gaussian` Instance:")
+    print("Centre = ", instance.gaussian.centre)
+    print("Normalization = ", instance.gaussian.normalization)
+    print("Sigma = ", instance.gaussian.sigma, "\n")
 
 """
-__Posterior / PDF__
+__Loading Samples Info__
 
-The result contains the full posterior information of our non-linear search, which can be used for parameter 
-estimation. 
+The samples info contains additional information on the samples, which depends on the non-linear search used. 
 
-PDF stands for "Probability Density Function" and it quantifies probability of each model parameter having values
-that are sampled. It therefore enables error estimation via a process called marginalization.
-
-The median pdf vector is available, which estimates every parameter via 1D marginalization of their PDFs.
+For example, for a nested sampling algorithm it contains information on the number of live points, for a MCMC
+algorithm it contains information on the number of steps, etc.
 """
-instance = samples.median_pdf()
-
-print("Median PDF `Gaussian` Instance:")
-print("Centre = ", instance.centre)
-print("Normalization = ", instance.normalization)
-print("Sigma = ", instance.sigma, "\n")
+for samples_info in agg.values("samples_info"):
+    print(samples_info)
 
 """
-__Errors__
-
-Methods for computing error estimates on all parameters are provided. 
-
-This again uses 1D marginalization, now at an input sigma confidence limit. 
-
-By inputting `sigma=3.0` margnialization find the values spanning 99.7% of 1D PDF. Changing this to `sigma=1.0`
-would give the errors at the 68.3% confidence limit.
-"""
-instance_upper_sigma = samples.errors_at_upper_sigma(sigma=3.0)
-instance_lower_sigma = samples.errors_at_lower_sigma(sigma=3.0)
-
-print("Upper Error values (at 3.0 sigma confidence):")
-print("Centre = ", instance_upper_sigma.centre)
-print("Normalization = ", instance_upper_sigma.normalization)
-print("Sigma = ", instance_upper_sigma.sigma, "\n")
-
-print("lower Error values (at 3.0 sigma confidence):")
-print("Centre = ", instance_lower_sigma.centre)
-print("Normalization = ", instance_lower_sigma.normalization)
-print("Sigma = ", instance_lower_sigma.sigma, "\n")
-
-"""
-They can also be returned at the values of the parameters at their error values.
-"""
-instance_upper_values = samples.values_at_upper_sigma(sigma=3.0)
-instance_lower_values = samples.values_at_lower_sigma(sigma=3.0)
-
-print("Upper Parameter values w/ error (at 3.0 sigma confidence):")
-print("Centre = ", instance_upper_values.centre)
-print("Normalization = ", instance_upper_values.normalization)
-print("Sigma = ", instance_upper_values.sigma, "\n")
-
-print("lower Parameter values w/ errors (at 3.0 sigma confidence):")
-print("Centre = ", instance_lower_values.centre)
-print("Normalization = ", instance_lower_values.normalization)
-print("Sigma = ", instance_lower_values.sigma, "\n")
-
-"""
-__Samples Summary__
+__Loading Samples Summary__
 
 The samples summary contains a subset of results access via the `Samples`, for example the maximum likelihood model
 and parameter error estimates.
@@ -298,366 +441,293 @@ Using the samples method above can be slow, as the quantities have to be compute
 (e.g. computing errors requires that all samples are marginalized over). This information is stored directly in the
 samples summary and can therefore be accessed instantly.
 """
-print(samples.summary().max_log_likelihood_sample)
+# for samples_summary in agg.values("samples_summary"):
+#
+#     instance = samples_summary.max_log_likelihood()
+#
+#     print("Max Log Likelihood `Gaussian` Instance:")
+#     print("Centre = ", instance.centre)
+#     print("Normalization = ", instance.normalization)
+#     print("Sigma = ", instance.sigma, "\n")
 
 """
-__Sample Instance__
+__Loading Info__
 
-A non-linear search retains every model that is accepted during the model-fit.
-
-We can create an instance of any model -- below we create an instance of the last accepted model.
+The info dictionary passed to the search, discussed earlier in this cookbook, is accessible.
 """
-instance = samples.from_sample_index(sample_index=-1)
-
-print("Gaussian Instance of last sample")
-print("Centre = ", instance.centre)
-print("Normalization = ", instance.normalization)
-print("Sigma = ", instance.sigma, "\n")
+for info in agg.values("info"):
+    print(info["date_of_observation"])
+    print(info["exposure_time"])
 
 """
-__Search Plots__
+__Custom Output__
 
-The Probability Density Functions (PDF's) of the results can be plotted using the non-linear search in-built 
-visualization tools.
+The results accessible via the database (e.g. `model`, `samples`) are those contained in the `files` folder.
 
-This fit used `Emcee` therefore we use the `MCMCPlotter` for visualization, which wraps the Python library `corner.py`.
+By extending an `Analysis` class with the methods `save_attributes` and `save_results`, 
+custom files can be written to the `files` folder and become accessible via the database.
 
-The `autofit_workspace/*/plots` folder illustrates other packages that can be used to make these plots using
-the standard output results formats (e.g. `GetDist.py`).
+To save the objects in a human readable and loaded .json format, the `data` and `noise_map`, which are natively stored
+as 1D numpy arrays, are converted to a suitable dictionary output format. This uses the **PyAutoConf** method
+`to_dict`.
 """
-plotter = aplt.MCMCPlotter(samples=result.samples)
-plotter.corner_cornerpy()
 
-"""
-__Maximum Likelihood__
 
-The maximum log likelihood value of the model-fit can be estimated by simple taking the maximum of all log
-likelihoods of the samples.
+class Analysis(af.Analysis):
+    def __init__(self, data: np.ndarray, noise_map: np.ndarray):
+        """
+        Standard Analysis class example used throughout PyAutoFit examples.
+        """
+        super().__init__()
 
-If different models are fitted to the same dataset, this value can be compared to determine which model provides
-the best fit (e.g. which model has the highest maximum likelihood)?
-"""
-print("Maximum Log Likelihood: \n")
-print(max(samples.log_likelihood_list))
+        self.data = data
+        self.noise_map = noise_map
 
-"""
-__Bayesian Evidence__
+    def log_likelihood_function(self, instance) -> float:
+        """
+        Standard log likelihood function used throughout PyAutoFit examples.
+        """
 
-If a nested sampling non-linear search is used, the evidence of the model is also available which enables Bayesian
-model comparison to be performed (given we are using Emcee, which is not a nested sampling algorithm, the log evidence 
-is None).
+        xvalues = np.arange(self.data.shape[0])
 
-A full discussion of Bayesian model comparison is given in `autofit_workspace/*/features/bayes_model_comparison.py`.
-"""
-log_evidence = samples.log_evidence
-print(f"Log Evidence: {log_evidence}")
+        model_data = instance.model_data_from(xvalues=xvalues)
 
-"""
-__Collection__
+        residual_map = self.data - model_data
+        chi_squared_map = (residual_map / self.noise_map) ** 2.0
+        chi_squared = sum(chi_squared_map)
+        noise_normalization = np.sum(np.log(2 * np.pi * self.noise_map**2.0))
+        log_likelihood = -0.5 * (chi_squared + noise_normalization)
 
-The examples correspond to a model where `af.Model(Gaussian)` was used to compose the model.
+        return log_likelihood
 
-Below, we illustrate how the results API slightly changes if we compose our model using a `Collection`:
-"""
-model = af.Collection(gaussian=af.ex.Gaussian, exponential=af.ex.Exponential)
+    def save_attributes(self, paths: af.DirectoryPaths):
+        """
+        Before the non-linear search begins, this routine saves attributes of the `Analysis` object to the `files`
+        folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.
 
-analysis = af.ex.Analysis(data=data, noise_map=noise_map)
+        For this analysis, it uses the `AnalysisDataset` object's method to output the following:
 
-search = af.Emcee(
-    nwalkers=50,
-    nsteps=1000,
-    number_of_cores=1,
-)
+        - The dataset's data as a .json file.
+        - The dataset's noise-map as a .json file.
 
-result = search.fit(model=model, analysis=analysis)
+        These are accessed using the aggregator via `agg.values("data")` and `agg.values("noise_map")`.
 
-"""
-The `result.info` shows the result for the model with both a `Gaussian` and `Exponential` profile.
-"""
-print(result.info)
+        They are saved using the paths function `save_json`, noting that this saves outputs appropriate for the
+        sqlite3 database.
 
-"""
-Result instances again use the Python classes used to compose the model. 
+        Parameters
+        ----------
+        paths
+            The PyAutoFit paths object which manages all paths, e.g. where the non-linear search outputs are stored,
+            visualization, and the pickled objects used by the aggregator output by this function.
+        """
+        from autoconf.dictable import to_dict
 
-However, because our fit uses a `Collection` the `instance` has attributes named according to the names given to the
-`Collection`, which above were `gaussian` and `exponential`.
+        paths.save_json(name="data", object_dict=to_dict(self.data))
+        paths.save_json(name="noise_map", object_dict=to_dict(self.noise_map))
 
-For complex models, with a large number of model components and parameters, this offers a readable API to interpret
-the results.
-"""
-samples = result.samples
+    def save_results(self, paths: af.DirectoryPaths, result: af.Result):
+        """
+        At the end of a model-fit,  this routine saves attributes of the `Analysis` object to the `files`
+        folder such that they can be loaded after the analysis using PyAutoFit's database and aggregator tools.
 
-instance = samples.max_log_likelihood()
+        For this analysis it outputs the following:
 
-print("Max Log Likelihood `Gaussian` Instance:")
-print("Centre = ", instance.gaussian.centre)
-print("Normalization = ", instance.gaussian.normalization)
-print("Sigma = ", instance.gaussian.sigma, "\n")
+        - The maximum log likelihood model data as a .json file.
 
-print("Max Log Likelihood Exponential Instance:")
-print("Centre = ", instance.exponential.centre)
-print("Normalization = ", instance.exponential.normalization)
-print("Sigma = ", instance.exponential.rate, "\n")
+        This is accessed using the aggregator via `agg.values("model_data")`.
 
-"""
-__Lists__
+        Parameters
+        ----------
+        paths
+            The PyAutoFit paths object which manages all paths, e.g. where the non-linear search outputs are stored,
+            visualization and the pickled objects used by the aggregator output by this function.
+        result
+            The result of a model fit, including the non-linear search, samples and maximum likelihood model.
+        """
+        xvalues = np.arange(self.data.shape[0])
 
-All results can alternatively be returned as a 1D list of values, by passing `as_instance=False`:
-"""
-max_lh_list = samples.max_log_likelihood(as_instance=False)
-print("Max Log Likelihood Model Parameters: \n")
-print(max_lh_list, "\n\n")
+        instance = result.max_log_likelihood_instance
 
-"""
-The list above does not tell us which values correspond to which parameters.
+        model_data = instance.model_data_from(xvalues=xvalues)
 
-The following quantities are available in the `Model`, where the order of their entries correspond to the parameters 
-in the `ml_vector` above:
+        # The path where model_data.json is saved, e.g. output/dataset_name/unique_id/files/model_data.json
 
- - `paths`: a list of tuples which give the path of every parameter in the `Model`.
- - `parameter_names`: a list of shorthand parameter names derived from the `paths`.
- - `parameter_labels`: a list of parameter labels used when visualizing non-linear search results (see below).
+        file_path = (path.join(paths._json_path, "model_data.json"),)
 
-For simple models like the one fitted in this tutorial, the quantities below are somewhat redundant. For the
-more complex models they are important for tracking the parameters of the model.
-"""
-model = samples.model
+        with open(file_path, "w+") as f:
+            json.dump(model_data, f, indent=4)
 
-print(model.paths)
-print(model.parameter_names)
-print(model.parameter_labels)
-print(model.model_component_and_parameter_names)
-print("\n")
 
 """
-All the methods above are available as lists.
+__Querying Datasets__
+
+The aggregator can query the database, returning only specific fits of interested. 
+
+We can query using the `dataset_name` string we input into the model-fit above, in order to get the results
+of a fit to a specific dataset. 
+
+For example, querying using the string `gaussian_x1_1` returns results for only the fit using the 
+second `Gaussian` dataset.
 """
-instance = samples.median_pdf(as_instance=False)
-values_at_upper_sigma = samples.values_at_upper_sigma(sigma=3.0, as_instance=False)
-values_at_lower_sigma = samples.values_at_lower_sigma(sigma=3.0, as_instance=False)
-errors_at_upper_sigma = samples.errors_at_upper_sigma(sigma=3.0, as_instance=False)
-errors_at_lower_sigma = samples.errors_at_lower_sigma(sigma=3.0, as_instance=False)
-
-"""
-__Latex__
-
-If you are writing modeling results up in a paper, you can use inbuilt latex tools to create latex table code which 
-you can copy to your .tex document.
-
-By combining this with the filtering tools below, specific parameters can be included or removed from the latex.
-
-Remember that the superscripts of a parameter are loaded from the config file `notation/label.yaml`, providing high
-levels of customization for how the parameter names appear in the latex table. This is especially useful if your model
-uses the same model components with the same parameter, which therefore need to be distinguished via superscripts.
-"""
-latex = af.text.Samples.latex(
-    samples=result.samples,
-    median_pdf_model=True,
-    sigma=3.0,
-    name_to_label=True,
-    include_name=True,
-    include_quickmath=True,
-    prefix="Example Prefix ",
-    suffix=" \\[-2pt]",
-)
-
-print(latex)
+unique_tag = agg.search.unique_tag
+agg_query = agg.query(unique_tag == "gaussian_x1_1")
 
 """
-__Derived Quantities__
-
-The parameters `centre`, `normalization` and `sigma` are the model parameters of the `Gaussian`. They are sampled
-directly by the non-linear search and we can therefore use the `Samples` object to easily determine their values and 
-errors.
-
-Derived quantities (also called latent variables) are those which are not sampled directly by the non-linear search, 
-but one may still wish to know their values and errors after the fit is complete. For example, what if we want the 
-error on the full width half maximum (FWHM) of the Gaussian? 
-
-This is achieved by adding them to the `compute_latent_variables` method of the `Analysis` class, which is called
-after the non-linear search has completed. The analysis cookbook illustrates how to do this.
-
-The example analysis used above includes a `compute_latent_variables` method that computes the FWHM of the Gaussian
-profile. 
-
-This leads to a number of noteworthy outputs:
-
- - A `latent.results` file is output to the results folder, which includes the value and error of all derived quantities 
-   based on the non-linear search samples (in this example only the `fwhm`).
-   
- - A `latent/samples.csv` is output which lists every accepted sample's value of every derived quantity, which is again
-   analogous to the `samples.csv` file (in this example only the `fwhm`). 
-     
- - A `latent/samples_summary.json` is output which acts analogously to `samples_summary.json` but for the derived 
-   quantities of the model (in this example only the `fwhm`).
-
-Derived quantities are also accessible via the `Samples` object, following a similar API to the model parameters:
+As expected, this list has only 1 `SamplesNest` corresponding to the second dataset.
 """
-latent = analysis.compute_latent_samples(result.samples)
-
-instance = latent.max_log_likelihood()
-
-print(f"Max Likelihood FWHM: {instance.gaussian.fwhm}")
-
-instance = latent.median_pdf()
-
-print(f"Median PDF FWHM {instance.gaussian.fwhm}")
+print(agg_query.values("samples"))
+print("Total Samples Objects via dataset_name Query = ", len(agg_query), "\n")
 
 """
-__Derived Errors Manual (Advanced)__
-
-The derived quantities decorator above provides a simple interface for computing the errors of a derived quantity and
-ensuring all results are easily inspected in the output results folder.
-
-However, you may wish to compute the errors of a derived quantity manually. For example, if it is a quantity that 
-you did not decorate before performing the fit, or if it is computationally expensive to compute and you only want
-to compute it specific circumstances.
-
-Below, we create the PDF of the derived quantity, the FWHM, manually, which we marginalize over using the same function 
-we use to marginalize model parameters. We compute the FWHM of every accepted model sampled by the non-linear search 
-and use this determine the PDF of the FWHM. 
-
-When combining the FWHM's we weight each value by its `weight`. For Emcee, an MCMC algorithm, the weight of every 
-sample is 1, but weights may take different values for other non-linear searches.
-
-In order to pass these samples to the function `marginalize`, which marginalizes over the PDF of the FWHM to compute 
-its error, we also pass the weight list of the samples.
+If we query using an incorrect dataset name we get no results.
 """
-fwhm_list = []
-
-for sample in samples.sample_list:
-    instance = sample.instance_for_model(model=samples.model)
-
-    sigma = instance.gaussian.sigma
-
-    fwhm = 2 * np.sqrt(2 * np.log(2)) * sigma
-
-    fwhm_list.append(fwhm)
-
-median_fwhm, lower_fwhm, upper_fwhm = af.marginalize(
-    parameter_list=fwhm_list, sigma=3.0, weight_list=samples.weight_list
-)
-
-print(f"FWHM = {median_fwhm} ({upper_fwhm} {lower_fwhm}")
+unique_tag = agg.search.unique_tag
+agg_query = agg.query(unique_tag == "incorrect_name")
+samples_gen = agg_query.values("samples")
 
 """
-The calculation above could be computationally expensive, if there are many samples and the derived quantity is
-slow to compute.
+__Querying Searches__
 
-An alternative approach, which will provide comparable accuracy provided enough draws are used, is to sample 
-points randomy from the PDF of the model and use these to compute the derived quantity.
+We can query using the `name` of the non-linear search used to fit the model. 
 
-Draws are from the PDF of the model, so the weights of the samples are accounted for and we therefore do not
-pass them to the `marginalize` function (it essentially treats all samples as having equal weight).
+In this cookbook, all three fits used the same search, named `database_example`. Query based on search name in this 
+example is therefore somewhat pointless. 
+
+However, querying based on the search name is useful for model-fits which use a range of searches, for example
+if different non-linear searches are used multiple times.
+
+As expected, the query using search name below contains all 3 results.
 """
-random_draws = 50
+name = agg.search.name
+agg_query = agg.query(name == "database_example")
 
-fwhm_list = []
-
-for i in range(random_draws):
-    instance = samples.draw_randomly_via_pdf()
-
-    sigma = instance.gaussian.sigma
-
-    fwhm = 2 * np.sqrt(2 * np.log(2)) * sigma
-
-    fwhm_list.append(fwhm)
-
-median_fwhm, lower_fwhm, upper_fwhm = af.marginalize(
-    parameter_list=fwhm_list, sigma=3.0, weight_list=samples.weight_list
-)
-
-print(f"fwhm = {median_fwhm} ({upper_fwhm} {lower_fwhm}")
+print(agg_query.values("samples"))
+print("Total Samples Objects via name Query = ", len(agg_query), "\n")
 
 """
-__Result Extensions (Advanced)__
+__Querying Models__
 
-You might be wondering what else the results contains, as nearly everything we discussed above was a part of its 
-`samples` property! The answer is, not much, however the result can be extended to include  model-specific results for 
-your project. 
+We can query based on the model fitted. 
 
-We detail how to do this in analysis cookbook, but for the example of fitting a 1D Gaussian we could extend
-the result to include the maximum log likelihood profile:
+For example, we can load all results which fitted a `Gaussian` model-component, which in this simple example is all
+3 model-fits.
 
-(The commented out functions below are llustrative of the API we can create by extending a result).
+Querying via the model is useful for loading results after performing many model-fits with many different model 
+parameterizations to large (e.g. Bayesian model comparison).  
+
+[Note: the code `agg.model.gaussian` corresponds to the fact that in the `Collection` above, we named the model
+component `gaussian`. If this `Collection` had used a different name the code below would change 
+correspondingly. Models with multiple model components (e.g., `gaussian` and `exponential`) are therefore also easily 
+accessed via the database.]
 """
-# max_log_likelihood_profile = results.max_log_likelihood_profile
-
-"""
-__Samples Filtering (Advanced)__
-
-Our samples object has the results for all three parameters in our model. However, we might only be interested in the
-results of a specific parameter.
-
-The basic form of filtering specifies parameters via their path, which was printed above via the model and is printed 
-again below.
-"""
-samples = result.samples
-
-print("Parameter paths in the model which are used for filtering:")
-print(samples.model.paths)
-
-print("All parameters of the very first sample")
-print(samples.parameter_lists[0])
-
-samples = samples.with_paths([("gaussian", "centre")])
-
-print("All parameters of the very first sample (containing only the Gaussian centre.")
-print(samples.parameter_lists[0])
-
-print("Maximum Log Likelihood Model Instances (containing only the Gaussian centre):\n")
-print(samples.max_log_likelihood(as_instance=False))
+gaussian = agg.model.gaussian
+agg_query = agg.query(gaussian == af.ex.Gaussian)
+print("Total Samples Objects via `Gaussian` model query = ", len(agg_query), "\n")
 
 """
-We specified each path as a list of tuples of strings. 
+__Querying Results__
 
-This is how the source code internally stores the path to different components of the model, but it is not 
-consistent with the API used to compose a model.
+We can query based on the results of the model-fit.
 
-We can alternatively use the following API:
+Below, we query the database to find all fits where the inferred value of `sigma` for the `Gaussian` is less 
+than 3.0 (which returns only the first of the three model-fits).
 """
-samples = result.samples
-
-samples = samples.with_paths(["gaussian.centre"])
-
-print("All parameters of the very first sample (containing only the Gaussian centre).")
-print(samples.parameter_lists[0])
+gaussian = agg.model.gaussian
+agg_query = agg.query(gaussian.sigma < 3.0)
+print("Total Samples Objects In Query `gaussian.sigma < 3.0` = ", len(agg_query), "\n")
 
 """
-We filtered the `Samples` above by asking for all parameters which included the path ("gaussian", "centre").
+__Querying with Logic__
 
-We can alternatively filter the `Samples` object by removing all parameters with a certain path. Below, we remove
-the Gaussian's `centre` to be left with 2 parameters; the `normalization` and `sigma`.
+Advanced queries can be constructed using logic. 
+
+Below, we combine the two queries above to find all results which fitted a `Gaussian` AND (using the & symbol) 
+inferred a value of sigma less than 3.0. 
+
+The OR logical clause is also supported via the symbol |.
 """
-samples = result.samples
-
-print("Parameter paths in the model which are used for filtering:")
-print(samples.model.paths)
-
-print("All parameters of the very first sample")
-print(samples.parameter_lists[0])
-
-samples = samples.without_paths(["gaussian.centre"])
-
+gaussian = agg.model.gaussian
+agg_query = agg.query((gaussian == af.ex.Gaussian) & (gaussian.sigma < 3.0))
 print(
-    "All parameters of the very first sample (containing only the Gaussian normalization and sigma)."
+    "Total Samples Objects In Query `Gaussian & sigma < 3.0` = ", len(agg_query), "\n"
 )
-print(samples.parameter_lists[0])
 
 """
-__Wrap Up__
-
-Adding model complexity does not change the behaviour of the Result object, other than the switch
-to Collections meaning that our instances now have named entries.
-
-When you name your model components, you should make sure to give them descriptive and information names that make 
-the use of a result object clear and intuitive!
-
 __Database__
 
-For large-scaling model-fitting problems to large datasets, the results of the many model-fits performed can be output
-and stored in a queryable sqlite3 database. The `Result` and `Samples` objects have been designed to streamline the 
-analysis and interpretation of model-fits to large datasets using the database.
+The default behaviour of model-fitting results output is to be written to hard-disc in folders. These are simple to 
+navigate and manually check. 
 
-Checkout the database cookbook for more details on how to use the database.
+For small model-fitting tasks this is sufficient, however it does not scale well when performing many model fits to 
+large datasets, because manual inspection of results becomes time consuming.
+
+All results can therefore be output to an sqlite3 (https://docs.python.org/3/library/sqlite3.html) relational database,
+meaning that results can be loaded into a Jupyter notebook or Python script for inspection, analysis and interpretation. 
+This database supports advanced querying, so that specific model-fits (e.g., which fit a certain model or dataset) can 
+be loaded.
+
+__Unique Identifiers__
+
+We have discussed how every model-fit is given a unique identifier, which is used to ensure that the results of the
+model-fit are output to a separate folder on hard-disk.
+
+Each unique identifier is also used to define every entry of the database as it is built. Unique identifiers 
+therefore play the same vital role for the database of ensuring that every set of results written to it are unique.
+
+__Building From Output Folder__
+
+The fits above wrote the results to hard-disk in folders, not as an .sqlite database file. 
+
+We build the database below, where the `database_name` corresponds to the name of your output folder and is also the 
+name of the `.sqlite` database file that is created.
+
+If you are fitting a relatively small number of datasets (e.g. 10-100) having all results written to hard-disk (e.g. 
+for quick visual inspection) and using the database for sample wide analysis is beneficial.
+
+We can optionally only include completed model-fits but setting `completed_only=True`.
+
+If you inspect the `output` folder, you will see a `database.sqlite` file which contains the results.
+"""
+database_name = "database"
+
+agg = af.Aggregator.from_database(
+    filename=f"{database_name}.sqlite", completed_only=False
+)
+
+agg.add_directory(directory=path.join("output", "cookbooks", database_name))
+
+"""
+__Writing Directly To Database__
+
+Results can be written directly to the .sqlite database file, skipping output to hard-disk entirely, by creating
+a session and passing this to the non-linear search.
+
+The code below shows how to do this, but it is commented out to avoid rerunning the non-linear searches.
+
+This is ideal for tasks where model-fits to hundreds or thousands of datasets are performed, as it becomes unfeasible
+to inspect the results of all fits on the hard-disk. 
+
+Our recommended workflow is to set up database analysis scripts using ~10 model-fits, and then scaling these up
+to large samples by writing directly to the database.
+"""
+session = af.db.open_database("database.sqlite")
+
+search = af.DynestyStatic(
+    name="multi_result_example",
+    path_prefix=path.join("cookbooks", "result"),
+    unique_tag=dataset_name,  # This makes the unique identifier use the dataset name
+    session=session,  # This can instruct the search to write to the .sqlite database.
+    nlive=50,
+)
+
+"""
+If you run the above code and inspect the `output` folder, you will see a `database.sqlite` file which contains 
+the results.
+
+The API for loading a database and creating an aggregator to query is as follows:
+
+# agg = af.Aggregator.from_database("database.sqlite")
+
+Once we have the Aggregator, we can use it to query the database and load results as we did before.
 """
