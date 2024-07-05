@@ -11,7 +11,7 @@ It first covers standard options available for all non-linear searches:
  - Example Fit: A simple example of a non-linear search to remind us how it works.
  - Output To Hard-Disk: Output results to hard-disk so they can be inspected and used to restart a crashed search.
  - Output Customization: Customize the output of a non-linear search to hard-disk.
- - Unique Identifier: Ensure results are output in unique folders, so tthey do not overwrite each other.
+ - Unique Identifier: Ensure results are output in unique folders, so they do not overwrite each other.
  - Iterations Per Update: Control how often non-linear searches output results to hard-disk.
  - Parallelization: Use parallel processing to speed up the sampling of parameter space.
  - Plots: Perform non-linear search specific visualization using their in-built visualization tools.

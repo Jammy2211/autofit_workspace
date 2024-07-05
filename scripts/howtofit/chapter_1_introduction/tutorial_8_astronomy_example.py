@@ -522,11 +522,11 @@ the global maxima of the likelihood.
 Additionally, I fix the center of the light profile to (0.0, 0.0), where it visually appears to be located. 
 This reduces the number of free parameters and simplifies the complexity of the non-linear search.
 """
-model.light_0.centre_0 = 0.0
-model.light_0.centre_1 = 0.0
-model.light_0.angle = af.UniformPrior(lower_limit=70.0, upper_limit=140.0)
-model.light_0.axis_ratio = af.UniformPrior(lower_limit=0.3, upper_limit=1.0)
-model.light_0.effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=3.0)
+# model.light_0.centre_0 = 0.0
+# model.light_0.centre_1 = 0.0
+# model.light_0.angle = af.UniformPrior(lower_limit=70.0, upper_limit=140.0)
+# model.light_0.axis_ratio = af.UniformPrior(lower_limit=0.3, upper_limit=1.0)
+# model.light_0.effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=3.0)
 
 """
 The model info contains information on all of the model components and priors, including the updates above.
