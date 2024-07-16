@@ -24,10 +24,10 @@ The HowToFit lectures are composed of 3 chapters:
 **Chapter 1: Introduction**: How to fit a model to data, perform statistical inference, and interpret the results
 for scientific analysis.
 
-**Chapter 2: Scientific Workflow: Scaling model-fitting to big datasets while ensuring detailed scientific analysis
+**Chapter 2: Scientific Workflow**: Scaling model-fitting to big datasets while ensuring detailed scientific analysis
 of the results.
 
-**Chapter 3: Graphical Models: Simultaneous model fitting of large datasets, scaling up to models with tens of
+**Chapter 3: Graphical Models**: Simultaneous model fitting of large datasets, scaling up to models with tens of
 thousands of parameters.
 
 After each chapter, it is advised that you apply what you've learned to your own model-fitting analysis based on
@@ -47,4 +47,6 @@ interpretation. The chapter includes:
 `tutorial_4_why_modeling_is_hard.py`: Why modeling becomes difficult and how to over model-fitting problems.
 
 `tutorial_5_results_and_samples.py`: Interpreting model-fit results and using the samples for scientific analysis.
+
+`tutorial_8_astronomy_examples.py`: Applying the techniques to a real-world astronomy problem.
 """
