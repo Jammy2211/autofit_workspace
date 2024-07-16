@@ -522,11 +522,11 @@ the global maxima of the likelihood.
 Additionally, I fix the center of the light profile to (0.0, 0.0), where it visually appears to be located. 
 This reduces the number of free parameters and simplifies the complexity of the non-linear search.
 """
-# model.light_0.centre_0 = 0.0
-# model.light_0.centre_1 = 0.0
-# model.light_0.angle = af.UniformPrior(lower_limit=70.0, upper_limit=140.0)
-# model.light_0.axis_ratio = af.UniformPrior(lower_limit=0.3, upper_limit=1.0)
-# model.light_0.effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=3.0)
+model.light_0.centre_0 = 0.0
+model.light_0.centre_1 = 0.0
+model.light_0.angle = af.UniformPrior(lower_limit=100.0, upper_limit=120.0)
+model.light_0.axis_ratio = af.UniformPrior(lower_limit=0.6, upper_limit=0.8)
+model.light_0.effective_radius = af.UniformPrior(lower_limit=0.0, upper_limit=1.0)
 
 """
 The model info contains information on all of the model components and priors, including the updates above.
@@ -831,9 +831,9 @@ result_disk = result
 
 model = af.Collection(light_0=af.Model(LightBulgey))
 
-model.light_0.centre_0 = 0.0
-model.light_0.centre_1 = 0.0
-model.light_0.axis_ratio = af.UniformPrior(lower_limit=0.7, upper_limit=1.0)
+# model.light_0.centre_0 = 0.0
+# model.light_0.centre_1 = 0.0
+# model.light_0.axis_ratio = af.UniformPrior(lower_limit=0.7, upper_limit=1.0)
 
 print(
     """
@@ -847,6 +847,11 @@ result = search.fit(model=model, analysis=analysis)
 print("The search has finished run - you may now continue the notebook.")
 
 """
+Print the result info of the bulgey fit.
+"""
+print(result.info)
+
+"""
 We perform the same visualization of the model image, residual-map, normalized residual-map, and chi-squared-map as
 before.
 
@@ -855,6 +860,7 @@ lower and the chi-squared-map values are closer to 0.0.
 
 This suggests that the galaxy is more likely to be an early-type galaxy with a bulge-like light profile.
 """
+
 model_data = analysis.model_data_from_instance(
     instance=result.max_log_likelihood_instance
 )
@@ -901,7 +907,9 @@ plot_array(
 """
 To make certain of our interpretation, we should compare the log likelihoods of the two fits. The fit with the
 highest log likelihood is the preferred model, which provided your non-linear search has sampled parameter space
-sufficiently accurately, will be the bulgey profile.
+sufficiently accurately, will be the disky profile.
+
+Therefore, the galaxy is likely a late-type galaxy with a disk-like light profile.
 """
 print("Disk Model Log Likelihood:")
 print(result_disk.log_likelihood)
@@ -909,6 +917,29 @@ print("Bulge Model Log Likelihood:")
 print(result.log_likelihood)
 
 """
+__Model Mismatch__
+
+The analysis above allowed us to determine whether the galaxy is more likely to be an early-type or late-type galaxy.
+
+However, after fitting the disky profile, you may not of expected it to be the highest log likelihood model. The
+model gave a relatively poor fit, with significant residuals and chi-squared values. It just turns out that
+the bulgey profile gave an even worse fit!
+
+This reflected the notion of "model mismatch" that we discussed in tutorial 4. One of the challenges of model fitting
+is that you may not have a model that is a brilliant representation of the data, and your search is successfully
+locating the global maxima even though the fit looks visibly poor.
+
+In Astronomy, what a scientist would do next is update their model to try and improve the fit. For example, they 
+may extend the model to contain by the bulgey and disky profile, allowing the model to fit both components of the
+galaxy simultaneously. 
+
+There are a whole range of approaches that Astronomers take to improve the model, which include fitting the
+galaxy with hundreds of 2D Gaussians, fitting it with a pixel grid of light and decomposing it into what
+are called basis functions. These approaches are not relevent to your understanding of **PyAutoFit**, but they
+are all implemented in **PyAutoGalaxy** via the **PyAutoFit** API for model composition. 
+
+This is another great example of how **PyAutoFit** can be used to perform complex model-fitting tasks.
+
 __Extensions__
 
 To conclude, I will illustrate some of the extensions that can be made to this example and the challenges that arise

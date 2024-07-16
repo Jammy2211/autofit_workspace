@@ -485,13 +485,11 @@ pass them to the `marginalize` function (it essentially treats all samples as ha
 TRY AND EXCEPT INCLUDED TO FIX BUG, NEED TO SOLVE IN FUTURE.
 """
 try:
-
     random_draws = 50
 
     fwhm_list = []
 
     for i in range(random_draws):
-
         instance = samples.draw_randomly_via_pdf()
 
         sigma = instance.gaussian.sigma
@@ -507,7 +505,6 @@ try:
     print(f"fwhm = {median_fwhm} ({upper_fwhm} {lower_fwhm}")
 
 except ValueError:
-
     pass
 
 """
