@@ -80,7 +80,7 @@ Two separate `Gaussians` are clearly visible.
 xvalues = range(data.shape[0])
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.title("1D Gaussian Data With two Gaussians split apart.")
 plt.xlabel("x values of profile")
@@ -142,7 +142,7 @@ instance = result_1.max_log_likelihood_instance
 model_data = instance.gaussian_left.model_data_from(xvalues=np.arange(data.shape[0]))
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 plt.title("Search 1  fit to left Gaussian.")
@@ -214,7 +214,7 @@ gaussian_right = instance.gaussian_right.model_data_from(
 model_data = gaussian_left + gaussian_right
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 plt.plot(range(data.shape[0]), gaussian_left, "--")
@@ -272,7 +272,7 @@ gaussian_right = instance.gaussian_right.model_data_from(
 model_data = gaussian_left + gaussian_right
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 plt.plot(range(data.shape[0]), gaussian_left, "--")

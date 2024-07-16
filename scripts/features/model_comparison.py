@@ -76,7 +76,7 @@ plt.errorbar(
     yerr=noise_map,
     color="k",
     ecolor="k",
-    linestyle=" ",
+    linestyle="",
     elinewidth=1,
     capsize=2,
 )
@@ -148,7 +148,7 @@ plt.errorbar(
     yerr=noise_map,
     color="k",
     ecolor="k",
-    linestyle=" ",
+    linestyle="",
     elinewidth=1,
     capsize=2,
 )
@@ -219,7 +219,7 @@ plt.errorbar(
     yerr=noise_map,
     color="k",
     ecolor="k",
-    linestyle=" ",
+    linestyle="",
     elinewidth=1,
     capsize=2,
 )
@@ -298,7 +298,7 @@ plt.errorbar(
     yerr=noise_map,
     color="k",
     ecolor="k",
-    linestyle=" ",
+    linestyle="",
     elinewidth=1,
     capsize=2,
 )

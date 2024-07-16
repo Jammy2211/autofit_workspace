@@ -54,7 +54,7 @@ We plot the data with error bars below, showing the noisy 1D signal.
 xvalues = range(data.shape[0])
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.title("Example Data")
 plt.xlabel("x values of data (pixels)")
@@ -416,7 +416,7 @@ model_data = result.max_log_likelihood_instance.model_data_from(
 )
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.plot(xvalues, model_data, color="r")
 plt.title("Dynesty model fit to 1D Gaussian dataset.")
@@ -520,7 +520,7 @@ noise_map = af.util.numpy_array_from_json(
 )
 xvalues = range(data.shape[0])
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.title("Example Data With Multiple Components")
 plt.xlabel("x values of data (pixels)")
@@ -747,7 +747,7 @@ model_exponential = instance.exponential.model_data_from(
 model_data = model_gaussian + model_exponential
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 plt.plot(range(data.shape[0]), model_gaussian, "--")

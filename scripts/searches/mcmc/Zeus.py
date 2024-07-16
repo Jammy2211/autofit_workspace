@@ -109,6 +109,7 @@ plt.errorbar(
     x=range(data.shape[0]),
     y=data,
     yerr=noise_map,
+    linestyle="",
     color="k",
     ecolor="k",
     elinewidth=1,

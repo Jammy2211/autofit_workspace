@@ -64,7 +64,7 @@ The feature on pixel 70 is clearly visible.
 xvalues = range(data.shape[0])
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.title("1D Gaussian Data With Feature at pixel 70.")
 plt.xlabel("x values of profile")

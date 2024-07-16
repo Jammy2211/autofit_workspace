@@ -86,6 +86,7 @@ for dataset_index in range(total_datasets):
         x=xvalues,
         y=data_list[dataset_index],
         yerr=noise_map_list[dataset_index],
+        linestyle="",
         color="k",
         ecolor="k",
         elinewidth=1,

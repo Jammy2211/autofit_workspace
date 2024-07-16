@@ -106,7 +106,7 @@ for data, noise_map in zip(data_list, noise_map_list):
         yerr=noise_map,
         color="k",
         ecolor="k",
-        linestyle=" ",
+        linestyle="",
         elinewidth=1,
         capsize=2,
     )
@@ -203,6 +203,7 @@ for data, result in zip(data_list, result_list):
         x=xvalues,
         y=data,
         yerr=noise_map,
+        linestyle="",
         color="k",
         ecolor="k",
         elinewidth=1,
