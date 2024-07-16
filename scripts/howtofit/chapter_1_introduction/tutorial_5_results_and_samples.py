@@ -53,6 +53,7 @@ def plot_profile_1d(
         x=xvalues,
         y=profile_1d,
         yerr=errors,
+        linestyle="",
         color=color,
         ecolor="k",
         elinewidth=1,

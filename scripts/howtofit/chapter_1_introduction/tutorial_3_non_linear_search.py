@@ -156,7 +156,7 @@ noise_map = af.util.numpy_array_from_json(
 xvalues = np.arange(data.shape[0])
 
 plt.errorbar(
-    xvalues, data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    xvalues, data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.title("1D Gaussian dataset.")
 plt.xlabel("x values of profile")
@@ -417,7 +417,7 @@ model_data = result.max_log_likelihood_instance.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.plot(xvalues, model_data, color="r")
 plt.title("Dynesty model fit to 1D Gaussian dataset.")

@@ -69,7 +69,7 @@ right are more extended than what a single Gaussian profile can account for.
 """
 xvalues = np.arange(data.shape[0])
 plt.errorbar(
-    xvalues, data, yerr=noise_map, color="k", ecolor="k", elinewidth=1, capsize=2
+    xvalues, data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
 )
 plt.title("1D Gaussian dataset with errors from the noise-map.")
 plt.xlabel("x values of profile")
@@ -350,11 +350,11 @@ plt.errorbar(
     x=xvalues,
     y=data,
     yerr=noise_map,
+    linestyle="",
     color="k",
     ecolor="k",
     elinewidth=1,
     capsize=2,
-    linestyle="",
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 for model_data_1d_individual in model_data_list:

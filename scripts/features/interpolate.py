@@ -83,6 +83,7 @@ for time in range(3):
         x=xvalues,
         y=data_list[time],
         yerr=noise_map_list[time],
+        linestyle="",
         color="k",
         ecolor="k",
         elinewidth=1,
