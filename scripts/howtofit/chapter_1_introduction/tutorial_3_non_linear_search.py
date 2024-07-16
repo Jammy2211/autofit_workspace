@@ -30,23 +30,23 @@ In this tutorial, we will use a non-linear search to fit a 1D Gaussian profile t
 
 All these steps utilize **PyAutoFit**'s API for model-fitting.
 
-__Contents_
+__Contents__
 
 This tutorial is split into the following sections:
 
-**Parameter Space**: Introduce the concept of a "parameter space" and how it relates to model-fitting.
-**Non-Linear Search**: Introduce the concept of a "non-linear search" and how it fits models to data.
-**Nested Sampling**: Introduce the nested sampling method used in this tutorial.
-**Deeper Background**: Provide links to resources that more thoroughly describe the statistical principles that underpin non-linear searches.
-**Data**: Load and plot the 1D Gaussian dataset we'll fit.
-**Model**: Introduce the 1D `Gaussian` model we'll fit to the data.
-**Priors**: Introduce priors and how they are used to define the parameter space and guide the non-linear search.
-**Analysis**: Introduce the `Analysis` class, which contains the `log_likelihood_function` used to fit the model to the data.
-**Search**: Perform the model-fit using a non-linear search.
-**Result**: The result of the model-fit, including the maximum likelihood model.
-**Samples**: The samples of the non-linear search, used to compute parameter estimates and uncertainties.
-**Customizing Searches**: How to customize the settings of the non-linear search.
-**Wrap Up**: A summary of the concepts introduced in this tutorial.
+- **Parameter Space**: Introduce the concept of a "parameter space" and how it relates to model-fitting.
+- **Non-Linear Search**: Introduce the concept of a "non-linear search" and how it fits models to data.
+- **Nested Sampling**: Introduce the nested sampling method used in this tutorial.
+- **Deeper Background**: Provide links to resources that more thoroughly describe the statistical principles that underpin non-linear searches.
+- **Data**: Load and plot the 1D Gaussian dataset we'll fit.
+- **Model**: Introduce the 1D `Gaussian` model we'll fit to the data.
+- **Priors**: Introduce priors and how they are used to define the parameter space and guide the non-linear search.
+- **Analysis**: Introduce the `Analysis` class, which contains the `log_likelihood_function` used to fit the model to the data.
+- **Search**: Perform the model-fit using a non-linear search.
+- **Result**: The result of the model-fit, including the maximum likelihood model.
+- **Samples**: The samples of the non-linear search, used to compute parameter estimates and uncertainties.
+- **Customizing Searches**: How to customize the settings of the non-linear search.
+- **Wrap Up**: A summary of the concepts introduced in this tutorial.
 
 __Parameter Space__
 
@@ -156,7 +156,14 @@ noise_map = af.util.numpy_array_from_json(
 xvalues = np.arange(data.shape[0])
 
 plt.errorbar(
-    xvalues, data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    xvalues,
+    data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.title("1D Gaussian dataset.")
 plt.xlabel("x values of profile")
@@ -417,7 +424,14 @@ model_data = result.max_log_likelihood_instance.model_data_from(
     xvalues=np.arange(data.shape[0])
 )
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.plot(xvalues, model_data, color="r")
 plt.title("Dynesty model fit to 1D Gaussian dataset.")

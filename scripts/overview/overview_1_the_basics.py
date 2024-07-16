@@ -16,8 +16,8 @@ This overview gives a run through of:
  - **Searches**: Choose an MCMC, nested sampling or maximum likelihood estimator non-linear search algorithm that fits the model to the data.
  - **Model Fit**: Fit the model to the data using the chosen non-linear search, with on-the-fly results and visualization.
  - **Results**: Use the results of the search to interpret and visualize the model fit.
-- **Samples**: Use the samples of the search to inspect the parameter samples and visualize the probability density function of the results.
-- **Multiple Datasets**: Dedicated support for simultaneously fitting multiple datasets, enabling scalable analysis of large datasets.
+ - **Samples**: Use the samples of the search to inspect the parameter samples and visualize the probability density function of the results.
+ - **Multiple Datasets**: Dedicated support for simultaneously fitting multiple datasets, enabling scalable analysis of large datasets.
 
 This overviews provides a high level of the basic API, with more advanced functionality described in the following
 overviews and the **PyAutoFit** cookbooks.
@@ -54,7 +54,14 @@ We plot the data with error bars below, showing the noisy 1D signal.
 xvalues = range(data.shape[0])
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.title("Example Data")
 plt.xlabel("x values of data (pixels)")
@@ -416,7 +423,14 @@ model_data = result.max_log_likelihood_instance.model_data_from(
 )
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.plot(xvalues, model_data, color="r")
 plt.title("Dynesty model fit to 1D Gaussian dataset.")
@@ -520,7 +534,14 @@ noise_map = af.util.numpy_array_from_json(
 )
 xvalues = range(data.shape[0])
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.title("Example Data With Multiple Components")
 plt.xlabel("x values of data (pixels)")
@@ -747,7 +768,14 @@ model_exponential = instance.exponential.model_data_from(
 model_data = model_gaussian + model_exponential
 
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
 plt.plot(range(data.shape[0]), model_gaussian, "--")

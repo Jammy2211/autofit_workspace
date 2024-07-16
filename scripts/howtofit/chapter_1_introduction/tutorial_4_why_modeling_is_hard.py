@@ -23,20 +23,20 @@ In this tutorial, we will fit complex models with up to 15 free parameters and c
 
 __Contents__
 
-**Data**: Load and plot the 1D Gaussian dataset we'll fit, which is more complex than the previous tutorial.
-**Model**: The `Gaussian` model component that we will fit to the data.
-**Analysis**: The log likelihood function used to fit the model to the data.
-**Collection**: The `Collection` model used to compose the model-fit.
-**Model Fit**: Perform the model-fit and examine the results.
-**Result**: Determine if the model-fit was successful and what can be done to ensure a good model-fit.
-**Why Modeling is Hard**: Introduce the concept of randomness and local maxima and why they make model-fitting challenging.
-**Prior Tuning**: Adjust the priors of the model to help the non-linear search find the global maxima solution.
-**Reducing Complexity**: Simplify the model to reduce the dimensionality of the parameter space.
-**Search More Thoroughly**: Adjust the non-linear search settings to search parameter space more thoroughly.
-**Run Times**: Discuss how the likelihood function and complexity of a model impacts the run-time of a model-fit.
-**Model Mismatches**: Introduce the concept of model mismatches and how it makes inferring the correct model challenging.
-**Astronomy Example**: How the concepts of this tutorial are applied to real astronomical problems.
-**Wrap Up**: A summary of the key takeaways of this tutorial.
+- **Data**: Load and plot the 1D Gaussian dataset we'll fit, which is more complex than the previous tutorial.
+- **Model**: The `Gaussian` model component that we will fit to the data.
+- **Analysis**: The log likelihood function used to fit the model to the data.
+- **Collection**: The `Collection` model used to compose the model-fit.
+- **Model Fit**: Perform the model-fit and examine the results.
+- **Result**: Determine if the model-fit was successful and what can be done to ensure a good model-fit.
+- **Why Modeling is Hard**: Introduce the concept of randomness and local maxima and why they make model-fitting challenging.
+- **Prior Tuning**: Adjust the priors of the model to help the non-linear search find the global maxima solution.
+- **Reducing Complexity**: Simplify the model to reduce the dimensionality of the parameter space.
+- **Search More Thoroughly**: Adjust the non-linear search settings to search parameter space more thoroughly.
+- **Run Times**: Discuss how the likelihood function and complexity of a model impacts the run-time of a model-fit.
+- **Model Mismatches**: Introduce the concept of model mismatches and how it makes inferring the correct model challenging.
+- **Astronomy Example**: How the concepts of this tutorial are applied to real astronomical problems.
+- **Wrap Up**: A summary of the key takeaways of this tutorial.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -69,7 +69,14 @@ right are more extended than what a single Gaussian profile can account for.
 """
 xvalues = np.arange(data.shape[0])
 plt.errorbar(
-    xvalues, data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    xvalues,
+    data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.title("1D Gaussian dataset with errors from the noise-map.")
 plt.xlabel("x values of profile")

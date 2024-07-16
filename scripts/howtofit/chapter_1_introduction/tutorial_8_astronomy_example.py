@@ -44,19 +44,19 @@ In this tutorial, we will:
 
  __Contents__
 
-**Plot**: Convensional plotting functions for 2D data and grids of 2D coordinates.
-**Data**: Load and plot Hubble Space Telescope imaging data of a galaxy.
-**Mask**: Apply a mask to the data to remove regions of the image that are not relevant to the model fitting.
-**PSF**: Load and plot the Point Spread Function (PSF) of the telescope.
-**Grid**: Create a grid of (y,x) coordinates that overlap the observed galaxy data.
-**Light Profiles**: Define light profile classes representing the light of galaxies.
-**Model Data**: Create the model image of a galaxy by convolving its light profile with the PSF.
-**Model**: Define a model with a light profile to fit the galaxy data.
-**Analysis**: Define the log likelihood function, which compares the model image to the observed image.
-**Model Fit**: Fit the model to the data and display the results.
-**Result**: Interpret the model fit to determine whether the galaxy is an early or late-type galaxy.
-**Bulgey**: Repeat the fit using a bulgey light profile to determine the galaxy's type.
-**Extensions**: Illustrate examples of how this problem can be extended and the challenges that arise.
+- **Plot**: Convensional plotting functions for 2D data and grids of 2D coordinates.
+- **Data**: Load and plot Hubble Space Telescope imaging data of a galaxy.
+- **Mask**: Apply a mask to the data to remove regions of the image that are not relevant to the model fitting.
+- **PSF**: Load and plot the Point Spread Function (PSF) of the telescope.
+- **Grid**: Create a grid of (y,x) coordinates that overlap the observed galaxy data.
+- **Light Profiles**: Define light profile classes representing the light of galaxies.
+- **Model Data**: Create the model image of a galaxy by convolving its light profile with the PSF.
+- **Model**: Define a model with a light profile to fit the galaxy data.
+- **Analysis**: Define the log likelihood function, which compares the model image to the observed image.
+- **Model Fit**: Fit the model to the data and display the results.
+- **Result**: Interpret the model fit to determine whether the galaxy is an early or late-type galaxy.
+- **Bulgey**: Repeat the fit using a bulgey light profile to determine the galaxy's type.
+- **Extensions**: Illustrate examples of how this problem can be extended and the challenges that arise.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -164,7 +164,7 @@ grid = np.load(file=path.join(dataset_path, "grid.npy"))
 
 plot_grid(
     grid=grid,
-    title="Cartesian grid of (x,y) coordinates aligned with strong lens dataset",
+    title="Cartesian grid of (x,y) coordinates aligned with dataset",
 )
 
 """
@@ -585,7 +585,7 @@ class Analysis(af.Analysis):
         psf
             The Point Spread Function of the telescope, which describes how the telescope blurs the image.
         grid
-            The (y, x) coordinates of the image from which the lensing calculation is performed and model image is
+            The (y, x) coordinates of the image from which the calculation is performed and model image is
             computed using.
         mask
             The 2D mask that is applied to the image data.
@@ -801,20 +801,18 @@ chi_squared_map = np.square(
 plot_array(
     array=model_data,
     title="Model Data of the Light Profile.",
-    filename="astro_model_data.png",
 )
 plot_array(
-    array=residual_map, title="Residual Map of fit", filename="astro_residual_map.png"
+    array=residual_map,
+    title="Residual Map of fit",
 )
 plot_array(
     array=normalized_residual_map,
     title="Normalized Residual Map of fit",
-    filename="astro_normalized_residual_map.png",
 )
 plot_array(
     array=chi_squared_map,
     title="Chi Squared Map of fit",
-    filename="astro_chi_squared_map.png",
 )
 
 """
@@ -888,28 +886,27 @@ chi_squared_map = np.square(
 plot_array(
     array=model_data,
     title="Model Data of the Light Profile.",
-    filename="astro_model_data2.png",
 )
 plot_array(
-    array=residual_map, title="Residual Map of fit", filename="astro_residual_map2.png"
+    array=residual_map,
+    title="Residual Map of fit",
 )
 plot_array(
     array=normalized_residual_map,
     title="Normalized Residual Map of fit",
-    filename="astro_normalized_residual_map2.png",
 )
 plot_array(
     array=chi_squared_map,
     title="Chi Squared Map of fit",
-    filename="astro_chi_squared_map2.png",
 )
 
 """
-To make certain of our interpretation, we should compare the log likelihoods of the two fits. The fit with the
-highest log likelihood is the preferred model, which provided your non-linear search has sampled parameter space
-sufficiently accurately, will be the disky profile.
+To make certain of our interpretation, we should compare the log likelihoods of the two fits. 
 
-Therefore, the galaxy is likely a late-type galaxy with a disk-like light profile.
+The fit with the highest log likelihood is the preferred model, which (provided your non-linear search sampled 
+parameter space accurately), is the bulgey profile.
+
+Therefore, the galaxy is likely an early-type galaxy with a bulge-like light profile.
 """
 print("Disk Model Log Likelihood:")
 print(result_disk.log_likelihood)
@@ -921,16 +918,16 @@ __Model Mismatch__
 
 The analysis above allowed us to determine whether the galaxy is more likely to be an early-type or late-type galaxy.
 
-However, after fitting the disky profile, you may not of expected it to be the highest log likelihood model. The
+However, after fitting the bulgey profile, you may not of expected it to be the highest log likelihood model. The
 model gave a relatively poor fit, with significant residuals and chi-squared values. It just turns out that
-the bulgey profile gave an even worse fit!
+the disky profile gave an even worse fit!
 
 This reflected the notion of "model mismatch" that we discussed in tutorial 4. One of the challenges of model fitting
 is that you may not have a model that is a brilliant representation of the data, and your search is successfully
 locating the global maxima even though the fit looks visibly poor.
 
 In Astronomy, what a scientist would do next is update their model to try and improve the fit. For example, they 
-may extend the model to contain by the bulgey and disky profile, allowing the model to fit both components of the
+may extend the model to contain both the bulgey and disky profile, allowing the model to fit both components of the
 galaxy simultaneously. 
 
 There are a whole range of approaches that Astronomers take to improve the model, which include fitting the

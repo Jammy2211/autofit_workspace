@@ -37,16 +37,16 @@ __Contents__
 
 This tutorial is split into the following sections:
 
-**Data**: Load and plot the 1D Gaussian dataset we will fit.
-**Model Data**: Generate model data of the `Gaussian` model using a forward model.
-**Residuals**: Compute and visualize residuals between the model data and observed data.
-**Normalized Residuals**: Compute and visualize normalized residuals, which account for the noise properties of the data.
-**Chi Squared**: Compute and visualize the chi-squared map, a measure of the overall goodness-of-fit.
-**Noise Normalization**: Compute the noise normalization term which describes the noise properties of the data.
-**Likelihood**: Compute the log likelihood, a key measure of the goodness-of-fit of the model to the data.
-**Fitting Models**: Fit the `Gaussian` model to the 1D data and compute the log likelihood, by guessing parameters.
-**Extensibility**: Use the `Collection` object for fitting models with multiple components.
-**Wrap Up**: Summarize the key concepts of this tutorial.
+- **Data**: Load and plot the 1D Gaussian dataset we will fit.
+- **Model Data**: Generate model data of the `Gaussian` model using a forward model.
+- **Residuals**: Compute and visualize residuals between the model data and observed data.
+- **Normalized Residuals**: Compute and visualize normalized residuals, which account for the noise properties of the data.
+- **Chi Squared**: Compute and visualize the chi-squared map, a measure of the overall goodness-of-fit.
+- **Noise Normalization**: Compute the noise normalization term which describes the noise properties of the data.
+- **Likelihood**: Compute the log likelihood, a key measure of the goodness-of-fit of the model to the data.
+- **Fitting Models**: Fit the `Gaussian` model to the 1D data and compute the log likelihood, by guessing parameters.
+- **Extensibility**: Use the `Collection` object for fitting models with multiple components.
+- **Wrap Up**: Summarize the key concepts of this tutorial.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -104,7 +104,14 @@ The earlier plot depicted only the signal without indicating the estimated noise
 To visualize both the signal and its `noise_map`, we can use `matplotlib`'s `errorbar` function.
 """
 plt.errorbar(
-    xvalues, data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    xvalues,
+    data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.title("1D Gaussian dataset with errors from the noise-map.")
 plt.xlabel("x values of profile")
@@ -198,7 +205,14 @@ plt.clf()
 For comparison purposes, it is more informative to plot both the `data` and `model_data` on the same plot.
 """
 plt.errorbar(
-    x=xvalues, y=data, yerr=noise_map, linestyle="", color="k", ecolor="k", elinewidth=1, capsize=2
+    x=xvalues,
+    y=data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
 )
 plt.plot(xvalues, model_data, color="r")
 plt.title("Model-data fit to 1D Gaussian data.")

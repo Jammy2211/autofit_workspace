@@ -55,16 +55,16 @@ __Contents__
 
 This tutorial is split into the following sections:
 
-**Paths**: Setting up the working directory path so the tutorial runs correctly on your computer.
-**PyProjRoot**: A brief introduction to the PyProjRoot package, which sets the working directory for Jupiter notebooks.
-**Model Parameterization**: An example of how a model is parameterized and is made up of free parameters.
-**Model Composition**: Composing a model using PyAutoFit's model composition API.
-**Model Creation**: Creating an instance of the model using PyAutoFit's `Model` python object.
-**Model Mapping**: Mapping an input vector of parameters to the model to create an instance of the model.
-**Complex Models**: Composing a more complex model with multiple model components and more free parameters.
-**Tuple Parameters**: Defining a model component with tuple parameters.
-**Extensibility**: Discussing how PyAutoFit's model composition API is scalable and extensible.
-**Wrap Up**: Concluding the tutorial and considering how to apply the concepts to your own scientific problem.
+- **Paths**: Setting up the working directory path so the tutorial runs correctly on your computer.
+- **PyProjRoot**: A brief introduction to the PyProjRoot package, which sets the working directory for Jupiter notebooks.
+- **Model Parameterization**: An example of how a model is parameterized and is made up of free parameters.
+- **Model Composition**: Composing a model using PyAutoFit's model composition API.
+- **Model Creation**: Creating an instance of the model using PyAutoFit's `Model` python object.
+- **Model Mapping**: Mapping an input vector of parameters to the model to create an instance of the model.
+- **Complex Models**: Composing a more complex model with multiple model components and more free parameters.
+- **Tuple Parameters**: Defining a model component with tuple parameters.
+- **Extensibility**: Discussing how PyAutoFit's model composition API is scalable and extensible.
+- **Wrap Up**: Concluding the tutorial and considering how to apply the concepts to your own scientific problem.
 
 This tutorial introduces the PyAutoFit API for model composition, which forms the foundation of all model-fitting
 performed by PyAutoFit.
