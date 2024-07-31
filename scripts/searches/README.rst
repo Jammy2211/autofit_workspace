@@ -10,4 +10,4 @@ Folders
 
 - ``mcmc``: Fit a model using Markov Chain Monte Carlo (MCMC) algorithms.
 - ``nest``: Fit a model using nested sampling algorithms.
-- ``optimize``: Fit a model using optimizer algorithms.
+- ``mle``: Fit a model using maximum likelihood (MLE) algorithms.

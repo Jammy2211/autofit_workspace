@@ -500,7 +500,7 @@ examples demonstrating more complex model-fitting tasks.
 
 This includes cookbooks, which provide a concise reference guide to the **PyAutoFit** API for advanced model-fitting:
 
-- [Model Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/model.html): Learn how to compose complex models using multiple Python classes, lists, dictionaries, and customize their parameterization. 
+- [Model Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/model.html): Learn how to compose complex models using multiple Python classes, lists, dictionaries, NumPy arrays and customize their parameterization. 
 
 - [Analysis Cookbook](https://pyautofit.readthedocs.io/en/latest/cookbooks/search.html): Customize the analysis with model-specific output and visualization to gain deeper insights into your model fits. 
 
