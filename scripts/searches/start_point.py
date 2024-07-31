@@ -111,8 +111,8 @@ We now define the start point of certain parameters in the model:
 For all parameters where the start-point is not specified (in this case the `normalization`, their 
 parameter values are drawn randomly from the prior when determining the initial locations of the parameters.
 """
-initializer = af.SpecificRangeInitializer(
-    {model.centre: (49.0, 51.0), model.sigma: (9.0, 100.0)}
+initializer = af.InitializerParamBounds(
+    {model.centre: (49.0, 51.0), model.sigma: (9.0, 11.0)}
 )
 
 """
@@ -120,6 +120,12 @@ A quick look at the model's `info` attribute shows that the starting points abov
 the priors or model info.
 """
 print(model.info)
+
+"""
+Information on the initializer can be extracted and printed, which is shown below, where the start points are
+clearly visible.
+"""
+print(initializer.info_from_model(model=model))
 
 
 """

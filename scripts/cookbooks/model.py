@@ -9,6 +9,8 @@ This cookbook provides an overview of basic model composition tools.
 
 __Contents__
 
+**Models:**
+
 If first describes how to use the `af.Model` object to define models with a single model component from single
 Python classes, with the following sections:
 
@@ -20,6 +22,8 @@ Python classes, with the following sections:
  - Tuple Parameters (Model): Defining model components with parameters that are tuples.
  - Json Output (Model): Output a model in human readable text via a .json file and loading it back again.
 
+**Collections:**
+
 It then describes how to use the `af.Collection` object to define models with many model components from multiple
 Python classes, with the following sections:
 
@@ -30,6 +34,19 @@ Python classes, with the following sections:
  - Json Output (Collection): Output a collection in human readable text via a .json file and loading it back again.
  - Extensible Models (Collection): Using collections to extend models with new model components, including the use
    of Python dictionaries and lists.
+
+**Arrays:**
+
+The cookbook next describes using NumPy arrays via tbe `af.Array` object to compose models, where each entry of the
+array is a free parameters, therefore offering maximum flexibility with the number of free parameter. This has
+the following sections:
+
+ - Model Composition (af.Array): Composing models using NumPy arrays and `af.Array`().
+ - Prior Customization (af.Array): How to customize the priors of a numpy array model.
+ - Instances (af.Array): Create an instance of a numpy array model via input parameters.
+ - Model Customization (af.Array): Customize a numpy array model (e.g. fixing parameters or linking them to one another).
+ - Json Output (af.Array): Output a numpy array model in human readable text via a .json file and loading it back again.
+ - Extensible Models (af.Array): Using numpy arrays to compose models with a flexible number of parameters.
 """
 # %matplotlib inline
 # from pyprojroot import here
@@ -298,7 +315,7 @@ The dictionary representation printed above can be saved to hard disk as a `.jso
 
 This means we can save any **PyAutoFit** model to hard-disk in a human readable format.
 
-Checkout the file `autofit_workspace/*/cookbooks/jsons/model.json` to see the model written as a .json.
+Checkout the file `autofit_workspace/*/cookbooks/jsons/collection.json` to see the model written as a .json.
 """
 model_path = path.join("scripts", "cookbooks", "jsons")
 
@@ -337,7 +354,6 @@ class Exponential:
 
 
 """
-
 To instantiate multiple Python classes into a combined model component we combine the `af.Collection()` and `af.Model()` 
 objects.
 
@@ -583,6 +599,178 @@ print("sigma (Gaussian)  = ", instance[0].sigma)
 print("centre (Gaussian) = ", instance[1].centre)
 print("normalization (Gaussian) = ", instance[1].normalization)
 print("sigma (Gaussian) = ", instance[1].sigma)
+
+"""
+__Model Composition (af.Array)__
+
+Models can be composed using NumPy arrays, where each element of the array is a free parameter. 
+
+This offers a lot more flexibility than using `Model` and `Collection` objects, as the number of parameters in the 
+model is chosen on initialization via the input of the `shape` attribute. 
+
+For many use cases, this flexibility is key to ensuring model composition is as easy as possible, for example when 
+a part of the model being fitted is a matrix of parameters which may change shape depending on the dataset being
+fitted.
+
+To compose models using NumPy arrays, we use the `af.Array` object.
+"""
+model = af.Array(
+    shape=(2, 2),
+    prior=af.GaussianPrior(mean=0.0, sigma=1.0),
+)
+
+"""
+Each element of the array is a free parameter, which for `shape=(2,2)` means the model has 4 free parameters.
+"""
+print(f"Model Total Free Parameters = {model.total_free_parameters}")
+
+"""
+The `info` attribute of the model gives information on all of the parameters and their priors.
+"""
+print(model.info)
+
+"""
+__Prior Customization (af.Array)__
+
+The prior of every parameter in the array is set via the `prior` input above.
+
+NumPy array models do not currently support default priors via config files, so all priors must be manually specified.
+
+The prior of every parameter in the array can be customized by normal NumPy array indexing:
+"""
+model = af.Array(shape=(2, 2), prior=af.GaussianPrior(mean=0.0, sigma=1.0))
+
+model[0, 0] = af.UniformPrior(lower_limit=0.0, upper_limit=1.0)
+model[0, 1] = af.LogUniformPrior(lower_limit=1e-4, upper_limit=1e4)
+model[1, 0] = af.GaussianPrior(mean=0.0, sigma=2.0)
+
+"""
+The `info` attribute shows the customized priors.
+"""
+print(model.info)
+
+"""
+__Instances (af.Array)__
+
+Instances of numpy array model components can be created, where an input `vector` of parameters is mapped to create 
+an instance of the Python class of the model.
+
+If the priors of the numpy array are not customized, ordering of parameters goes from element [0,0] to [0,1] to [1,0],
+as shown by the `paths` attribute.
+"""
+model = af.Array(
+    shape=(2, 2),
+    prior=af.GaussianPrior(mean=0.0, sigma=1.0),
+)
+
+print(model.paths)
+
+"""
+An instance can then be created by passing a vector of parameters to the model via the `instance_from_vector` method.
+
+The `instance` created is a NumPy array, where each element is the value passed in the vector.
+"""
+instance = model.instance_from_vector(vector=[0.0, 1.0, 2.0, 3.0])
+
+print("\nModel Instance:")
+print(instance)
+
+"""
+Prior customization changes the order of the parameters, therefore if you customize the priors of the numpy 
+array you must check the ordering of the parameters in the `paths` attribute before passing a vector to 
+the `instance_from_vector`
+"""
+model[0, 0] = af.UniformPrior(lower_limit=0.0, upper_limit=1.0)
+model[0, 1] = af.LogUniformPrior(lower_limit=1e-4, upper_limit=1e4)
+model[1, 0] = af.GaussianPrior(mean=0.0, sigma=2.0)
+
+print(model.paths)
+
+instance = model.instance_from_vector(vector=[0.0, 1.0, 2.0, 3.0])
+
+print("\nModel Instance:")
+print(instance)
+
+"""
+__Model Customization (af.Array)__
+
+The model customization API for numpy array models is the same as for `af.Model` and `af.Collection` objects.
+"""
+model = af.Array(
+    shape=(2, 2),
+    prior=af.GaussianPrior(mean=0.0, sigma=1.0),
+)
+
+model[0,0] = 50.0
+model[0,1] = model[1,0]
+model.add_assertion(model[1,1] > 0.0)
+
+print(model.info)
+
+"""
+__JSon Outputs (af.Array)__
+
+An `Array` has a `dict` attribute, which express all information about the model as a Python dictionary.
+
+By printing this dictionary we can therefore get a concise summary of the model.
+"""
+model = af.Array(
+    shape=(2, 2),
+    prior=af.GaussianPrior(mean=0.0, sigma=1.0),
+)
+
+print(model.dict())
+
+"""
+Python dictionaries can easily be saved to hard disk as a `.json` file.
+
+This means we can save any **PyAutoFit** model to hard-disk.
+
+Checkout the file `autofit_workspace/*/model/jsons/array.json` to see the model written as a .json.
+"""
+model_path = path.join("scripts", "model", "jsons")
+
+os.makedirs(model_path, exist_ok=True)
+
+model_file = path.join(model_path, "array.json")
+
+with open(model_file, "w+") as f:
+    json.dump(model.dict(), f, indent=4)
+
+"""
+We can load the model from its `.json` file, meaning that one can easily save a model to hard disk and load it 
+elsewhere.
+"""
+model = af.Array.from_json(file=model_file)
+
+print(f"\n Model via Json Prior Count = {model.prior_count}")
+
+"""
+__Extensible Models (af.Array)__
+
+For `Model` objects, the number of parameters is fixed to those listed in the input Python class when the model is 
+created.
+
+For `Collection` objects, the use of dictionaries and lists allows for the number of parameters to be extended, but it
+was still tied to the input Python classes when the model was created.
+
+For `Array` objects, the number of parameters is fully customizable, you choose the shape of the array and therefore
+the number of parameters in the model when you create it.
+
+This makes `Array` objects the most extensible and flexible way to compose models.
+
+You can also combine `Array` objects with `Collection` objects to create models with a mix of fixed and extensible
+parameters.
+"""
+model = af.Collection(
+    gaussian=Gaussian,
+    array=af.Array(shape=(3, 2), prior=af.GaussianPrior(mean=0.0, sigma=1.0))
+)
+
+model.gaussian.sigma = 2.0
+model.array[0, 0] = 1.0
+
+print(model.info)
 
 """
 __Wrap Up__
