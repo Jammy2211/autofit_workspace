@@ -104,7 +104,9 @@ the`gaussian_feature` to its true centre of 70 and sigma value of 0.5.
 model = af.Collection(gaussian_main=af.ex.Gaussian)
 
 search = af.DynestyStatic(
-    path_prefix=path.join("features", "sensitivity_mapping", "single_gaussian"),
+    path_prefix=path.join("features", "sensitivity_mapping"),
+    name="single_gaussian",
+    unique_tag="hello",
     nlive=100,
 )
 
@@ -488,6 +490,7 @@ if set above 1.
 """
 paths = af.DirectoryPaths(
     path_prefix=path.join("features"),
+    unique_tag="hello",
     name="sensitivity_mapping",
 )
 
@@ -512,16 +515,16 @@ You should now look at the results of the sensitivity mapping in the folder `out
 You will note the following 4 model-fits have been performed:
 
  - The `base_model` is fitted to a simulated dataset where the `simulation_instance` and 
- a `perturbation` with `normalization=0.01` are used.
+ a `perturb` with `normalization=0.01` are used.
 
  - The `base_model` + `perturb_model`  is fitted to a simulated dataset where the `simulation_instance` and 
- a `perturbation` with `normalization=0.01` are used.
+ a `perturb` with `normalization=0.01` are used.
 
  - The `base_model` is fitted to a simulated dataset where the `simulation_instance` and 
- a `perturbation` with `normalization=100.0` are used.
+ a `perturb` with `normalization=100.0` are used.
 
  - The `base_model` + `perturb_model`  is fitted to a simulated dataset where the `simulation_instance` and 
- a `perturbation` with `normalization=100.0` are used.
+ a `perturb` with `normalization=100.0` are used.
 
 The fit produced a `sensitivity_result`. 
 
