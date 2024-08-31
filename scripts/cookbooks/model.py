@@ -701,9 +701,9 @@ model = af.Array(
     prior=af.GaussianPrior(mean=0.0, sigma=1.0),
 )
 
-model[0,0] = 50.0
-model[0,1] = model[1,0]
-model.add_assertion(model[1,1] > 0.0)
+model[0, 0] = 50.0
+model[0, 1] = model[1, 0]
+model.add_assertion(model[1, 1] > 0.0)
 
 print(model.info)
 
@@ -764,7 +764,7 @@ parameters.
 """
 model = af.Collection(
     gaussian=Gaussian,
-    array=af.Array(shape=(3, 2), prior=af.GaussianPrior(mean=0.0, sigma=1.0))
+    array=af.Array(shape=(3, 2), prior=af.GaussianPrior(mean=0.0, sigma=1.0)),
 )
 
 model.gaussian.sigma = 2.0

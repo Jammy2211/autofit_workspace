@@ -11,6 +11,7 @@ a `MCMCPlotter`.
 # %cd $workspace_path
 # print(f"Working Directory has been set to `{workspace_path}`")
 
+import matplotlib.pyplot as plt
 from os import path
 
 import autofit as af
