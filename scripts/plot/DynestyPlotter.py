@@ -277,39 +277,43 @@ plt.close()
 """
 The traceplot plots traces and marginalized posteriors for each parameter.
 """
-dyplot.traceplot(
-    results=search_internal.results,
-    span=None,
-    quantiles=[0.025, 0.5, 0.975],
-    smooth=0.02,
-    thin=1,
-    dims=None,
-    post_color="blue",
-    post_kwargs=None,
-    kde=True,
-    nkde=1000,
-    trace_cmap="plasma",
-    trace_color=None,
-    trace_kwargs=None,
-    connect=False,
-    connect_highlight=10,
-    connect_color="red",
-    connect_kwargs=None,
-    max_n_ticks=5,
-    use_math_text=False,
-    label_kwargs={"fontsize": 16},
-    show_titles=True,
-    title_fmt=".2f",
-    title_kwargs={"fontsize": "10"},
-    truths=None,
-    truth_color="red",
-    truth_kwargs=None,
-    verbose=False,
-    fig=None,
-)
+try:
+    dyplot.traceplot(
+        results=search_internal.results,
+        span=None,
+        quantiles=[0.025, 0.5, 0.975],
+        smooth=0.02,
+        thin=1,
+        dims=None,
+        post_color="blue",
+        post_kwargs=None,
+        kde=True,
+        nkde=1000,
+        trace_cmap="plasma",
+        trace_color=None,
+        trace_kwargs=None,
+        connect=False,
+        connect_highlight=10,
+        connect_color="red",
+        connect_kwargs=None,
+        max_n_ticks=5,
+        use_math_text=False,
+        label_kwargs={"fontsize": 16},
+        show_titles=True,
+        title_fmt=".2f",
+        title_kwargs={"fontsize": "10"},
+        truths=None,
+        truth_color="red",
+        truth_kwargs=None,
+        verbose=False,
+        fig=None,
+    )
 
-plt.show()
-plt.close()
+    plt.show()
+    plt.close()
+
+except ValueError:
+    pass
 
 """
 Finish.
