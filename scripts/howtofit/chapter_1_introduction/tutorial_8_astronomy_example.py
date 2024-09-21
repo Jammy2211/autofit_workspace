@@ -1022,7 +1022,7 @@ the optical light about the stars themselves and the infrared about dust.
 
 The image below shows observations of the same galaxy at different wavelengths:
 
-![multiband](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/multiwavelength.jpg?raw=true)
+![multiband](https://github.com/Jammy2211/autofit_workspace/blob/main/scripts/howtofit/chapter_1_introduction/images/overview_3.jpg?raw=true)
 
 In tutorial 6, we learn how to perform fits to multiple datasets simultaneously, and how to change the model
 parameterization to account for the variation across datasets. 

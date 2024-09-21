@@ -20,7 +20,7 @@ for the model fitted to each dataset) but different `normalization and `sigma` v
 fitted to each dataset).
 
 It is common for each individual dataset to only constrain specific aspects of a model. The high level of model
-customizaiton provided by **PyAutoFit** ensures that composing a model that is appropriate for fitting large and diverse
+customization provided by **PyAutoFit** ensures that composing a model that is appropriate for fitting large and diverse
 datasets is straight forward. This is because different `Analysis` classes can be written for each dataset and summed.
 
 __Contents__
