@@ -357,7 +357,7 @@ class BaseFit:
         """
         self.analysis_cls = analysis_cls
 
-    def __call__(self, dataset, model, paths):
+    def __call__(self, dataset, model, paths, instance):
         """
         The base fitting function which fits every dataset used for sensitivity mapping with the base model.
 
@@ -375,6 +375,10 @@ class BaseFit:
             The model instance which is fitted to the dataset, which does not include the perturbed feature.
         paths
             The `Paths` instance which contains the path to the folder where the results of the fit are written to.
+        instance
+            The simulation instance, which includes the perturbed feature that is used to simulate the dataset.
+            This is often not used, but may be useful for certain sensitivity mapping tasks, for example using
+            true values of the simulated instance to set up aspects of the model-fit (e.g. the priors).
         """
 
         search = af.DynestyStatic(
@@ -426,7 +430,7 @@ class PerturbFit:
         """
         self.analysis_cls = analysis_cls
 
-    def __call__(self, dataset, model, paths):
+    def __call__(self, dataset, model, paths, instance):
         """
         The perturbed fitting function which fits every dataset used for sensitivity mapping with the perturbed model.
 
@@ -444,6 +448,10 @@ class PerturbFit:
             The model instance which is fitted to the dataset, which includes the perturbed feature.
         paths
             The `Paths` instance which contains the path to the folder where the results of the fit are written to.
+        instance
+            The simulation instance, which includes the perturbed feature that is used to simulate the dataset.
+            This is often not used, but may be useful for certain sensitivity mapping tasks, for example using
+            true values of the simulated instance to set up aspects of the model-fit (e.g. the priors).
         """
 
         search = af.DynestyStatic(

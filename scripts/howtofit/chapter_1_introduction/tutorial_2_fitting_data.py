@@ -309,7 +309,7 @@ The chi-squared map is calculated as:
 The purpose of squaring the normalized residual map is to ensure all values are positive. For instance, both a 
 normalized residual of -0.2 and 0.2 would square to 0.04, indicating the same level of fit in terms of `chi_squared`.
 
-As seen from the chi-squared map, it's evident that the model does not provide a good fit to the data.
+As seen from the normalized residual map, it's evident that the model does not provide a good fit to the data.
 """
 chi_squared_map = (normalized_residual_map) ** 2
 plt.plot(xvalues, chi_squared_map, color="k")
@@ -376,8 +376,6 @@ log_likelihood = -0.5 * (chi_squared + noise_normalization)
 print("Log Likelihood = ", log_likelihood)
 
 """
-Certainly! Here's a clearer version:
-
 Above, we mentioned that a lower `chi_squared` indicates a better fit of the model to the data. 
 
 When calculating the `log_likelihood`, we multiply the `chi_squared` by -0.5. Therefore, a higher log likelihood 

@@ -144,6 +144,10 @@ For other problems, you may want to increase this value, to avoid spending lots 
 hard-disk. This is especially true if the time it takes for your non-linear search to perform an iteration by
 evaluating the log likelihood is fast (e.g. < 0.1s) and you are confident your model-fit will find the global
 maximum solution given enough iterations.
+
+**If the iteration per update is too low, the model-fit may be significantly slowed down by the time it takes to
+output results and visualization frequently to hard-disk. If your fit is consistent displaying a log saying that it
+is outputting results, try increasing this value to ensure the model-fit runs efficiently.**
 """
 search = af.Emcee(iterations_per_update=1000)
 
