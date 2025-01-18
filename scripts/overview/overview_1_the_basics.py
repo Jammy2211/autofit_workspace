@@ -340,7 +340,7 @@ class Analysis(af.Analysis):
 """
 Create an instance of the `Analysis` class by passing the `data` and `noise_map`.
 """
-analysis = Analysis(data=data, noise_map=noise_map)
+analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
 """
 The `Analysis` class shown above is the simplest example possible. The API is highly extensible and can include
