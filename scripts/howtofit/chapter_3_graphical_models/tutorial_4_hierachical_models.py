@@ -12,7 +12,7 @@ parent distribution (e.g. a Gaussian distribution). It is the parameters of this
 across the dataset (e.g. the means and scatter of the Gaussian distribution). These are the parameters we ultimately
 wish to infer to understand the global behaviour of our model.
 
-This is called a hierarchical model, whihc we fit in this tutorial. The `centre` of each 1D Gaussian is now no
+This is called a hierarchical model, which we fit in this tutorial. The `centre` of each 1D Gaussian is now no
 longer the same in each dataset and they are instead drawn from a shared parent Gaussian distribution
 (with `mean=50.0` and `sigma=10.0`). The hierarchical model will recover the `mean` and `sigma` values of the parent
 distribution'.
