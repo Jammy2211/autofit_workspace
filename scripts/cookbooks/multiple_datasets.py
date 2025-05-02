@@ -5,7 +5,7 @@ Cookbook: Multiple Datasets
 This cookbook illustrates how to fit multiple datasets simultaneously, where each dataset is fitted by a different
 `Analysis` class.
 
-The `Analysis` classes are summed together to give an overall log likelihood function that is the sum of the
+The `Analysis` classes are combined to give an overall log likelihood function that is the sum of the
 individual log likelihood functions, which a single model is fitted to via non-linear search.
 
 If one has multiple observations of the same signal, it is often desirable to fit them simultaneously. This ensures
@@ -125,11 +125,11 @@ model.sigma = af.GaussianPrior(
 )
 
 """
-__Analysis Summing__
+__Analysis List__
 
 Set up three instances of the `Analysis` class which fit 1D Gaussian.
 
-We set up an `Analysis` for each dataset one-by-one, using a for loop.
+We set up an `Analysis` for each dataset one-by-one, using a for loop, and put them in a list.
 """
 analysis_list = []
 
@@ -138,40 +138,53 @@ for data, noise_map in zip(data_list, noise_map_list):
     analysis_list.append(analysis)
 
 """
-We now sum together every analysis in the list, to produce an overall analysis class which we fit with the non-linear
-search.
+__Analysis Factor__
 
-By summing analysis objects the following happen:
+We now input every analysis in the list into an `AnalysisFactor` object, which pairs each analysis to the model in a way
+that can be customized.
+
+The term "Factor" refers to a Factor graph, which is a type of graphical model used in probabilistic inference. In this
+example, we are using a factor graph to fit multiple datasets, where a factor represents the relationship between the 
+model and the data. 
+"""
+analysis_factor_list = []
+
+for analysis in analysis_list:
+
+    analysis_factor = af.AnalysisFactor(prior_model=model, analysis=analysis)
+
+    analysis_factor_list.append(analysis_factor)
+
+"""
+__Factor Graph__
+
+We now input every `AnalysisFactor` in the list into a `FactorGraphModel` object, which creates the fit to the 3
+datasets as a graphical model.
+
+By combining analysis objects in this way the following happen:
 
  - The log likelihood values computed by the `log_likelihood_function` of each individual analysis class are summed to
    give an overall log likelihood value that the non-linear search samples when model-fitting.
 
  - The output path structure of the results goes to a single folder, which includes sub-folders for the visualization
    of every individual analysis object based on the `Analysis` object's `visualize` method.
+   
+**PyAutoFit** has a suite of graphical modeling tools that can be used to fit complex models to  large datasets, which 
+build on this graphical model framework, but this simple example simply uses it to fit multiple datasets.
 """
-analysis = analysis_list[0] + analysis_list[1] + analysis_list[2]
+factor_graph = af.FactorGraphModel(*analysis_factor_list)
 
 """
-We can alternatively sum a list of analysis objects as follows:
-"""
-analysis = sum(analysis_list)
+To fit multiple datasets via a non-linear search we use this factor graph object.
 
-"""
-The `log_likelihood_function`'s can be called in parallel over multiple cores by changing the `n_cores` parameter.
-
-This is beneficial when the model-fitting procedure is slow and the likelihood evaluation time of the different
-is roughly consistent.
-"""
-analysis.n_cores = 1
-
-"""
-To fit multiple datasets via a non-linear search we use this summed analysis object:
+Note how the API of what we input into `search.fit` is different to what we have seen before, using specific
+inputs of the factor graph object.
 """
 search = af.DynestyStatic(
     path_prefix="features", sample="rwalk", name="multiple_datasets_simple"
 )
 
-result_list = search.fit(model=model, analysis=analysis)
+result_list = search.fit(model=factor_graph.global_prior_model, analysis=factor_graph)
 
 """
 __Result List__
@@ -190,6 +203,8 @@ print(result_list[0].max_log_likelihood_instance.sigma)
 print(result_list[1].max_log_likelihood_instance.centre)
 print(result_list[1].max_log_likelihood_instance.normalization)
 print(result_list[1].max_log_likelihood_instance.sigma)
+
+aaa
 
 """
 We can plot the model-fit to each dataset by iterating over the results:
