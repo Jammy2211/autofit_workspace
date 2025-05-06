@@ -48,6 +48,7 @@ the following sections:
  - Json Output (af.Array): Output a numpy array model in human readable text via a .json file and loading it back again.
  - Extensible Models (af.Array): Using numpy arrays to compose models with a flexible number of parameters.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

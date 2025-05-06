@@ -9,6 +9,7 @@ Information about Nautilus can be found at the following links:
  - https://nautilus-sampler.readthedocs.io/en/stable/index.html
  - https://github.com/johannesulf/nautilus
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

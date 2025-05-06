@@ -5,6 +5,7 @@ Plots: DynestyPlotter
 This example illustrates how to plot visualization summarizing the results of a dynesty non-linear search using
 a `NestPlotter`.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

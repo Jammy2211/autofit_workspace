@@ -25,13 +25,14 @@ __Example Source Code (`af.ex`)__
 
 The **PyAutoFit** source code has the following example objects (accessed via `af.ex`) used in this tutorial:
 
- - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and 
+ - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and
  `visualize` functions.
- 
+
  - `Gaussian`: a model component representing a 1D Gaussian profile.
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

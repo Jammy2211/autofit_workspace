@@ -12,6 +12,7 @@ Because UltraNest is an optional library, you will likely have to install it man
 
 `pip install ultranest`
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

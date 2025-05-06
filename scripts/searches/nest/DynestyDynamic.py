@@ -9,6 +9,7 @@ Information about Dynesty can be found at the following links:
  - https://github.com/joshspeagle/dynesty
  - https://dynesty.readthedocs.io/en/latest/
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

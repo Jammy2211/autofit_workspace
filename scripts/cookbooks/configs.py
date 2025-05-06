@@ -4,7 +4,7 @@ Cookbook: Config
 
 Configuration files are used to control the behaviour model components in **PyAutoFit**, which perform the
 following tasks:
- 
+
  - Specify the default priors of model components, so that a user does not have to manually specify priors every time
    they create a model.
 
@@ -20,6 +20,7 @@ __Contents__
  - Modules: Writing prior config files based on the Python module the model component Python class is contained in.
  - Labels: Config files which specify the labels of model component parameters for visualization.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

@@ -34,6 +34,7 @@ The following sections outline how to use advanced features of the results, whic
  - Result Extension: Extend the `Result` object with new attributes and methods (e.g. `max_log_likelihood_model_data`).
  - Samples Filtering: Filter the `Samples` object to only contain samples fulfilling certain criteria.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

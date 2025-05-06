@@ -9,6 +9,7 @@ Information about Zeus can be found at the following links:
  - https://github.com/minaskar/zeus
  - https://zeus-mcmc.readthedocs.io/en/latest/
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

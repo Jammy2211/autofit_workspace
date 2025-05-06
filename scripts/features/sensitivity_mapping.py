@@ -14,8 +14,8 @@ We then use this function to simulate many datasets, for different models, and f
 how much the change in the model led to a measurable change in the data. This is called computing the sensitivity.
 
 How we compute the sensitivity is chosen by us, the user. In this example, we will perform multiple model-fits
-with a nested sampling search, and therefore perform Bayesian model comparison to compute the sensitivity. This allows 
-us to infer how much of a Bayesian evidence increase we should expect for datasets of varying quality and / or models 
+with a nested sampling search, and therefore perform Bayesian model comparison to compute the sensitivity. This allows
+us to infer how much of a Bayesian evidence increase we should expect for datasets of varying quality and / or models
 with different parameters.
 
 __Example Source Code (`af.ex`)__
@@ -29,6 +29,7 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())
