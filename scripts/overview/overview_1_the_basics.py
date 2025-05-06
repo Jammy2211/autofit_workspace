@@ -24,6 +24,7 @@ overviews and the **PyAutoFit** cookbooks.
 
 To begin, lets import ``autofit`` (and ``numpy``) using the convention below:
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

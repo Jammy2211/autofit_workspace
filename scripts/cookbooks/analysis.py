@@ -17,6 +17,7 @@ __Contents__
  - Custom Output: Add methods which output model-specific results to hard-disk in the `files` folder (e.g. as .json
    files) to aid in the interpretation of results.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())
@@ -303,7 +304,6 @@ overwritten with the `Visualizer` class above.
 
 
 class Analysis(af.Analysis):
-
     """
     This over-write means the `Visualizer` class is used for visualization throughout the model-fit.
 
@@ -385,7 +385,6 @@ of the `Analysis` and define a `make_result` object describing what we want it t
 
 
 class Analysis(af.Analysis):
-
     """
     This overwrite means the `ResultExample` class is returned after the model-fit.
     """

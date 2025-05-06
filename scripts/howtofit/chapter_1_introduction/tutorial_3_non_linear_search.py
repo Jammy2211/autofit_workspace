@@ -146,6 +146,7 @@ If you're interested in learning more about these principles, you can explore re
 - [Nested Sampling](https://www.imperial.ac.uk/media/imperial-college/research-centres-and-groups/astrophysics/public/icic/data-analysis-workshop/2016/NestedSampling_JRP.pdf)
 - [A Zero-Math Introduction to MCMC Methods](https://towardsdatascience.com/a-zero-math-introduction-to-markov-chain-monte-carlo-methods-dcba889e0c50)
 """
+
 import autofit.plot as aplt
 import numpy as np
 import matplotlib.pyplot as plt

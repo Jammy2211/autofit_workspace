@@ -15,6 +15,7 @@ We first set up the path to this projects config files, which is located at `aut
 
 This includes the default priors for the lens model, check it out!
 """
+
 import os
 from os import path
 from autoconf import conf

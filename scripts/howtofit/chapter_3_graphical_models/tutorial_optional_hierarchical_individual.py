@@ -10,6 +10,7 @@ This script illustrates how the hierarchical parameters can be estimated using a
 each dataset one-by-one and estimates the hierarchical parameters afterwards by fitting the inferred `centres`
 with a Gaussian distribution.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

@@ -69,6 +69,7 @@ This tutorial is split into the following sections:
 This tutorial introduces the PyAutoFit API for model composition, which forms the foundation of all model-fitting
 performed by PyAutoFit.
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -6,12 +6,12 @@ We have fitted a dataset containing 5 noisy 1D Gaussian which had a shared `cent
 the `centre` by fitting each dataset individually and combining the value of the `centre` inferred by each fit into
 an overall estimate, using a weighted average.
 
-Graphical models use a different approach. They are a single model that is fitted to the entire dataset simultaneously. 
-The model includes specific model component for every individual 1D Gaussian in the sample. However, the graphical 
+Graphical models use a different approach. They are a single model that is fitted to the entire dataset simultaneously.
+The model includes specific model component for every individual 1D Gaussian in the sample. However, the graphical
 model also has shared parameters between these individual model components.
 
-This example fits a graphical model using the same sample fitted in the previous tutorial, consisting of many 1D 
-Gaussians. However, whereas previously the `centre` of each Gaussian was a free parameter in each fit, in the graphical 
+This example fits a graphical model using the same sample fitted in the previous tutorial, consisting of many 1D
+Gaussians. However, whereas previously the `centre` of each Gaussian was a free parameter in each fit, in the graphical
 model there is only a single parameter for the `centre` shared by all 1D Gaussians.
 
 This graphical model creates a non-linear parameter space with parameters for every Gaussian in our sample. For 5
@@ -20,6 +20,7 @@ Gaussians each with their own model parameters but a single shared centre:
  - Each Gaussian has 2 free parameters from the components that are not shared (`normalization`, `sigma`).
  - There is one additional free parameter, which is the `centre` shared by all 5 Gaussians.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

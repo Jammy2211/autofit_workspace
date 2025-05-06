@@ -16,6 +16,7 @@ __The Model__
 In this tutorial, each dataset now contains two Gaussians, and they all have the same shared centres, located at
 pixels 40 and 60.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

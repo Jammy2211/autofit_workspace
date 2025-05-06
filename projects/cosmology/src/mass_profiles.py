@@ -95,17 +95,13 @@ class MassIsothermal(MassProfile):
 
         deflections[:, :, 0] = factor * np.arctan(
             np.divide(
-                np.multiply(
-                    np.sqrt(1 - self.axis_ratio**2), grid_transformed[:, :, 0]
-                ),
+                np.multiply(np.sqrt(1 - self.axis_ratio**2), grid_transformed[:, :, 0]),
                 psi,
             )
         )
         deflections[:, :, 1] = factor * np.arctanh(
             np.divide(
-                np.multiply(
-                    np.sqrt(1 - self.axis_ratio**2), grid_transformed[:, :, 1]
-                ),
+                np.multiply(np.sqrt(1 - self.axis_ratio**2), grid_transformed[:, :, 1]),
                 psi,
             )
         )

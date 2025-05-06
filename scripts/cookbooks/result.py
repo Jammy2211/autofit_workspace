@@ -3,7 +3,7 @@ Cookbook: Result
 ================
 
 A non-linear search fits a model to a dataset, returning a `Result` object that contains a lot of information on the
-model-fit. 
+model-fit.
 
 This cookbook provides a concise reference to the result API.
 
@@ -11,7 +11,7 @@ The cookbook then describes how the results of a search can be output to hard-di
 either using the `Aggregator` object or by building an sqlite database of results. Result loading supports
 queries, so that only the results of interest are returned.
 
-The samples of the non-linear search, which are used to estimate quantities the maximum likelihood model and 
+The samples of the non-linear search, which are used to estimate quantities the maximum likelihood model and
 parameter errors, are described separately in the `samples.py` cookbook.
 
 __Contents__
@@ -57,6 +57,7 @@ The final section describes how to use results built in an sqlite database file:
  - Unique Identifiers: The unique identifier of each model-fit.
  - Writing Directly To Database: Writing results directly to the database.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())
@@ -164,7 +165,6 @@ of the `Analysis` and define a `make_result` object describing what we want it t
 
 
 class Analysis(af.ex.Analysis):
-
     """
     This overwrite means the `ResultExample` class is returned after the model-fit.
     """

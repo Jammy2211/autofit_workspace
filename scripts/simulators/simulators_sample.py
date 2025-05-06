@@ -4,6 +4,7 @@ __Simulators__
 These scripts simulates many 1D Gaussian datasets with a low signal to noise ratio, which are used to demonstrate
 model-fitting.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

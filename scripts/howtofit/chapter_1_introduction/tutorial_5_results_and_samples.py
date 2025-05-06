@@ -8,6 +8,7 @@ We used this object at various points in the chapter. The bulk of material cover
 script `autofit_workspace/overview/simple/result.py`. Nevertheless, it is a good idea to refresh ourselves about how
 results in **PyAutoFit** work before covering more advanced material.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

@@ -33,13 +33,13 @@ __Overview__
 
 In this tutorial, we will:
 
-- Use the tools from tutorials 1, 2, and 3 to set up a model that fits 2D astronomical images of galaxies with light 
+- Use the tools from tutorials 1, 2, and 3 to set up a model that fits 2D astronomical images of galaxies with light
   profile models.
-  
-- Encounter and discuss the challenges of model fitting described in tutorial 4, along with strategies to overcome 
+
+- Encounter and discuss the challenges of model fitting described in tutorial 4, along with strategies to overcome
   these challenges.
-  
-- Use the result properties introduced in tutorial 5 to interpret the model fit and determine whether the galaxy is an 
+
+- Use the result properties introduced in tutorial 5 to interpret the model fit and determine whether the galaxy is an
   early or late-type galaxy.
 
  __Contents__
@@ -58,6 +58,7 @@ In this tutorial, we will:
 - **Bulgey**: Repeat the fit using a bulgey light profile to determine the galaxy's type.
 - **Extensions**: Illustrate examples of how this problem can be extended and the challenges that arise.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

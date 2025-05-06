@@ -36,6 +36,7 @@ to fit them. The high levels of customization possible in model composition and 
 that fitting diverse datasets with hierarchical models is feasible. This also means that a common problem in healthcare
 data, missing data, can be treated in a statistically robust manner.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

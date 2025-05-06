@@ -48,6 +48,7 @@ This tutorial is split into the following sections:
 - **Extensibility**: Use the `Collection` object for fitting models with multiple components.
 - **Wrap Up**: Summarize the key concepts of this tutorial.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

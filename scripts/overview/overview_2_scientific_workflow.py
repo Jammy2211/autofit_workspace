@@ -25,6 +25,7 @@ This overview covers the key features of **PyAutoFit** that support the developm
 - **Database**: Store results in a relational SQLite3 database, enabling efficient management of large modeling results.
 - **Scaling Up**: Guidance on scaling up your scientific workflow from small to large datasets.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())
@@ -307,7 +308,6 @@ overwritten with the ``Visualizer`` class above.
 
 
 class Analysis(af.Analysis):
-
     """
     This over-write means the `Visualizer` class is used for visualization throughout the model-fit.
 
@@ -440,7 +440,6 @@ of the ``Analysis`` and define a ``make_result`` object describing what we want 
 
 
 class Analysis(af.Analysis):
-
     """
     This overwrite means the `ResultExample` class is returned after the model-fit.
     """

@@ -5,6 +5,7 @@ Plots: MLEPlotter
 This example illustrates how to plot visualization summarizing the results of a pyswarms non-linear search using
 a `MLEPlotter`.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

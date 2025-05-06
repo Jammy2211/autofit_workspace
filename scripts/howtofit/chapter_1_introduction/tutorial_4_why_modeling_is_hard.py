@@ -38,6 +38,7 @@ __Contents__
 - **Astronomy Example**: How the concepts of this tutorial are applied to real astronomical problems.
 - **Wrap Up**: A summary of the key takeaways of this tutorial.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

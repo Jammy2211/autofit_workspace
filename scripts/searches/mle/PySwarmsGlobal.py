@@ -10,6 +10,7 @@ Information about PySwarms can be found at the following links:
  - https://pyswarms.readthedocs.io/en/latest/index.html
  - https://pyswarms.readthedocs.io/en/latest/api/pyswarms.single.html#module-pyswarms.single.global_best
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

@@ -17,6 +17,7 @@ longer the same in each dataset and they are instead drawn from a shared parent 
 (with `mean=50.0` and `sigma=10.0`). The hierarchical model will recover the `mean` and `sigma` values of the parent
 distribution'.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

@@ -9,6 +9,7 @@ Information about Emcee can be found at the following links:
   - https://github.com/dfm/emcee
  - https://emcee.readthedocs.io/en/stable/
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

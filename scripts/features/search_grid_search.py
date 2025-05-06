@@ -40,6 +40,7 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())
@@ -184,7 +185,7 @@ search = af.DynestyStatic(
     path_prefix=path.join("features", "search_grid_search"),
     nlive=100,
     maxcall=30000,
-    number_of_cores=2
+    number_of_cores=2,
     #   force_x1_cpu=True,  # ensures parallelizing over grid search works.
 )
 

@@ -18,6 +18,7 @@ fit every dataset simultaneously.
 This tutorial fits a global model with a shared parameter and does not use a hierarchical model. The optional tutorial
 `tutorial_optional_hierarchical_ep` shows an example fit of a hierarchical model with EP.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

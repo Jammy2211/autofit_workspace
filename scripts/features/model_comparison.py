@@ -2,15 +2,15 @@
 Feature: Model Comparison
 =========================
 
-Common questions when fitting a model to data are: what model should I use? How many parameters should the model have? 
+Common questions when fitting a model to data are: what model should I use? How many parameters should the model have?
 Is the model too complex or too simple?
 
-Model comparison answers to these questions. It amounts to composing and fitting many different models to the data 
-and comparing how well they fit the data. 
+Model comparison answers to these questions. It amounts to composing and fitting many different models to the data
+and comparing how well they fit the data.
 
-This example illustrates model comparison using the noisy 1D Gaussian example. We fit a dataset consisting of two 
-Gaussians and fit it with three models comprised of 1, 2 and 3 Gaussian's respectively. Using the Bayesian evidence to 
-compare the models, we favour the model with 2 Gaussians, which is the "correct" model given that it was the model used 
+This example illustrates model comparison using the noisy 1D Gaussian example. We fit a dataset consisting of two
+Gaussians and fit it with three models comprised of 1, 2 and 3 Gaussian's respectively. Using the Bayesian evidence to
+compare the models, we favour the model with 2 Gaussians, which is the "correct" model given that it was the model used
 to simulate the dataset in the first place.
 
 __Metrics__
@@ -19,26 +19,27 @@ Different metrics can be used compare models and quantify their goodness-of-fit.
 
 In this example we show the results of using two different metrics:
 
- - `log_likelihood`: The value returned by the `log_likelihood_function` of an `Analysis` object. which is directly 
-   related to the sum of the residuals squared (e.g. the `chi_squared`). The log likelihood does not change when more 
-   or less parameters are included in the model, therefore it does not account for over-fitting and will often favour 
+ - `log_likelihood`: The value returned by the `log_likelihood_function` of an `Analysis` object. which is directly
+   related to the sum of the residuals squared (e.g. the `chi_squared`). The log likelihood does not change when more
+   or less parameters are included in the model, therefore it does not account for over-fitting and will often favour
    more complex models irrespective of whether they fit the data better.
- 
+
  - `log_evidence`: The Bayesian evidence, which is closely related to the log likelihood but utilizes additional
    information which penalizes models based on their complexity. The Bayesian evidence will therefore favour simpler
    models over more complex models, unless the more complex model provides a much better fit to the data.
-   
+
 __Example Source Code (`af.ex`)__
 
 The **PyAutoFit** source code has the following example objects (accessed via `af.ex`) used in this tutorial:
 
- - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and 
+ - `Analysis`: an analysis object which fits noisy 1D datasets, including `log_likelihood_function` and
  `visualize` functions.
- 
+
  - `Gaussian`: a model component representing a 1D Gaussian profile.
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

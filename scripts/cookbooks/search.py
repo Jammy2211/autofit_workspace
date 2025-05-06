@@ -28,6 +28,7 @@ It then provides example code for using every search:
  - PySwarmsLocal (Particle Swarm Optimization): The local PySwarms particle swarm optimization.
  - LBFGS: The L-BFGS scipy optimization.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

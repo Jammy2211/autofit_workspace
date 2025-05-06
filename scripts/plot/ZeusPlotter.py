@@ -5,6 +5,7 @@ Plots: MCMCPlotter
 This example illustrates how to plot visualization summarizing the results of a zeus non-linear search using
 a `MCMCPlotter`.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

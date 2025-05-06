@@ -2,7 +2,7 @@
 Searches: Drawer
 ================
 
-This example illustrates how to use the Drawer search, simply draws a fixed number of samples from the model uniformly 
+This example illustrates how to use the Drawer search, simply draws a fixed number of samples from the model uniformly
 from the priors.
 
 Therefore, it does not seek to determine model parameters which maximize the likelihood or map out the
@@ -22,6 +22,7 @@ Whilst this is not the typical use case of a non-linear search, it has certain n
  the `Drawer` search may be sufficient to perform the overall modeling task, without the need of performing
  an actual parameter space search.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

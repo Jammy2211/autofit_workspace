@@ -68,6 +68,7 @@ problem of interest.
 The module `src/__init__.py` performs a series of imports that are used throughout this lecture to provide convenient
 access to different parts of the source code.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

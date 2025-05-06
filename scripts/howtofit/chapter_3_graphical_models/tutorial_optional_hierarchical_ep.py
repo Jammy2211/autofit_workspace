@@ -6,6 +6,7 @@ This optional tutorial gives an example of fitting a hierarchical model using EP
 
 The API is a straightforward combination of tutorials 3 and 4.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())

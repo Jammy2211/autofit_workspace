@@ -3,6 +3,7 @@ __Simulators__
 
 These scripts simulate the 1D Gaussian datasets used to demonstrate model-fitting.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())
