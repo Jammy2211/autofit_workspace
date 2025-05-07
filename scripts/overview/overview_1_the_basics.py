@@ -473,7 +473,8 @@ __Multiple Datasets__
 Many model-fitting problems require multiple datasets to be fitted simultaneously in order to provide the best
 constraints on the model.
 
-In **PyAutoFit**, all you have to do to fit multiple datasets is sum your ``Analysis`` classes together:
+In **PyAutoFit**, all you have to do to fit multiple datasets is combine them with the model via `AnalysisFactor` 
+objects.
 """
 # For illustration purposes, we'll input the same data and noise-map as the example, but for a realistic example
 # you would input different datasets and noise-maps to each analysis.
@@ -481,15 +482,61 @@ In **PyAutoFit**, all you have to do to fit multiple datasets is sum your ``Anal
 analysis_0 = Analysis(data=data, noise_map=noise_map)
 analysis_1 = Analysis(data=data, noise_map=noise_map)
 
-# This means the model is fitted to both datasets simultaneously.
+analysis_list = [analysis_0, analysis_1]
 
-analysis = analysis_0 + analysis_1
+analysis_factor_list = []
 
-# summing a list of analysis objects is also a valid API:
+for analysis in analysis_list:
 
-analysis = sum([analysis_0, analysis_1])
+    # The model can be customized here so that different model parameters are tied to each analysis.
+    model_analysis = model.copy()
+
+    analysis_factor = af.AnalysisFactor(prior_model=model_analysis, analysis=analysis)
+
+    analysis_factor_list.append(analysis_factor)
 
 """
+__Factor Graph__
+
+All `AnalysisFactor` objects are combined into a `FactorGraphModel`, which represents a global model fit to 
+multiple datasets using a graphical model structure.
+
+The key outcomes of this setup are:
+
+ - The individual log likelihoods from each `Analysis` object are summed to form the total log likelihood 
+   evaluated during the model-fitting process.
+
+ - Results from all datasets are output to a unified directory, with subdirectories for visualizations 
+   from each analysis object, as defined by their `visualize` methods.
+
+This is a basic use of **PyAutoFit**'s graphical modeling capabilities, which support advanced hierarchical 
+and probabilistic modeling for large, multi-dataset analyses.
+"""
+factor_graph = af.FactorGraphModel(*analysis_factor_list)
+
+"""
+To inspect the model, we print `factor_graph.global_prior_model.info`.
+"""
+print(factor_graph.global_prior_model.info)
+
+"""
+To fit multiple datasets, we pass the `FactorGraphModel` to a non-linear search.
+
+Unlike single-dataset fitting, we now pass the `factor_graph.global_prior_model` as the model and 
+the `factor_graph` itself as the analysis object.
+
+This structure enables simultaneous fitting of multiple datasets in a consistent and scalable way.
+"""
+search = af.DynestyStatic(
+    nlive=100,
+)
+
+result_list = search.fit(model=factor_graph.global_prior_model, analysis=factor_graph)
+
+"""
+The `multiple datasets cookbook <https://pyautofit.readthedocs.io/en/latest/cookbooks/multiple_datasets.html>`_ also 
+provides a run through of the samples object API.
+
 __Wrap Up__
 
 This overview covers the basic functionality of **PyAutoFit** using a simple model, dataset, and model-fitting problem, 
