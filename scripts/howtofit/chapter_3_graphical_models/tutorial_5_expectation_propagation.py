@@ -135,7 +135,13 @@ nodes, one could easily use different searches for different nodes on the factor
 Each `AnalysisFactor` is also given a `name`, corresponding to the name of the dataset it fits. These names are used
 to name the folders containing the results in the output directory.
 """
-dynesty = af.DynestyStatic(nlive=100, sample="rwalk")
+paths = af.DirectoryPaths(
+    name=path.join(
+        "howtofit", "chapter_graphical_models", "tutorial_5_expectation_propagation"
+    )
+)
+
+search = af.DynestyStatic(paths=paths, nlive=100, sample="rwalk")
 
 analysis_factor_list = []
 
@@ -146,7 +152,7 @@ for model, analysis in zip(model_list, analysis_list):
     dataset_index += 1
 
     analysis_factor = af.AnalysisFactor(
-        prior_model=model, analysis=analysis, optimiser=dynesty, name=dataset_name
+        prior_model=model, analysis=analysis, optimiser=search, name=dataset_name
     )
 
     analysis_factor_list.append(analysis_factor)
@@ -203,12 +209,6 @@ When we fit the factor graph a `name` is passed, which determines the folder all
 stored in.
 """
 laplace = af.LaplaceOptimiser()
-
-paths = af.DirectoryPaths(
-    name=path.join(
-        "howtofit", "chapter_graphical_models", "tutorial_5_expectation_propagation"
-    )
-)
 
 factor_graph_result = factor_graph.optimise(
     optimiser=laplace, paths=paths, ep_history=af.EPHistory(kl_tol=0.05), max_steps=5

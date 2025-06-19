@@ -137,7 +137,6 @@ for model, analysis in zip(model_list, analysis_list):
 
     analysis_factor_list.append(analysis_factor)
 
-
 """
 __Model__
 
@@ -149,7 +148,6 @@ that the `centre` of each individual `Gaussian` dataset is drawn.
 For this parent `Gaussian`, we have to place priors on its `mean` and `sigma`, given that they are parameters in our
 model we are ultimately fitting for.
 """
-
 hierarchical_factor = af.HierarchicalFactor(
     af.GaussianPrior,
     mean=af.GaussianPrior(mean=50.0, sigma=10, lower_limit=0.0, upper_limit=100.0),
