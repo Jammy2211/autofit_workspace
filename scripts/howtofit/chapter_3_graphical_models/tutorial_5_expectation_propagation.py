@@ -109,14 +109,16 @@ We will assume all Gaussians share the same centre, therefore we set up a shared
 centre_shared_prior = af.GaussianPrior(mean=50.0, sigma=30.0)
 
 model_list = []
+fwhms = []
 
 for model_index in range(len(data_list)):
     gaussian = af.Model(af.ex.Gaussian)
 
-    gaussian.centre = centre_shared_prior  # This prior is used by all 3 Gaussians!
-
+    gaussian.centre = af.GaussianPrior(mean=50.0, sigma=30.0)
     gaussian.normalization = af.GaussianPrior(mean=3.0, sigma=5.0, lower_limit=0.0)
     gaussian.sigma = af.GaussianPrior(mean=10.0, sigma=10.0, lower_limit=0.0)
+
+    fwhms.append(gaussian.fwhm)
 
     model = af.Collection(gaussian=gaussian)
 
@@ -157,12 +159,32 @@ for model, analysis in zip(model_list, analysis_list):
 
     analysis_factor_list.append(analysis_factor)
 
+
+class LinearRegressionAnalysis(af.Analysis):
+    def log_likelihood_function(self, instance):
+        return -1
+
+
+linear_regression_factor = af.AnalysisFactor(
+    prior_model=af.Collection(
+        fwhms=fwhms,
+        m=af.GaussianPrior(mean=0.0, sigma=1.0),
+        c=af.GaussianPrior(mean=0.0, sigma=1.0),
+    ),
+    analysis=LinearRegressionAnalysis(),
+    optimiser=dynesty,
+    name="linear_regression",
+)
+
 """
 __Factor Graph__
 
 We combine our `AnalysisFactors` into one, to compose the factor graph.
 """
-factor_graph = af.FactorGraphModel(*analysis_factor_list)
+factor_graph = af.FactorGraphModel(
+    *analysis_factor_list,
+    linear_regression_factor,
+)
 
 """
 The factor graph model `info` attribute shows the model which we fit via expectaton propagation (note that we do
