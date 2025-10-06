@@ -6,7 +6,7 @@ Gaussian:
     width_modifier:
       type: Relative
       value: 0.5
-    gaussian_limits:
+    limits:
       lower: 0.0
       upper: inf
   centre:
@@ -16,7 +16,7 @@ Gaussian:
     width_modifier:
       type: Absolute
       value: 20.0
-    gaussian_limits:
+    limits:
       lower: -inf
       upper: inf
   normalization:
@@ -26,6 +26,6 @@ Gaussian:
     width_modifier:
       type: Relative
       value: 0.5
-    gaussian_limits:
+    limits:
       lower: 0.0
       upper: inf
