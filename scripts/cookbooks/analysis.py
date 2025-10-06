@@ -27,7 +27,7 @@ __Contents__
 import json
 import numpy as np
 from os import path
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 
 import autofit as af
 import autofit.plot as aplt
@@ -500,10 +500,16 @@ the `samples.csv` file.
   
 There may also be a `latent.results` and `latent_summary.json` files output. The `output.yaml` config file contains
 settings customizing what files are output and how often.
+
+This function takes as input the `parameters`, not the `instance`, because it means the function supports JAX.jit
+and thus if JAX is being used can be fully accelerated. The `instance` is created immediately inside the function.
 """
 
 
 class Analysis(af.Analysis):
+
+    LATENT_KEYS = ["fwhm"]
+
     def __init__(self, data, noise_map):
         """
         An Analysis class which illustrates latent variables.
@@ -528,7 +534,7 @@ class Analysis(af.Analysis):
 
         return log_likelihood
 
-    def compute_latent_variables(self, instance) -> Dict[str, float]:
+    def compute_latent_variables(self, parameters, model) -> Tuple:
         """
         A latent variable is not a model parameter but can be derived from the model. Its value and errors may be
         of interest and aid in the interpretation of a model-fit.
@@ -542,8 +548,15 @@ class Analysis(af.Analysis):
         In the example below, the `latent.csv` file will contain one column with the FWHM of every Gausian model
         sampled by the non-linear search.
 
-        This function is called for every non-linear search sample, where the `instance` passed in corresponds to
-        each sample.
+        This function is called at the end of search, following one of two schemes depending on the settings in
+        `output.yaml`:
+
+        1) Call for every search sample, which produces a complete `latent/samples.csv` which mirrors the normal
+        `samples.csv` file but takes a long time to compute.
+
+        2) Call only for N random draws from the posterior inferred at the end of the search, which only produces a
+        `latent/latent_summary.json` file with the median and 1 and 3 sigma errors of the latent variables but is
+        fast to compute.
 
         Parameters
         ----------
@@ -553,9 +566,11 @@ class Analysis(af.Analysis):
         Returns
         -------
         A dictionary mapping every latent variable name to its value.
-
         """
-        return {"fwhm": instance.fwhm}
+
+        instance = model.instance_from_vector(vector=parameters)
+
+        return (instance.fwhm,)
 
 
 """

@@ -3,7 +3,7 @@ parameter0:
   lower_limit: 0.0
   upper_limit: 1.0
 parameter1:
-  type: Gaussian
+  type: TruncatedGaussian
   mean: 0.0
   sigma: 0.1
   lower_limit: 0.0

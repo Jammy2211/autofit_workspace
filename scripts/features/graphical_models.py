@@ -15,7 +15,7 @@ individual dataset but also higher-level model components that fit 'global' para
 dataset. This framework can be easily extended to fit datasets with different properties, complex models with different
 topologies and has the functionality to allow it to be generalized to models with thousands of parameters.
 
-In this example, we demonstrate the basic API for performing graphical modeling in **PyAutoFit** using the example of
+In this example, we demonstrate the API for performing graphical modeling in **PyAutoFit** using the example of
 simultaneously fitting 3 noisy 1D Gaussians. However, graphical models are an extensive feature and at the end of
 this example we will discuss other options available in **PyAutoFit** for composing a fitting a graphical model.
 
