@@ -119,7 +119,7 @@ You should see the following text:
    lower_limit: 0.0
    upper_limit: 1.0
  parameter1:
-   type: Gaussian
+   type: TruncatedGaussian
    mean: 0.0
    sigma: 0.1
    lower_limit: 0.0
@@ -164,7 +164,7 @@ The `.yaml` file should read as follows:
    lower_limit: 0.0
    upper_limit: 100.0
  normalization:
-   type: Gaussian
+   type: TruncatedGaussian
    mean: 0.0
    sigma: 0.1
    lower_limit: 0.0
