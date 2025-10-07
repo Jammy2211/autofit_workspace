@@ -27,10 +27,9 @@ __Contents__
 import json
 import numpy as np
 from os import path
-from typing import Dict, Optional, Tuple
+from typing import Optional, Tuple
 
 import autofit as af
-import autofit.plot as aplt
 
 """
 __Example__

@@ -124,7 +124,9 @@ If you do not setup config files, all priors must be manually specified before y
 model = af.Model(Gaussian)
 model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 model.normalization = af.LogUniformPrior(lower_limit=1e-4, upper_limit=1e4)
-model.sigma = af.GaussianPrior(mean=0.0, sigma=1.0, lower_limit=0.0, upper_limit=1e5)
+model.sigma = af.TruncatedGaussianPrior(
+    mean=0.0, sigma=1.0, lower_limit=0.0, upper_limit=1e5
+)
 
 """
 __Instances (Model)__
@@ -161,7 +163,7 @@ The inputs of 0.5 below are mapped as follows:
  - `normalization` goes to 1.0 because this is the midpoint of the `LogUniformPrior`' with `lower_limit=1e-4` 
  and `upper_limit=1e4`, corresponding to log10 space.
 
- - `sigma`: goes to 0.0 because this is the `mean` of the `GaussianPrior`.
+ - `sigma`: goes to 0.0 because this is the `mean` of the `TruncatedGaussianPrior`.
 """
 instance = model.instance_from_unit_vector(unit_vector=[0.5, 0.5, 0.5])
 

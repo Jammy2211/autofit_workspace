@@ -135,10 +135,10 @@ The `type` is the type of prior assumed by **PyAutoFit** by default for its corr
 example:
 
 - `parameter0` is given a `UniformPrior` with limits between 0.0 and 1.0. 
-- `parameter1` a `GaussianPrior` with mean 0.0 and sigma 1.0.
+- `parameter1` a `TruncatedGaussianPrior` with mean 0.0 and sigma 1.0.
 - `parameter2` is given a `UniformPrior` with limits between 0.0 and 10.0. 
 
-The `lower_limit` and `upper_limit` of a `GaussianPrior` define the boundaries of what parameter values are 
+The `lower_limit` and `upper_limit` of a `TruncatedGaussianPrior` define the boundaries of what parameter values are 
 physically allowed. If a model-component is given a value outside these limits during model-fitting the model is
 instantly resampled and discarded.
 
