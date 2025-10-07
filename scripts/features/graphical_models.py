@@ -127,7 +127,7 @@ __Model__
 We now compose the graphical model we will fit using the `Model` objects described in  the `overview` examples 
 and chapter 1 of **HowToFit**.
 
-We begin by setting up a shared prior for `centre`, which is set up this up as a single `GaussianPrior` that is 
+We begin by setting up a shared prior for `centre`, which is set up this up as a single `TruncatedGaussianPrior` that is 
 passed to a unique `Model` for each `Gaussian`. This means all three `Gaussian`'s will be fitted wih the same 
 value of `centre`.
 """

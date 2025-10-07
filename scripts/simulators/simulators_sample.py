@@ -45,7 +45,9 @@ total_datasets = 10
 
 gaussian_parent_model = af.Model(
     af.ex.Gaussian,
-    centre=af.GaussianPrior(mean=50.0, sigma=10.0, lower_limit=0.0, upper_limit=100.0),
+    centre=af.TruncatedGaussianPrior(
+        mean=50.0, sigma=10.0, lower_limit=0.0, upper_limit=100.0
+    ),
     normalization=0.5,
     sigma=5.0,
 )
@@ -75,7 +77,7 @@ for i in range(total_datasets):
         "dataset", "example_1d", f"gaussian_x2__offset_centres", f"dataset_{i}"
     )
 
-    sigma_0_prior = af.GaussianPrior(
+    sigma_0_prior = af.TruncatedGaussianPrior(
         lower_limit=0.0, upper_limit=20.0, mean=10.0, sigma=10.0
     )
     while True:
@@ -85,7 +87,7 @@ for i in range(total_datasets):
         except af.exc.PriorLimitException:
             continue
 
-    sigma_1_prior = af.GaussianPrior(
+    sigma_1_prior = af.TruncatedGaussianPrior(
         lower_limit=0.0, upper_limit=20.0, mean=10.0, sigma=10.0
     )
     while True:

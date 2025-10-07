@@ -254,8 +254,8 @@ We now fit both `Gaussians`'s simultaneously, using the results of the previous 
 the non-linear searches parameter space.
 
 To pass the result in this way we use the command `result.model`, which in contrast to `result.instance` above passes
-the parameters not as the maximum log likelihood values but as `GaussianPrior`'s that are fitted for by the
-non-linear search. We discuss below how this `GaussianPrior` is passed.
+the parameters not as the maximum log likelihood values but as `TruncatedGaussianPrior`'s that are fitted for by the
+non-linear search. We discuss below how this `TruncatedGaussianPrior` is passed.
 """
 
 model_3 = af.Collection(
@@ -316,7 +316,7 @@ plt.close()
 __Prior Passing__
 
 Now search 3 is complete, you should checkout its `model.info` file. The parameters do not use the default priors of 
-the `Gaussian` model component. Instead, they use GaussianPrior`s where:
+the `Gaussian` model component. Instead, they use TruncatedGaussianPrior`s where:
 
  - The mean values are the median PDF results of every parameter inferred by the fits performed in searches 1 and 2.
  - They sigma values are the errors computed by these searches, or they are values higher than these errors.
@@ -344,12 +344,12 @@ There are two ways a value is specified using the priors/width file:
 
  1) Absolute: In this case, the error assumed on the parameter is the value given in the config file. 
   For example, if for the width on `centre` the width modifier reads "Absolute" with a value 20.0, this means if the 
-  error on the parameter `centre` was less than 20.0 in the previous search, the sigma of its `GaussianPrior` in 
+  error on the parameter `centre` was less than 20.0 in the previous search, the sigma of its `TruncatedGaussianPrior` in 
   the next search will be 20.0.
 
  2) Relative: In this case, the error assumed on the parameter is the % of the value of the estimate value given in 
  the config file. For example, if the normalization estimated in the previous search was 2.0, and the relative error in 
- the config file reads "Relative" with a value 0.5, then the sigma of the `GaussianPrior` 
+ the config file reads "Relative" with a value 0.5, then the sigma of the `TruncatedGaussianPrior` 
   will be 50% of this value, i.e. sigma = 0.5 * 2.0 = 1.0.
 
 We use absolute and relative values for different parameters, depending on their properties. For example, using the 
@@ -372,13 +372,13 @@ as a prior to search 2, we would write:
 
     gaussian.normalization = search_1_result.model.gaussian.normalization
 
-The prior on the `Gaussian` `normalization` in search 2 would thus be a `GaussianPrior`, with mean=4.0 and 
+The prior on the `Gaussian` `normalization` in search 2 would thus be a `TruncatedGaussianPrior`, with mean=4.0 and 
 sigma=2.0. If we had used a sigma value of 1.0 to compute the error, which reduced the estimate from 4.0 +- 2.0 to 
-4.0 +- 1.0, the sigma of the `GaussianPrior` would instead be 1.0. 
+4.0 +- 1.0, the sigma of the `TruncatedGaussianPrior` would instead be 1.0. 
 
 If the error on the normalization in search 1 had been really small, lets say, 0.01, we would instead use the value of the 
 normalization width in the priors config file to set sigma instead. In this case, the prior config file specifies 
-that we use an "Relative" value of 0.5 to chain this prior. Thus, the GaussianPrior in search 2 would have a mean=4.0 
+that we use an "Relative" value of 0.5 to chain this prior. Thus, the TruncatedGaussianPrior in search 2 would have a mean=4.0 
 and sigma=2.0.
 
 And with that, we`re done. Chaining searches is a bit of an art form, but for certain problems can be extremely 

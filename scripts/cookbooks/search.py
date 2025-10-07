@@ -247,7 +247,7 @@ initializer = af.InitializerParamBounds(
 )
 
 """
-Similar behaviour can be achieved by customizing the priors of a model-fit. We could place `GaussianPrior`'s
+Similar behaviour can be achieved by customizing the priors of a model-fit. We could place `TruncatedGaussianPrior`'s
 centred on the regions of parameter space we want to sample, or we could place tight `UniformPrior`'s on regions
 of parameter space we believe the correct answer lies.
 

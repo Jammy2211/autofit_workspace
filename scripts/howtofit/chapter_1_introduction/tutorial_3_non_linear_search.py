@@ -147,7 +147,6 @@ If you're interested in learning more about these principles, you can explore re
 - [A Zero-Math Introduction to MCMC Methods](https://towardsdatascience.com/a-zero-math-introduction-to-markov-chain-monte-carlo-methods-dcba889e0c50)
 """
 
-import autofit.plot as aplt
 import numpy as np
 import matplotlib.pyplot as plt
 from os import path
@@ -282,8 +281,8 @@ parameter values, we can incorporate this knowledge into our priors for a new da
 model fitting process towards parameter values that are more probable based on our prior understanding.
 
 While we are using `UniformPriors` in this tutorial due to their simplicity, **PyAutoFit** offers various other 
-priors like `GaussianPrior` and `LogUniformPrior`. These priors are useful for encoding different forms of prior 
-information, such as normally distributed values around a mean (`GaussianPrior`) or parameters spanning multiple 
+priors like `TruncatedGaussianPrior` and `LogUniformPrior`. These priors are useful for encoding different forms of prior 
+information, such as normally distributed values around a mean (`TruncatedGaussianPrior`) or parameters spanning multiple 
 orders of magnitude (`LogUniformPrior`).
 """
 model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)

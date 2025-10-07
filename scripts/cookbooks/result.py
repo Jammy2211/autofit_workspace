@@ -70,7 +70,6 @@ import numpy as np
 from typing import Optional
 
 import autofit as af
-import autofit.plot as aplt
 
 """
 __Simple Fit__
@@ -273,7 +272,7 @@ model = af.Collection(gaussian=af.ex.Gaussian)
 
 model.gaussian.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 model.gaussian.normalization = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
-model.gaussian.sigma = af.GaussianPrior(
+model.gaussian.sigma = af.TruncatedGaussianPrior(
     mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=np.inf
 )
 

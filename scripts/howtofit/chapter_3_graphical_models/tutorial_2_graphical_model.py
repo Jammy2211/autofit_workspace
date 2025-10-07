@@ -107,7 +107,7 @@ We now compose the graphical model that we fit, using the `Model` object you are
 
 We begin by setting up a shared prior for `centre`. 
 
-We set up this up as a single `GaussianPrior` which is passed to separate `Model`'s for each `Gaussian` below.
+We set up this up as a single `UniformPrior` which is passed to separate `Model`'s for each `Gaussian` below.
 """
 centre_shared_prior = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 

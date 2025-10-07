@@ -2,14 +2,14 @@
     "type": "instance",
     "class_path": "autofit.example.model.Gaussian",
     "arguments": {
-        "normalization": 1.0,
         "centre": 60.0,
         "sigma": {
             "type": "ndarray",
             "array": [
-                7.621239097496799
+                15.003226394779972
             ],
             "dtype": "float64"
-        }
+        },
+        "normalization": 1.0
     }
 }

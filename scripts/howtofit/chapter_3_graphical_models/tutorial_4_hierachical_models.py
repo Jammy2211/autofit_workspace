@@ -115,11 +115,13 @@ model_list = []
 for model_index in range(len(data_list)):
     gaussian = af.Model(af.ex.Gaussian)
 
-    gaussian.centre = af.GaussianPrior(
+    gaussian.centre = af.TruncatedGaussianPrior(
         mean=50.0, sigma=20.0, lower_limit=0.0, upper_limit=100.0
     )
-    gaussian.normalization = af.GaussianPrior(mean=3.0, sigma=5.0, lower_limit=0.0)
-    gaussian.sigma = af.GaussianPrior(mean=10.0, sigma=10.0, lower_limit=0.0)
+    gaussian.normalization = af.TruncatedGaussianPrior(
+        mean=3.0, sigma=5.0, lower_limit=0.0
+    )
+    gaussian.sigma = af.TruncatedGaussianPrior(mean=10.0, sigma=10.0, lower_limit=0.0)
 
     model_list.append(gaussian)
 
@@ -150,8 +152,12 @@ model we are ultimately fitting for.
 """
 hierarchical_factor = af.HierarchicalFactor(
     af.GaussianPrior,
-    mean=af.GaussianPrior(mean=50.0, sigma=10, lower_limit=0.0, upper_limit=100.0),
-    sigma=af.GaussianPrior(mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=100.0),
+    mean=af.TruncatedGaussianPrior(
+        mean=50.0, sigma=10, lower_limit=0.0, upper_limit=100.0
+    ),
+    sigma=af.TruncatedGaussianPrior(
+        mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=100.0
+    ),
 )
 
 """

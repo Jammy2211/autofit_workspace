@@ -115,8 +115,10 @@ for model_index in range(len(data_list)):
     gaussian = af.Model(af.ex.Gaussian)
 
     gaussian.centre = af.GaussianPrior(mean=50.0, sigma=30.0)
-    gaussian.normalization = af.GaussianPrior(mean=3.0, sigma=5.0, lower_limit=0.0)
-    gaussian.sigma = af.GaussianPrior(mean=10.0, sigma=10.0, lower_limit=0.0)
+    gaussian.normalization = af.TruncatedGaussianPrior(
+        mean=3.0, sigma=5.0, lower_limit=0.0
+    )
+    gaussian.sigma = af.TruncatedGaussianPrior(mean=10.0, sigma=10.0, lower_limit=0.0)
 
     fwhms.append(gaussian.fwhm)
 
@@ -172,7 +174,7 @@ linear_regression_factor = af.AnalysisFactor(
         c=af.GaussianPrior(mean=0.0, sigma=1.0),
     ),
     analysis=LinearRegressionAnalysis(),
-    optimiser=dynesty,
+    optimiser=search,
     name="linear_regression",
 )
 

@@ -53,7 +53,6 @@ import numpy as np
 from os import path
 
 import autofit as af
-import autofit.plot as aplt
 
 """
 __Model Fit__
@@ -121,7 +120,7 @@ model = af.Model(af.ex.Gaussian)
 
 model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 model.normalization = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
-model.sigma = af.GaussianPrior(
+model.sigma = af.TruncatedGaussianPrior(
     mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=np.inf
 )
 
@@ -309,7 +308,7 @@ for analysis in analysis_list:
     model_analysis = model.copy()
 
     model_analysis.normalization = af.LogUniformPrior(lower_limit=1e-2, upper_limit=1e2)
-    model_analysis.sigma = af.GaussianPrior(
+    model_analysis.sigma = af.TruncatedGaussianPrior(
         mean=10.0, sigma=5.0, lower_limit=0.0, upper_limit=np.inf
     )
 
