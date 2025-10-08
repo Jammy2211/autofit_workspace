@@ -353,7 +353,7 @@ so you can see how the results are output and the visualizations produced.
 """
 analysis = Analysis(data=data, noise_map=noise_map)
 
-model = af.Model(af.Gaussian)
+model = af.Model(af.ex.Gaussian)
 
 search = af.DynestyStatic(
     path_prefix=path.join("result_folder"), name="overview_2_scientific_workflow"
@@ -541,7 +541,7 @@ class, which includes the property `max_log_likelihood_model_data_1d`.
 """
 analysis = Analysis(data=data, noise_map=noise_map)
 
-model = af.Model(af.Gaussian)
+model = af.Model(af.ex.Gaussian)
 
 search = af.DynestyStatic(
     path_prefix=path.join("output", "result_folder"),

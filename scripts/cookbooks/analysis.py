@@ -507,7 +507,7 @@ and thus if JAX is being used can be fully accelerated. The `instance` is create
 
 class Analysis(af.Analysis):
 
-    LATENT_KEYS = ["fwhm"]
+    LATENT_KEYS = ["gaussian.fwhm"]
 
     def __init__(self, data, noise_map):
         """
@@ -591,7 +591,7 @@ Analysing and interpreting latent variables is described fully in the result coo
 
 However, in brief, the `latent_samples` object is a `Samples` object and uses the same API as samples objects.
 """
-# print(latent_samples.median_pdf().fwhm)
+# print(latent_samples.median_pdf().gaussian.fwhm)
 
 """
 __Custom Output__
