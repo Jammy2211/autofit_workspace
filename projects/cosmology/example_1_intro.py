@@ -251,7 +251,7 @@ In the `src/galaxy.py` module we define the `Galaxy` class, which is a collectio
 input redshift. For strong lens modeling, we have to use `Galaxy` objects, as the redshifts define how ray-tracing is
 performed.
 
-Below, we create two instances of the `Galaxy` class, representing the lens and source galaxies in a strong lens system.
+We create two instances of the `Galaxy` class, representing the lens and source galaxies in a strong lens system.
 """
 light_profile = cosmo.lp.LightDeVaucouleurs(
     centre=(0.01, 0.01), axis_ratio=0.9, angle=45.0, intensity=0.1, effective_radius=1.0

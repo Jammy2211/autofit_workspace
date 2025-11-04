@@ -446,7 +446,7 @@ The result object has two key attributes for model linking:
  - `model`: An attribute which represents how the result can be passed as a model-component to the next fit (the
  details of how its priors are passed are given in full below).
 
-Below, we create a new model using both of these attributes, where:
+We create a new model using both of these attributes, where:
 
  - All of the `gaussian` model components parameters are passed via the `instance` attribute and therefore fixed to 
  the inferred maximum log likelihood values (and are not free parameters in the model).

@@ -60,11 +60,11 @@ This feature is fully implemented and provides on-the-fly output of results to h
 
 When a model fit is running, information about the fit is displayed at user-specified intervals.
 
-The frequency of this on-the-fly output is controlled by a search's `iterations_per_update` parameter, which
+The frequency of this on-the-fly output is controlled by a search's `iterations_per_full_update` parameter, which
 specifies how often this information is output. The example code below outputs on-the-fly information every 1000 
 iterations:
 """
-search = af.DynestyStatic(iterations_per_update=1000)
+search = af.DynestyStatic(iterations_per_full_update=1000)
 
 """
 In a Jupyter notebook, the default behavior is for this information to appear in the cell being run and to include:

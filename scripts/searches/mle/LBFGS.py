@@ -80,7 +80,7 @@ search = af.LBFGS(
     maxiter=15000,
     iprint=-1,
     maxls=20,
-    iterations_per_update=1000,
+    iterations_per_full_update=1000,
 )
 
 result = search.fit(model=model, analysis=analysis)

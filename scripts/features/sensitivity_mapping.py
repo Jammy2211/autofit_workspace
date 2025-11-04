@@ -385,7 +385,7 @@ class BaseFit:
         search = af.DynestyStatic(
             paths=paths.for_sub_analysis(analysis_name="[base]"),
             nlive=50,
-            iterations_per_update=50000,
+            iterations_per_full_update=50000,
         )
 
         analysis = self.analysis_cls(dataset=dataset)
@@ -458,7 +458,7 @@ class PerturbFit:
         search = af.DynestyStatic(
             paths=paths.for_sub_analysis(analysis_name="[perturbed]"),
             nlive=50,
-            iterations_per_update=50000,
+            iterations_per_full_update=50000,
         )
 
         analysis = self.analysis_cls(dataset=dataset)

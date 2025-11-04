@@ -446,7 +446,7 @@ However, you may wish to compute the errors of a derived quantity manually. For 
 you did not decorate before performing the fit, or if it is computationally expensive to compute and you only want
 to compute it specific circumstances.
 
-Below, we create the PDF of the derived quantity, the FWHM, manually, which we marginalize over using the same function 
+We create the PDF of the derived quantity, the FWHM, manually, which we marginalize over using the same function 
 we use to marginalize model parameters. We compute the FWHM of every accepted model sampled by the non-linear search 
 and use this determine the PDF of the FWHM. 
 

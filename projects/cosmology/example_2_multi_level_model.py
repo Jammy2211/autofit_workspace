@@ -260,7 +260,7 @@ search = af.DynestyStatic(
     path_prefix=path.join("projects", "cosmology"),
     name="multi_level",
     nlive=50,
-    iterations_per_update=2500,
+    iterations_per_full_update=2500,
 )
 
 analysis = cosmo.Analysis(data=data, noise_map=noise_map, psf=psf, grid=grid)

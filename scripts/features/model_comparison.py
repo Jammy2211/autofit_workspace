@@ -114,7 +114,7 @@ search = af.DynestyStatic(
     path_prefix=path.join("features", "model_comparison"),
     name="gaussian_x1",
     nlive=50,
-    iterations_per_update=3000,
+    iterations_per_full_update=3000,
 )
 
 """
@@ -188,7 +188,7 @@ search = af.DynestyStatic(
     path_prefix=path.join("features", "model_comparison"),
     name="gaussian_x2",
     nlive=50,
-    iterations_per_update=3000,
+    iterations_per_full_update=3000,
 )
 
 result_x2_gaussian = search.fit(model=model, analysis=analysis)
@@ -271,7 +271,7 @@ search = af.DynestyStatic(
     path_prefix=path.join("features", "model_comparison"),
     name="gaussian_x3",
     nlive=50,
-    iterations_per_update=3000,
+    iterations_per_full_update=3000,
 )
 
 result_x3_gaussian = search.fit(model=model, analysis=analysis)
