@@ -83,7 +83,7 @@ search = af.DynestyStatic(
     slices=5,
     fmove=0.9,
     max_move=100,
-    iterations_per_update=2500,
+    iterations_per_full_update=2500,
     number_of_cores=1,
 )
 

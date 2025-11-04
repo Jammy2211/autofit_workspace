@@ -78,7 +78,7 @@ search = af.PySwarmsGlobal(
     social=0.3,
     inertia=0.9,
     ftol=-np.inf,
-    iterations_per_update=100,
+    iterations_per_full_update=100,
     number_of_cores=1,
 )
 

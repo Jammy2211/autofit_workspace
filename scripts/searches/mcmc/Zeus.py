@@ -90,7 +90,7 @@ search = af.Zeus(
     check_walkers=True,
     shuffle_ensemble=True,
     light_mode=False,
-    iterations_per_update=501,
+    iterations_per_full_update=501,
     number_of_cores=1,
 )
 

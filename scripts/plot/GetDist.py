@@ -80,7 +80,7 @@ __GetDist MCSamples__
 
 GetDist uses an `MCSamples` object to store the samples of a non-linear search.
 
-Below, we create this object via a conversion from **PyAutoFit** `Samples`, as well as using the `names`
+We create this object via a conversion from **PyAutoFit** `Samples`, as well as using the `names`
 and `labels` of parameters in the `Samples` object.
 
 The input `sampler="nested"` is input because we used a nested sampling, `dynesty`. For MCMC this should be

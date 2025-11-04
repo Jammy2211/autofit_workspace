@@ -80,7 +80,7 @@ search = af.PySwarmsLocal(
     number_of_k_neighbors=3,
     minkowski_p_norm=2,
     ftol=-np.inf,
-    iterations_per_update=1000,
+    iterations_per_full_update=1000,
     number_of_cores=1,
 )
 

@@ -135,7 +135,7 @@ search = af.Emcee(unique_tag="example_tag")
 """
 __Iterations Per Update__
 
-If results are output to hard-disk, this occurs every `iterations_per_update` number of iterations. 
+If results are output to hard-disk, this occurs every `iterations_per_full_update` number of iterations. 
 
 For certain problems, you may want this value to be low, to inspect the results of the model-fit on a regular basis.
 This is especially true if the time it takes for your non-linear search to perform an iteration by evaluating the 
@@ -150,7 +150,7 @@ maximum solution given enough iterations.
 output results and visualization frequently to hard-disk. If your fit is consistent displaying a log saying that it
 is outputting results, try increasing this value to ensure the model-fit runs efficiently.**
 """
-search = af.Emcee(iterations_per_update=1000)
+search = af.Emcee(iterations_per_full_update=1000)
 
 """
 __Parallelization__
