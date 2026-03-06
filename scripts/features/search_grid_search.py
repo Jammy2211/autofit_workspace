@@ -111,7 +111,7 @@ Create the analysis which fits the model to the data.
 
 It fits the data as the sum of the two `Gaussian`'s in the model.
 """
-analysis = af.ex.Analysis(data=data, noise_map=noise_map)
+analysis = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
 
 """
 __Search__
@@ -124,6 +124,13 @@ search = af.DynestyStatic(
     name="single_fit",
     nlive=100,
     maxcall=30000,
+)
+
+search = af.Nautilus(
+    path_prefix=path.join("features", "search_grid_search"),
+    name="single_fit",
+    n_live=100,
+    #    maxcall=30000,
 )
 
 """
@@ -180,12 +187,21 @@ We will now perform the search grid search.
 
 We will use the same `Dynesty` settings, but change its `name`.
 """
-search = af.DynestyStatic(
+# search = af.DynestyStatic(
+#     name="grid_fit",
+#     path_prefix=path.join("features", "search_grid_search"),
+#     nlive=100,
+#     maxcall=30000,
+#     number_of_cores=2,
+#     #   force_x1_cpu=True,  # ensures parallelizing over grid search works.
+# )
+
+search = af.Nautilus(
     name="grid_fit",
     path_prefix=path.join("features", "search_grid_search"),
-    nlive=100,
-    maxcall=30000,
-    number_of_cores=2,
+    n_live=100,
+    #    maxcall=30000,
+    #    number_of_cores=2,
     #   force_x1_cpu=True,  # ensures parallelizing over grid search works.
 )
 

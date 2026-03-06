@@ -146,7 +146,7 @@ def simulate_data_1d_with_kernel_via_gaussian_from(gaussian, dataset_path):
         elinewidth=1,
         capsize=2,
     )
-    plt.title("1D Gaussian Dataset with Kernel2D Blurring.")
+    plt.title("1D Gaussian Dataset with Convolver Blurring.")
     plt.xlabel("x values of profile")
     plt.ylabel("Profile normalization")
     plt.savefig(path.join(dataset_path, "image.png"))
@@ -328,7 +328,7 @@ def simulate_data_1d_with_kernel_via_profile_1d_list_from(
         elinewidth=1,
         capsize=2,
     )
-    plt.title("1D Profiles Dataset with Kernel2D Blurring.")
+    plt.title("1D Profiles Dataset with Convolver Blurring.")
     plt.xlabel("x values of profile")
     plt.ylabel("Profile normalization")
     plt.savefig(path.join(dataset_path, "image.png"))

@@ -53,7 +53,7 @@ We first fit the 1D Gaussians which all share the same centre, thus not requirin
 
 An example for fitting the hierarchical model with EP is given at the end of this tutorial.
 """
-total_datasets = 5
+total_datasets = 3
 
 dataset_name_list = []
 data_list = []
@@ -109,7 +109,6 @@ We will assume all Gaussians share the same centre, therefore we set up a shared
 centre_shared_prior = af.GaussianPrior(mean=50.0, sigma=30.0)
 
 model_list = []
-fwhms = []
 
 for model_index in range(len(data_list)):
     gaussian = af.Model(af.ex.Gaussian)
@@ -119,8 +118,6 @@ for model_index in range(len(data_list)):
         mean=3.0, sigma=5.0, lower_limit=0.0
     )
     gaussian.sigma = af.TruncatedGaussianPrior(mean=10.0, sigma=10.0, lower_limit=0.0)
-
-    fwhms.append(gaussian.fwhm)
 
     model = af.Collection(gaussian=gaussian)
 
@@ -163,15 +160,17 @@ for model, analysis in zip(model_list, analysis_list):
 
 
 class LinearRegressionAnalysis(af.Analysis):
-    def log_likelihood_function(self, instance):
+    def log_likelihood_function(self, instance, xp=np):
         return -1
 
 
+fwhm_list = [2 * np.sqrt(2 * np.log(2)) * model.gaussian.sigma for model in model_list]
+
 linear_regression_factor = af.AnalysisFactor(
     prior_model=af.Collection(
-        fwhms=fwhms,
         m=af.GaussianPrior(mean=0.0, sigma=1.0),
         c=af.GaussianPrior(mean=0.0, sigma=1.0),
+        *fwhm_list,
     ),
     analysis=LinearRegressionAnalysis(),
     optimiser=search,
@@ -284,48 +283,48 @@ This includes the parameters specific to each data (E.g. each node on the graph)
 print(mean_field.variables)
 print()
 
-"""
-The variables above use the priors on each parameter as their key. 
-
-Therefore to estimate mean-field quantities of the shared centre, we can simply use the `centre_shared_prior` defined
-above.
-
-Each parameter estimate is given by the mean of its value in the `MeanField`. Below, we use the `centred_shared_prior` 
-as a key to the `MeanField.mean` dictionary to print the estimated value of the shared centre.
-"""
-print(f"Centre Mean Parameter Estimate = {mean_field.mean[centre_shared_prior]}")
-print()
-
-"""
-If we want the parameter estimate of another parameter in the model, we can use the `model_list` that we composed 
-above to pass a parameter prior to the mean field dictionary.
-"""
-print(
-    f"Normalization Gaussian Dataset 0 Mean = {mean_field.mean[model_list[0].gaussian.normalization]}"
-)
-
-"""
-The mean-field mean dictionary contains the estimate value of every parameter.
-"""
-print(f"All Parameter Estimates = {mean_field.mean}")
-print()
-
-"""
-The mean-field also contains a `variance` dictionary, which has the same keys as the `mean` dictionary above. 
-
-This is the easier way to estimate the error on every parameter, for example that of the shared centre.
-"""
-print(f"Centre Variance = {mean_field.variance[centre_shared_prior]}")
-print()
-
-"""
-The standard deviation (or error at one sigma confidence interval) is given by the square root of the variance.
-"""
-print(f"Centre 1 Sigma = {np.sqrt(mean_field.variance[centre_shared_prior])}")
-print()
-
-"""
-The mean field object also contains a dictionary of the s.d./variance**0.5.
-"""
-print(f"Centre SD/sqrt(variance) = {mean_field.scale[centre_shared_prior]}")
-print()
+# """
+# The variables above use the priors on each parameter as their key.
+#
+# Therefore to estimate mean-field quantities of the shared centre, we can simply use the `centre_shared_prior` defined
+# above.
+#
+# Each parameter estimate is given by the mean of its value in the `MeanField`. Below, we use the `centred_shared_prior`
+# as a key to the `MeanField.mean` dictionary to print the estimated value of the shared centre.
+# """
+# print(f"Centre Mean Parameter Estimate = {mean_field.mean[centre_shared_prior]}")
+# print()
+#
+# """
+# If we want the parameter estimate of another parameter in the model, we can use the `model_list` that we composed
+# above to pass a parameter prior to the mean field dictionary.
+# """
+# print(
+#     f"Normalization Gaussian Dataset 0 Mean = {mean_field.mean[model_list[0].gaussian.normalization]}"
+# )
+#
+# """
+# The mean-field mean dictionary contains the estimate value of every parameter.
+# """
+# print(f"All Parameter Estimates = {mean_field.mean}")
+# print()
+#
+# """
+# The mean-field also contains a `variance` dictionary, which has the same keys as the `mean` dictionary above.
+#
+# This is the easier way to estimate the error on every parameter, for example that of the shared centre.
+# """
+# print(f"Centre Variance = {mean_field.variance[centre_shared_prior]}")
+# print()
+#
+# """
+# The standard deviation (or error at one sigma confidence interval) is given by the square root of the variance.
+# """
+# print(f"Centre 1 Sigma = {np.sqrt(mean_field.variance[centre_shared_prior])}")
+# print()
+#
+# """
+# The mean field object also contains a dictionary of the s.d./variance**0.5.
+# """
+# print(f"Centre SD/sqrt(variance) = {mean_field.scale[centre_shared_prior]}")
+# print()

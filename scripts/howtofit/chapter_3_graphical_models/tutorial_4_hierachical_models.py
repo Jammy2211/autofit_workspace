@@ -167,7 +167,6 @@ This composes the hierarchical model whereby the individual `centre` of every `G
 to be drawn from a shared parent distribution. It is the `mean` and `sigma` of this distribution we are hoping to 
 estimate.
 """
-
 for model in model_list:
     hierarchical_factor.add_drawn_variable(model.centre)
 
