@@ -81,6 +81,21 @@ ls failed/
 
 Notebooks in `notebooks/` mirror `scripts/`. Both are kept in sync. Edit the `.py` script first; notebooks are generated.
 
+### Building Notebooks
+
+Notebooks are generated from Python scripts using `generate.py` from the `PyAutoBuild` repo. Run from the workspace root:
+
+```bash
+PYTHONPATH=../PyAutoBuild/autobuild python3 ../PyAutoBuild/autobuild/generate.py autofit
+```
+
+This converts every `.py` file in `scripts/` to a `.ipynb` in `notebooks/` by:
+1. Converting triple-quoted docstrings into `# %%` Jupyter cell markers
+2. Running `ipynb-py-convert` to produce `.ipynb` files
+3. Restoring commented Jupyter magic commands (e.g. `# %matplotlib` → `%matplotlib`)
+
+Use the `/generate_and_merge` skill to build notebooks, commit, push, raise a PR, and merge into `main`.
+
 ## Related Repos
 
 - **PyAutoFit** source: `../PyAutoFit`
