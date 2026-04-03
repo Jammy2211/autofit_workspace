@@ -68,17 +68,15 @@ The ultranest readthedocs describes fully all of the methods used below
 In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are 
 described in the API docs.
 """
-plotter = aplt.NestPlotter(samples=samples)
+"""
+The `corner_anesthetic` function produces a triangle of 1D and 2D PDF's of every parameter using the library `anesthetic`.
+"""
+aplt.corner_anesthetic(samples=samples)
 
 """
-The `corner_anesthetic` method produces a triangle of 1D and 2D PDF's of every parameter using the library `anesthetic`.
+The `corner_cornerpy` function produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
 """
-plotter.corner_anesthetic()
-
-"""
-The `corner` method produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
-"""
-plotter.corner_cornerpy()
+aplt.corner_cornerpy(samples=samples)
 
 """
 __Search Specific Visualization__

@@ -71,12 +71,11 @@ described in the API docs.
 """
 samples = result.samples
 
-plotter = aplt.MCMCPlotter(samples=samples)
-
 """
-The `corner` method produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
+The `corner_cornerpy` function produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
 """
-plotter.corner_cornerpy(
+aplt.corner_cornerpy(
+    samples=samples,
     bins=20,
     range=None,
     color="k",

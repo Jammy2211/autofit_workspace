@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 from os import path
 
 import autofit as af
-import autofit.plot as aplt
 
 """
 First, lets create a result via pyswarms by repeating the simple model-fit that is performed in 
@@ -67,8 +66,6 @@ The pyswarms readthedocs describes fully all of the methods used below
 In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are 
 described in the API docs.
 """
-plotter = aplt.MLEPlotter(samples=samples)
-
 """
 __Search Specific Visualization__
 
