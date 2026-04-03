@@ -11,6 +11,15 @@ Information about UltraNest can be found at the following links:
 
  - https://github.com/JohannesBuchner/UltraNest
  - https://johannesbuchner.github.io/UltraNest/readme.html
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Data**: Loading and plotting the 1D Gaussian dataset used to demonstrate the search.
+- **Model + Analysis**: Setting up the model and analysis for the fitting example.
+- **Search**: Configuring and running the UltraNest nested sampler.
+- **Result**: Inspecting the result and comparing the maximum log likelihood model to the data.
 """
 
 # %matplotlib inline

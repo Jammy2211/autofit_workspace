@@ -8,6 +8,16 @@ Information about Emcee can be found at the following links:
 
   - https://github.com/dfm/emcee
  - https://emcee.readthedocs.io/en/stable/
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Data**: Loading and plotting the 1D Gaussian dataset used to demonstrate the search.
+- **Model + Analysis**: Setting up the model and analysis for the fitting example.
+- **Search**: Configuring and running the Emcee MCMC sampler.
+- **Result**: Inspecting the result and comparing the maximum log likelihood model to the data.
+- **Search Internal**: Accessing the internal Emcee sampler for advanced use.
 """
 
 # %matplotlib inline

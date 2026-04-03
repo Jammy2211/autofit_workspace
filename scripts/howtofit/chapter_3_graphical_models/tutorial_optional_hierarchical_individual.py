@@ -9,6 +9,20 @@ dataset.
 This script illustrates how the hierarchical parameters can be estimated using a simpler approach, which fits
 each dataset one-by-one and estimates the hierarchical parameters afterwards by fitting the inferred `centres`
 with a Gaussian distribution.
+
+__Contents__
+
+This tutorial is split into the following sections:
+
+- **Example Source Code (`af.ex`)**: The example objects used in this tutorial.
+- **Dataset**: Load the hierarchical Gaussian datasets with variable centres.
+- **Analysis**: Create Analysis objects for each dataset.
+- **Model**: Define a simple Gaussian model with uniform priors.
+- **Model Fits (one-by-one)**: Fit each dataset individually using separate non-linear searches.
+- **Results**: Analyze and plot the results of each individual fit.
+- **Overall Gaussian Parent Distribution**: Fit a parent Gaussian distribution to the inferred centres.
+- **Model**: Set up a ParentGaussian model for the parent distribution fitting.
+- **Analysis + Search**: Create the analysis and search for the parent distribution fit.
 """
 
 # %matplotlib inline

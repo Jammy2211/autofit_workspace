@@ -110,4 +110,16 @@ how much the change in the model led to a measurable change in the data. This is
 A full description of using sensitivity mapping is given below:
 
 https://github.com/Jammy2211/autofit_workspace/blob/release/notebooks/features/sensitivity_mapping.ipynb
+
+__Contents__
+
+This overview is split into the following sections:
+
+- **Graphical Models**: Fit global and local parameters across multiple interdependent datasets simultaneously.
+- **Hierarchical Models**: Infer parent distribution parameters when model parameters are drawn from a common distribution.
+- **Model Comparison**: Fit multiple models and compare them using Bayesian evidence.
+- **Interpolation**: Interpolate model parameters across similar datasets that vary smoothly.
+- **Search Grid Search**: Perform a grid search over a parameter subset while using a non-linear search for others.
+- **Search Chaining**: Chain a sequence of non-linear searches with increasing model complexity.
+- **Sensitivity Mapping**: Determine the data quality needed for complex models to be favored.
 """

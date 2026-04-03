@@ -39,6 +39,18 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
  - `Gaussian`: a model component representing a 1D Gaussian profile.
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Example Source Code (`af.ex`)**: The example objects used in this script.
+- **Data**: Load 1D Gaussian data with a small feature at pixel 70.
+- **Model**: Create a model with two Gaussians (main signal + feature).
+- **Analysis**: Create the Analysis class for fitting the model to data.
+- **Search**: Configure a non-linear search for a single fit.
+- **Result**: Plot and visualize the results from the single fit.
+- **Search Grid Search**: Set up and perform a grid search over a parameter subset.
 """
 
 # %matplotlib inline
@@ -56,7 +68,7 @@ import autofit as af
 """
 __Data__
 
-Load data of a 1D Gaussian from a .json file in the directory 
+Load data of a 1D Gaussian from a .json file in the directory
 `autofit_workspace/dataset/gaussian_x1_with_feature`.
 
 This 1D data includes a small feature to the right of the central `Gaussian`. This feature is a second `Gaussian` 

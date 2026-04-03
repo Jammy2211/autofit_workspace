@@ -15,6 +15,27 @@ __The Model__
 
 In this tutorial, each dataset now contains two Gaussians, and they all have the same shared centres, located at
 pixels 40 and 60.
+
+__Contents__
+
+This tutorial is split into the following sections:
+
+- **The Model**: Describe the two-Gaussian model fitted in this tutorial.
+- **Example Source Code (`af.ex`)**: The example objects used in this tutorial.
+- **Dataset**: Load datasets where each contains two Gaussians with shared centres.
+- **Analysis**: Create Analysis objects for each dataset.
+- **Model (one-by-one)**: Set up individual models with two Gaussians for one-by-one fitting.
+- **Model Fits (one-by-one)**: Fit each dataset individually using separate non-linear searches.
+- **Centre Estimates (Weighted Average)**: Compute centre estimates and errors using a weighted average.
+- **Discussion**: Analyze the limitations of the one-by-one fitting approach.
+- **Model (Graphical)**: Set up the graphical model with shared centre priors across datasets.
+- **Analysis Factors**: Create Analysis Factors pairing models with Analysis objects.
+- **Factor Graph**: Combine Analysis Factors into a factor graph.
+- **Search**: Configure and run the non-linear search for the graphical model.
+- **Result**: Inspect the graphical model results and compare to individual fits.
+- **Discussion**: Discuss the benefits of graphical models over one-by-one fitting.
+- **Posterior Multiplication**: Discuss KDE-based posterior multiplication as an alternative method.
+- **Wrap Up**: Summary comparing the different methods and transition to hierarchical models.
 """
 
 # %matplotlib inline

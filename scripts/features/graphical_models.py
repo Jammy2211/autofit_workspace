@@ -21,6 +21,20 @@ this example we will discuss other options available in **PyAutoFit** for compos
 
 The **HowToFit** tutorials contain a chapter dedicated to composing and fitting graphical models.
 
+__Contents__
+
+This script is split into the following sections:
+
+- **Example Source Code (`af.ex`)**: The example objects used in this script.
+- **Dataset**: Load 3 noisy 1D Gaussian datasets for simultaneous fitting.
+- **Analysis**: Create Analysis objects for each dataset with a log likelihood function.
+- **Model**: Compose a graphical model with a shared prior across multiple model components.
+- **Analysis Factors**: Pair each Model with its corresponding Analysis class at factor graph nodes.
+- **Factor Graph**: Combine the Analysis Factors into a factor graph representing the graphical model.
+- **Search**: Create a non-linear search and fit the factor graph.
+- **Hierarchical Models**: Discuss how shared parameters can be drawn from a common parent distribution.
+- **Expectation Propagation**: Introduce the EP framework for scaling graphical models to high dimensionality.
+
 __Example Source Code (`af.ex`)__
 
 The **PyAutoFit** source code has the following example objects (accessed via `af.ex`) used in this tutorial:

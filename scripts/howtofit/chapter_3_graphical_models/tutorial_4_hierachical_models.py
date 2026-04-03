@@ -16,6 +16,23 @@ This is called a hierarchical model, which we fit in this tutorial. The `centre`
 longer the same in each dataset and they are instead drawn from a shared parent Gaussian distribution
 (with `mean=50.0` and `sigma=10.0`). The hierarchical model will recover the `mean` and `sigma` values of the parent
 distribution'.
+
+__Contents__
+
+This tutorial is split into the following sections:
+
+- **Example Source Code (`af.ex`)**: The example objects used in this tutorial.
+- **Dataset**: Load the hierarchical Gaussian datasets with variable centres.
+- **Analysis**: Create Analysis objects for each dataset.
+- **Model Individual Factors**: Set up individual Gaussian models with independent priors.
+- **Analysis Factors**: Compose Analysis Factors pairing models with Analysis objects.
+- **Model**: Create a HierarchicalFactor with a parent Gaussian distribution for the centres.
+- **Factor Graph**: Compose the factor graph including the hierarchical factor.
+- **Search**: Configure and run the non-linear search for the hierarchical model.
+- **Result**: Inspect the inferred hierarchical distribution parameters.
+- **Comparison to One-by-One Fits**: Compare the hierarchical model results to simpler individual fits.
+- **Benefits of Graphical Model**: Discuss how datasets inform one another through the hierarchical model.
+- **Wrap Up**: Summary and introduction to expectation propagation.
 """
 
 # %matplotlib inline

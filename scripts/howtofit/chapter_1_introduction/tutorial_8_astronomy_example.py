@@ -56,7 +56,9 @@ In this tutorial, we will:
 - **Model Fit**: Fit the model to the data and display the results.
 - **Result**: Interpret the model fit to determine whether the galaxy is an early or late-type galaxy.
 - **Bulgey**: Repeat the fit using a bulgey light profile to determine the galaxy's type.
+- **Model Mismatch**: Analyze the challenges from model mismatches in galaxy classification.
 - **Extensions**: Illustrate examples of how this problem can be extended and the challenges that arise.
+- **Chapter Wrap Up**: Summarize the completion of Chapter 1 and its applications to real astronomy.
 """
 
 # %matplotlib inline

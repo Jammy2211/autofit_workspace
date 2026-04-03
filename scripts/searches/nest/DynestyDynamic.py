@@ -8,6 +8,16 @@ Information about Dynesty can be found at the following links:
 
  - https://github.com/joshspeagle/dynesty
  - https://dynesty.readthedocs.io/en/latest/
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Data**: Loading and plotting the 1D Gaussian dataset used to demonstrate the search.
+- **Model + Analysis**: Setting up the model and analysis for the fitting example.
+- **Search**: Configuring and running the DynestyDynamic nested sampler.
+- **Result**: Inspecting the result and comparing the maximum log likelihood model to the data.
+- **Search Internal**: Accessing the internal Dynesty sampler for advanced use.
 """
 
 # %matplotlib inline

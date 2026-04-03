@@ -7,6 +7,31 @@ In this tutorial, we'll cover all of the output that comes from a non-linear sea
 We used this object at various points in the chapter. The bulk of material covered here is described in the example
 script `autofit_workspace/overview/simple/result.py`. Nevertheless, it is a good idea to refresh ourselves about how
 results in **PyAutoFit** work before covering more advanced material.
+
+__Contents__
+
+This tutorial is split into the following sections:
+
+- **Data**: Load the dataset from the autofit_workspace/dataset folder.
+- **Reused Functions**: Reuse the `plot_profile_1d` and `Analysis` classes from the previous tutorial.
+- **Model Fit**: Run a non-linear search to generate a `Result` object.
+- **Result**: Examine the `Result` object and its info attribute.
+- **Samples**: Introduce the `Samples` object containing the non-linear search samples.
+- **Parameters**: Access parameter values from the samples.
+- **Figures of Merit**: Examine log likelihood, log prior, and log posterior values.
+- **Instances**: Return results as model instances from samples.
+- **Vectors**: Return results as 1D parameter vectors.
+- **Labels**: Access the paths, names, and labels for model parameters.
+- **Posterior / PDF**: Access median PDF estimates for the model parameters.
+- **Plot**: Visualize model fit results using instances.
+- **Errors**: Compute parameter error estimates at specified sigma confidence limits.
+- **PDF**: Plot Probability Density Functions using the MCMCPlotter.
+- **Other Results**: Access maximum log posterior and other sample statistics.
+- **Sample Instance**: Create instances from individual samples in the sample list.
+- **Bayesian Evidence**: Access the log evidence for nested sampling searches.
+- **Derived Errors (PDF from samples)**: Compute errors on derived quantities from sample PDFs.
+- **Samples Filtering**: Filter samples by parameter paths for specific parameter analysis.
+- **Latex**: Generate LaTeX table code for modeling results.
 """
 
 # %matplotlib inline

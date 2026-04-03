@@ -25,7 +25,7 @@ datasets is straight forward. This is because different `Analysis` classes can b
 
 __Contents__
 
- - Model-Fit: Setup a model-fit to 3 datasets to illustrate multi-dataset fitting.
+ - Model Fit: Setup a model-fit to 3 datasets to illustrate multi-dataset fitting.
  - Analysis List: Create a list of `Analysis` objects, one for each dataset, which are fitted simultaneously.
  - Analysis Factor: Wrap each `Analysis` object in an `AnalysisFactor`, which pairs it with the model and prepares it for model fitting.
  - Factor Graph: Combine all `AnalysisFactor` objects into a `FactorGraphModel`, which represents a global model fit to multiple datasets.
@@ -34,12 +34,13 @@ __Contents__
    stay fixed.
  - Relational Model: Fit models where certain parameters vary across the dataset as a user
    defined relation (e.g. `y = mx + c`).
- - Different Analysis Classes: Fit multiple datasets where each dataset is fitted by a different `Analysis` class,
+ - Different Analysis Objects: Fit multiple datasets where each dataset is fitted by a different `Analysis` class,
    meaning that datasets with different formats can be fitted simultaneously.
- - Interpolation: Fit multiple datasets with a model one-by-one and interpolation over a smoothly varying parameter
-   (e.g. time) to infer the model between datasets.
  - Hierarchical / Graphical Models: Use hierarchical / graphical models to fit multiple datasets simultaneously,
    which fit for global trends in the model across the datasets.
+ - Interpolation: Fit multiple datasets with a model one-by-one and interpolation over a smoothly varying parameter
+   (e.g. time) to infer the model between datasets.
+ - Wrap Up: A summary of multi-dataset fitting in PyAutoFit.
 """
 
 # %matplotlib inline

@@ -4,6 +4,15 @@ Plots: DynestyPlotter
 
 This example illustrates how to plot visualization summarizing the results of a nautilus non-linear search using
 a `MCMCPlotter`.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Notation**: How parameter labels and superscripts are customized for plots.
+- **Plotting**: Using the NestPlotter to visualize Nautilus search results.
+- **Search Specific Visualization**: Accessing the native Nautilus sampler for custom visualizations.
+- **Plots**: Producing Nautilus-specific diagnostic plots.
 """
 
 # %matplotlib inline

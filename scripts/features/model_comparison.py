@@ -38,6 +38,18 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
  - `Gaussian`: a model component representing a 1D Gaussian profile.
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Metrics**: Describe the log likelihood and Bayesian evidence metrics used for model comparison.
+- **Example Source Code (`af.ex`)**: The example objects used in this script.
+- **Data**: Load the 1D Gaussian data consisting of two Gaussians.
+- **Model x1 Gaussian**: Create and fit a model with a single Gaussian.
+- **Model x2 Gaussian**: Create and fit a model with two Gaussians.
+- **Model x3 Gaussian**: Create and fit a model with three Gaussians.
+- **Wrap Up**: Summarize the model comparison results using log likelihood and Bayesian evidence.
 """
 
 # %matplotlib inline

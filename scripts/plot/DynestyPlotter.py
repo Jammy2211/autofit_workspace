@@ -4,6 +4,15 @@ Plots: DynestyPlotter
 
 This example illustrates how to plot visualization summarizing the results of a dynesty non-linear search using
 a `NestPlotter`.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Notation**: How parameter labels and superscripts are customized for plots.
+- **Plotting**: Using the NestPlotter to visualize Dynesty search results.
+- **Search Specific Visualization**: Accessing the native Dynesty sampler for custom visualizations.
+- **Plots**: Producing Dynesty-specific diagnostic plots.
 """
 
 # %matplotlib inline

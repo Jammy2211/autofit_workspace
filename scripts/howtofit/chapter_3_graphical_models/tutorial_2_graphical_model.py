@@ -19,6 +19,20 @@ Gaussians each with their own model parameters but a single shared centre:
 
  - Each Gaussian has 2 free parameters from the components that are not shared (`normalization`, `sigma`).
  - There is one additional free parameter, which is the `centre` shared by all 5 Gaussians.
+
+__Contents__
+
+This tutorial is split into the following sections:
+
+- **Example Source Code (`af.ex`)**: The example objects used in this tutorial.
+- **Dataset**: Load the 5 noisy 1D Gaussian datasets for simultaneous fitting.
+- **Analysis**: Create Analysis objects for each dataset.
+- **Model**: Set up the graphical model with a shared prior for the centre parameter.
+- **Analysis Factors**: Pair each model with its corresponding Analysis class at factor graph nodes.
+- **Factor Graph**: Combine the Analysis Factors into a factor graph representing the graphical model.
+- **Search**: Configure and run the non-linear search to fit the factor graph.
+- **Result**: Inspect and compare the graphical model results to the individual fits.
+- **Wrap Up**: Summary and discussion of the benefits of graphical models.
 """
 
 # %matplotlib inline
