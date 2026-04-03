@@ -1,9 +1,0 @@
-{
-    "type": "instance",
-    "class_path": "autofit.example.model.Gaussian",
-    "arguments": {
-        "centre": 70.0,
-        "sigma": 0.5,
-        "normalization": 0.3
-    }
-}
