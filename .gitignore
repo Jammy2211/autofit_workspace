@@ -8,3 +8,5 @@ report.log
 .idea
 .env
 generate/
+failed/features/search_grid_search.log
+failed/
