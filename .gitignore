@@ -1,0 +1,11 @@
+output/
+dataset/
+root.log
+report.log
+*.sqlite*
+*.pyc
+*.ipynb_checkpoints
+.cache
+.idea
+.env
+generate/

@@ -1,0 +1,24 @@
+{
+    "class_path": "__main__.Gaussian",
+    "type": "model",
+    "arguments": {
+        "centre": {
+            "type": "Uniform",
+            "id": 28,
+            "lower_limit": 0.0,
+            "upper_limit": 100.0
+        },
+        "normalization": {
+            "type": "LogUniform",
+            "id": 29,
+            "lower_limit": 1e-06,
+            "upper_limit": 1000000.0
+        },
+        "sigma": {
+            "type": "Uniform",
+            "id": 30,
+            "lower_limit": 0.0,
+            "upper_limit": 25.0
+        }
+    }
+}

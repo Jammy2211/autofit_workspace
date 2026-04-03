@@ -1,0 +1,38 @@
+=== Scripts excluded by no_run.yaml [autofit] ===
+  SKIP: GetDist -- Cant get it to install, even in optional requirements.
+  SKIP: Zeus -- Test Model Iniitalization no good.
+  SKIP: ZeusPlotter -- Test Model Iniitalization no good.
+  SKIP: UltraNestPlotter -- Test Model Iniitalization no good.
+  SKIP: DynestyPlotter -- Test Model Iniitalization no good.
+  SKIP [TODO - should run after a future PR]: start_point -- bug https://github.com/rhayes777/PyAutoFit/issues/1017
+  SKIP: searches/PySwarmsGlobal -- PySwarms does not support JAX.
+  SKIP: searches/PySwarmsLocal -- PySwarms does not support JAX.
+  SKIP: searches/UltraNest -- UltraNest does not support JAX.
+
+Running: cookbooks/analysis.py
+  OK
+Running: cookbooks/configs.py
+  OK
+Running: cookbooks/model.py
+  OK
+Running: cookbooks/multi_level_model.py
+  OK
+Running: cookbooks/multiple_datasets.py
+  OK
+Running: cookbooks/result.py
+  OK
+Running: cookbooks/samples.py
+  OK
+Running: cookbooks/search.py
+  OK
+Running: features/graphical_models.py
+  OK
+Running: features/interpolate.py
+  OK
+Running: features/model_comparison.py
+  OK
+Running: features/search_chaining.py
+  OK
+Running: features/search_grid_search.py
+  OK
+Running: features/sensitivity_mapping.py

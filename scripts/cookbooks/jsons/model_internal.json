@@ -1,0 +1,51 @@
+{
+    "type": "collection",
+    "arguments": {
+        "gaussian": {
+            "class_path": "__main__.Gaussian",
+            "type": "model",
+            "arguments": {
+                "centre": {
+                    "type": "Uniform",
+                    "id": 63,
+                    "lower_limit": 0.0,
+                    "upper_limit": 100.0
+                },
+                "normalization": {
+                    "type": "Constant",
+                    "value": 5.0
+                },
+                "sigma": {
+                    "type": "Uniform",
+                    "id": 59,
+                    "lower_limit": 0.0,
+                    "upper_limit": 25.0
+                }
+            }
+        },
+        "exponential": {
+            "class_path": "__main__.Exponential",
+            "type": "model",
+            "arguments": {
+                "centre": {
+                    "type": "Uniform",
+                    "id": 60,
+                    "lower_limit": 0.0,
+                    "upper_limit": 100.0
+                },
+                "normalization": {
+                    "type": "LogUniform",
+                    "id": 61,
+                    "lower_limit": 1e-06,
+                    "upper_limit": 1000000.0
+                },
+                "rate": {
+                    "type": "Uniform",
+                    "id": 62,
+                    "lower_limit": 0.0,
+                    "upper_limit": 1.0
+                }
+            }
+        }
+    }
+}
