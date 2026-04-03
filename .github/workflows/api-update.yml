@@ -131,6 +131,13 @@ jobs:
           4. Test your changes by running: \`bash run_scripts.sh\`
           5. Fix any test failures and re-run until the test suite is clean.
           6. If a script cannot be fixed automatically (e.g. a missing upstream dependency, an ambiguous API change), leave it unchanged and list it in your PR description under a "Could not update" section with the reason.
+          7. After all scripts pass, regenerate notebooks by running:
+             \`\`\`
+             pip install ipynb-py-convert
+             git clone https://github.com/Jammy2211/PyAutoBuild.git ../PyAutoBuild
+             PYTHONPATH=../PyAutoBuild/autobuild python3 ../PyAutoBuild/autobuild/generate.py autofit
+             \`\`\`
+          8. Commit the regenerated notebooks alongside the script changes.
 
           ### Branch
           Use branch name: \`${WORKSPACE_BRANCH}\`

@@ -46,3 +46,16 @@ When assigned an issue titled `[API Update]`:
 5. Read any failure logs in `failed/` and fix the affected scripts.
 6. Repeat steps 4–5 until the suite is clean.
 7. If a script cannot be fixed (ambiguous change, missing dependency), leave it unchanged and list it in the PR description under **"Could not update"** with the reason.
+8. After all scripts pass, regenerate the notebooks from the updated scripts (see below).
+
+## Generating Notebooks
+
+Notebooks in `notebooks/` are generated from `scripts/` using the PyAutoBuild tool. After updating scripts, regenerate all notebooks:
+
+```bash
+pip install ipynb-py-convert
+git clone https://github.com/Jammy2211/PyAutoBuild.git ../PyAutoBuild
+PYTHONPATH=../PyAutoBuild/autobuild python3 ../PyAutoBuild/autobuild/generate.py autofit
+```
+
+This must be run from the workspace root directory. It converts every `.py` in `scripts/` to a `.ipynb` in `notebooks/`. Commit the regenerated notebooks alongside the script changes.
