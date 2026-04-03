@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /mnt/c/Users/Jammy/Code/PyAutoJAX/autofit_workspace rev-parse --show-toplevel)",
+      "Bash(git -C /mnt/c/Users/Jammy/Code/PyAutoJAX/autofit_workspace branch --show-current)"
+    ]
+  }
+}

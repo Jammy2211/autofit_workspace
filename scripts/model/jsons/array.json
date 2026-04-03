@@ -1,0 +1,69 @@
+{
+    "type": "array",
+    "arguments": {
+        "shape": {
+            "type": "tuple",
+            "values": [
+                2,
+                2
+            ]
+        },
+        "indices": {
+            "type": "list",
+            "values": [
+                {
+                    "type": "tuple",
+                    "values": [
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "type": "tuple",
+                    "values": [
+                        0,
+                        1
+                    ]
+                },
+                {
+                    "type": "tuple",
+                    "values": [
+                        1,
+                        0
+                    ]
+                },
+                {
+                    "type": "tuple",
+                    "values": [
+                        1,
+                        1
+                    ]
+                }
+            ]
+        },
+        "prior_0_0": {
+            "type": "Gaussian",
+            "id": 150,
+            "mean": 0.0,
+            "sigma": 1.0
+        },
+        "prior_0_1": {
+            "type": "Gaussian",
+            "id": 151,
+            "mean": 0.0,
+            "sigma": 1.0
+        },
+        "prior_1_0": {
+            "type": "Gaussian",
+            "id": 152,
+            "mean": 0.0,
+            "sigma": 1.0
+        },
+        "prior_1_1": {
+            "type": "Gaussian",
+            "id": 153,
+            "mean": 0.0,
+            "sigma": 1.0
+        }
+    }
+}
