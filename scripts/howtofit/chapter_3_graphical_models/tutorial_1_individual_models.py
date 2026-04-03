@@ -83,15 +83,29 @@ changes with more datasets.
 """
 total_datasets = 5
 
+"""
+__Dataset Auto-Simulation__
+
+If the dataset does not already exist on your system, it will be created by running the corresponding
+simulator script. This ensures that all example scripts can be run without manually simulating data first.
+"""
+if not path.exists(path.join("dataset", "example_1d", "gaussian_x1__low_snr", "dataset_0")):
+    import subprocess
+    import sys
+    subprocess.run(
+        [sys.executable, "scripts/simulators/simulators.py"],
+        check=True,
+    )
+
 dataset_name_list = []
 
 for dataset_index in range(total_datasets):
     dataset_name_list.append(f"dataset_{dataset_index}")
 
 """
-For each 1D Gaussian dataset we now set up the correct path, load it, and plot it. 
+For each 1D Gaussian dataset we now set up the correct path, load it, and plot it.
 
-Notice how much lower the signal-to-noise is than you are used too, you probably find it difficult to estimate 
+Notice how much lower the signal-to-noise is than you are used too, you probably find it difficult to estimate
 the centre of some of the Gaussians by eye!
 """
 for dataset_name in dataset_name_list:

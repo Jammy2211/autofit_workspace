@@ -59,6 +59,21 @@ Load the dataset we fit.
 This is a new `dataset` where the underlying signal is a sum of five `Gaussian` profiles.
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x5")
+
+"""
+__Dataset Auto-Simulation__
+
+If the dataset does not already exist on your system, it will be created by running the corresponding
+simulator script. This ensures that all example scripts can be run without manually simulating data first.
+"""
+if not path.exists(dataset_path):
+    import subprocess
+    import sys
+    subprocess.run(
+        [sys.executable, "scripts/simulators/simulators.py"],
+        check=True,
+    )
+
 data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
 noise_map = af.util.numpy_array_from_json(
     file_path=path.join(dataset_path, "noise_map.json")
