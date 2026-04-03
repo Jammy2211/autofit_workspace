@@ -42,6 +42,20 @@ whose mean and scatter we aim to estimate.
 """
 total_datasets = 5
 
+"""
+__Dataset Auto-Simulation__
+
+If the dataset does not already exist on your system, it will be created by running the corresponding
+simulator script. This ensures that all example scripts can be run without manually simulating data first.
+"""
+if not path.exists(path.join("dataset", "example_1d", "gaussian_x1__hierarchical", "dataset_0")):
+    import subprocess
+    import sys
+    subprocess.run(
+        [sys.executable, "scripts/simulators/simulators.py"],
+        check=True,
+    )
+
 dataset_name_list = []
 data_list = []
 noise_map_list = []
@@ -64,7 +78,7 @@ for dataset_index in range(total_datasets):
 
 """
 By plotting the Gaussians we can just about make out that their centres are not all at pix 50, and are spreasd out
-around it (albeit its difficult to be sure, due to the low signal-to-noise of the data). 
+around it (albeit its difficult to be sure, due to the low signal-to-noise of the data).
 """
 for dataset_name, data in zip(dataset_name_list, data_list):
     af.ex.plot_profile_1d(
