@@ -16,9 +16,9 @@
                                     "type": "instance",
                                     "class_path": "autofit.example.model.Gaussian",
                                     "arguments": {
-                                        "normalization": 49.39860658469913,
-                                        "centre": 40.06649607927556,
-                                        "sigma": 19.61170769855144
+                                        "centre": 89.1573244489481,
+                                        "sigma": 0.81944381768238,
+                                        "normalization": 2.2827841577175668e-05
                                     }
                                 },
                                 "time": 0
@@ -37,9 +37,9 @@
                                     "type": "instance",
                                     "class_path": "autofit.example.model.Gaussian",
                                     "arguments": {
-                                        "normalization": 50.06437119907787,
-                                        "centre": 50.30377466483201,
-                                        "sigma": 20.19947611166003
+                                        "centre": 45.20438069345178,
+                                        "sigma": 4.29561879530823,
+                                        "normalization": 0.025412333573247764
                                     }
                                 },
                                 "time": 1
@@ -58,9 +58,9 @@
                                     "type": "instance",
                                     "class_path": "autofit.example.model.Gaussian",
                                     "arguments": {
-                                        "normalization": 50.764728883045926,
-                                        "centre": 59.9007313098795,
-                                        "sigma": 20.11398754103806
+                                        "centre": 55.62395852314085,
+                                        "sigma": 17.23866290302014,
+                                        "normalization": 1.1001651021764403
                                     }
                                 },
                                 "time": 2

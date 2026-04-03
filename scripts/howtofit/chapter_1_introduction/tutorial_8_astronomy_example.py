@@ -592,6 +592,8 @@ class Analysis(af.Analysis):
             The 2D mask that is applied to the image data.
         """
 
+        super().__init__()
+
         self.data = data
         self.noise_map = noise_map
         self.psf = psf

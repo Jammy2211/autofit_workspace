@@ -56,7 +56,7 @@ model.centre = af.UniformPrior(lower_limit=0.0, upper_limit=100.0)
 model.normalization = af.UniformPrior(lower_limit=1e-2, upper_limit=1e2)
 model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=30.0)
 
-analysis = af.ex.Analysis(data=data, noise_map=noise_map)
+analysis = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=False)
 
 """
 __Search__

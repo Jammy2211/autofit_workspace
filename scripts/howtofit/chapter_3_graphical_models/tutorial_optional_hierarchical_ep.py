@@ -153,7 +153,6 @@ that the `centre` of each individual `Gaussian` dataset is drawn.
 For this parent `Gaussian`, we have to place priors on its `mean` and `sigma`, given that they are parameters in our
 model we are ultimately fitting for.
 """
-
 hierarchical_factor = af.HierarchicalFactor(
     af.GaussianPrior,
     mean=af.TruncatedGaussianPrior(
@@ -171,7 +170,6 @@ This composes the hierarchical model whereby the individual `centre` of every `G
 to be drawn from a shared parent distribution. It is the `mean` and `sigma` of this distribution we are hoping to 
 estimate.
 """
-
 for model in model_list:
     hierarchical_factor.add_drawn_variable(model.centre)
 
@@ -185,7 +183,6 @@ which contained the necessary information on the model create the factor graph t
 were created before we composed the `HierachicalFactor`, which is why we need to pass it separate when composing the
 factor graph.
 """
-
 factor_graph = af.FactorGraphModel(*analysis_factor_list, hierarchical_factor)
 
 """
@@ -195,13 +192,13 @@ __Model Fit__
 """
 laplace = af.LaplaceOptimiser()
 
-ep_result = factor_graph.optimise(
-    laplace,
-    paths=af.DirectoryPaths(
-        name=path.join(
-            "howtofit", "chapter_graphical_models", "tutorial_4_hierarchical"
-        )
-    ),
-    ep_history=af.EPHistory(kl_tol=1.0),
-    max_steps=5,
-)
+# ep_result = factor_graph.optimise(
+#     laplace,
+#     paths=af.DirectoryPaths(
+#         name=path.join(
+#             "howtofit", "chapter_graphical_models", "tutorial_4_hierarchical"
+#         )
+#     ),
+#     ep_history=af.EPHistory(kl_tol=1.0),
+#     max_steps=5,
+# )

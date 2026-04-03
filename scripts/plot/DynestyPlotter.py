@@ -71,17 +71,16 @@ we:
 There are other `_kwargs` inputs we pass as None, you should check out the Dynesty docs if you need to customize your
 figure.
 """
-plotter = aplt.NestPlotter(samples=samples)
+"""
+The `corner_anesthetic` function produces a triangle of 1D and 2D PDF's of every parameter using the library `anesthetic`.
+"""
+aplt.corner_anesthetic(samples=samples)
 
 """
-The `corner_anesthetic` method produces a triangle of 1D and 2D PDF's of every parameter using the library `anesthetic`.
+The `corner_cornerpy` function produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
 """
-plotter.corner_anesthetic()
-
-"""
-The `corner_cornerpy` method produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
-"""
-plotter.corner_cornerpy(
+aplt.corner_cornerpy(
+    samples=samples,
     dims=None,
     span=None,
     quantiles=[0.025, 0.5, 0.975],
