@@ -494,8 +494,7 @@ algorithm (e.g. the internal dynesty samples).
 
 Below we use the samples to plot the probability density function cornerplot of the results.
 """
-plotter = aplt.NestPlotter(samples=result.samples)
-plotter.corner_anesthetic()
+aplt.corner_anesthetic(samples=result.samples)
 
 """
 The `results cookbook <https://pyautofit.readthedocs.io/en/latest/cookbooks/result.html>`_ also provides 
