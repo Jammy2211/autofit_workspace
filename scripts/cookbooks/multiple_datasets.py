@@ -88,6 +88,7 @@ simulator script. This ensures that all example scripts can be run without manua
 if not path.exists(path.join("dataset", "example_1d", "gaussian_x1_identical_0")):
     import subprocess
     import sys
+
     subprocess.run(
         [sys.executable, "scripts/simulators/simulators.py"],
         check=True,

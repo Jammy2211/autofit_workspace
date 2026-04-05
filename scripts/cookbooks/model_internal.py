@@ -24,6 +24,7 @@ __Contents__
  - Freezing For Performance: Caching repeated lookups during fitting.
  - Serialization Round Trip: ``dict()`` and ``from_dict()`` for JSON persistence.
 """
+
 # %matplotlib inline
 # from pyprojroot import here
 # workspace_path = str(here())
@@ -353,7 +354,9 @@ print(f"\nfrom_instance (no model_classes): prior_count = {fixed_model.prior_cou
 With model_classes, matching types get free parameters:
 """
 free_model = af.AbstractPriorModel.from_instance(instance, model_classes=(Gaussian,))
-print(f"from_instance (Gaussian as model_class): prior_count = {free_model.prior_count}")
+print(
+    f"from_instance (Gaussian as model_class): prior_count = {free_model.prior_count}"
+)
 
 """
 __Model Subsetting__
