@@ -1,16 +1,16 @@
 """
-Plots: MCMCPlotter
+Plots: EmceePlotter
 ===================
 
 This example illustrates how to plot visualization summarizing the results of a emcee non-linear search using
-a `MCMCPlotter`.
+the `autofit.plot` module-level functions.
 
 __Contents__
 
 This script is split into the following sections:
 
 - **Notation**: How parameter labels and superscripts are customized for plots.
-- **Plotting**: Using the MCMCPlotter to visualize Emcee search results.
+- **Plotting**: Using the plot functions to visualize Emcee search results.
 - **Search Specific Visualization**: Accessing the native Emcee sampler for custom visualizations.
 """
 
@@ -78,18 +78,17 @@ Gaussians are given the superscript `g`. This can also be customized in the `con
 
 __Plotting__
 
-We now pass the samples to a `MCMCPlotter` which will allow us to use emcee's in-built plotting libraries to 
-make figures.
+We now use the `autofit.plot` module-level functions to visualize the results.
 
-The emcee readthedocs describes fully all of the methods used below 
+The emcee readthedocs describes fully all of the methods used below
 
  - https://emcee.readthedocs.io/en/stable/user/sampler/
- 
- The plotter wraps the `corner` method of the library `corner.py` to make corner plots of the PDF:
+
+The `aplt.corner_cornerpy` function wraps the library `corner.py` to make corner plots of the PDF:
 
 - https://corner.readthedocs.io/en/latest/index.html
- 
-In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are 
+
+In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
 described in the API docs.
 """
 samples = result.samples
