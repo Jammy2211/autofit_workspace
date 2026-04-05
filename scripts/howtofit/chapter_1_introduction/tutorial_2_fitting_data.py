@@ -44,7 +44,11 @@ This tutorial is split into the following sections:
 - **Chi Squared**: Compute and visualize the chi-squared map, a measure of the overall goodness-of-fit.
 - **Noise Normalization**: Compute the noise normalization term which describes the noise properties of the data.
 - **Likelihood**: Compute the log likelihood, a key measure of the goodness-of-fit of the model to the data.
+- **Recap**: Summarize the standard metrics for quantifying model fit quality.
 - **Fitting Models**: Fit the `Gaussian` model to the 1D data and compute the log likelihood, by guessing parameters.
+- **Guess 1**: A first parameter guess with an explanation of the resulting log likelihood.
+- **Guess 2**: An improved parameter guess with a better log likelihood.
+- **Guess 3**: The optimal parameter guess providing the best fit to the data.
 - **Extensibility**: Use the `Collection` object for fitting models with multiple components.
 - **Wrap Up**: Summarize the key concepts of this tutorial.
 """

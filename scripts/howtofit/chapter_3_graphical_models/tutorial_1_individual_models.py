@@ -35,6 +35,20 @@ In healthcare, there may also be many datasets available, with different formats
 to fit them. The high levels of customization possible in model composition and defining the analysis class mean
 that fitting diverse datasets with hierarchical models is feasible. This also means that a common problem in healthcare
 data, missing data, can be treated in a statistically robust manner.
+
+__Contents__
+
+This tutorial is split into the following sections:
+
+- **Real World Example**: A healthcare example illustrating the value of hierarchical models.
+- **Example Source Code (`af.ex`)**: The example objects used in this tutorial.
+- **Model**: Define a simple Gaussian model in a Collection.
+- **Data**: Load and set up 5 noisy 1D Gaussian datasets.
+- **Model Fits (one-by-one)**: Fit each dataset individually using a separate non-linear search.
+- **Results**: Analyze the fit results and error estimates for each dataset.
+- **Estimating the Centre**: Combine centre estimates using a weighted average approach.
+- **Posterior Multiplication**: Discuss KDE-based posterior multiplication as an alternative method.
+- **Wrap Up**: Summary and transition to the graphical model approach in the next tutorial.
 """
 
 # %matplotlib inline

@@ -24,6 +24,23 @@ This overview covers the key features of **PyAutoFit** that support the developm
 - **Configs**: Configuration files that set default model, fitting, and visualization behaviors, streamlining model fitting.
 - **Database**: Store results in a relational SQLite3 database, enabling efficient management of large modeling results.
 - **Scaling Up**: Guidance on scaling up your scientific workflow from small to large datasets.
+
+__Contents__
+
+This overview is split into the following sections:
+
+- **Data**: Load the 1D Gaussian data from disk to illustrate the scientific workflow.
+- **On The Fly**: Display intermediate results during model fitting for instant feedback.
+- **Hard Disk Output**: Enable persistent saving of search results with customizable output structure.
+- **Visualization**: Generate model-specific visualizations saved to disk during fitting.
+- **Loading Results**: Use the Aggregator API to load and inspect results from hard disk.
+- **Result Customization**: Extend the Result class with custom properties specific to the model-fitting problem.
+- **Model Composition**: Construct diverse models with parameter assignments and complex hierarchies.
+- **Searches**: Select and customize non-linear search methods appropriate for the problem.
+- **Configs**: Use configuration files to define default model priors and search settings.
+- **Database**: Store and query results in a SQLite3 relational database.
+- **Scaling Up**: Guidance on expanding workflows from small to large datasets.
+- **Wrap Up**: Summary of scientific workflow features in PyAutoFit.
 """
 
 # %matplotlib inline

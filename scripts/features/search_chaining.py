@@ -35,6 +35,30 @@ this model-fit into a chained of three searches where:
 By initially fitting parameter spaces of reduced complexity we can achieve a more efficient and reliable model-fitting
 procedure.
 
+__Contents__
+
+This script is split into the following sections:
+
+- **Example Source Code (`af.ex`)**: The example objects used in this script.
+- **Data**: Load the 1D data containing two split Gaussians.
+- **Analysis**: Create the Analysis class for fitting the model to data.
+- **Model**: Define the model for the left Gaussian.
+- **Search 1**: Perform the first search fitting the left Gaussian (N=3).
+- **Result 1**: Examine the results of the first search.
+- **Search 2**: Perform the second search fitting the right Gaussian (N=3).
+- **Model**: Define the model for the right Gaussian using the result of Search 1.
+- **Result 2**: Examine the results of the second search.
+- **Search 3**: Perform the final search fitting both Gaussians (N=6) using prior results.
+- **Prior Passing**: Explain how priors are passed between chained searches.
+- **EXAMPLE**: A concrete example of prior passing with numerical values.
+- **Prerequisites**: Prerequisites for prior passing concepts.
+- **Overview**: Overview of search chaining and prior passing.
+- **Model-Fit**: The model-fit used in prior passing examples.
+- **Instance & Model**: Explain how results are passed as instances and models.
+- **Component Specification**: Specify which model component priors to pass.
+- **Take Attributes**: Use the take_attributes method to pass priors between different model components.
+- **As Model**: Use the as_model method to create a model from a result instance.
+
 __Example Source Code (`af.ex`)__
 
 The **PyAutoFit** source code has the following example objects (accessed via `af.ex`) used in this tutorial:

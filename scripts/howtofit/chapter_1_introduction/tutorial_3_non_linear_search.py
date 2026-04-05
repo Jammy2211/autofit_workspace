@@ -46,9 +46,7 @@ This tutorial is split into the following sections:
 - **Maximum Likelihood Estimation (MLE)**: Perform a model-fit using the MLE search.
 - **Markov Chain Monte Carlo (MCMC)**: Perform a model-fit using the MCMC search.
 - **Nested Sampling**: Perform a model-fit using the nested sampling search.
-- **Result**: The result of the model-fit, including the maximum likelihood model.
-- **Samples**: The samples of the non-linear search, used to compute parameter estimates and uncertainties.
-- **Customizing Searches**: How to customize the settings of the non-linear search.
+- **What is The Best Search To Use?**: Compare the strengths and weaknesses of each search method.
 - **Wrap Up**: A summary of the concepts introduced in this tutorial.
 
 __Parameter Space__
