@@ -3,14 +3,14 @@ Plots: DynestyPlotter
 =====================
 
 This example illustrates how to plot visualization summarizing the results of a dynesty non-linear search using
-a `NestPlotter`.
+the `autofit.plot` module-level functions.
 
 __Contents__
 
 This script is split into the following sections:
 
 - **Notation**: How parameter labels and superscripts are customized for plots.
-- **Plotting**: Using the NestPlotter to visualize Dynesty search results.
+- **Plotting**: Using the plot functions to visualize Dynesty search results.
 - **Search Specific Visualization**: Accessing the native Dynesty sampler for custom visualizations.
 - **Plots**: Producing Dynesty-specific diagnostic plots.
 """
@@ -75,15 +75,14 @@ Gaussians are given the superscript `g`. This can also be customized in the `con
 
 __Plotting__
 
-We now pass the samples to a `NestPlotter` which will allow us to use dynesty's in-built plotting libraries to 
-make figures.
+We now use the `autofit.plot` module-level functions to visualize the results.
 
-The dynesty readthedocs describes fully all of the methods used below 
+The dynesty readthedocs describes fully all of the methods used below
 
  - https://dynesty.readthedocs.io/en/latest/quickstart.html
  - https://dynesty.readthedocs.io/en/latest/api.html#module-dynesty.plotting
- 
-In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are 
+
+In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
 described in the API docs.
 
 Dynesty plotters use `_kwargs` dictionaries to pass visualization settings to matplotlib lib. For example, below,
@@ -91,7 +90,7 @@ we:
 
  - Set the fontsize of the x and y labels by passing `label_kwargs={"fontsize": 16}`.
  - Set the fontsize of the title by passing `title_kwargs={"fontsize": "10"}`.
- 
+
 There are other `_kwargs` inputs we pass as None, you should check out the Dynesty docs if you need to customize your
 figure.
 """

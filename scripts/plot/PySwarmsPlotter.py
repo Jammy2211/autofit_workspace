@@ -1,16 +1,16 @@
 """
-Plots: MLEPlotter
+Plots: PySwarmsPlotter
 ======================
 
 This example illustrates how to plot visualization summarizing the results of a pyswarms non-linear search using
-a `MLEPlotter`.
+the `autofit.plot` module-level functions.
 
 __Contents__
 
 This script is split into the following sections:
 
 - **Notation**: How parameter labels and superscripts are customized for plots.
-- **Plotting**: Using the MLEPlotter to visualize PySwarms search results.
+- **Plotting**: Using the plot functions to visualize PySwarms search results.
 - **Search Specific Visualization**: Accessing the native PySwarms optimizer for custom visualizations.
 """
 
@@ -79,7 +79,7 @@ Gaussians are given the superscript `g`. This can also be customized in the `con
 
 __Plotting__
 
-We now pass the samples to a `MLEPlotter` which will allow us to use pyswarms's in-built plotting libraries to 
+We now use the `autofit.plot` module-level functions and pyswarms's in-built plotting libraries to
 make figures.
 
 The pyswarms readthedocs describes fully all of the methods used below 

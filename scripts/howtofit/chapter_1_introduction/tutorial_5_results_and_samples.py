@@ -25,7 +25,7 @@ This tutorial is split into the following sections:
 - **Posterior / PDF**: Access median PDF estimates for the model parameters.
 - **Plot**: Visualize model fit results using instances.
 - **Errors**: Compute parameter error estimates at specified sigma confidence limits.
-- **PDF**: Plot Probability Density Functions using the MCMCPlotter.
+- **PDF**: Plot Probability Density Functions using corner.py.
 - **Other Results**: Access maximum log posterior and other sample statistics.
 - **Sample Instance**: Create instances from individual samples in the sample list.
 - **Bayesian Evidence**: Access the log evidence for nested sampling searches.
@@ -515,11 +515,10 @@ print("Sigma = ", values_at_lower_sigma_instance.gaussian.sigma, "\n")
 """
 __PDF__
 
-The Probability Density Functions (PDF's) of the results can be plotted using the Emcee's visualization 
-tool `corner.py`, which is wrapped via the `MCMCPlotter` object.
+The Probability Density Functions (PDF's) of the results can be plotted using the Emcee's visualization
+tool `corner.py`, which is wrapped via the `aplt.corner_cornerpy` function.
 """
-plotter = aplt.MCMCPlotter(samples=result.samples)
-plotter.corner_cornerpy()
+aplt.corner_cornerpy(samples=result.samples)
 
 """
 __Other Results__
