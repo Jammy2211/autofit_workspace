@@ -18,6 +18,7 @@ __Contents__
 
 An overview of the `Result` object's functionality is given in the following sections:
 
+ - Simple Fit: Perform a simple model-fit to generate a `Result` object.
  - Info: Print the `info` attribute of the `Result` object to display a summary of the model-fit.
  - Max Log Likelihood Instance: Getting the maximum likelihood model instance.
  - Samples: Getting the samples of the non-linear search from a result.
@@ -32,9 +33,10 @@ The cookbook next describes how results can be output to hard-disk and loaded ba
 
 The cookbook next gives examples of how to load all the following results from the database:
 
- - Loading Samples: The samples of the non-linear search (e.g. all parameter values, log likelihoods, etc.).
+ - Samples: The samples of the non-linear search loaded via the aggregator.
  - Loading Model: The model fitted by the non-linear search.
  - Loading Search: The search used to perform the model-fit.
+ - Loading Samples: The samples of the non-linear search (e.g. all parameter values, log likelihoods, etc.).
  - Loading Samples Info: Additional information on the samples.
  - Loading Samples Summary: A summary of the samples of the non-linear search (e.g. the maximum log likelihood model).
  - Loading Info: The `info` dictionary passed to the search.
@@ -49,12 +51,13 @@ Using queries to load specific results is described in the following sections:
  - Querying Searches: Query based on the name of the search.
  - Querying Models: Query based on the model that is fitted.
  - Querying Results: Query based on the results of the model-fit.
- - Querying Logic: Use logic to combine queries to load specific results (e.g. AND, OR, etc.).
+ - Querying with Logic: Use logic to combine queries to load specific results (e.g. AND, OR, etc.).
 
 The final section describes how to use results built in an sqlite database file:
 
  - Database: Building a database file from the output folder.
  - Unique Identifiers: The unique identifier of each model-fit.
+ - Building From Output Folder: Build the database from the output folder on hard-disk.
  - Writing Directly To Database: Writing results directly to the database.
 """
 

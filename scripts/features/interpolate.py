@@ -27,6 +27,17 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
  - `Gaussian`: a model component representing a 1D Gaussian profile.
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Example Source Code (`af.ex`)**: The example objects used in this script.
+- **Dataset**: Load 3 noisy 1D Gaussian datasets taken at different times.
+- **Fit**: Fit each dataset individually, storing the maximum likelihood instances for interpolation.
+- **Interpolation**: Use a LinearInterpolator to interpolate model parameters as a function of time.
+- **Serialization**: Serialize the interpolator to a JSON file for reuse.
+- **Database**: Load results from hard disk using the Aggregator for interpolation.
 """
 
 # %matplotlib inline

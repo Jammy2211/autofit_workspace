@@ -47,6 +47,7 @@ the following sections:
  - Model Customization (af.Array): Customize a numpy array model (e.g. fixing parameters or linking them to one another).
  - Json Output (af.Array): Output a numpy array model in human readable text via a .json file and loading it back again.
  - Extensible Models (af.Array): Using numpy arrays to compose models with a flexible number of parameters.
+ - Wrap Up: A summary of model composition in PyAutoFit.
 """
 
 # %matplotlib inline
