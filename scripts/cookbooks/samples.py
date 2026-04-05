@@ -268,13 +268,12 @@ __Search Plots__
 The Probability Density Functions (PDF's) of the results can be plotted using the non-linear search in-built 
 visualization tools.
 
-This fit used `Emcee` therefore we use the `MCMCPlotter` for visualization, which wraps the Python library `corner.py`.
+This fit used `Emcee` therefore we use `corner.py` for visualization via the `aplt.corner_cornerpy` function.
 
 The `autofit_workspace/*/plots` folder illustrates other packages that can be used to make these plots using
 the standard output results formats (e.g. `GetDist.py`).
 """
-plotter = aplt.MCMCPlotter(samples=result.samples)
-plotter.corner_cornerpy()
+aplt.corner_cornerpy(samples=result.samples)
 
 """
 __Maximum Likelihood__

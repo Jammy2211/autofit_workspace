@@ -239,8 +239,7 @@ We can show this by plotting the 1D and 2D PDF's of each model fit
 """
 
 for samples in samples_list:
-    plotter = aplt.NestPlotter(samples=samples)
-    plotter.corner_cornerpy()
+    aplt.corner_cornerpy(samples=samples)
 
 """
 We can also print the values of each centre estimate, including their estimates at 3.0 sigma.
