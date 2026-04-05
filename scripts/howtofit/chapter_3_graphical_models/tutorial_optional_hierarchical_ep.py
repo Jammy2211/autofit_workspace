@@ -5,6 +5,19 @@ Tutorial Optional: Hierarchical Expectation Propagation (EP)
 This optional tutorial gives an example of fitting a hierarchical model using EP.
 
 The API is a straightforward combination of tutorials 3 and 4.
+
+__Contents__
+
+This tutorial is split into the following sections:
+
+- **Example Source Code (`af.ex`)**: The example objects used in this tutorial.
+- **Dataset**: Load the hierarchical Gaussian datasets with variable centres.
+- **Analysis**: Create Analysis objects for each dataset.
+- **Model Individual Factors**: Set up individual Gaussian models with independent priors.
+- **Analysis Factors**: Compose Analysis Factors with individual searches for each dataset.
+- **Model**: Create a HierarchicalFactor with a parent Gaussian distribution.
+- **Factor Graph**: Compose the factor graph including the hierarchical factor.
+- **Model Fit**: Run the EP fit of the hierarchical model.
 """
 
 # %matplotlib inline

@@ -26,15 +26,18 @@ __Contents__
 - **Data**: Load and plot the 1D Gaussian dataset we'll fit, which is more complex than the previous tutorial.
 - **Model**: The `Gaussian` model component that we will fit to the data.
 - **Analysis**: The log likelihood function used to fit the model to the data.
+- **Alternative Syntax**: An alternative loop-based approach for creating a summed profile from multiple model components.
 - **Collection**: The `Collection` model used to compose the model-fit.
+- **Search**: Set up the nested sampling search (Dynesty) for the model-fit.
 - **Model Fit**: Perform the model-fit and examine the results.
 - **Result**: Determine if the model-fit was successful and what can be done to ensure a good model-fit.
 - **Why Modeling is Hard**: Introduce the concept of randomness and local maxima and why they make model-fitting challenging.
 - **Prior Tuning**: Adjust the priors of the model to help the non-linear search find the global maxima solution.
 - **Reducing Complexity**: Simplify the model to reduce the dimensionality of the parameter space.
 - **Search More Thoroughly**: Adjust the non-linear search settings to search parameter space more thoroughly.
+- **Summary**: Summarize the three strategies for ensuring successful model-fitting.
 - **Run Times**: Discuss how the likelihood function and complexity of a model impacts the run-time of a model-fit.
-- **Model Mismatches**: Introduce the concept of model mismatches and how it makes inferring the correct model challenging.
+- **Model Mismatch**: Introduce the concept of model mismatches and how it makes inferring the correct model challenging.
 - **Astronomy Example**: How the concepts of this tutorial are applied to real astronomical problems.
 - **Wrap Up**: A summary of the key takeaways of this tutorial.
 """

@@ -2,6 +2,28 @@
 __Simulators__
 
 These scripts simulate the 1D Gaussian datasets used to demonstrate model-fitting.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Gaussian x1**: Simulate a single 1D Gaussian dataset.
+- **Gaussian x1 (0)**: Simulate a single Gaussian with sigma=1.0.
+- **Gaussian x1 (1)**: Simulate a single Gaussian with sigma=5.0.
+- **Gaussian x1 (2)**: Simulate a single Gaussian with sigma=10.0.
+- **Gaussian x1 (Identical 0)**: Simulate an identical single Gaussian dataset (copy 0).
+- **Gaussian x1 (Identical 1)**: Simulate an identical single Gaussian dataset (copy 1).
+- **Gaussian x1 (Identical 2)**: Simulate an identical single Gaussian dataset (copy 2).
+- **Gaussian x1 + Exponential x1**: Simulate a dataset with one Gaussian and one Exponential.
+- **Gaussian x2 + Exponential x1**: Simulate a dataset with two Gaussians and one Exponential.
+- **Gaussian x2**: Simulate a dataset with two Gaussians.
+- **Gaussian x3**: Simulate a dataset with three Gaussians.
+- **Gaussian x5**: Simulate a dataset with five Gaussians.
+- **Gaussian x1 unconvolved**: Simulate a single Gaussian without convolution.
+- **Gaussian x1 convolved**: Simulate a single Gaussian with kernel convolution.
+- **Gaussian x1 with feature**: Simulate a Gaussian with a small feature bump.
+- **Gaussian x2 split**: Simulate two separated Gaussians.
+- **Gaussian x1 time**: Simulate time-varying Gaussian datasets.
 """
 
 # %matplotlib inline

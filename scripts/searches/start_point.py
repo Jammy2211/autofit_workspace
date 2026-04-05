@@ -39,6 +39,19 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 
+__Contents__
+
+This script is split into the following sections:
+
+- **Comparison to Priors**: Explain the differences between start-point and prior customization approaches.
+- **Example Source Code (`af.ex`)**: The example objects used in this script.
+- **Start Here Notebook**: Reference to the related tutorial notebook.
+- **Data**: Load and plot the 1D Gaussian dataset.
+- **Start Point Priors**: Define a model with broad uniform priors for start-point demonstration.
+- **Start Point**: Set parameter start point ranges for initializing the search.
+- **Search + Analysis + Model-Fit**: Perform the model-fit with the configured start point.
+- **Result**: Extract and display the initial walker samples and fit results.
+
 __Start Here Notebook__
 
 If any code in this script is unclear, refer to the `modeling/start_here.ipynb` notebook.
