@@ -189,15 +189,14 @@ model-fit to be plotted and inspected.
 This uses that search's in-built visualization libraries, which are fully described in the `plot` package of the
 workspace.
 
-For example, `Emcee` has a corresponding `MCMCPlotter`, which is used as follows.
+For example, `Emcee` results can be plotted using the `aplt.corner_cornerpy` function as follows.
 
 Checkout the `plot` package for a complete description of the plots that can be made for a given search.
 """
 samples = result.samples
 
-plotter = aplt.MCMCPlotter(samples=samples)
-
-plotter.corner_cornerpy(
+aplt.corner_cornerpy(
+    samples=samples,
     bins=20,
     range=None,
     color="k",

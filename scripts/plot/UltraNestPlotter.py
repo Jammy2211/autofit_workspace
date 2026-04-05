@@ -3,7 +3,7 @@ Plots: DynestyPlotter
 =======================
 
 This example illustrates how to plot visualization summarizing the results of a ultranest non-linear search using
-a `NestPlotter`.
+the `autofit.plot` module-level functions.
 
 Installation
 ------------
@@ -17,7 +17,7 @@ __Contents__
 This script is split into the following sections:
 
 - **Notation**: How parameter labels and superscripts are customized for plots.
-- **Plotting**: Using the NestPlotter to visualize UltraNest search results.
+- **Plotting**: Using the plot functions to visualize UltraNest search results.
 - **Search Specific Visualization**: Accessing the native UltraNest sampler for custom visualizations.
 - **Plots**: Producing UltraNest-specific diagnostic plots.
 """
@@ -81,8 +81,7 @@ Gaussians are given the superscript `g`. This can also be customized in the `con
 
 __Plotting__
 
-We now pass the samples to a `NestPlotter` which will allow us to use ultranest's in-built plotting libraries to 
-make figures.
+We now use the `autofit.plot` module-level functions to visualize the results.
 
 The ultranest readthedocs describes fully all of the methods used below 
 

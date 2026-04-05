@@ -1,16 +1,16 @@
 """
-Plots: MCMCPlotter
+Plots: ZeusPlotter
 ==================
 
 This example illustrates how to plot visualization summarizing the results of a zeus non-linear search using
-a `MCMCPlotter`.
+the `autofit.plot` module-level functions.
 
 __Contents__
 
 This script is split into the following sections:
 
 - **Notation**: How parameter labels and superscripts are customized for plots.
-- **Plotting**: Using the MCMCPlotter to visualize Zeus search results.
+- **Plotting**: Using the plot functions to visualize Zeus search results.
 - **Search Specific Visualization**: Accessing the native Zeus sampler for custom visualizations.
 """
 
@@ -80,19 +80,18 @@ Gaussians are given the superscript `g`. This can also be customized in the `con
 
 __Plotting__
 
-We now pass the samples to a `MCMCPlotter` which will allow us to use dynesty's in-built plotting libraries to 
-make figures.
+We now use the `autofit.plot` module-level functions to visualize the results.
 
-The zeus readthedocs describes fully all of the methods used below 
+The zeus readthedocs describes fully all of the methods used below
 
  - https://zeus-mcmc.readthedocs.io/en/latest/api/plotting.html#cornerplot
  - https://zeus-mcmc.readthedocs.io/en/latest/notebooks/normal_distribution.html
- 
- The plotter wraps the `corner` method of the library `corner.py` to make corner plots of the PDF:
+
+The `aplt.corner_cornerpy` function wraps the library `corner.py` to make corner plots of the PDF:
 
 - https://corner.readthedocs.io/en/latest/index.html
- 
-In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are 
+
+In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
 described in the API docs.
 """
 """
