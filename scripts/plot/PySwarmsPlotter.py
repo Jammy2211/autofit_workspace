@@ -4,6 +4,14 @@ Plots: MLEPlotter
 
 This example illustrates how to plot visualization summarizing the results of a pyswarms non-linear search using
 a `MLEPlotter`.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Notation**: How parameter labels and superscripts are customized for plots.
+- **Plotting**: Using the MLEPlotter to visualize PySwarms search results.
+- **Search Specific Visualization**: Accessing the native PySwarms optimizer for custom visualizations.
 """
 
 # %matplotlib inline

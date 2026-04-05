@@ -4,6 +4,14 @@ Plots: MCMCPlotter
 
 This example illustrates how to plot visualization summarizing the results of a emcee non-linear search using
 a `MCMCPlotter`.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Notation**: How parameter labels and superscripts are customized for plots.
+- **Plotting**: Using the MCMCPlotter to visualize Emcee search results.
+- **Search Specific Visualization**: Accessing the native Emcee sampler for custom visualizations.
 """
 
 # %matplotlib inline

@@ -22,6 +22,24 @@ This overview gives a run through of:
 This overviews provides a high level of the basic API, with more advanced functionality described in the following
 overviews and the **PyAutoFit** cookbooks.
 
+__Contents__
+
+This overview is split into the following sections:
+
+- **Example Use Case**: Introduce the 1D Gaussian profile fitting example used throughout this overview.
+- **Model**: Define a 1D Gaussian as a PyAutoFit model via a Python class.
+- **Instances**: Create model instances by mapping parameter vectors to Python class instances.
+- **Analysis**: Define an ``Analysis`` class with a ``log_likelihood_function`` for fitting the model to data.
+- **Non Linear Search**: Select and configure a non-linear search algorithm (Dynesty nested sampling).
+- **Model Fit**: Execute the non-linear search to fit the model to the data.
+- **Result**: Examine the result and maximum likelihood instance from the search.
+- **Samples**: Access parameter samples and posterior information to visualize results.
+- **Multiple Datasets**: Fit multiple datasets simultaneously using AnalysisFactor objects.
+- **Factor Graph**: Combine AnalysisFactors into a FactorGraphModel for global model fitting.
+- **Wrap Up**: Summary of the basic PyAutoFit functionality.
+- **Resources**: Links to cookbooks and documentation for advanced features.
+- **Extending Models**: Example of composing multi-component models (Gaussian + Exponential).
+
 To begin, lets import ``autofit`` (and ``numpy``) using the convention below:
 """
 

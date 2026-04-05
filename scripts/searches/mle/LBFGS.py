@@ -7,6 +7,16 @@ This example illustrates how to use the scipy optimize.minimize algorithm L-BFGS
 Information about the L-BFGS method can be found at the following links:
 
  - https://docs.scipy.org/doc/scipy/reference/optimize.minimize-lbfgsb.html
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Data**: Loading and plotting the 1D Gaussian dataset used to demonstrate the search.
+- **Model + Analysis**: Setting up the model and analysis for the fitting example.
+- **Search**: Configuring and running the L-BFGS optimization algorithm.
+- **Result**: Inspecting the result and comparing the maximum log likelihood model to the data.
+- **Search Internal**: Accessing the internal scipy optimizer for advanced use.
 """
 
 # %matplotlib inline

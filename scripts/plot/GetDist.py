@@ -19,6 +19,21 @@ Installation
 Because GetDist is an optional library, you will likely have to install it manually via the command:
 
 `pip install getdist`
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Model Fit**: Create a Dynesty result for visualization with GetDist.
+- **Param Names**: Generate the GetDist parameter names file.
+- **GetDist MCSamples**: Create a GetDist MCSamples object from PyAutoFit samples.
+- **Parameter Names**: Document the parameter naming conventions.
+- **GetDist Plotter**: Create a GetDist plotter object.
+- **GetDist Subplots**: Create triangle plots and other multi-parameter plots.
+- **GetDist Single Plots**: Create individual 1D, 2D, and 3D PDF plots.
+- **Output**: Save figures to disk.
+- **GetDist Other Plots**: Reference additional plot options available in GetDist.
+- **Plotting Multiple Samples**: Demonstrate plotting results from multiple searches.
 """
 
 # %matplotlib inline

@@ -21,6 +21,15 @@ Whilst this is not the typical use case of a non-linear search, it has certain n
  - For advanced modeling tools, for example sensitivity mapping performed via the `Sensitivity` object,
  the `Drawer` search may be sufficient to perform the overall modeling task, without the need of performing
  an actual parameter space search.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Data**: Loading and plotting the 1D Gaussian dataset used to demonstrate the search.
+- **Model + Analysis**: Setting up the model and analysis for the fitting example.
+- **Search**: Configuring and running the Drawer search to draw samples from the priors.
+- **Result**: Inspecting the result and comparing the maximum log likelihood model to the data.
 """
 
 # %matplotlib inline

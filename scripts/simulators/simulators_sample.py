@@ -3,6 +3,14 @@ __Simulators__
 
 These scripts simulates many 1D Gaussian datasets with a low signal to noise ratio, which are used to demonstrate
 model-fitting.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Gaussian x1 low snr (centre fixed to 50.0)**: Simulate low signal-to-noise Gaussian datasets with a fixed centre.
+- **Gaussian x1 low snr (centre drawn from parent Gaussian distribution to 50.0)**: Simulate hierarchical Gaussian datasets with centres drawn from a parent distribution.
+- **Gaussian x2 offset centre**: Simulate datasets with two Gaussians with offset centres for graphical model demonstrations.
 """
 
 # %matplotlib inline

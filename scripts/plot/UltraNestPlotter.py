@@ -11,6 +11,15 @@ Installation
 Because UltraNest is an optional library, you will likely have to install it manually via the command:
 
 `pip install ultranest`
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Notation**: How parameter labels and superscripts are customized for plots.
+- **Plotting**: Using the NestPlotter to visualize UltraNest search results.
+- **Search Specific Visualization**: Accessing the native UltraNest sampler for custom visualizations.
+- **Plots**: Producing UltraNest-specific diagnostic plots.
 """
 
 # %matplotlib inline

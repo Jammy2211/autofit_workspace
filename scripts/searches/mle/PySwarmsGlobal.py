@@ -9,6 +9,16 @@ Information about PySwarms can be found at the following links:
  - https://github.com/ljvmiranda921/pyswarms
  - https://pyswarms.readthedocs.io/en/latest/index.html
  - https://pyswarms.readthedocs.io/en/latest/api/pyswarms.single.html#module-pyswarms.single.global_best
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Data**: Loading and plotting the 1D Gaussian dataset used to demonstrate the search.
+- **Model + Analysis**: Setting up the model and analysis for the fitting example.
+- **Search**: Configuring and running the PySwarmsGlobal particle swarm optimizer.
+- **Result**: Inspecting the result and comparing the maximum log likelihood model to the data.
+- **Search Internal**: Accessing the internal PySwarms optimizer for advanced use.
 """
 
 # %matplotlib inline

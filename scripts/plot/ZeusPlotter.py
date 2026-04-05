@@ -4,6 +4,14 @@ Plots: MCMCPlotter
 
 This example illustrates how to plot visualization summarizing the results of a zeus non-linear search using
 a `MCMCPlotter`.
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Notation**: How parameter labels and superscripts are customized for plots.
+- **Plotting**: Using the MCMCPlotter to visualize Zeus search results.
+- **Search Specific Visualization**: Accessing the native Zeus sampler for custom visualizations.
 """
 
 # %matplotlib inline

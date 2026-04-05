@@ -31,8 +31,8 @@ __Contents__
 The following sections outline how to use advanced features of the results, which you may skip on a first read:
 
  - Derived Quantities: Computing quantities and errors for quantities and parameters not included directly in the model.
- - Result Extension: Extend the `Result` object with new attributes and methods (e.g. `max_log_likelihood_model_data`).
- - Samples Filtering: Filter the `Samples` object to only contain samples fulfilling certain criteria.
+ - Derived Errors Manual (Advanced): Manually computing errors on derived quantities from the PDF of samples.
+ - Samples Filtering (Advanced): Filter the `Samples` object to only contain samples fulfilling certain criteria.
 """
 
 # %matplotlib inline

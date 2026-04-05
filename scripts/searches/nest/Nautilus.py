@@ -8,6 +8,16 @@ Information about Nautilus can be found at the following links:
 
  - https://nautilus-sampler.readthedocs.io/en/stable/index.html
  - https://github.com/johannesulf/nautilus
+
+__Contents__
+
+This script is split into the following sections:
+
+- **Data**: Loading and plotting the 1D Gaussian dataset used to demonstrate the search.
+- **Model + Analysis**: Setting up the model and analysis for the fitting example.
+- **Search**: Configuring and running the Nautilus nested sampler.
+- **Result**: Inspecting the result and comparing the maximum log likelihood model to the data.
+- **Search Internal**: Accessing the internal Nautilus sampler for advanced use.
 """
 
 # %matplotlib inline
