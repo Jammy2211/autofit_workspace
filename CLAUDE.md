@@ -55,6 +55,8 @@ To run a single script in test mode:
 PYAUTOFIT_TEST_MODE=1 python3 scripts/overview/overview_1_the_basics.py
 ```
 
+For maximum speed (smoke tests), also set `PYAUTO_WORKSPACE_SMALL_DATASETS=1` (caps grids to 15x15), `PYAUTO_DISABLE_CRITICAL_CAUSTICS=1` (skips critical curve computation in plots), and `PYAUTO_FAST_PLOTS=1` (skips `tight_layout()` in subplots). The `run_scripts.sh` runner sets these automatically.
+
 After a full run, inspect failures:
 
 ```
