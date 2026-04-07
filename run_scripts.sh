@@ -13,6 +13,9 @@ NO_RUN_YAML="$SCRIPT_DIR/../PyAutoBuild/autobuild/config/no_run.yaml"
 PROJECT_KEY="autofit"
 
 export PYAUTOFIT_TEST_MODE=1
+export PYAUTO_WORKSPACE_SMALL_DATASETS=1
+export PYAUTO_DISABLE_CRITICAL_CAUSTICS=1
+export PYAUTO_FAST_PLOTS=1
 
 # ---------------------------------------------------------------------------
 # Build ordered script list: within each directory, start_here.py runs first,
