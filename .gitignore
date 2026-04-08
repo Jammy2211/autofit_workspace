@@ -1,5 +1,7 @@
 output/
 dataset/
+test_report.md
+test_results/
 root.log
 report.log
 *.sqlite*
