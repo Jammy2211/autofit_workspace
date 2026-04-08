@@ -10,6 +10,7 @@
 - UltraNestPlotter # Test Model Iniitalization no good.
 - DynestyPlotter # Test Model Iniitalization no good.
 - start_point # bug https://github.com/rhayes777/PyAutoFit/issues/1017
+- tutorial_8_astronomy_example # Requires dataset/howtofit/chapter_1/astro/simple/data.npy (not auto-generated)
 - searches/mle/PySwarmsGlobal # PySwarms does not support JAX.
 - searches/mle/PySwarmsLocal # PySwarms does not support JAX.
 - searches/nest/UltraNest # UltraNest does not support JAX.
