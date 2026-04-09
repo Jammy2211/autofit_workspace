@@ -91,16 +91,12 @@ If you don't have an autofit_workspace, you can download it here:
  
  https://github.com/Jammy2211/autofit_workspace
 
-__PyProjRoot__
+__Workspace Setup__
 
-At the top of every tutorial notebook, you will see the following cell. This cell uses the project pyprojroot to 
-locate the path to the workspace on your computer and set it as the working directory of the notebook.
+At the top of every tutorial notebook, you will see the following cell. This cell finds the workspace root
+directory on your computer and sets it as the working directory of the notebook.
 """
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 """
 __Model Parameterization__

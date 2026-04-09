@@ -85,3 +85,15 @@ joining the **PyAutoFit** `Slack channel <https://pyautofit.slack.com/>`_, where
 
 Slack is invitation-only, so if you'd like to join send an `email <https://github.com/Jammy2211>`_ requesting an
 invite.
+
+Build Configuration
+-------------------
+
+The ``config/`` directory contains two files used by the automated build and test system
+(CI, smoke tests, and pre-release checks). These are not relevant to normal workspace usage.
+
+- ``config/build/no_run.yaml`` — scripts to skip during automated runs. Each entry is a filename stem
+  or path pattern with an inline comment explaining why it is skipped.
+- ``config/build/env_vars.yaml`` — environment variables applied to each script during automated runs.
+  Defines default values (e.g. test mode, small datasets) and per-script overrides for scripts
+  that need different settings.

@@ -71,11 +71,7 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -443,11 +439,7 @@ and change its parameterization between each fit.
 
 This cookbook is a concise reference to the model linking API.
 """
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 import json
 import os
