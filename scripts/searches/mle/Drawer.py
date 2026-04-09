@@ -131,7 +131,7 @@ plt.errorbar(
     capsize=2,
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
-plt.title("PySwarmsLocal model fit to 1D Gaussian dataset.")
+plt.title("Drawer model fit to 1D Gaussian dataset.")
 plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.show()

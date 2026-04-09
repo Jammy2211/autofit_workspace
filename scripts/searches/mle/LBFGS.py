@@ -132,7 +132,7 @@ plt.errorbar(
     capsize=2,
 )
 plt.plot(range(data.shape[0]), model_data, color="r")
-plt.title("PySwarmsLocal model fit to 1D Gaussian dataset.")
+plt.title("LBFGS model fit to 1D Gaussian dataset.")
 plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.show()
@@ -147,7 +147,7 @@ The internal representation of the non-linear search ensures that all sampling i
 This can be passed to functions which take it as input, for example if the sampling package has bespoke visualization 
 functions.
 
-For `PySwarms`, this is an instance of the `Sampler` object (`from pyswarms import GlobalBestPSO`).
+For `LBFGS`, this is an instance of the scipy `OptimizeResult` object.
 """
 search_internal = result.search_internal
 

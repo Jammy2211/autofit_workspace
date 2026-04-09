@@ -168,7 +168,7 @@ for data, noise_map, time in zip(data_list, noise_map_list, time_list):
     __Search__
     
     The model is fitted to the data using the nested sampling algorithm 
-    Dynesty (https://johannesbuchner.github.io/UltraNest/readme.html).
+    Dynesty (https://dynesty.readthedocs.io/en/latest/).
     """
     search = af.DynestyStatic(
         path_prefix=path.join("interpolate"),
