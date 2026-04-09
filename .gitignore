@@ -6,6 +6,7 @@ root.log
 report.log
 *.sqlite*
 *.pyc
+__pycache__/
 *.ipynb_checkpoints
 .cache
 .idea
