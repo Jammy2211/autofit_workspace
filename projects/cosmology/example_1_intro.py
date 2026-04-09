@@ -69,11 +69,7 @@ The module `src/__init__.py` performs a series of imports that are used througho
 access to different parts of the source code.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 import src as cosmo
 import matplotlib.pyplot as plt

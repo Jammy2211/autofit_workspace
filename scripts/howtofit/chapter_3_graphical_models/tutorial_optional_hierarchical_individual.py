@@ -25,11 +25,7 @@ This tutorial is split into the following sections:
 - **Analysis + Search**: Create the analysis and search for the parent distribution fit.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 import numpy as np
 from os import path
