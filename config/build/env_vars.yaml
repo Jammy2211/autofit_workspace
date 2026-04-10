@@ -18,4 +18,10 @@ defaults:
   NUMBA_CACHE_DIR: "/tmp/numba_cache"   # Writable cache dir for numba
   MPLCONFIGDIR: "/tmp/matplotlib"       # Writable config dir for matplotlib
 
-overrides: []
+overrides:
+  # Plotter scripts need the real search to run so `result.search_internal` is
+  # populated — bypass mode skips the sampler and returns None.
+  - pattern: "plot/EmceePlotter"
+    unset: [PYAUTOFIT_TEST_MODE]
+  - pattern: "plot/ZeusPlotter"
+    unset: [PYAUTOFIT_TEST_MODE]
