@@ -3,6 +3,19 @@
 #   - Entries with '/' do a substring match against the file path
 #   - Entries without '/' match the file stem exactly
 # Add an inline # comment to document the reason for skipping.
+#
+# SLOW-skip convention:
+#   Entries tagged `# SLOW <YYYY-MM-DD> - <reason>` mark scripts that are
+#   skipped because they exceed the 60s per-script timeout cap. These are
+#   NOT permanent skips — every mega-run surfaces them with a loud warning
+#   banner. Fix the performance issue and remove the SLOW marker.
+#
+# NEEDS_FIX convention:
+#   Entries tagged `# NEEDS_FIX <YYYY-MM-DD> - <reason>` mark scripts that
+#   are broken and parked as a to-do list. Like SLOW-skips, these are NOT
+#   permanent skips — every mega-run surfaces them with a loud warning
+#   banner. Investigate the failure, fix the underlying bug, and remove
+#   the NEEDS_FIX marker.
 
 - GetDist # Cant get it to install, even in optional requirements.
 - Zeus # Test Model Iniitalization no good.
@@ -15,3 +28,5 @@
 - searches/mle/PySwarmsLocal # PySwarms does not support JAX.
 - searches/nest/UltraNest # UltraNest does not support JAX.
 - plot/PySwarmsPlotter # PySwarms does not support JAX.
+- features/interpolate # NEEDS_FIX 2026-04-10 - IndexError in InstanceInterpolator.__getitem__ when querying time == 1.5; value_map lookup falls through to empty instances list
+- howtofit/chapter_1_introduction/tutorial_5_results_and_samples # NEEDS_FIX 2026-04-10 - IndexError in samples access, likely related to the same interpolator bug as features/interpolate
