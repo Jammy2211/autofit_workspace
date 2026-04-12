@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run all scripts in scripts/ with PYAUTOFIT_TEST_MODE=1.
+# Run all scripts in scripts/ with PYAUTO_TEST_MODE=1.
 #
 # Rules:
 #   - start_here.py in a folder runs before all other scripts and subfolders in that folder
@@ -12,8 +12,11 @@ FAILED_DIR="$SCRIPT_DIR/failed"
 NO_RUN_YAML="$SCRIPT_DIR/../PyAutoBuild/autobuild/config/no_run.yaml"
 PROJECT_KEY="autofit"
 
-export PYAUTOFIT_TEST_MODE=1
-export PYAUTO_WORKSPACE_SMALL_DATASETS=1
+export PYAUTO_TEST_MODE=1
+export PYAUTO_SKIP_FIT_OUTPUT=1
+export PYAUTO_SKIP_VISUALIZATION=1
+export PYAUTO_SKIP_CHECKS=1
+export PYAUTO_SMALL_DATASETS=1
 export PYAUTO_FAST_PLOTS=1
 
 # ---------------------------------------------------------------------------
