@@ -37,7 +37,7 @@ python scripts/searches/nest/dynesty/uniform.py
 
 ## Testing All Scripts
 
-`PYAUTOFIT_TEST_MODE=1` causes non-linear searches to skip actual sampling (fast test run).
+`PYAUTO_TEST_MODE=1` causes non-linear searches to skip actual sampling (fast test run).
 
 Run all scripts using the provided runner:
 
@@ -52,7 +52,7 @@ bash run_scripts.sh
 To run a single script in test mode:
 
 ```
-PYAUTOFIT_TEST_MODE=1 python3 scripts/overview/overview_1_the_basics.py
+PYAUTO_TEST_MODE=1 python3 scripts/overview/overview_1_the_basics.py
 ```
 
 After a full run, inspect failures:
