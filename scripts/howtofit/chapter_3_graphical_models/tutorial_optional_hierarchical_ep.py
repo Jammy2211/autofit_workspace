@@ -20,11 +20,7 @@ This tutorial is split into the following sections:
 - **Model Fit**: Run the EP fit of the hierarchical model.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 import numpy as np
 from os import path

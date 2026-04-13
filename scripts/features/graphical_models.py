@@ -47,11 +47,7 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 from os import path
 import matplotlib.pyplot as plt

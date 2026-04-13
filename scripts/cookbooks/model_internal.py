@@ -25,11 +25,7 @@ __Contents__
  - Serialization Round Trip: ``dict()`` and ``from_dict()`` for JSON persistence.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 import autofit as af
 import numpy as np

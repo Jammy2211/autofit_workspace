@@ -42,11 +42,7 @@ __Contents__
 - **Wrap Up**: A summary of the key takeaways of this tutorial.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 from os import path
 import numpy as np
