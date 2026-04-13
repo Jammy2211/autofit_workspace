@@ -61,11 +61,7 @@ The final section describes how to use results built in an sqlite database file:
  - Writing Directly To Database: Writing results directly to the database.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 import json
 from os import path

@@ -23,11 +23,7 @@ __Contents__
  - Json Output (Model): Output a multi-level model in human readable text via a .json file and loading it back again.
 """
 
-# %matplotlib inline
-# from pyprojroot import here
-# workspace_path = str(here())
-# %cd $workspace_path
-# print(f"Working Directory has been set to `{workspace_path}`")
+# from autoconf import setup_notebook; setup_notebook()
 
 import json
 import os
