@@ -6,3 +6,10 @@ searches/nest/Nautilus.py
 cookbooks/model.py
 cookbooks/result.py
 cookbooks/samples.py
+cookbooks/search.py
+cookbooks/analysis.py
+cookbooks/multi_level_model.py
+cookbooks/multiple_datasets.py
+features/sensitivity_mapping.py
+features/search_chaining.py
+features/interpolate.py
