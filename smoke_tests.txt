@@ -5,7 +5,7 @@ searches/nest/Nautilus.py
 # searches/mle/LBFGS.py  # disabled: bypass mode triggers search_internal cleanup error (rhayes777/PyAutoFit#1179)
 cookbooks/model.py
 cookbooks/result.py
-cookbooks/samples.py
+# cookbooks/samples.py  # disabled: IndexError in bypass mode — see admin_jammy/prompt/build/smoke_workspace_fixes.md
 cookbooks/search.py
 cookbooks/analysis.py
 cookbooks/multi_level_model.py
