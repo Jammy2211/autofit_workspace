@@ -115,13 +115,17 @@ The parameters are stored as a list of lists, where:
 
  - The outer list is the size of the total number of samples.
  - The inner list is the size of the number of free parameters in the fit.
+
+Below, we print the first sample — its second parameter (Gaussian -> normalization) and its third
+parameter (Gaussian -> sigma). Any other sample index would work the same way; index `0` is used
+here so the example remains valid regardless of how many samples the search produced.
 """
 samples = result.samples
 
-print("Sample 5's second parameter value (Gaussian -> normalization):")
-print(samples.parameter_lists[4][1])
-print("Sample 10`s third parameter value (Gaussian -> sigma)")
-print(samples.parameter_lists[9][2], "\n")
+print("Sample 0's second parameter value (Gaussian -> normalization):")
+print(samples.parameter_lists[0][1])
+print("Sample 0's third parameter value (Gaussian -> sigma)")
+print(samples.parameter_lists[0][2], "\n")
 
 """
 __Figures of Merit__
@@ -137,13 +141,14 @@ The `Samples` class contains the log likelihood, log prior, log posterior and we
 - The `weight` gives information on how samples are combined to estimate the posterior, which depends on type of search
   used (for `Emcee` they are all 1's meaning they are weighted equally).
 
-Lets inspect these values for the tenth sample.
+Below, we inspect these values for the first sample. Any sample index would work the same way;
+index `0` is used here so the example is valid regardless of how many samples the search produced.
 """
-print("log(likelihood), log(prior), log(posterior) and weight of the tenth sample.")
-print(samples.log_likelihood_list[9])
-print(samples.log_prior_list[9])
-print(samples.log_posterior_list[9])
-print(samples.weight_list[9])
+print("log(likelihood), log(prior), log(posterior) and weight of the first sample.")
+print(samples.log_likelihood_list[0])
+print(samples.log_prior_list[0])
+print(samples.log_posterior_list[0])
+print(samples.weight_list[0])
 
 """
 __Instances__
