@@ -1,6 +1,6 @@
 """
-Plots: DynestyPlotter
-======================
+Plots: nautilus_plotter
+=======================
 
 This example illustrates how to plot visualization summarizing the results of a nautilus non-linear search using
 the `autofit.plot` module-level functions.

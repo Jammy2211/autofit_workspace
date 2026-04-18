@@ -279,7 +279,7 @@ Information about Emcee can be found at the following links:
 The following workspace example shows examples of fitting data with Emcee and plotting the results.
 
 - `autofit_workspace/notebooks/searches/mcmc.ipynb`
-- `autofit_workspace/notebooks/plot/EmceePlotter.ipynb`
+- `autofit_workspace/notebooks/plot/emcee_plotter.ipynb`
 
 The following code shows how to use Emcee with all available options.
 """
