@@ -1,17 +1,17 @@
 PyAutoFit Workspace
 ====================
 
-.. |binder| image:: https://mybinder.org/badge_logo.svg
-   :target: https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/HEAD
+.. |colab| image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.4.13.6/start_here.ipynb
 
 .. |JOSS| image:: https://joss.theoj.org/papers/10.21105/joss.02550/status.svg
    :target: https://doi.org/10.21105/joss.02550
 
-|binder| |JOSS|
+|colab| |JOSS|
 
 `Installation Guide <https://pyautofit.readthedocs.io/en/latest/installation/overview.html>`_ |
 `readthedocs <https://pyautofit.readthedocs.io/en/latest/index.html>`_ |
-`Introduction on Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/release?filepath=notebooks/overview/overview_1_the_basics.ipynb>`_ |
+`Introduction on Colab <https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.4.13.6/notebooks/overview/overview_1_the_basics.ipynb>`_ |
 `HowToFit <https://pyautofit.readthedocs.io/en/latest/howtofit/howtofit.html>`_
 
 Welcome to the **PyAutoFit** Workspace! 
@@ -23,7 +23,7 @@ You can get set up on your personal computer by following the installation guide
 our `readthedocs <https://pyautofit.readthedocs.io/>`_.
 
 Alternatively, you can try **PyAutoFit** out in a web browser by going to the `autofit workspace
-Binder <https://mybinder.org/v2/gh/Jammy2211/autofit_workspace/release?filepath=notebooks/overview/overview_1_the_basics.ipynb>`_.
+Colab <https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.4.13.6/notebooks/overview/overview_1_the_basics.ipynb>`_.
 
 Where To Go?
 ------------
