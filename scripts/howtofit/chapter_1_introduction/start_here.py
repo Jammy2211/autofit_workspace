@@ -48,5 +48,8 @@ interpretation. The chapter includes:
 
 `tutorial_5_results_and_samples.py`: Interpreting model-fit results and using the samples for scientific analysis.
 
-`tutorial_8_astronomy_examples.py`: Applying the techniques to a real-world astronomy problem.
+An applied astronomy-focused example (previously tutorial 8) now lives in
+`autofit_workspace_developer/scripts/howtofit/chapter_1_introduction/tutorial_8_astronomy_example.py`,
+alongside the larger `projects/cosmology/` example. These depend on astronomy-specific datasets
+that only live in the developer workspace.
 """
