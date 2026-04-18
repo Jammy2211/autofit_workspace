@@ -883,18 +883,6 @@ Whether or not run times will pose a challenge to your model-fitting task depend
 nature of the log likelihood function. If your problem is computationally expensive, **PyAutoFit** provides many
 tools to help, which will be the topic of tutorials in chapter 2 of the **HowToFit** lectures. 
 
-**PyAutoFit** provides tools to profile the run-time of your log likelihood function, which can be used to
-assess the computational expense of your model-fit and plan accordingly. Below is an example of the simplest use
-of these tools, an estimate of the run-time of the log likelihood function using one random instance of the model.
-
-
-Feature still being developed, IGNORE FOR NOW.
-
-run_time_dict, info_dict = analysis.profile_log_likelihood_function(
-    instance=model.random_instance()
-)
-print(f"Log Likelihood Evaluation Time (second) = {run_time_dict['fit_time']}")
-
 __Model Mismatch__
 
 In this example, interpreting how well the model fitted the data, and whether it found the global maxima, was
