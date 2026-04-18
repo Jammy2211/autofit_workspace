@@ -7,7 +7,7 @@ This is the tutorial and example workspace for **PyAutoFit**, a Python probabili
 - `scripts/` - Runnable Python scripts organised by topic
   - `searches/mcmc/` - MCMC search examples (emcee)
   - `searches/mle/` - Maximum likelihood search examples (LBFGS etc.)
-  - `searches/nest/` - Nested sampling examples (dynesty, nautilus, ultranest)
+  - `searches/nest/` - Nested sampling examples (dynesty, nautilus)
   - `features/` - Advanced feature demonstrations
   - `cookbooks/` - API cookbook examples
   - `howtofit/` - Tutorial series scripts
