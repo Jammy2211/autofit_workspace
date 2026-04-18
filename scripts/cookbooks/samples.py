@@ -273,7 +273,7 @@ visualization tools.
 This fit used `Emcee` therefore we use `corner.py` for visualization via the `aplt.corner_cornerpy` function.
 
 The `autofit_workspace/*/plots` folder illustrates other packages that can be used to make these plots using
-the standard output results formats (e.g. `GetDist.py`).
+the standard output results formats (e.g. `get_dist.py`).
 """
 aplt.corner_cornerpy(samples=result.samples)
 

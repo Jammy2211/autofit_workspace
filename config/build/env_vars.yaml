@@ -23,7 +23,7 @@ defaults:
 overrides:
   # Plotter scripts need the real search to run so `result.search_internal` is
   # populated — bypass mode skips the sampler and returns None.
-  - pattern: "plot/EmceePlotter"
+  - pattern: "plot/emcee_plotter"
     unset: [PYAUTO_TEST_MODE, PYAUTO_SKIP_FIT_OUTPUT]
-  - pattern: "plot/ZeusPlotter"
+  - pattern: "plot/zeus_plotter"
     unset: [PYAUTO_TEST_MODE, PYAUTO_SKIP_FIT_OUTPUT]

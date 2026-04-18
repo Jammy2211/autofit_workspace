@@ -5,9 +5,7 @@ This is the tutorial and example workspace for **PyAutoFit**, a Python probabili
 ## Repository Structure
 
 - `scripts/` - Runnable Python scripts organised by topic
-  - `searches/mcmc/` - MCMC search examples (emcee)
-  - `searches/mle/` - Maximum likelihood search examples (LBFGS etc.)
-  - `searches/nest/` - Nested sampling examples (dynesty, nautilus)
+  - `searches/` - Non-linear search examples: `nest.py` (dynesty, nautilus), `mcmc.py` (emcee, zeus), `mle.py` (drawer, LBFGS), `start_point.py`
   - `features/` - Advanced feature demonstrations
   - `cookbooks/` - API cookbook examples
   - `howtofit/` - Tutorial series scripts
@@ -32,7 +30,7 @@ This is the tutorial and example workspace for **PyAutoFit**, a Python probabili
 
 ```
 python scripts/overview/overview_1_the_basics.py
-python scripts/searches/nest/dynesty/uniform.py
+python scripts/searches/nest.py
 ```
 
 ## Testing All Scripts
@@ -75,7 +73,7 @@ ls failed/
    ```
    Scripts with a bug link or the word "bug"/"issue"/"fix" in the comment are flagged as `[TODO - should run after a future PR]` in the output.
 
-   Matching is by script basename stem (e.g. `GetDist` matches `plot/GetDist.py`).
+   Matching is by script basename stem (e.g. `get_dist` matches `plot/get_dist.py`).
 
 ## Notebooks
 
