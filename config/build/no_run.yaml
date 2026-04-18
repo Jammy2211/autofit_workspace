@@ -17,10 +17,10 @@
 #   banner. Investigate the failure, fix the underlying bug, and remove
 #   the NEEDS_FIX marker.
 
-- GetDist # Cant get it to install, even in optional requirements.
-- Zeus # Test Model Iniitalization no good.
-- ZeusPlotter # Test Model Iniitalization no good.
-- DynestyPlotter # Test Model Iniitalization no good.
+- get_dist # Cant get it to install, even in optional requirements.
+- mcmc # Zeus section in merged mcmc.py fails Test Model Initialization.
+- zeus_plotter # Test Model Iniitalization no good.
+- dynesty_plotter # Test Model Iniitalization no good.
 - start_point # bug https://github.com/rhayes777/PyAutoFit/issues/1017
 - tutorial_8_astronomy_example # Requires dataset/howtofit/chapter_1/astro/simple/data.npy (not auto-generated)
 - features/interpolate # NEEDS_FIX 2026-04-10 - IndexError in InstanceInterpolator.__getitem__ when querying time == 1.5; value_map lookup falls through to empty instances list

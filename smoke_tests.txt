@@ -1,8 +1,7 @@
 overview/overview_1_the_basics.py
-searches/mcmc/Emcee.py
-searches/nest/DynestyStatic.py
-searches/nest/Nautilus.py
-# searches/mle/LBFGS.py  # disabled: bypass mode triggers search_internal cleanup error (rhayes777/PyAutoFit#1179)
+searches/mcmc.py
+searches/nest.py
+# searches/mle.py  # disabled: bypass mode triggers search_internal cleanup error (rhayes777/PyAutoFit#1179)
 cookbooks/model.py
 cookbooks/result.py
 cookbooks/samples.py
