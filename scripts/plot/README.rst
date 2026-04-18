@@ -7,4 +7,4 @@ Files
 - ``MCMCPlotter.py``: Plots results of an Emcee fit (e.g. corner).
 - ``ZeusPlotter.py``: Plots results of a Zeus fit (e.g. corner).
 
-- ``GetDist.py``: Plot results of any MCMC / nested sampler non-linear search using the library GetDist.
+- ``get_dist.py``: Plot results of any MCMC / nested sampler non-linear search using the library GetDist.
