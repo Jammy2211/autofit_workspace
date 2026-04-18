@@ -78,7 +78,7 @@ import autofit as af
 """
 __Paths__
 
-PyAutoFit assumes the current working directory is /path/to/autofit_workspace/ on your hard-disk (or in Binder). 
+PyAutoFit assumes the current working directory is /path/to/autofit_workspace/ on your hard-disk (or in Colab). 
 This setup allows PyAutoFit to:
 
 - Load configuration settings from config files in the autofit_workspace/config folder.
