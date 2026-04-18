@@ -1,6 +1,6 @@
 """
-Plots: DynestyPlotter
-=====================
+Plots: dynesty_plotter
+======================
 
 This example illustrates how to plot visualization summarizing the results of a dynesty non-linear search using
 the `autofit.plot` module-level functions.

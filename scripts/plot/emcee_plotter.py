@@ -1,8 +1,8 @@
 """
-Plots: ZeusPlotter
-==================
+Plots: emcee_plotter
+====================
 
-This example illustrates how to plot visualization summarizing the results of a zeus non-linear search using
+This example illustrates how to plot visualization summarizing the results of a emcee non-linear search using
 the `autofit.plot` module-level functions.
 
 __Contents__
@@ -10,8 +10,8 @@ __Contents__
 This script is split into the following sections:
 
 - **Notation**: How parameter labels and superscripts are customized for plots.
-- **Plotting**: Using the plot functions to visualize Zeus search results.
-- **Search Specific Visualization**: Accessing the native Zeus sampler for custom visualizations.
+- **Plotting**: Using the plot functions to visualize Emcee search results.
+- **Search Specific Visualization**: Accessing the native Emcee sampler for custom visualizations.
 """
 
 # from autoconf import setup_notebook; setup_notebook()
@@ -23,7 +23,7 @@ import autofit as af
 import autofit.plot as aplt
 
 """
-First, lets create a result via zeus by repeating the simple model-fit that is performed in 
+First, lets create a result via emcee by repeating the simple model-fit that is performed in 
 the `overview/simple/fit.py` example.
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
@@ -56,13 +56,11 @@ model.sigma = af.UniformPrior(lower_limit=0.0, upper_limit=30.0)
 
 analysis = af.ex.Analysis(data=data, noise_map=noise_map)
 
-search = af.Zeus(
-    path_prefix=path.join("plot"), name="MCMCPlotter", nwalkers=100, nsteps=10000
+search = af.Emcee(
+    path_prefix=path.join("plot"), name="MCMCPlotter", nwalkers=100, nsteps=500
 )
 
 result = search.fit(model=model, analysis=analysis)
-
-samples = result.samples
 
 """
 __Notation__
@@ -79,10 +77,9 @@ __Plotting__
 
 We now use the `autofit.plot` module-level functions to visualize the results.
 
-The zeus readthedocs describes fully all of the methods used below
+The emcee readthedocs describes fully all of the methods used below
 
- - https://zeus-mcmc.readthedocs.io/en/latest/api/plotting.html#cornerplot
- - https://zeus-mcmc.readthedocs.io/en/latest/notebooks/normal_distribution.html
+ - https://emcee.readthedocs.io/en/stable/user/sampler/
 
 The `aplt.corner_cornerpy` function wraps the library `corner.py` to make corner plots of the PDF:
 
@@ -91,34 +88,51 @@ The `aplt.corner_cornerpy` function wraps the library `corner.py` to make corner
 In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
 described in the API docs.
 """
+samples = result.samples
+
 """
 The `corner_cornerpy` function produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
 """
 aplt.corner_cornerpy(
     samples=samples,
-    weight_list=None,
-    levels=None,
-    span=None,
-    quantiles=[0.025, 0.5, 0.975],
-    truth=None,
-    color=None,
-    alpha=0.5,
-    linewidth=1.5,
-    fill=True,
-    fontsize=10,
-    show_titles=True,
+    bins=20,
+    range=None,
+    color="k",
+    hist_bin_factor=1,
+    smooth=None,
+    smooth1d=None,
+    label_kwargs=None,
+    titles=None,
+    show_titles=False,
     title_fmt=".2f",
-    title_fontsize=12,
-    cut=3,
+    title_kwargs=None,
+    truths=None,
+    truth_color="#4682b4",
+    scale_hist=False,
+    quantiles=None,
+    verbose=False,
     fig=None,
-    size=(10, 10),
+    max_n_ticks=5,
+    top_ticks=False,
+    use_math_text=False,
+    reverse=False,
+    labelpad=0.0,
+    hist_kwargs=None,
+    group="posterior",
+    var_names=None,
+    filter_vars=None,
+    coords=None,
+    divergences=False,
+    divergences_kwargs=None,
+    labeller=None,
 )
-
 
 """
 __Search Specific Visualization__
 
 The internal sampler can be used to plot the results of the non-linear search. 
+
+We do this using the `search_internal` attribute which contains the sampler in its native form.
 
 The first time you run a search, the `search_internal` attribute will be available because it is passed ot the
 result via memory. 
