@@ -12,7 +12,7 @@ PyAutoFit Workspace
 `Installation Guide <https://pyautofit.readthedocs.io/en/latest/installation/overview.html>`_ |
 `readthedocs <https://pyautofit.readthedocs.io/en/latest/index.html>`_ |
 `Introduction on Colab <https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.4.13.6/notebooks/overview/overview_1_the_basics.ipynb>`_ |
-`HowToFit <https://pyautofit.readthedocs.io/en/latest/howtofit/howtofit.html>`_
+`HowToFit <https://github.com/PyAutoLabs/HowToFit>`_
 
 Welcome to the **PyAutoFit** Workspace! 
 
@@ -39,11 +39,12 @@ you may want to checkout the ``features`` package for a list of advanced statist
 HowToFit
 --------
 
-For users less familiar with Bayesian inference and scientific analysis you may wish to read through
-the **HowToFits** lectures. These teach you the basic principles of Bayesian inference, with the
-content pitched at undergraduate level and above.
+For users less familiar with Bayesian inference and scientific analysis you may wish to work through
+the **HowToFit** lectures. These teach you the basic principles of Bayesian inference, with the content
+pitched at undergraduate level and above.
 
-A complete overview of the lectures `is provided on the HowToFit readthedocs page <https://pyautofit.readthedocs.io/en/latest/howtofit/howtofit.htmll>`_
+**HowToFit** now lives in its own standalone repository at
+`PyAutoLabs/HowToFit <https://github.com/PyAutoLabs/HowToFit>`_.
 
 Workspace Structure
 -------------------
@@ -62,7 +63,6 @@ The **examples** in the notebooks and scripts folders are structured as follows:
 - ``overview``: Examples using **PyAutoFit** to compose and fit a model to data via a non-linear search.
 - ``cookbooks``: Concise API reference guides for **PyAutoFit**'s core features.
 - ``features``: Examples of **PyAutoFit**'s advanced modeling features.
-- ``howtofit``: Detailed step-by-step tutorials.
 - ``searches``: Example scripts of every non-linear search supported by **PyAutoFit**.
 - ``plot``: An API reference guide for **PyAutoFits**'s plotting tools.
 
