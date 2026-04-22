@@ -22,6 +22,4 @@
 - zeus_plotter # Test Model Iniitalization no good.
 - dynesty_plotter # Test Model Iniitalization no good.
 - start_point # bug https://github.com/rhayes777/PyAutoFit/issues/1017
-- tutorial_8_astronomy_example # Requires dataset/howtofit/chapter_1/astro/simple/data.npy (not auto-generated)
 - features/interpolate # NEEDS_FIX 2026-04-10 - IndexError in InstanceInterpolator.__getitem__ when querying time == 1.5; value_map lookup falls through to empty instances list
-- howtofit/chapter_1_introduction/tutorial_5_results_and_samples # NEEDS_FIX 2026-04-10 - IndexError in samples access, likely related to the same interpolator bug as features/interpolate

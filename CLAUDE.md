@@ -8,7 +8,6 @@ This is the tutorial and example workspace for **PyAutoFit**, a Python probabili
   - `searches/` - Non-linear search examples: `nest.py` (dynesty, nautilus), `mcmc.py` (emcee, zeus), `mle.py` (drawer, LBFGS), `start_point.py`
   - `features/` - Advanced feature demonstrations
   - `cookbooks/` - API cookbook examples
-  - `howtofit/` - Tutorial series scripts
   - `overview/` - Overview examples
   - `simulators/` - Dataset simulation scripts
 - `notebooks/` - Jupyter notebook versions of scripts (mirrors `scripts/`)
