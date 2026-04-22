@@ -76,9 +76,6 @@ input(
     folder. It is up to you how you would prefer to use PyAutoFit. With these folders, you can find the following
     packages:
     
-    - howtofit: Jupyter notebook providing new users with a step-by-step guide on how
-    to compose a model, fit it, and analyse the results.
-    
     - overview: An overview of how to quickly compose and fit a model in PyAutoFit.
     
     - features: Examples of PyAutoFit's advanced modeling features such as search chaining and sensitivity mapping.
