@@ -1,7 +1,4 @@
 import autofit as af
-from autoconf import check_version
-
-check_version(af.__version__)
 
 input(
     "\n"
