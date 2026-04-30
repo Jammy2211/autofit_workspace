@@ -30,3 +30,6 @@ test:
   lh_timeout_seconds:               # If a float is input, the log_likelihood_function call is timed out after this many seconds, to diagnose infinite loops. Default is None, meaning no timeout.
   preloads_check_threshold: 1.0     # If the figure of merit of a fit with and without preloads is greater than this threshold, the check preload test fails and an exception raised for a model-fit.
   parallel_profile: false
+version:
+  workspace_version: 2026.4.13.6    # Pinned by the release pipeline; must match the installed library version.
+  workspace_version_check: True     # If False, bypass the workspace/library version check. Set to False on `main`-branch clones — `main` updates faster than releases, so mismatches are expected and not actionable.
