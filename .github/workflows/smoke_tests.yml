@@ -20,6 +20,11 @@ jobs:
       with:
         repository: PyAutoLabs/PyAutoFit
         path: PyAutoFit
+    - name: Checkout PyAutoBuild
+      uses: actions/checkout@v4
+      with:
+        repository: PyAutoLabs/PyAutoBuild
+        path: PyAutoBuild
     - name: Checkout workspace
       uses: actions/checkout@v4
       with:
@@ -59,6 +64,7 @@ jobs:
           pip install ./PyAutoConf ./PyAutoFit
         fi
         pip install nautilus-sampler
+        pip install jupyter nbconvert ipynb-py-convert
     - name: Prepare cache dirs
       run: |
         mkdir -p /tmp/numba_cache /tmp/matplotlib
@@ -67,6 +73,7 @@ jobs:
         JAX_ENABLE_X64: "True"
         NUMBA_CACHE_DIR: /tmp/numba_cache
         MPLCONFIGDIR: /tmp/matplotlib
+        PYTHONPATH: ${{ github.workspace }}/PyAutoBuild/autobuild
       run: |
         cd workspace
         python .github/scripts/run_smoke.py
