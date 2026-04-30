@@ -1,5 +1,3 @@
-from os import path
-
 import autofit as af
 from autoconf import check_version
 
@@ -34,16 +32,15 @@ input(
 )
 
 
-import autofit as af
+import numpy as np
 import matplotlib.pyplot as plt
 
-dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
-data = af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
-noise_map = af.util.numpy_array_from_json(
-    file_path=path.join(dataset_path, "noise_map.json")
-)
+rng = np.random.default_rng(seed=1)
+xvalues = np.arange(100)
+gaussian = 25.0 * np.exp(-0.5 * ((xvalues - 50.0) / 10.0) ** 2)
+data = gaussian + rng.normal(loc=0.0, scale=2.0, size=xvalues.shape)
 
-plt.plot(range(data.shape[0]), data)
+plt.plot(xvalues, data)
 plt.show()
 plt.close()
 
