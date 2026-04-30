@@ -150,7 +150,7 @@ class Gaussian:
         self.normalization = normalization
         self.sigma = sigma
 
-    def model_data_from(self, xvalues: np.ndarray) -> np.ndarray:
+    def model_data_from(self, xvalues: np.ndarray, xp=np) -> np.ndarray:
         """
         Returns the 1D Gaussian profile on a line of Cartesian x coordinates.
 
@@ -167,9 +167,9 @@ class Gaussian:
         """
         transformed_xvalues = xvalues - self.centre
 
-        return np.multiply(
-            np.divide(self.normalization, self.sigma * np.sqrt(2.0 * np.pi)),
-            np.exp(-0.5 * np.square(np.divide(transformed_xvalues, self.sigma))),
+        return xp.multiply(
+            xp.divide(self.normalization, self.sigma * xp.sqrt(2.0 * xp.pi)),
+            xp.exp(-0.5 * xp.square(xp.divide(transformed_xvalues, self.sigma))),
         )
 
     @property
@@ -665,7 +665,7 @@ class Exponential:
         self.normalization = normalization
         self.rate = rate
 
-    def model_data_from(self, xvalues: np.ndarray):
+    def model_data_from(self, xvalues: np.ndarray, xp=np):
         """
         Returns the symmetric 1D Exponential on an input list of Cartesian x coordinates.
 
@@ -679,9 +679,9 @@ class Exponential:
         xvalues
             The x coordinates in the original reference frame of the data.
         """
-        transformed_xvalues = np.subtract(xvalues, self.centre)
-        return self.normalization * np.multiply(
-            self.rate, np.exp(-1.0 * self.rate * abs(transformed_xvalues))
+        transformed_xvalues = xp.subtract(xvalues, self.centre)
+        return self.normalization * xp.multiply(
+            self.rate, xp.exp(-1.0 * self.rate * abs(transformed_xvalues))
         )
 
 
