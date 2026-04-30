@@ -56,15 +56,15 @@ class GaussianNoConfig:
         self.normalization = normalization
         self.sigma = sigma
 
-    def model_data_from(self, xvalues: np.ndarray) -> np.ndarray:
+    def model_data_from(self, xvalues: np.ndarray, xp=np) -> np.ndarray:
         """
         The usual method that returns the 1D data of the `Gaussian` profile.
         """
         transformed_xvalues = xvalues - self.centre
 
-        return np.multiply(
-            np.divide(self.normalization, self.sigma * np.sqrt(2.0 * np.pi)),
-            np.exp(-0.5 * np.square(np.divide(transformed_xvalues, self.sigma))),
+        return xp.multiply(
+            xp.divide(self.normalization, self.sigma * xp.sqrt(2.0 * xp.pi)),
+            xp.exp(-0.5 * xp.square(xp.divide(transformed_xvalues, self.sigma))),
         )
 
 
