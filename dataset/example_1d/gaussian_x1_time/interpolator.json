@@ -1,0 +1,74 @@
+{
+    "type": "instance",
+    "class_path": "autofit.interpolator.linear.LinearInterpolator",
+    "arguments": {
+        "instances": {
+            "type": "list",
+            "values": [
+                {
+                    "type": "instance",
+                    "class_path": "autofit.mapper.model.ModelInstance",
+                    "arguments": {
+                        "child_items": {
+                            "type": "dict",
+                            "arguments": {
+                                "gaussian": {
+                                    "type": "instance",
+                                    "class_path": "autofit.example.model.Gaussian",
+                                    "arguments": {
+                                        "normalization": 1.0,
+                                        "sigma": 12.5,
+                                        "centre": 50.0
+                                    }
+                                },
+                                "time": 0
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "instance",
+                    "class_path": "autofit.mapper.model.ModelInstance",
+                    "arguments": {
+                        "child_items": {
+                            "type": "dict",
+                            "arguments": {
+                                "gaussian": {
+                                    "type": "instance",
+                                    "class_path": "autofit.example.model.Gaussian",
+                                    "arguments": {
+                                        "normalization": 1.0,
+                                        "sigma": 12.5,
+                                        "centre": 50.0
+                                    }
+                                },
+                                "time": 1
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "instance",
+                    "class_path": "autofit.mapper.model.ModelInstance",
+                    "arguments": {
+                        "child_items": {
+                            "type": "dict",
+                            "arguments": {
+                                "gaussian": {
+                                    "type": "instance",
+                                    "class_path": "autofit.example.model.Gaussian",
+                                    "arguments": {
+                                        "normalization": 1.0,
+                                        "sigma": 12.5,
+                                        "centre": 50.0
+                                    }
+                                },
+                                "time": 2
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
