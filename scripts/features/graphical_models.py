@@ -71,13 +71,13 @@ If the dataset does not already exist on your system, it will be created by runn
 simulator script. This ensures that all example scripts can be run without manually simulating data first.
 """
 if not path.exists(
-    path.join("dataset", "example_1d", "gaussian_x1__low_snr", "dataset_0")
+    path.join("dataset", "example_1d", "gaussian_x1__low_snr", "dataset_0", "data.json")
 ):
     import subprocess
     import sys
 
     subprocess.run(
-        [sys.executable, "scripts/simulators/simulators.py"],
+        [sys.executable, "scripts/simulators/simulators_sample.py"],
         check=True,
     )
 
