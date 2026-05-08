@@ -9,7 +9,7 @@ This cookbook provides an overview of basic model composition tools.
 
 __Contents__
 
-**Models:**
+- **Models:**
 
 If first describes how to use the `af.Model` object to define models with a single model component from single
 Python classes, with the following sections:
