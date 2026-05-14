@@ -1,11 +1,11 @@
 # PyAutoFit Workspace
 
-[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.5.8.2/start_here.ipynb)
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.5.14.2/start_here.ipynb)
 [![JOSS](https://joss.theoj.org/papers/10.21105/joss.02550/status.svg)](https://doi.org/10.21105/joss.02550)
 
 [Installation Guide](https://pyautofit.readthedocs.io/en/latest/installation/overview.html) |
 [readthedocs](https://pyautofit.readthedocs.io/en/latest/index.html) |
-[Introduction on Colab](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.5.8.2/notebooks/overview/overview_1_the_basics.ipynb) |
+[Introduction on Colab](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.5.14.2/notebooks/overview/overview_1_the_basics.ipynb) |
 [HowToFit](https://github.com/PyAutoLabs/HowToFit)
 
 Welcome to the **PyAutoFit** Workspace!
@@ -16,7 +16,7 @@ You can get set up on your personal computer by following the installation guide
 our [readthedocs](https://pyautofit.readthedocs.io/).
 
 Alternatively, you can try **PyAutoFit** out in a web browser by going to the [autofit workspace
-Colab](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.5.8.2/notebooks/overview/overview_1_the_basics.ipynb).
+Colab](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.5.14.2/notebooks/overview/overview_1_the_basics.ipynb).
 
 ## Where To Go?
 
@@ -62,7 +62,7 @@ The following **projects** are available in the project folder:
 
 ## Workspace Version
 
-This version of the workspace are built and tested for using **PyAutoFit v2026.5.14.1**.
+This version of the workspace are built and tested for using **PyAutoFit v2026.5.14.2**.
 
 ## Support
 
