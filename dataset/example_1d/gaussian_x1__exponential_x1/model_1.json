@@ -1,0 +1,9 @@
+{
+    "type": "instance",
+    "class_path": "autofit.example.model.Exponential",
+    "arguments": {
+        "rate": 0.05,
+        "normalization": 40.0,
+        "centre": 50.0
+    }
+}
