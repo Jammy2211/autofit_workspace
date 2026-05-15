@@ -10,7 +10,7 @@ This example illustrates how to use the maximum likelihood / optimization algori
 
 Relevant links:
 
- - Drawer: https://github.com/rhayes777/PyAutoFit/blob/main/autofit/non_linear/optimize/drawer/drawer.py
+ - Drawer: https://github.com/PyAutoLabs/PyAutoFit/blob/main/autofit/non_linear/optimize/drawer/drawer.py
  - L-BFGS: https://docs.scipy.org/doc/scipy/reference/optimize.minimize-lbfgsb.html
 
 __Contents__

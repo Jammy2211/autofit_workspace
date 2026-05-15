@@ -1,6 +1,6 @@
 # PyAutoFit Workspace
 
-[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.5.14.2/start_here.ipynb)
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.5.14.2/notebooks/overview/overview_1_the_basics.ipynb)
 [![JOSS](https://joss.theoj.org/papers/10.21105/joss.02550/status.svg)](https://doi.org/10.21105/joss.02550)
 
 [Installation Guide](https://pyautofit.readthedocs.io/en/latest/installation/overview.html) |
@@ -67,7 +67,7 @@ This version of the workspace are built and tested for using **PyAutoFit v2026.5
 ## Support
 
 Support for installation issues and integrating your modeling software with **PyAutoFit** is available by
-[raising an issue on the autofit_workspace GitHub page](https://github.com/Jammy2211/autofit_workspace/issues). or
+[raising an issue on the autofit_workspace GitHub page](https://github.com/PyAutoLabs/autofit_workspace/issues). or
 joining the **PyAutoFit** [Slack channel](https://pyautofit.slack.com/), where we also provide the latest updates on
 **PyAutoFit**.
 

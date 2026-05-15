@@ -68,7 +68,7 @@ ls failed/
    ```yaml
    autofit:
    - ScriptName  # Reason it cannot run yet
-   - ScriptName  # bug https://github.com/rhayes777/PyAutoFit/issues/NNN
+   - ScriptName  # bug https://github.com/PyAutoLabs/PyAutoFit/issues/NNN
    ```
    Scripts with a bug link or the word "bug"/"issue"/"fix" in the comment are flagged as `[TODO - should run after a future PR]` in the output.
 
