@@ -583,7 +583,7 @@ interpretation of the results remains feasible and insightful.
 
 __Resources__
 
-The `autofit_workspace: <https://github.com/Jammy2211/autofit_workspace/>`_ repository on GitHub provides numerous 
+The `autofit_workspace: <https://github.com/PyAutoLabs/autofit_workspace/>`_ repository on GitHub provides numerous 
 examples demonstrating more complex model-fitting tasks.
 
 This includes cookbooks, which provide a concise reference guide to the **PyAutoFit** API for advanced model-fitting:
