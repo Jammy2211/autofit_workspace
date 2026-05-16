@@ -142,7 +142,7 @@ It fits the data as the sum of as many `Gaussian`'s as are in the model.
 To better fit the left gaussian, we remove all data points in the right-half of the data. Note that for more 
 computationally demanding model-fitting problems this would give a significant speed-up in log likelihood function.
 """
-analysis_1 = af.ex.Analysis(data=data[0:50], noise_map=noise_map[0:50])
+analysis_1 = af.ex.Analysis(data=data[0:50], noise_map=noise_map[0:50], use_jax=True)
 
 """
 __Model__
@@ -210,7 +210,7 @@ We now repeat the above process for the right `Gaussian`.
 We could remove the data on the left like we did the `Gaussian` above. However, we are instead going to fit the full 
 dataset.
 """
-analysis_2 = af.ex.Analysis(data=data, noise_map=noise_map)
+analysis_2 = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
 
 """
 __Model__
@@ -307,7 +307,7 @@ print(model_3.info)
 """
 We now perform the search.
 """
-analysis_3 = af.ex.Analysis(data=data, noise_map=noise_map)
+analysis_3 = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
 
 search_3 = af.DynestyStatic(
     name="search[3]__both_gaussians",
@@ -462,7 +462,7 @@ noise_map = af.util.numpy_array_from_json(
     file_path=path.join(dataset_path, "noise_map.json")
 )
 
-analysis = af.ex.Analysis(data=data, noise_map=noise_map)
+analysis = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
 
 dynesty = af.DynestyStatic(name="cookbook_5_model_linking", nlive=50, sample="rwalk")
 
