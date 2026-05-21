@@ -352,6 +352,58 @@ class Analysis(af.Analysis):
 
 
 """
+__Live Quick-Update Visualization__
+
+Non-linear searches in **PyAutoFit** can produce on-the-fly visualization while the fit is still running, so you can
+monitor whether the model is behaving sensibly long before the search finishes.
+
+This is controlled by two parameters on the search:
+
+- `iterations_per_quick_update=N` — every `N` likelihood evaluations the search calls
+  `analysis.perform_quick_update(paths, instance)` with the current maximum-likelihood `instance`. The default
+  `perform_quick_update` implementation (on subclasses like `AnalysisImaging` in PyAutoGalaxy / PyAutoLens) renders
+  the relevant subplot (`subplot_fit.png` for imaging, `subplot_tracer.png` for tracers, etc.) into the output
+  folder so users can refresh their file browser and see how the fit is progressing.
+- `background_quick_update=True` — runs `perform_quick_update` on a background daemon thread so the sampler is
+  never blocked while matplotlib renders and saves PNGs. A latest-only drop policy applies: if a new best-fit
+  arrives before the previous render finishes, the older request is silently replaced (we only ever care about the
+  most recent state).
+
+**Live in-cell rendering in Jupyter / Colab.** When the search runs inside a Jupyter or Colab notebook kernel, the
+background worker additionally pushes each freshly-written `subplot_fit.png` into the active cell via
+`IPython.display.update_display` with a stable `display_id`. The result: the cell that ran `search.fit(...)`
+shows a **single self-updating image** during the fit, refreshing every `iterations_per_quick_update` evaluations,
+rather than appending stacked frames or requiring you to open PNGs externally. No code change needed by the user
+— the worker auto-detects the kernel.
+
+**Script mode is unchanged.** When running outside a kernel (e.g. `python my_fit.py` from a terminal), no
+IPython side effects fire. The PNGs still land on disk under the search's output folder as before. `IPython` is
+only imported when actually running inside a kernel.
+
+**Opt-out.** Set `PYAUTO_DISABLE_IPYTHON_DISPLAY=1` to skip the in-cell display step even inside a kernel —
+useful for `papermill` / automated `nbconvert` pipelines that want PNGs on disk but no display side effects.
+
+The API shape looks like this (commented out — see the workspace `start_here.py` for a runnable end-to-end
+example):
+
+```python
+# search = af.Nautilus(
+#     path_prefix="cookbooks/quick_update",
+#     name="example",
+#     iterations_per_quick_update=50,    # call perform_quick_update every 50 likelihood evals
+#     background_quick_update=True,      # run rendering on a daemon thread
+#     number_of_cores=1,
+# )
+# result = search.fit(model=model, analysis=analysis)
+```
+
+When this runs inside a Jupyter cell, the cell output is a single image that refreshes ~once per 50 evaluations
+until the search converges. When run as `python my_fit.py`, the PNGs land at
+`output/.../<search>/image/subplot_fit.png` and update on disk on the same cadence.
+"""
+
+
+"""
 __Custom Result__
 
 The `Result` object is returned by a non-linear search after running the following code:
