@@ -348,11 +348,11 @@ analysis_jax = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
 search = af.NSS(
     path_prefix=path.join("searches"),
     name="NSS",
-    n_live=200,             # live particles maintained throughout the run
-    num_mcmc_steps=5,       # slice-MCMC inner steps per dead-point batch
-    num_delete=50,          # particles removed per outer iteration
-    termination=-3.0,       # delta-logZ stopping criterion
-    seed=42,                # JAX PRNG seed for reproducible runs
+    n_live=200,  # live particles maintained throughout the run
+    num_mcmc_steps=5,  # slice-MCMC inner steps per dead-point batch
+    num_delete=50,  # particles removed per outer iteration
+    termination=-3.0,  # delta-logZ stopping criterion
+    seed=42,  # JAX PRNG seed for reproducible runs
     checkpoint_interval=100,  # SLURM-friendly resume — see docstring above
 )
 
