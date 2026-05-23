@@ -5,3 +5,4 @@ searches/mle.py
 cookbooks/model.py
 cookbooks/result.py
 cookbooks/samples.py
+cookbooks/latent_variables.py
