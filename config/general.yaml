@@ -4,11 +4,15 @@
 
 updates:
   iterations_per_quick_update: 1e99 # Non-linear search iterations between every quick update, which just displays the maximum likelihood model fit.
-  iterations_per_full_update: 1e99  # Non-linear search iterations between every full update, which outputs all visuals and result fits (e.g. model.result, search.summary), this exits the search and can be slow.  
+  iterations_per_full_update: 1e99  # Non-linear search iterations between every full update, which outputs all visuals and result fits (e.g. model.result, search.summary), this exits the search and can be slow.
+  quick_update_background: false    # If True, perform_quick_update runs on a background daemon thread so the sampler is never blocked while visuals render. Requires the Analysis subclass to set `supports_background_update = True`.
+  live_visual_update: false         # If True, quick-update visuals are pushed to a live surface (a Jupyter cell when in a kernel, a matplotlib viewer subprocess otherwise) in addition to being written to disk.
 hpc:
   hpc_mode: false                   # If True, use HPC mode, which disables GUI visualization, logging to screen and other settings which are not suited to running on a super computer.
-  iterations_per_quick_update: 10000 #  Non-linear search iterations between every quick update, which just displays the maximum likelihood model fit.  
+  iterations_per_quick_update: 10000 #  Non-linear search iterations between every quick update, which just displays the maximum likelihood model fit.
   iterations_per_full_update: 1e99  # Non-linear search iterations between every full update, which outputs all visuals and result fits (e.g. model.result, search.summary), this exits the search and can be slow.
+  quick_update_background: false    # Keep off on HPC: background rendering pulls matplotlib into the sampler process even when no display is attached.
+  live_visual_update: false         # Keep off on HPC: nodes are headless with no GUI and no notebook kernel, so the live display surface has nothing to attach to.
 inversion:
   check_reconstruction: true        # If True, the inversion's reconstruction is checked to ensure the solution of a meshs's mapper is not an invalid solution where the values are all the same.
   reconstruction_vmax_factor: 0.5   # Plots of an Inversion's reconstruction use the reconstructed data's bright value multiplied by this factor.  
