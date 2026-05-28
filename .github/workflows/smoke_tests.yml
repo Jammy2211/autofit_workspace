@@ -64,6 +64,12 @@ jobs:
           pip install ./PyAutoConf ./PyAutoFit
         fi
         pip install nautilus-sampler
+        # NSS sampler — searches/nest.py exercises `af.NSS`, which needs the
+        # `[nss]` extra plus two manually-installed git pins. The SHAs match
+        # PyAutoFit/pyproject.toml `[project.optional-dependencies] nss`.
+        pip install "./PyAutoFit[nss]"
+        pip install "blackjax @ git+https://github.com/handley-lab/blackjax.git@ef45acd2f2fa0cca15adbdcd3ff7cb3a98987cb5"
+        pip install "nss @ git+https://github.com/yallup/nss.git@69159b0f4a3a53123b9eec7df91e4ed3885e4dc4"
         pip install jupyter nbconvert ipynb-py-convert
     - name: Prepare cache dirs
       run: |
