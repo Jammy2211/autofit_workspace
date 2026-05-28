@@ -357,31 +357,72 @@ __Live Quick-Update Visualization__
 Non-linear searches in **PyAutoFit** can produce on-the-fly visualization while the fit is still running, so you can
 monitor whether the model is behaving sensibly long before the search finishes.
 
-This is controlled by two parameters on the search:
+This is controlled by three independent parameters on the search. The cadence parameter is mandatory; the two
+boolean flags are optional and can be toggled on independently of each other:
 
 - `iterations_per_quick_update=N` — every `N` likelihood evaluations the search calls
   `analysis.perform_quick_update(paths, instance)` with the current maximum-likelihood `instance`. The default
   `perform_quick_update` implementation (on subclasses like `AnalysisImaging` in PyAutoGalaxy / PyAutoLens) renders
-  the relevant subplot (`subplot_fit.png` for imaging, `subplot_tracer.png` for tracers, etc.) into the output
-  folder so users can refresh their file browser and see how the fit is progressing.
+  the relevant subplot (`fit.png` for imaging, etc.) into the output folder so users can refresh their file browser
+  and see how the fit is progressing.
 - `background_quick_update=True` — runs `perform_quick_update` on a background daemon thread so the sampler is
   never blocked while matplotlib renders and saves PNGs. A latest-only drop policy applies: if a new best-fit
   arrives before the previous render finishes, the older request is silently replaced (we only ever care about the
-  most recent state).
+  most recent state). Requires the `Analysis` subclass to declare its `perform_quick_update` thread-safe — see
+  `supports_background_update` below.
+- `live_visual_update=True` — in addition to writing the PNG to disk, push the rendered image to a *live* display
+  surface. In a Jupyter / Colab kernel the active cell is refreshed in place via `IPython.display.update_display`
+  with a stable `display_id`. In a plain Python script run from a terminal, a small matplotlib viewer subprocess
+  is spawned that watches the PNG on disk and redraws when it changes. Independent of `background_quick_update`:
+  you can enable either flag, both, or neither.
 
-**Live in-cell rendering in Jupyter / Colab.** When the search runs inside a Jupyter or Colab notebook kernel, the
-background worker additionally pushes each freshly-written `subplot_fit.png` into the active cell via
-`IPython.display.update_display` with a stable `display_id`. The result: the cell that ran `search.fit(...)`
-shows a **single self-updating image** during the fit, refreshing every `iterations_per_quick_update` evaluations,
-rather than appending stacked frames or requiring you to open PNGs externally. No code change needed by the user
-— the worker auto-detects the kernel.
+Both flags default to `False` and can also be set globally via the workspace's `config/general.yaml` under
+`updates:`.
 
-**Script mode is unchanged.** When running outside a kernel (e.g. `python my_fit.py` from a terminal), no
-IPython side effects fire. The PNGs still land on disk under the search's output folder as before. `IPython` is
-only imported when actually running inside a kernel.
+__The Analysis API surface__
 
-**Opt-out.** Set `PYAUTO_DISABLE_IPYTHON_DISPLAY=1` to skip the in-cell display step even inside a kernel —
-useful for `papermill` / automated `nbconvert` pipelines that want PNGs on disk but no display side effects.
+The quick-update machinery is built on three hooks on `af.Analysis`. Read the source at
+`autofit/non_linear/analysis/analysis.py` for the canonical signatures; the summary here is what subclasses need
+to know in order to customize behaviour:
+
+- `perform_quick_update(paths, instance)` — the method the dispatcher calls every
+  `iterations_per_quick_update` evaluations. The base class implementation is a no-op; subclasses such as
+  `AnalysisImaging` override it to render a fit-specific subplot. Override this in your own `Analysis` subclass
+  when you want bespoke on-the-fly visuals (the `Analysis` example at the bottom of this section shows the API
+  shape).
+- `supports_background_update` — class property defaulting to `False`. Override and set to `True` when your
+  `perform_quick_update` implementation is safe to call on a background daemon thread (i.e. no shared mutable
+  state with the sampler thread). When `False` the dispatcher runs the update inline on the sampler thread,
+  which keeps semantics simple at the cost of briefly pausing sampling.
+- `supports_jax_visualization` — class property defaulting to `False`. Reserved for a forthcoming JAX-native
+  visualization path; today's renderers always materialise to NumPy before plotting. Mentioned here so subclass
+  authors recognise the property when they encounter it in the base class.
+
+The dispatcher itself lives at `Fitness.manage_quick_update` (in `autofit/non_linear/fitness.py`). After each
+likelihood evaluation it checks whether the iteration counter has crossed `iterations_per_quick_update`, consults
+`analysis.supports_background_update`, and routes either to the `BackgroundQuickUpdate` worker or to an inline
+`perform_quick_update` call. Users do not normally call `manage_quick_update` directly — it is wired up
+automatically when the search is constructed.
+
+__Jupyter / script display surfaces__
+
+When `live_visual_update=True` and the search runs inside a Jupyter or Colab kernel, the worker pushes each
+freshly-written PNG into the active cell via `IPython.display.update_display` keyed on a stable `display_id`. The
+result is that the cell which ran `search.fit(...)` shows a **single self-updating image** during the fit,
+refreshing every `iterations_per_quick_update` evaluations rather than appending stacked frames. No per-cell
+`clear_output()` call is needed and no code change is required by the user — the worker auto-detects the kernel.
+
+When `live_visual_update=True` and the search runs as a plain Python script (e.g. `python my_fit.py` from a
+terminal), the worker instead spawns a small matplotlib viewer subprocess (`python -m autofit.non_linear.live_viewer`).
+The subprocess polls the PNG on disk and redraws its matplotlib window whenever the file's mtime changes; it exits
+cleanly on headless backends.
+
+When `live_visual_update=False` (the default) the PNGs still land on disk on the same cadence — only the live
+display side-effect is skipped. `IPython` is only imported when actually running inside a kernel.
+
+**Opt-out.** Set `PYAUTO_DISABLE_IPYTHON_DISPLAY=1` to skip the in-cell display step even when `live_visual_update`
+is enabled inside a kernel — useful for `papermill` / automated `nbconvert` pipelines that want PNGs on disk but
+no display side effects.
 
 The API shape looks like this (commented out — see the workspace `start_here.py` for a runnable end-to-end
 example):
@@ -391,15 +432,46 @@ example):
 #     path_prefix="cookbooks/quick_update",
 #     name="example",
 #     iterations_per_quick_update=50,    # call perform_quick_update every 50 likelihood evals
-#     background_quick_update=True,      # run rendering on a daemon thread
+#     background_quick_update=True,      # daemon-thread dispatch (analysis must opt in)
+#     live_visual_update=True,           # push rendered PNG to a live surface (cell or matplotlib window)
 #     number_of_cores=1,
 # )
 # result = search.fit(model=model, analysis=analysis)
 ```
 
-When this runs inside a Jupyter cell, the cell output is a single image that refreshes ~once per 50 evaluations
-until the search converges. When run as `python my_fit.py`, the PNGs land at
-`output/.../<search>/image/subplot_fit.png` and update on disk on the same cadence.
+When this runs inside a Jupyter cell with `live_visual_update=True`, the cell output is a single image that
+refreshes ~once per 50 evaluations until the search converges. When run as `python my_fit.py`, a matplotlib
+window appears that refreshes on the same cadence. In both modes the PNGs also land at
+`output/.../<search>/image/fit.png`.
+
+__Custom perform_quick_update example__
+
+The block below sketches a custom `Analysis` subclass that overrides `perform_quick_update` to emit a bespoke
+visual every `iterations_per_quick_update` evaluations, and declares itself thread-safe by setting
+`supports_background_update = True`:
+
+```python
+# class AnalysisWithQuickUpdate(af.Analysis):
+#
+#     supports_background_update = True   # our perform_quick_update has no shared mutable state
+#
+#     def __init__(self, data, noise_map):
+#         super().__init__()
+#         self.data = data
+#         self.noise_map = noise_map
+#
+#     def log_likelihood_function(self, instance):
+#         ...   # as usual
+#
+#     def perform_quick_update(self, paths, instance):
+#         xvalues = np.arange(self.data.shape[0])
+#         model_data = instance.model_data_from(xvalues=xvalues)
+#         plt.plot(xvalues, self.data, "k.")
+#         plt.plot(xvalues, model_data, "r-")
+#         plt.title("Live max-likelihood fit")
+#         plt.savefig(path.join(paths.image_path, "fit.png"))
+#         plt.clf()
+```
 """
 
 
