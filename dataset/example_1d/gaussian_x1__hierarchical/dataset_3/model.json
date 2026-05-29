@@ -2,8 +2,8 @@
     "type": "instance",
     "class_path": "autofit.example.model.Gaussian",
     "arguments": {
-        "sigma": 5.0,
-        "centre": 45.4969949209261,
-        "normalization": 0.5
+        "normalization": 0.5,
+        "centre": 58.37076248700635,
+        "sigma": 5.0
     }
 }
