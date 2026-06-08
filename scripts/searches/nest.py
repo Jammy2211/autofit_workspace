@@ -332,6 +332,11 @@ A few NSS-specific kwargs to be aware of:
 
 Settings reference: see `af.NSS.__init__` for the full kwarg list.
 
+__Optional Dependency Guard__
+
+The standard workspace release environment does not install `autofit[nss]`. When the optional stack is
+absent, this script skips only the NSS fit and leaves the Dynesty / Nautilus examples above runnable.
+
 __Analysis Must Be JAX-Traceable__
 
 NSS runs the log-likelihood inside `jax.jit`. The boundary-based samplers above are happy with the default
@@ -343,41 +348,44 @@ This is the production pattern: for autolens / autogalaxy / autofit analyses tha
 construct your `Analysis` with `use_jax=True`. Everything below works identically to the NumPy path — same
 `log_likelihood_function` API, same `Result` shape — but the body is now JAX-traceable.
 """
-analysis_jax = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
+try:
+    search = af.NSS(
+        path_prefix=path.join("searches"),
+        name="NSS",
+        n_live=200,  # live particles maintained throughout the run
+        num_mcmc_steps=5,  # slice-MCMC inner steps per dead-point batch
+        num_delete=50,  # particles removed per outer iteration
+        termination=-3.0,  # delta-logZ stopping criterion
+        seed=42,  # JAX PRNG seed for reproducible runs
+        checkpoint_interval=100,  # SLURM-friendly resume — see docstring above
+    )
+except ImportError as exc:
+    print(f"Skipping NSS example because the optional dependency stack is unavailable:\n{exc}")
+else:
+    analysis_jax = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
 
-search = af.NSS(
-    path_prefix=path.join("searches"),
-    name="NSS",
-    n_live=200,  # live particles maintained throughout the run
-    num_mcmc_steps=5,  # slice-MCMC inner steps per dead-point batch
-    num_delete=50,  # particles removed per outer iteration
-    termination=-3.0,  # delta-logZ stopping criterion
-    seed=42,  # JAX PRNG seed for reproducible runs
-    checkpoint_interval=100,  # SLURM-friendly resume — see docstring above
-)
+    result = search.fit(model=model, analysis=analysis_jax)
 
-result = search.fit(model=model, analysis=analysis_jax)
+    model_data = result.max_log_likelihood_instance.model_data_from(
+        xvalues=np.arange(data.shape[0])
+    )
 
-model_data = result.max_log_likelihood_instance.model_data_from(
-    xvalues=np.arange(data.shape[0])
-)
+    plt.errorbar(
+        x=range(data.shape[0]),
+        y=data,
+        yerr=noise_map,
+        linestyle="",
+        color="k",
+        ecolor="k",
+        elinewidth=1,
+        capsize=2,
+    )
+    plt.plot(range(data.shape[0]), model_data, color="r")
+    plt.title("NSS model fit to 1D Gaussian dataset.")
+    plt.xlabel("x values of profile")
+    plt.ylabel("Profile normalization")
+    plt.show()
+    plt.close()
 
-plt.errorbar(
-    x=range(data.shape[0]),
-    y=data,
-    yerr=noise_map,
-    linestyle="",
-    color="k",
-    ecolor="k",
-    elinewidth=1,
-    capsize=2,
-)
-plt.plot(range(data.shape[0]), model_data, color="r")
-plt.title("NSS model fit to 1D Gaussian dataset.")
-plt.xlabel("x values of profile")
-plt.ylabel("Profile normalization")
-plt.show()
-plt.close()
-
-print(f"NSS log evidence:    {result.samples.samples_info['log_evidence']:.4f}")
-print(f"NSS max log L:       {max(result.samples.log_likelihood_list):.4f}")
+    print(f"NSS log evidence:    {result.samples.samples_info['log_evidence']:.4f}")
+    print(f"NSS max log L:       {max(result.samples.log_likelihood_list):.4f}")
