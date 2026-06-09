@@ -20,7 +20,7 @@ __Contents__
  - What is a Latent Variable?: The Bayesian framing — a deterministic function of the model parameters whose
    posterior is induced by the parameter posterior.
  - Why Latent Variables?: Three motivating cases — physical interpretability, derived quantities, aggregates.
- - How PyAutoFit Computes Latents: The `compute_latent_variables` hook and where in the search lifecycle it runs.
+ - How PyAutoFit Computes Latents: The `Latent.variables` hook and where in the search lifecycle it runs.
  - Two Output Modes: Every-sample versus N-draws-from-PDF, the `output.yaml` flags that toggle between them, and
    how to choose for your use case.
  - Errors on Latents: The 1σ / 3σ intervals are empirical quantiles of the *induced* latent posterior — not
@@ -44,8 +44,8 @@ We need a real fit to talk about latent samples concretely, so we run the standa
 shipped under `af.ex`. The dataset is auto-simulated if it doesn't already exist on disk.
 
 `af.ex.Analysis` already defines a latent variable — the Gaussian's full-width half-maximum (FWHM) — via its
-class-level `LATENT_KEYS = ["gaussian.fwhm"]` and its `compute_latent_variables` method. The actual definitions
-live at `PyAutoFit/autofit/example/analysis.py`. We re-use them here so this cookbook can focus entirely on
+`Latent` class (`LatentExample`, which overrides `keys` and `variables`). The actual definitions live at
+`PyAutoFit/autofit/example/analysis.py`. We re-use them here so this cookbook can focus entirely on
 what latent variables ARE rather than how to declare them; the latter is the subject of `cookbooks/analysis.py`.
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
@@ -123,18 +123,17 @@ adding one never slows the fit down.
 """
 __How PyAutoFit Computes Latents__
 
-A model class declares its latent variables on the `Analysis` class:
+A model declares its latent variables with a `Latent` class (subclass of `af.Latent`), attached to the
+`Analysis` via the `Latent` class attribute — just like `Visualizer` and `Result`:
 
- - `LATENT_KEYS` is a list of dot-separated names. Each name becomes a column in `latent.csv` and a key in
-   `latent_summary.json`. For the example Gaussian, `LATENT_KEYS = ["gaussian.fwhm"]`.
- - `compute_latent_variables(self, parameters, model)` is a method that takes a parameter vector, builds the
-   model instance from it, and returns a tuple of values — one per entry in `LATENT_KEYS`, in the same order.
-   The signature uses `parameters` (a raw vector) rather than `instance` so the function can be JAX-jit
-   compiled and vmapped when the search runs under JAX.
+ - `keys(analysis)` returns a list of dot-separated names. Each name becomes a column in `latent.csv` and a key
+   in `latent_summary.json`. For the example Gaussian, `keys` returns `["gaussian.fwhm"]`.
+ - `variables(analysis, parameters, model)` takes a parameter vector, builds the model instance from it, and
+   returns a tuple of values — one per entry in `keys`, in the same order. It takes `parameters` (a raw vector)
+   rather than `instance` so the function can be JAX-jit compiled and vmapped when the search runs under JAX.
 
-Full API details (including how to write your own `compute_latent_variables`) live in
-`cookbooks/analysis.py`. The library code that drives the dispatch is at
-`PyAutoFit/autofit/non_linear/analysis/analysis.py` (`compute_latent_samples`).
+Full API details (including how to write your own `Latent`) live in `cookbooks/analysis.py`. The library code
+that drives the dispatch is at `PyAutoFit/autofit/non_linear/analysis/latent.py` (`latent_samples_from`).
 
 The method is called *after* the search completes. It is never invoked inside `log_likelihood_function`, so
 latent computations cannot influence which models the search prefers — they only attach extra information to
@@ -150,12 +149,12 @@ whether they also write the full per-sample table.
 
  - **N-draws-from-PDF mode** (`latent_draw_via_pdf: True`, the default):
    PyAutoFit draws `latent_draw_via_pdf_size` independent samples from the inferred posterior (default 100)
-   and calls `compute_latent_variables` once per draw. Output is `latent_summary.json` only.
+   and calls `Latent.variables` once per draw. Output is `latent_summary.json` only.
    *Fast*, because the cost scales with the draw count rather than the (typically much larger) number of
    accepted search samples. Suitable when you only need the latent's summary statistics.
 
  - **Every-sample mode** (`latent_draw_via_pdf: False`):
-   PyAutoFit calls `compute_latent_variables` for every accepted sample of the non-linear search. Output is
+   PyAutoFit calls `Latent.variables` for every accepted sample of the non-linear search. Output is
    `latent_summary.json` *and* a full `latent/samples.csv` parallel to the parameter `samples.csv`.
    *Slow*, but gives you the complete latent posterior. Required if you want to plot a 2D corner of two
    latents jointly, or if you want to apply post-hoc filtering or weighting in the same way you would with
@@ -217,7 +216,7 @@ __Posterior Draws Under the Hood__
 
  1. Choose the sample set — every accepted sample in every-sample mode, or `latent_draw_via_pdf_size` random
     draws from the posterior in N-draws mode.
- 2. For each sample's parameter vector, call `compute_latent_variables(parameters, model)`.
+ 2. For each sample's parameter vector, call `Latent.variables(analysis, parameters, model)`.
  3. Pair each returned latent tuple with the original sample's `log_likelihood`, `log_prior`, and `weight`.
  4. Wrap the resulting collection in a `Samples` object whose API matches the original — `max_log_likelihood`,
     `median_pdf`, `values_at_sigma_1`, and so on all work as expected.
@@ -253,7 +252,7 @@ are loaded by `paths.load_latent_samples()` and exposed via the same `Samples` A
 also surfaces them for batched analysis across many fits. The end-to-end loading API is documented in
 `cookbooks/samples.py` (look for the `__Derived Quantities__` section) and `cookbooks/result.py`.
 
-The committed `latent.csv` file format is intentionally human-readable — one column per `LATENT_KEYS` entry,
+The committed `latent.csv` file format is intentionally human-readable — one column per latent key,
 one row per sample (or per posterior draw, in N-draws mode), plus the standard `log_likelihood`, `log_prior`,
 and `weight` columns. You can open it in any spreadsheet tool for a quick visual check.
 """

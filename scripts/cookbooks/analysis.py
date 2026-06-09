@@ -13,7 +13,7 @@ __Contents__
  - Customization: Customizing an analysis class with different data inputs and editing the `log_likelihood_function`.
  - Visualization: Using a `visualize` method so that model-specific visuals are output to hard-disk.
  - Custom Result: Return a custom Result object with methods specific to your model fitting problem.
- - Latent Variables: Adding a `compute_latent_variables` method to the analysis to output latent variables to hard-disk.
+ - Latent Variables: Declaring a `Latent` class on the analysis to output latent variables to hard-disk.
  - Custom Output: Add methods which output model-specific results to hard-disk in the `files` folder (e.g. as .json
    files) to aid in the interpretation of results.
 """
@@ -629,21 +629,48 @@ and aid in the interpretation of a model-fit.
 For example, for the simple 1D Gaussian example, it could be the full-width half maximum (FWHM) of the Gaussian. 
 This is not included in the model but can be easily derived from the Gaussian's sigma value.
 
-By overwriting the Analysis class's `compute_latent_variables` method we can manually specify latent variables that 
-are calculated. If the search has a `name`, these are output to a `latent.csv` file, which mirrors 
-the `samples.csv` file.
-  
+We specify latent variables by subclassing `af.Latent` (overriding its `keys` and `variables` static methods)
+and declaring it on the Analysis via the `Latent` class attribute — the same first-class, swappable mechanism
+used for the `Visualizer` and `Result`. If the search has a `name`, these are output to a `latent.csv` file,
+which mirrors the `samples.csv` file.
+
 There may also be a `latent.results` and `latent_summary.json` files output. The `output.yaml` config file contains
 settings customizing what files are output and how often.
 
-This function takes as input the `parameters`, not the `instance`, because it means the function supports JAX.jit
+`variables` takes as input the `parameters`, not the `instance`, because it means the function supports JAX.jit
 and thus if JAX is being used can be fully accelerated. The `instance` is created immediately inside the function.
 """
 
 
+class LatentFwhm(af.Latent):
+    """
+    Latent catalogue for the 1D Gaussian: the full-width half maximum (FWHM),
+    derived from the Gaussian's `sigma`. Subclass `af.Latent`, override `keys`
+    (the latent names) and `variables` (their values, positionally aligned with
+    `keys`), then declare it on the Analysis via `Latent = LatentFwhm`.
+
+    `variables` is called at the end of the search, following one of two schemes
+    set in `output.yaml`:
+
+    1) Call for every search sample, producing a complete `latent/samples.csv`
+       that mirrors `samples.csv` (slower).
+    2) Call only for N random draws from the posterior, producing a
+       `latent/latent_summary.json` with the median and 1/3 sigma errors (fast).
+    """
+
+    @staticmethod
+    def keys(analysis):
+        return ["gaussian.fwhm"]
+
+    @staticmethod
+    def variables(analysis, parameters, model):
+        instance = model.instance_from_vector(vector=parameters)
+        return (instance.fwhm,)
+
+
 class Analysis(af.Analysis):
 
-    LATENT_KEYS = ["gaussian.fwhm"]
+    Latent = LatentFwhm
 
     def __init__(self, data, noise_map):
         """
@@ -669,58 +696,20 @@ class Analysis(af.Analysis):
 
         return log_likelihood
 
-    def compute_latent_variables(self, parameters, model) -> Tuple:
-        """
-        A latent variable is not a model parameter but can be derived from the model. Its value and errors may be
-        of interest and aid in the interpretation of a model-fit.
-
-        For example, for the simple 1D Gaussian example, it could be the full-width half maximum (FWHM) of the
-        Gaussian. This is not included in the model but can be easily derived from the Gaussian's sigma value.
-
-        By overwriting this method we can manually specify latent variables that are calculated and output to
-        a `latent.csv` file, which mirrors the `samples.csv` file.
-
-        In the example below, the `latent.csv` file will contain one column with the FWHM of every Gausian model
-        sampled by the non-linear search.
-
-        This function is called at the end of search, following one of two schemes depending on the settings in
-        `output.yaml`:
-
-        1) Call for every search sample, which produces a complete `latent/samples.csv` which mirrors the normal
-        `samples.csv` file but takes a long time to compute.
-
-        2) Call only for N random draws from the posterior inferred at the end of the search, which only produces a
-        `latent/latent_summary.json` file with the median and 1 and 3 sigma errors of the latent variables but is
-        fast to compute.
-
-        Parameters
-        ----------
-        instance
-            The instances of the model which the latent variable is derived from.
-
-        Returns
-        -------
-        A dictionary mapping every latent variable name to its value.
-        """
-
-        instance = model.instance_from_vector(vector=parameters)
-
-        return (instance.fwhm,)
-
 
 """
-Outputting latent variables manually after a fit is complete is simple, just call 
-the `analysis.compute_latent_variables()` function. 
+Outputting latent variables manually after a fit is complete is simple, just call
+the `analysis.compute_latent_samples(result.samples)` function.
 
 For many use cases, the best set up disables autofit latent variable output during a fit via the `output.yaml`
-file and perform it manually after completing a successful model-fit. This will save computational run time by not 
+file and perform it manually after completing a successful model-fit. This will save computational run time by not
 computing latent variables during a any model-fit which is unsuccessful.
 """
 analysis = Analysis(data=data, noise_map=noise_map)
 
 # Commented out because we do not run the search in this cookbook
 
-# latent_samples = analysis.compute_latent_variables(samples=result.samples)
+# latent_samples = analysis.compute_latent_samples(result.samples)
 
 """
 Analysing and interpreting latent variables is described fully in the result cookbook.
