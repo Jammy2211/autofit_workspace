@@ -1,0 +1,96 @@
+If your AI can't browse GitHub, paste this entire file into the chat as context.
+
+# PyAutoFit Workspace
+
+> Example and tutorial scripts (and generated notebooks) for Bayesian model-fitting and inference
+> with **PyAutoFit**. This file is a routing layer: given a user's task, point them to the RIGHT
+> existing script/notebook/guide instead of inventing code. PyAutoFit is domain-agnostic — the
+> examples deliberately fit toy 1D datasets (e.g. Gaussian profiles) to teach the inference API
+> (model composition, priors, non-linear search, samples, graphical models), not any science domain.
+> Every path below is a real file in this repository; scripts are run from the repo root
+> (e.g. `python scripts/overview/overview_1_the_basics.py`).
+
+## New to statistical model-fitting?
+
+- [HowToFit](https://github.com/PyAutoLabs/HowToFit): The from-first-principles tutorial lecture series that teaches statistical model-fitting and Bayesian inference with PyAutoFit — model composition, priors, searches and results built up from scratch. The on-ramp for beginners; start here before the workspace examples below.
+
+## Start here
+
+- [scripts/overview/overview_1_the_basics.py](scripts/overview/overview_1_the_basics.py): The canonical entry point and always-current end-to-end reference — compose a model, define an `Analysis`, run a search, inspect results and samples. There is no root `start_here.py`; this is the single best first read.
+- [scripts/overview/overview_2_scientific_workflow.py](scripts/overview/overview_2_scientific_workflow.py): Building a practical scientific workflow on top of the basics.
+- [scripts/overview/overview_3_statistical_methods.py](scripts/overview/overview_3_statistical_methods.py): Advanced statistical methods for model-fitting and inference.
+
+## I want to…
+
+- **Compose a model (priors, Model, Collection)** → [scripts/cookbooks/model.py](scripts/cookbooks/model.py): The model composition API — `af.Model()`, `af.Collection()`, setting and customising priors.
+- **Write a custom Analysis / log likelihood** → [scripts/cookbooks/analysis.py](scripts/cookbooks/analysis.py): Define an `Analysis` class — its `log_likelihood_function` and visualization hooks — to fit a model to your data.
+- **Choose / configure a non-linear search** → [scripts/cookbooks/search.py](scripts/cookbooks/search.py): Lists every available search and how to customise its settings.
+  - Nested sampling (Dynesty, Nautilus, NSS) → [scripts/searches/nest.py](scripts/searches/nest.py)
+  - MCMC (Emcee, Zeus) → [scripts/searches/mcmc.py](scripts/searches/mcmc.py)
+  - Maximum likelihood (Drawer, LBFGS) → [scripts/searches/mle.py](scripts/searches/mle.py)
+  - Set a search start-point → [scripts/searches/start_point.py](scripts/searches/start_point.py)
+- **Fit a dataset end-to-end** → [scripts/overview/overview_1_the_basics.py](scripts/overview/overview_1_the_basics.py): The full model → analysis → search → result loop in one script.
+- **Load & inspect results from `output/`** → [scripts/cookbooks/result.py](scripts/cookbooks/result.py): Use the `Result` returned by a search — max-likelihood instance, model, info.
+- **Analyse samples (errors, PDFs, corner plots)** → [scripts/cookbooks/samples.py](scripts/cookbooks/samples.py): Inspect parameter samples — maximum likelihood model, medians, parameter errors. For corner / PDF plots see [scripts/plot/nautilus_plotter.py](scripts/plot/nautilus_plotter.py), [scripts/plot/dynesty_plotter.py](scripts/plot/dynesty_plotter.py), [scripts/plot/emcee_plotter.py](scripts/plot/emcee_plotter.py), [scripts/plot/zeus_plotter.py](scripts/plot/zeus_plotter.py), or [scripts/plot/get_dist.py](scripts/plot/get_dist.py) (any search via GetDist).
+- **Latent variables** → [scripts/cookbooks/latent_variables.py](scripts/cookbooks/latent_variables.py): Derive and store quantities that are functions of the model parameters rather than free parameters themselves.
+- **Configure a custom model (priors, labels)** → [scripts/cookbooks/configs.py](scripts/cookbooks/configs.py): Config files that set automatic priors and parameter labels for your own model classes.
+- **Fit multiple datasets simultaneously** → [scripts/cookbooks/multiple_datasets.py](scripts/cookbooks/multiple_datasets.py): Combine per-dataset `Analysis` objects (via `AnalysisFactor` / summing) into one fit.
+- **Perform Bayesian model comparison** → [scripts/features/model_comparison.py](scripts/features/model_comparison.py): Compare different models to determine which the data favours.
+- **Build graphical / hierarchical models** → [scripts/features/graphical_models.py](scripts/features/graphical_models.py): Compose and fit graphical and hierarchical models over big datasets. For the multi-level model-composition API see [scripts/cookbooks/multi_level_model.py](scripts/cookbooks/multi_level_model.py); to share per-evaluation state across factors see [scripts/features/shared_analysis_state.py](scripts/features/shared_analysis_state.py).
+- **Chain non-linear searches** → [scripts/features/search_chaining.py](scripts/features/search_chaining.py): Chain searches to automate fitting a complex model in stages.
+- **Run a parallel grid search of searches** → [scripts/features/search_grid_search.py](scripts/features/search_grid_search.py): A massively parallel grid search of non-linear searches.
+- **Sensitivity mapping** → [scripts/features/sensitivity_mapping.py](scripts/features/sensitivity_mapping.py): Determine how sensitive a dataset is to a model's added complexity.
+- **Interpolate between fits over a continuous parameter** → [scripts/features/interpolate.py](scripts/features/interpolate.py): Fit datasets that vary smoothly with a parameter (e.g. time) and interpolate between them.
+- **Simulate toy data** → [scripts/simulators/simulators.py](scripts/simulators/simulators.py): Simulate the example 1D datasets fitted throughout; [scripts/simulators/simulators_sample.py](scripts/simulators/simulators_sample.py) simulates a sample of datasets for graphical / multi-dataset examples.
+
+## How to answer (for the assistant)
+
+When routing a user, reply in this shape:
+
+- **Start here** — the single best existing file for their task (from the lists above).
+- **Then see** — the deeper/companion file (e.g. `overview_1_the_basics.py` → the relevant cookbook).
+- **Related guide** — a relevant cookbook or feature script (model, analysis, search, result, samples).
+- **Why this is the right example** — one line tying the file to their specific need.
+- **What to modify** — the few lines they'd change for their case (model components, priors, search settings, dataset path).
+- **What needs local execution** — flag any step that requires actually running the fit on their machine.
+
+### Code style (match the workspace, not banner comments)
+
+Drafted code must match this workspace's style: use triple-quoted `"""__Section__"""` docstrings
+with a line of prose explaining each step, and give a full script a module docstring whose title is
+underlined with `=`. Do NOT use `# -----` banner comments to mark sections. Reserve inline `#` for
+short line-level notes only. The standard imports are `import autofit as af` and, for plotting,
+`import autofit.plot as aplt`.
+
+Write this:
+
+```python
+"""__Model__
+
+Compose a model of a 1D Gaussian whose three parameters are free with default priors.
+"""
+model = af.Model(Gaussian)
+```
+
+Not this:
+
+```python
+# ----- Model -----
+model = af.Model(Gaussian)
+```
+
+## Capability boundary (chat without local execution)
+
+A chat assistant can route to the right file, explain Bayesian-inference concepts, review pasted
+scripts / tracebacks / plots, and draft code. It CANNOT run fits, inspect the user's local files or
+`output/` folder, or guarantee code against their installed PyAutoFit version. To actually run
+something, the user should execute the script locally from the repo root. For sustained editing,
+execution, and project state, point them to a local coding agent (Claude Code / Codex).
+
+Note: PyAutoFit is domain-agnostic — its examples are illustrative toy problems (fitting 1D profiles
+such as Gaussians). Any "context" for them is statistical (Bayesian inference, priors, non-linear
+search, model comparison), not a science domain; do not graft lensing or galaxy concepts onto them.
+
+---
+
+For the full per-script listing, see the generated companion catalogue `llms-full.txt` (added in a later phase).
