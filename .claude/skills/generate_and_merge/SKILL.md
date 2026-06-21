@@ -22,15 +22,18 @@ Build notebooks for the autofit_workspace, then open and merge a PR into `main`,
    PYTHONPATH=../PyAutoBuild/autobuild python3 ../PyAutoBuild/autobuild/generate.py autofit
    ```
    This regenerates all notebooks in `notebooks/` from `scripts/`. It may take a few minutes.
+   It also regenerates the LLM-facing catalogue (`llms-full.txt` and `workspace_index.json`)
+   in the workspace root from the script docstrings. The curated `llms.txt` is never touched.
 
-4. **Commit the generated notebooks**
+4. **Commit the generated notebooks and catalogue**
 
-   Stage all changes under `notebooks/` and any root-level `*.ipynb` files, then commit:
+   Stage all changes under `notebooks/`, any root-level `*.ipynb` files, and the regenerated
+   catalogue files, then commit:
    ```bash
-   git add notebooks/ start_here.ipynb
+   git add notebooks/ start_here.ipynb llms-full.txt workspace_index.json
    git commit -m "Build notebooks from scripts"
    ```
-   If there is nothing to commit (notebooks already up to date), tell the user and stop.
+   If there is nothing to commit (notebooks and catalogue already up to date), tell the user and stop.
 
 5. **Push the branch**
 
