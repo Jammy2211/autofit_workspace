@@ -52,6 +52,13 @@ inspect results), read `scripts/overview/overview_1_the_basics.py` — it is kep
 
 ## Testing
 
+On CI, every PR is gated by three workflows on Python **3.12 and 3.13**: `smoke_tests.yml` (the
+smoke runner below — the definition of green), `navigator_check.yml` (PyAutoBuild's reusable
+navigator-catalogue check; see *Notebooks vs Scripts*), and `url_check.yml` (link checking). The
+smoke and navigator jobs check out **PyAutoBuild** as a sibling and run the PyAuto* libraries from
+the **same-named branch** of each source repo, so a workspace PR is validated against matching
+library branches.
+
 Two runners exist; both are run from the repo root.
 
 **Full runner** — executes every script in `scripts/`:
@@ -179,25 +186,13 @@ When opening your PR, include:
 - Confirmation that notebooks were regenerated.
 - A "Could not update" section for any scripts that still fail, with the error and your assessment.
 
-## Never rewrite history
+## Clean state
 
-NEVER perform these operations on any repo with a remote:
-
-- `git init` in a directory already tracked by git
-- `rm -rf .git && git init`
-- Commit with subject "Initial commit", "Fresh start", "Start fresh", "Reset for AI workflow", or
-  any equivalent message on a branch with a remote
-- `git push --force` to `main` (or any branch tracked as `origin/HEAD`)
-- `git filter-repo` / `git filter-branch` on shared branches
-- `git rebase -i` rewriting commits already pushed to a shared branch
-
-If the working tree needs a clean state, the **only** correct sequence is:
+Never rewrite history on a repo with a remote (no `git init` over a tracked tree, no force-push to
+`main`, no rebasing pushed shared branches). To reset a dirty tree the only correct sequence is:
 
 ```bash
 git fetch origin
 git reset --hard origin/main
 git clean -fd
 ```
-
-This applies equally to humans, local agents, cloud agents, and any other tool. The "Initial commit
-— fresh start" pattern this prevents has cost ~40 commits of redundant rework each time it happened.
