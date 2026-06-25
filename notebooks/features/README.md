@@ -3,6 +3,7 @@ The `features` folder contains example scripts for using advanced **PyAutoFit** 
 # Files (Advanced)
 
 - `graphical_models.py`: Compose ansd fit graphical and hierarchical models to big datasets.
+- `shared_analysis_state.py`: Share per-evaluation model state across the factors of a graphical model so identical work is computed once, not once per factor.
 - `interpolate.py`: Fit datasets which smoothly vary as a function of a continuous parameter (e.g. time) and interpolate between them.
 - `model_comparison.py`: Perform Bayesian model comparison between different models to determine which the data favours.
 - `search_chaining.py`: Chaining together multiple non-linear searches to automate the fitting of a complex model.
