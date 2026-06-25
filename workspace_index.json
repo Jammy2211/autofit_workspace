@@ -368,7 +368,7 @@
     "cross_refs": [
       "graphical_models.py"
     ],
-    "notebook": null,
+    "notebook": "notebooks/features/shared_analysis_state.ipynb",
     "path": "scripts/features/shared_analysis_state.py",
     "summary": "The `graphical_models.py` feature example showed how to fit many datasets simultaneously with a `FactorGraphModel`, where each dataset has its own `Analysis` (and therefore its own `log_likelihood_function`) and the factors are linked by shared priors. When a `FactorGraphModel` evaluates its likelihood it loops over every factor, calls each factor's `log_likelihood_function`, and sums the results.",
     "title": "Feature: Shared Analysis State"
