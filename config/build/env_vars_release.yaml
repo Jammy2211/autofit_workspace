@@ -9,9 +9,17 @@
 # Spec + acceptance table: PyAutoHeart/docs/release_validation.md.
 #
 # "defaults" are applied to every script on top of the inherited environment.
-# "overrides" selectively unset or replace vars for matching path patterns —
-# identical in structure and intent to env_vars.yaml's overrides; they still
-# layer on top of this profile's defaults rather than the smoke ones.
+# Every var this profile cares about is given an EXPLICIT value in "defaults"
+# (not left absent) — the runner only ever *sets* keys it's given, it never
+# clears unrelated inherited env vars, so an absent key silently falls through
+# to whatever the calling process already had (a leftover smoke-mode "1" from
+# an earlier step, a developer's local shell, ...). Pinning everything here
+# makes the profile self-contained regardless of the caller's environment.
+#
+# "overrides" then only ever `set:` a var to flip it away from this profile's
+# own default for specific scripts — never `unset:` a var that "defaults"
+# already pins, since unsetting just re-exposes the same inherited-env gap
+# `defaults` exists to close.
 #
 # Pattern convention (same as no_run.yaml):
 #   - Patterns containing '/' do a substring match against the file path
@@ -21,15 +29,19 @@ defaults:
   PYAUTO_TEST_MODE: "1"                 # reduced iterations (real sampler), not bypassed
   PYAUTO_SMALL_DATASETS: "1"           # cap grids/masks to 15x15, reduce MGE gaussians
   PYAUTO_FAST_PLOTS: "1"               # skip tight_layout() + critical curve/caustic overlays
+  PYAUTO_SKIP_FIT_OUTPUT: "0"          # real fit output (release fidelity, not smoke)
+  PYAUTO_SKIP_VISUALIZATION: "0"       # real visualization (release fidelity, not smoke)
+  PYAUTO_SKIP_CHECKS: "0"              # real checks (release fidelity, not smoke)
+  PYAUTO_DISABLE_JAX: "0"              # JAX enabled (release fidelity, not smoke)
   PYAUTO_SKIP_WORKSPACE_VERSION_CHECK: "1"  # TestPyPI dev version won't match the workspace pin
   JAX_ENABLE_X64: "True"               # enable 64-bit precision in JAX
   NUMBA_CACHE_DIR: "/tmp/numba_cache"   # writable cache dir for numba
   MPLCONFIGDIR: "/tmp/matplotlib"       # writable config dir for matplotlib
 
-overrides:
-  # Plotter scripts need the real search to run so `result.search_internal` is
-  # populated — bypass mode skips the sampler and returns None.
-  - pattern: "plot/emcee_plotter"
-    unset: [PYAUTO_TEST_MODE, PYAUTO_SKIP_FIT_OUTPUT]
-  - pattern: "plot/zeus_plotter"
-    unset: [PYAUTO_TEST_MODE, PYAUTO_SKIP_FIT_OUTPUT]
+# plot/emcee_plotter + plot/zeus_plotter (which needed an override under the
+# smoke profile to force a real search so `result.search_internal` is
+# populated) need no override here: PYAUTO_TEST_MODE="1" above already runs a
+# real (if reduced) sampler and PYAUTO_SKIP_FIT_OUTPUT="0" already writes
+# real output. No script in this workspace needs to deviate from the
+# defaults above under the release profile.
+overrides: []
