@@ -1,0 +1,35 @@
+# Per-script environment variable configuration for the RELEASE-FIDELITY
+# validation run (Heart's workspace-validation.yml, mode=release — the M3
+# wheel-based release-fidelity path). Distinct from env_vars.yaml, which is the
+# `smoke` profile used by the per-PR CI gate.
+#
+# The `release` profile trades speed for fidelity: it is run once per release
+# rehearsal against the TestPyPI wheels, not on every PR, so it can afford a
+# reduced (not bypassed) sampler and real fit output/visualization/checks.
+# Spec + acceptance table: PyAutoHeart/docs/release_validation.md.
+#
+# "defaults" are applied to every script on top of the inherited environment.
+# "overrides" selectively unset or replace vars for matching path patterns —
+# identical in structure and intent to env_vars.yaml's overrides; they still
+# layer on top of this profile's defaults rather than the smoke ones.
+#
+# Pattern convention (same as no_run.yaml):
+#   - Patterns containing '/' do a substring match against the file path
+#   - Patterns without '/' match the file stem exactly
+
+defaults:
+  PYAUTO_TEST_MODE: "1"                 # reduced iterations (real sampler), not bypassed
+  PYAUTO_SMALL_DATASETS: "1"           # cap grids/masks to 15x15, reduce MGE gaussians
+  PYAUTO_FAST_PLOTS: "1"               # skip tight_layout() + critical curve/caustic overlays
+  PYAUTO_SKIP_WORKSPACE_VERSION_CHECK: "1"  # TestPyPI dev version won't match the workspace pin
+  JAX_ENABLE_X64: "True"               # enable 64-bit precision in JAX
+  NUMBA_CACHE_DIR: "/tmp/numba_cache"   # writable cache dir for numba
+  MPLCONFIGDIR: "/tmp/matplotlib"       # writable config dir for matplotlib
+
+overrides:
+  # Plotter scripts need the real search to run so `result.search_internal` is
+  # populated — bypass mode skips the sampler and returns None.
+  - pattern: "plot/emcee_plotter"
+    unset: [PYAUTO_TEST_MODE, PYAUTO_SKIP_FIT_OUTPUT]
+  - pattern: "plot/zeus_plotter"
+    unset: [PYAUTO_TEST_MODE, PYAUTO_SKIP_FIT_OUTPUT]
