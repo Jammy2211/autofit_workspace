@@ -268,5 +268,10 @@ The following paper describes the EP framework in formal Bayesian notation:
 
 https://arxiv.org/pdf/1412.4869.pdf
 
+The feature example `features/expectation_propagation.py` dissects one EP update step-by-step at the low-level API —
+the mean-field approximation, the cavity distribution, the tilted-distribution fit, moment matching and the damped
+message update — with each step tied to the formal equations in the **PyAutoFit** source
+(`autofit/graphical/README.md`).
+
 Hierarchical models can also be scaled up to large datasets via Expectation Propagation.
 """
