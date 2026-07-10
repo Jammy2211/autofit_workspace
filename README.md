@@ -6,6 +6,7 @@
 [Installation Guide](https://pyautofit.readthedocs.io/en/latest/installation/overview.html) |
 [readthedocs](https://pyautofit.readthedocs.io/en/latest/index.html) |
 [Introduction on Colab](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blob/2026.7.9.1/notebooks/overview/overview_1_the_basics.ipynb) |
+[Browse Examples With Images](markdown/README.md) |
 [HowToFit](https://github.com/PyAutoLabs/HowToFit)
 
 Welcome to the **PyAutoFit** Workspace!
@@ -22,6 +23,9 @@ Colab](https://colab.research.google.com/github/PyAutoLabs/autofit_workspace/blo
 
 We recommend that you start with the `autofit_workspace/notebooks/overview/overview_1_the_basics.ipynb`
 notebook, which will give you a concise overview of **PyAutoFit**'s core features and API.
+
+You can also [browse the overview examples fully executed, with their output images](markdown/README.md),
+directly on GitHub — no installation required.
 
 Next, read through the overview example notebooks of features you are interested in, in the folder: `autofit_workspace/notebooks/overview`.
 
