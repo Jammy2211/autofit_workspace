@@ -313,6 +313,32 @@ print(f"  means:  {mean_field.mean}")
 print(f"  scales: {mean_field.scale}")
 
 """
+__Diagnostics__
+
+PyAutoFit ships built-in tools for inspecting an EP fit. `mean_field_summary` prints the approximate posterior as a
+table — one row per variable with its mean and standard deviation — which is usually the first thing you want at the
+end of a fit:
+"""
+from autofit.graphical import mean_field_summary
+
+print(mean_field_summary(mean_field))
+
+"""
+The fit also emitted diagnostic artifacts into the output folder as it ran (they are overwritten live, so a running
+fit can be watched):
+
+ - `ep_history.csv`: one row per factor update — status, global log-evidence and the KL step size, the quantities
+   the convergence check in section 3.4 consumes.
+
+ - `mean_field_history.csv` / `mean_field_evolution.png`: every variable's mean ± std after each update — the message
+   field converging.
+
+ - `graph_factors.png`: per-factor evidence and KL curves, so one misbehaving factor is visible instead of being
+   averaged away in the global history.
+
+For long fits, `check_sigma_collapse` (also in `autofit.graphical`) inspects the history for posterior widths
+collapsing towards zero — a known failure mode of undamped EP.
+
 __Output Folder__
 
 The fit above wrote to `output/features/expectation_propagation`. Notable contents:
