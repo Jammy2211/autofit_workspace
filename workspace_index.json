@@ -241,6 +241,29 @@
     "contents": [
       "Example Source Code (`af.ex`)",
       "Dataset",
+      "Model",
+      "Factor Graph",
+      "Mean Field",
+      "Cavity",
+      "Tilted Fit",
+      "Damped Update",
+      "Convergence",
+      "Full EP Fit",
+      "Wrap Up"
+    ],
+    "cross_refs": [
+      "features/graphical_models.py",
+      "graphical_models.py"
+    ],
+    "notebook": null,
+    "path": "scripts/features/expectation_propagation.py",
+    "summary": "The `graphical_models.py` feature example composed a graphical model from many datasets and fitted it with a single non-linear search over the joint parameter space. That approach hits a ceiling: with tens of datasets the joint parameter space becomes too high dimensional to sample.",
+    "title": "Feature: Expectation Propagation (Step-by-Step)"
+  },
+  {
+    "contents": [
+      "Example Source Code (`af.ex`)",
+      "Dataset",
       "Analysis",
       "Model",
       "Analysis Factors",
@@ -249,7 +272,9 @@
       "Hierarchical Models",
       "Expectation Propagation"
     ],
-    "cross_refs": [],
+    "cross_refs": [
+      "features/expectation_propagation.py"
+    ],
     "notebook": "notebooks/features/graphical_models.ipynb",
     "path": "scripts/features/graphical_models.py",
     "summary": "The examples so far have focused on fitting one model to one dataset, for example fitting 1D profiles composed of Gaussians to noisy 1D data. When multiple datasets were available each is fitted individually and their results interpreted one-by-one.",
