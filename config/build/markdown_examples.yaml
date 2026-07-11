@@ -1,0 +1,13 @@
+# Curated examples rendered to executed markdown pages (markdown/) with their
+# real output images, so they can be read on GitHub. Built manually by
+# PyAutoBuild's generate_markdown.py — see that module's docstring for the
+# rules (never TEST_MODE; features/ scripts never rendered; list order is
+# execution order and index order).
+# autofit has no root start_here.py; the overview scripts are the flagships
+# (1D-Gaussian fits — seconds each).
+- script: scripts/overview/overview_1_the_basics.py
+  max_minutes: 30
+- script: scripts/overview/overview_2_scientific_workflow.py
+  max_minutes: 45
+- script: scripts/overview/overview_3_statistical_methods.py
+  max_minutes: 45
