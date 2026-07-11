@@ -7,30 +7,13 @@ This example illustrates how to use the nested sampling algorithms supported by 
  - `DynestyStatic`: Dynesty with static nested sampling.
  - `DynestyDynamic`: Dynesty with dynamic nested sampling.
  - `Nautilus`: Nautilus nested sampler.
- - `NSS`: Nested Slice Sampling (JAX-native, optional install).
 
-The first three are boundary-based samplers that work with any Python log-likelihood. `NSS` is a more recent
-JAX-native sampler that runs its inner sampling loop inside `jax.jit` — when the log-likelihood is itself
-JAX-traceable, the per-evaluation cost drops by roughly an order of magnitude versus the boundary samplers
-(measured on real lensing likelihoods, see the `nss_first_class_sampler` roadmap and FINDINGS_v3 in the
-profiling project for the numbers).
+These are boundary-based samplers that work with any Python log-likelihood.
 
 Relevant links:
 
  - Dynesty: https://dynesty.readthedocs.io/en/latest/
  - Nautilus: https://nautilus-sampler.readthedocs.io/en/stable/
- - NSS (Nested Slice Sampling): https://github.com/yallup/nss
-
-__Install Precondition for NSS__
-
-The `Search: NSS` section at the bottom of this script imports the optional `nss` package. To run that
-section, install the dependencies first:
-
-    pip install autofit[nss]
-
-The extra pins the right `handley-lab/blackjax` fork at a known-good commit, so this is a single safe
-command (no `--no-deps` dance, no manual git+ URLs). The other three samplers in this script have no
-additional dependencies and run with the standard `pip install autofit` install.
 
 __Contents__
 
@@ -41,7 +24,6 @@ This script is split into the following sections:
 - **Search: DynestyStatic**: Configuring and running the DynestyStatic nested sampler.
 - **Search: DynestyDynamic**: Configuring and running the DynestyDynamic nested sampler.
 - **Search: Nautilus**: Configuring and running the Nautilus nested sampler.
-- **Search: NSS**: Configuring and running the NSS (Nested Slice Sampling) sampler.
 - **Search Internal**: Accessing the internal sampler for advanced use (shown once for DynestyStatic).
 """
 
@@ -295,97 +277,3 @@ plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.show()
 plt.close()
-
-"""
-__Search: NSS__
-
-NSS (Nested Slice Sampling) is a JAX-native nested sampler whose inner sampling loop runs end-to-end inside
-`jax.jit`. The advantage versus the boundary samplers above is **per-evaluation cost**: when your
-log-likelihood is itself JAX-traceable, NSS avoids the Python ↔ JAX boundary that Nautilus and Dynesty cross
-on every likelihood call. On the production lensing likelihoods that motivated this sampler, the per-eval
-cost is roughly 30 times lower than Nautilus's, and total wall time to convergence drops from tens of
-minutes to a few minutes.
-
-On the trivial 1D Gaussian dataset used by this tutorial the speedup is not visible — the likelihood is so
-cheap that the per-call cost is dominated by Python overhead rather than the floating-point work, and the
-first NSS run pays a one-off ~25–30 second JIT compile that the simpler samplers above skip. The numbers
-below let you confirm NSS converged to roughly the same posterior, not that it ran faster. Try NSS on a
-real autolens or autogalaxy MGE / pixelization likelihood to see the per-eval advantage.
-
-NSS exposes the same `result.samples` interface as the boundary samplers — swapping `af.Nautilus(...)` for
-`af.NSS(...)` in your existing scripts is a one-line change.
-
-A few NSS-specific kwargs to be aware of:
-
- - `n_live`: live particles maintained throughout the run (production default 200).
- - `num_mcmc_steps`: slice-MCMC inner steps per dead-point batch (production default 5).
- - `num_delete`: particles removed per outer iteration (production default 50; larger values reduce JIT
-   overhead per outer iteration at the cost of slightly coarser posterior coverage).
- - `termination`: stopping criterion on `logZ_live - logZ` (default `-3.0`, corresponding to a remaining
-   evidence fraction below 1e-3).
- - `checkpoint_interval`: outer iterations between disk-saved checkpoints. NSS writes a resumable state
-   file every `checkpoint_interval` iterations, so a SLURM timeout halfway through a long fit is recovered
-   automatically the next time you run the same script with the same Paths.
- - `iterations_per_quick_update`: when set non-None, NSS calls `analysis.visualize(...)` with the current
-   best live point every N outer iterations — partial results appear in the image_path directory while the
-   run is still in flight.
-
-Settings reference: see `af.NSS.__init__` for the full kwarg list.
-
-__Optional Dependency Guard__
-
-The standard workspace release environment does not install `autofit[nss]`. When the optional stack is
-absent, this script skips only the NSS fit and leaves the Dynesty / Nautilus examples above runnable.
-
-__Analysis Must Be JAX-Traceable__
-
-NSS runs the log-likelihood inside `jax.jit`. The boundary-based samplers above are happy with the default
-NumPy `af.ex.Analysis(data, noise_map)` — when we hand the same analysis to NSS the JIT trace hits the
-NumPy paths inside the analysis and raises `TracerArrayConversionError`. The fix is to build the analysis
-with `use_jax=True`, which makes its internal arithmetic dispatch through `jax.numpy` instead of `numpy`.
-
-This is the production pattern: for autolens / autogalaxy / autofit analyses that you want to run with NSS,
-construct your `Analysis` with `use_jax=True`. Everything below works identically to the NumPy path — same
-`log_likelihood_function` API, same `Result` shape — but the body is now JAX-traceable.
-"""
-try:
-    search = af.NSS(
-        path_prefix=path.join("searches"),
-        name="NSS",
-        n_live=200,  # live particles maintained throughout the run
-        num_mcmc_steps=5,  # slice-MCMC inner steps per dead-point batch
-        num_delete=50,  # particles removed per outer iteration
-        termination=-3.0,  # delta-logZ stopping criterion
-        seed=42,  # JAX PRNG seed for reproducible runs
-        checkpoint_interval=100,  # SLURM-friendly resume — see docstring above
-    )
-except ImportError as exc:
-    print(f"Skipping NSS example because the optional dependency stack is unavailable:\n{exc}")
-else:
-    analysis_jax = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
-
-    result = search.fit(model=model, analysis=analysis_jax)
-
-    model_data = result.max_log_likelihood_instance.model_data_from(
-        xvalues=np.arange(data.shape[0])
-    )
-
-    plt.errorbar(
-        x=range(data.shape[0]),
-        y=data,
-        yerr=noise_map,
-        linestyle="",
-        color="k",
-        ecolor="k",
-        elinewidth=1,
-        capsize=2,
-    )
-    plt.plot(range(data.shape[0]), model_data, color="r")
-    plt.title("NSS model fit to 1D Gaussian dataset.")
-    plt.xlabel("x values of profile")
-    plt.ylabel("Profile normalization")
-    plt.show()
-    plt.close()
-
-    print(f"NSS log evidence:    {result.samples.samples_info['log_evidence']:.4f}")
-    print(f"NSS max log L:       {max(result.samples.log_likelihood_list):.4f}")
