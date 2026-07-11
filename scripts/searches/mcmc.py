@@ -264,7 +264,22 @@ Relevant links:
 
 If you use `BlackJAXNUTS` as part of a published work, please cite the BlackJAX package following
 the instructions on its GitHub page.
+
+`BlackJAXNUTS` needs the `blackjax` package, which ships with the `[optional]`
+extras (`pip install autofit[optional]`). When it is not installed (e.g. the
+NumPy-only CI matrix), skip the remaining NUTS section — the `Emcee` and `Zeus`
+examples above have already run.
 """
+import importlib.util
+import sys
+
+if importlib.util.find_spec("blackjax") is None:
+    print(
+        "Skipping BlackJAXNUTS example: the `blackjax` package is not installed "
+        "(install with `pip install autofit[optional]`)."
+    )
+    sys.exit(0)
+
 from autofit.jax.pytrees import enable_pytrees, register_model
 
 enable_pytrees()
