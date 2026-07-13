@@ -66,7 +66,7 @@ The following **projects** are available in the project folder:
 
 ## Workspace Version
 
-This version of the workspace are built and tested for using **PyAutoFit v2026.7.6.649**.
+This version of the workspace are built and tested for using **PyAutoFit v2026.7.9.1**.
 
 ## Support
 
