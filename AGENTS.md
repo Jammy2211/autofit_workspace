@@ -59,21 +59,7 @@ smoke and navigator jobs check out **PyAutoBuild** as a sibling and run the PyAu
 the **same-named branch** of each source repo, so a workspace PR is validated against matching
 library branches.
 
-Two runners exist; both are run from the repo root.
-
-**Full runner** — executes every script in `scripts/`:
-
-```bash
-bash run_scripts.sh
-```
-
-It exports `PYAUTO_TEST_MODE=1` (plus skip/fast flags), runs each script, writes a log for every
-failure to `failed/<relative_path>.log`, continues past failures, and prints a final
-`Results: P passed, F failed, S skipped` line. The skip list comes from
-`../PyAutoBuild/autobuild/config/no_run.yaml` under the `autofit:` key; entries whose comment
-mentions a bug/issue/fix are flagged `[TODO - should run after a future PR]`.
-
-**Smoke runner** — executes only the curated subset:
+Scripts are tested with the smoke runner, run from the repo root — it executes the curated subset:
 
 ```bash
 python .github/scripts/run_smoke.py
@@ -158,9 +144,8 @@ When assigned an issue titled `[API Update]`:
    API (functions, classes, method signatures, parameter names, import paths).
 2. Search **all** `.py` files in `scripts/` for usages of the old API.
 3. Update each file to the new API, preserving existing behaviour, docstrings, and comments.
-4. Run `bash run_scripts.sh` from the repo root to test (use `python .github/scripts/run_smoke.py`
-   for a fast subset).
-5. Read any `failed/<path>.log` files and fix the affected scripts.
+4. Run `python .github/scripts/run_smoke.py` from the repo root to test the curated subset.
+5. Read the `[FAIL (exit N)]` output and fix the affected scripts.
 6. Repeat 4–5 until the suite is clean.
 7. If a script cannot be fixed (ambiguous change, missing dependency), leave it unchanged and list
    it in the PR description under **"Could not update"** with the reason.
@@ -174,7 +159,7 @@ When assigned a general (non-API) issue:
 2. Identify which scripts need to be created or modified.
 3. Only edit files in `scripts/`. Never edit `notebooks/` directly.
 4. Preserve all docstrings, comments, and tutorial explanations.
-5. Test with `bash run_scripts.sh` after changes.
+5. Test with `python .github/scripts/run_smoke.py` after changes.
 6. Regenerate notebooks after all scripts pass.
 
 ### PR description
