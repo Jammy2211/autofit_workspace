@@ -7,11 +7,14 @@ This example illustrates how to use the maximum likelihood / optimization algori
  - `Drawer`: Draws a fixed number of samples uniformly from the priors (useful for sensitivity mapping and
    quantifying stochasticity of the likelihood function).
  - `LBFGS`: The scipy L-BFGS-B optimization algorithm.
+ - `MultiStartAdam`: A JAX / `optax` multi-start first-order gradient MAP optimizer (with `MultiStartADABelief`
+   and `MultiStartLion` as drop-in alternatives).
 
 Relevant links:
 
  - Drawer: https://github.com/PyAutoLabs/PyAutoFit/blob/main/autofit/non_linear/optimize/drawer/drawer.py
  - L-BFGS: https://docs.scipy.org/doc/scipy/reference/optimize.minimize-lbfgsb.html
+ - MultiStart: https://github.com/PyAutoLabs/PyAutoFit/blob/main/autofit/non_linear/search/mle/multi_start_gradient/search.py
 
 __Contents__
 
@@ -22,6 +25,7 @@ This script is split into the following sections:
 - **Search: Drawer**: Configuring and running the Drawer search.
 - **Search: LBFGS**: Configuring and running the L-BFGS-B optimizer.
 - **Search Internal**: Accessing the internal optimizer for advanced use (shown once for LBFGS).
+- **Search: MultiStartAdam**: Running the JAX multi-start gradient MAP optimizer.
 """
 
 # from autoconf import setup_notebook; setup_notebook()
@@ -214,3 +218,54 @@ irrespective of whether the search is re-run or not.
 search_internal = result.search_internal
 
 print(search_internal)
+
+"""
+__Search: MultiStartAdam__
+
+We now use `MultiStartAdam`, a JAX / `optax` multi-start first-order gradient MAP optimizer.
+
+Unlike a single-start optimizer such as `LBFGS`, it launches `n_starts` independent optimizations from broad,
+randomly drawn starting points, all in parallel via `jax.vmap`, and returns the best one. Taking a fixed
+self-normalised Adam step per start, this wide population of starts reliably escapes the local maxima that
+trap single-start gradient and line-search methods, making it a robust maximum a posteriori (MAP) optimizer.
+
+The search is JAX-native, so unlike the `Drawer` and `LBFGS` examples above it requires a JAX-traceable
+analysis (`use_jax=True`). No JAX pytree registration of the model is needed: the search builds each model
+instance inside its own traced objective from a plain parameter vector, so the model never has to cross a
+`jax.jit` boundary as a pytree.
+
+`MultiStartADABelief` and `MultiStartLion` are drop-in alternatives which simply swap the local `optax`
+update rule; `Lion` is sign-based and therefore prefers a ~10x smaller `learning_rate`.
+"""
+analysis_jax = af.ex.Analysis(data=data, noise_map=noise_map, use_jax=True)
+
+search = af.MultiStartAdam(
+    path_prefix="searches",
+    name="MultiStartAdam",
+    n_starts=16,
+    n_steps=500,
+    learning_rate=0.5,
+)
+
+result = search.fit(model=model, analysis=analysis_jax)
+
+model_data = result.max_log_likelihood_instance.model_data_from(
+    xvalues=np.arange(data.shape[0])
+)
+
+plt.errorbar(
+    x=range(data.shape[0]),
+    y=data,
+    yerr=noise_map,
+    linestyle="",
+    color="k",
+    ecolor="k",
+    elinewidth=1,
+    capsize=2,
+)
+plt.plot(range(data.shape[0]), model_data, color="r")
+plt.title("MultiStartAdam model fit to 1D Gaussian dataset.")
+plt.xlabel("x values of profile")
+plt.ylabel("Profile normalization")
+plt.show()
+plt.close()
