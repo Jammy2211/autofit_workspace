@@ -77,9 +77,7 @@ data_list = []
 noise_map_list = []
 
 for dataset_index in range(total_datasets):
-    dataset_path = path.join(
-        "dataset", "example_1d", f"gaussian_x1_{dataset_index}"
-    )
+    dataset_path = path.join("dataset", "example_1d", f"gaussian_x1_{dataset_index}")
 
     data_list.append(
         af.util.numpy_array_from_json(file_path=path.join(dataset_path, "data.json"))
@@ -183,7 +181,9 @@ for a Gaussian message):
 """
 print("Shared centre, global approximation at initialisation:")
 print(f"  {model_approx.mean_field[centre_shared_prior]}")
-print(f"  natural parameters: {model_approx.mean_field[centre_shared_prior].natural_parameters()}")
+print(
+    f"  natural parameters: {model_approx.mean_field[centre_shared_prior].natural_parameters()}"
+)
 
 """
 __Cavity__
@@ -230,7 +230,9 @@ centre move from the prior (35) towards the truth (50):
 """
 new_model_dist, status = search.optimise(factor_approx)
 
-print(f"Projected tilted posterior (q*) for the shared centre after fitting {factor.name}:")
+print(
+    f"Projected tilted posterior (q*) for the shared centre after fitting {factor.name}:"
+)
 print(f"  {new_model_dist[centre_shared_prior]}")
 print(f"Fit status: success={status.success}")
 
@@ -290,9 +292,7 @@ the remaining factors — the `PriorFactor`'s — whose updates are cheap.
 """
 laplace = af.LaplaceOptimiser()
 
-paths = af.DirectoryPaths(
-    name=path.join("features", "expectation_propagation")
-)
+paths = af.DirectoryPaths(name=path.join("features", "expectation_propagation"))
 
 factor_graph_result = factor_graph.optimise(
     optimiser=laplace,
