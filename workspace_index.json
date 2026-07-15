@@ -255,7 +255,7 @@
       "features/graphical_models.py",
       "graphical_models.py"
     ],
-    "notebook": null,
+    "notebook": "notebooks/features/expectation_propagation.ipynb",
     "path": "scripts/features/expectation_propagation.py",
     "summary": "The `graphical_models.py` feature example composed a graphical model from many datasets and fitted it with a single non-linear search over the joint parameter space. That approach hits a ceiling: with tens of datasets the joint parameter space becomes too high dimensional to sample.",
     "title": "Feature: Expectation Propagation (Step-by-Step)"
@@ -568,10 +568,12 @@
       "Model + Analysis",
       "Search: Drawer",
       "Search: LBFGS",
-      "Search Internal"
+      "Search Internal",
+      "Search: MultiStartAdam"
     ],
     "cross_refs": [
-      "//github.com/PyAutoLabs/PyAutoFit/blob/main/autofit/non_linear/optimize/drawer/drawer.py"
+      "//github.com/PyAutoLabs/PyAutoFit/blob/main/autofit/non_linear/optimize/drawer/drawer.py",
+      "//github.com/PyAutoLabs/PyAutoFit/blob/main/autofit/non_linear/search/mle/multi_start_gradient/search.py"
     ],
     "notebook": "notebooks/searches/mle.ipynb",
     "path": "scripts/searches/mle.py",
