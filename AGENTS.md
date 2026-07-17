@@ -73,7 +73,9 @@ exits non-zero if any entry failed.
 `PYAUTO_TEST_MODE` is PyAutoFit's own environment variable: it tells the non-linear search to skip
 its actual sampling, turning a run into a fast structural / end-to-end check that the model composes
 and the script runs to completion — without paying for inference. A script that fails under it
-signals a real problem (broken import, renamed API, etc.).
+signals a real problem (broken import, renamed API, etc.). `PYAUTO_TEST_MODE_SAMPLES=<N>` (default 4)
+additionally sets how many fake samples the bypassed search writes — raise it (e.g. 10000) when a
+run's `samples.csv` must be size-representative of real sampling, e.g. for resume/load profiling.
 
 ## Sandboxed / restricted runs
 
