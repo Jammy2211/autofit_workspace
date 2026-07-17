@@ -39,5 +39,11 @@ test:
   preloads_check_threshold: 1.0     # If the figure of merit of a fit with and without preloads is greater than this threshold, the check preload test fails and an exception raised for a model-fit.
   parallel_profile: false
 version:
+  # The compatibility FLOOR: the oldest library release whose API this
+  # workspace's scripts require. Preferred over workspace_version
+  # (autoconf/workspace.py). Bump DELIBERATELY — only when a script
+  # starts needing new API — never per release. Must always name an
+  # INSTALLABLE (non-yanked) release.
+  minimum_library_version: 2026.7.9.1
   workspace_version: 2026.7.9.1
   workspace_version_check: True     # If False, bypass the workspace/library version check. Set to False on `main`-branch clones — `main` updates faster than releases, so mismatches are expected and not actionable.
