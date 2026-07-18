@@ -19,7 +19,7 @@ Build notebooks for the autofit_workspace, then open and merge a PR into `main`,
 
    Run from the workspace root:
    ```bash
-   PYTHONPATH=../PyAutoBuild/autobuild python3 ../PyAutoBuild/autobuild/generate.py autofit
+   PYTHONPATH=../PyAutoHands/autobuild python3 ../PyAutoHands/autobuild/generate.py autofit
    ```
    This regenerates all notebooks in `notebooks/` from `scripts/`. It may take a few minutes.
    It also regenerates the LLM-facing catalogue (`llms-full.txt` and `workspace_index.json`)
