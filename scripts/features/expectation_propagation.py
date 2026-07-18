@@ -47,7 +47,7 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 These are functionally identical to the `Analysis` and `Gaussian` objects used elsewhere in the workspace.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 from os import path
 

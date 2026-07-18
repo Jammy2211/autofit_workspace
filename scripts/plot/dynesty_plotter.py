@@ -15,7 +15,7 @@ This script is split into the following sections:
 - **Plots**: Producing Dynesty-specific diagnostic plots.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import matplotlib.pyplot as plt
 from os import path

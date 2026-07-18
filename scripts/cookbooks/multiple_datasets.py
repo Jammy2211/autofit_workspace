@@ -43,7 +43,7 @@ __Contents__
  - Wrap Up: A summary of multi-dataset fitting in PyAutoFit.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import matplotlib.pyplot as plt
 import numpy as np

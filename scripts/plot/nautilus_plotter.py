@@ -15,7 +15,7 @@ This script is split into the following sections:
 - **Plots**: Producing Nautilus-specific diagnostic plots.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import numpy as np
 from os import path

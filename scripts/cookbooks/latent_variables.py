@@ -31,7 +31,7 @@ __Contents__
  - When To Add A Latent vs A Sampled Parameter: A short rule-of-thumb.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import autofit as af
 

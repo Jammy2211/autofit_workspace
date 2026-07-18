@@ -1,4 +1,4 @@
-from autoconf.dictable import to_dict
+from autofit import to_dict
 
 import autofit as af
 

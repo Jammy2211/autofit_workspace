@@ -23,7 +23,7 @@ __Contents__
  - Json Output (Model): Output a multi-level model in human readable text via a .json file and loading it back again.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import json
 import os
