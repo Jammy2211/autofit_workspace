@@ -53,9 +53,9 @@ inspect results), read `scripts/overview/overview_1_the_basics.py` — it is kep
 ## Testing
 
 On CI, every PR is gated by three workflows on Python **3.12 and 3.13**: `smoke_tests.yml` (the
-smoke runner below — the definition of green), `navigator_check.yml` (PyAutoBuild's reusable
+smoke runner below — the definition of green), `navigator_check.yml` (PyAutoHands's reusable
 navigator-catalogue check; see *Notebooks vs Scripts*), and `url_check.yml` (link checking). The
-smoke and navigator jobs check out **PyAutoBuild** as a sibling and run the PyAuto* libraries from
+smoke and navigator jobs check out **PyAutoHands** as a sibling and run the PyAuto* libraries from
 the **same-named branch** of each source repo, so a workspace PR is validated against matching
 library branches.
 
@@ -94,13 +94,13 @@ and markdown cells.
 
 ### Generating notebooks
 
-After updating scripts, regenerate the notebooks using the PyAutoBuild tool (run from the workspace
+After updating scripts, regenerate the notebooks using the PyAutoHands tool (run from the workspace
 root):
 
 ```bash
 pip install ipynb-py-convert
-git clone https://github.com/PyAutoLabs/PyAutoBuild.git ../PyAutoBuild
-PYTHONPATH=../PyAutoBuild/autobuild python3 ../PyAutoBuild/autobuild/generate.py autofit
+git clone https://github.com/PyAutoLabs/PyAutoHands.git ../PyAutoHands
+PYTHONPATH=../PyAutoHands/autobuild python3 ../PyAutoHands/autobuild/generate.py autofit
 ```
 
 Commit the regenerated notebooks alongside the script changes. The `/generate_and_merge` skill
@@ -126,7 +126,7 @@ PyAutoFit sits near the base of the PyAuto stack (all on the `PyAutoLabs` GitHub
 
 - https://github.com/PyAutoLabs/PyAutoConf — configuration handling (the `autoconf` dependency).
 - https://github.com/PyAutoLabs/PyAutoFit — this library: model composition + non-linear search.
-- https://github.com/PyAutoLabs/PyAutoBuild — notebook generation + CI.
+- https://github.com/PyAutoLabs/PyAutoHands — notebook generation + CI.
 - https://github.com/PyAutoLabs/PyAutoGalaxy — downstream science library built **on** PyAutoFit.
 - https://github.com/PyAutoLabs/PyAutoLens — downstream science library built **on** PyAutoFit.
 - https://github.com/PyAutoLabs/HowToFit — tutorial lecture series that teaches statistical
@@ -134,7 +134,7 @@ PyAutoFit sits near the base of the PyAuto stack (all on the `PyAutoLabs` GitHub
   beginners new to the framework.
 
 For local development these are typically cloned as siblings of this repo (`../PyAutoFit`,
-`../PyAutoConf`, `../PyAutoBuild`, …).
+`../PyAutoConf`, `../PyAutoHands`, …).
 
 ## Task Workflows
 

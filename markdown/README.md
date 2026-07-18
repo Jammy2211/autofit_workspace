@@ -6,4 +6,4 @@ Every page below is the corresponding example script **fully executed**, rendere
 - [Overview: Scientific Workflow](overview/overview_2_scientific_workflow.md) — from `scripts/overview/overview_2_scientific_workflow.py`
 - [Overview: Statistical Methods](overview/overview_3_statistical_methods.md) — from `scripts/overview/overview_3_statistical_methods.py`
 
-These pages are regenerated manually by PyAutoBuild's `generate_markdown.py` when a curated script changes.
+These pages are regenerated manually by PyAutoHands's `generate_markdown.py` when a curated script changes.
