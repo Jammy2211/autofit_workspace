@@ -50,7 +50,7 @@ the following sections:
  - Wrap Up: A summary of model composition in PyAutoFit.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import json
 import os

@@ -61,7 +61,7 @@ The final section describes how to use results built in an sqlite database file:
  - Writing Directly To Database: Writing results directly to the database.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import json
 from os import path
@@ -535,7 +535,7 @@ class Analysis(af.Analysis):
             The paths object which manages all paths, e.g. where the non-linear search outputs are stored,
             visualization, and the pickled objects used by the aggregator output by this function.
         """
-        from autoconf.dictable import to_dict
+        from autofit import to_dict
 
         paths.save_json(name="data", object_dict=to_dict(self.data))
         paths.save_json(name="noise_map", object_dict=to_dict(self.noise_map))

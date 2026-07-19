@@ -35,7 +35,7 @@ The following sections outline how to use advanced features of the results, whic
  - Samples Filtering (Advanced): Filter the `Samples` object to only contain samples fulfilling certain criteria.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import autofit as af
 import autofit.plot as aplt

@@ -52,7 +52,7 @@ This script is split into the following sections:
 - **Wrap Up**: Summarize the model comparison results using log likelihood and Bayesian evidence.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import matplotlib.pyplot as plt
 import numpy as np

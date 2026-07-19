@@ -28,7 +28,7 @@ This script is split into the following sections:
 - **Search: MultiStartAdam**: Running the JAX multi-start gradient MAP optimizer.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import matplotlib.pyplot as plt
 import numpy as np

@@ -26,7 +26,7 @@ It then provides example code for using every search:
  - LBFGS: The L-BFGS scipy optimization.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import numpy as np
 from os import path

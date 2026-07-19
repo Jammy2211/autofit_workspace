@@ -21,7 +21,7 @@ __Contents__
  - Labels: Config files which specify the labels of model component parameters for visualization.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import numpy as np
 from os import path
