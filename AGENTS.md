@@ -124,7 +124,7 @@ onto this workspace.
 
 PyAutoFit sits near the base of the PyAuto stack (all on the `PyAutoLabs` GitHub org):
 
-- https://github.com/PyAutoLabs/PyAutoConf — configuration handling (the `autoconf` dependency).
+- https://github.com/PyAutoLabs/PyAutoConf — configuration handling (the `autonerves` dependency).
 - https://github.com/PyAutoLabs/PyAutoFit — this library: model composition + non-linear search.
 - https://github.com/PyAutoLabs/PyAutoHands — notebook generation + CI.
 - https://github.com/PyAutoLabs/PyAutoGalaxy — downstream science library built **on** PyAutoFit.
