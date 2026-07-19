@@ -25,7 +25,7 @@ __Contents__
  - Serialization Round Trip: ``dict()`` and ``from_dict()`` for JSON persistence.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import autofit as af
 import numpy as np

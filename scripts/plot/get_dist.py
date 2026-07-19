@@ -36,7 +36,7 @@ This script is split into the following sections:
 - **Plotting Multiple Samples**: Demonstrate plotting results from multiple searches.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 
 import numpy as np

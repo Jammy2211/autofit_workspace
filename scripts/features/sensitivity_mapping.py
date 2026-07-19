@@ -48,7 +48,7 @@ This script is split into the following sections:
 - **Results**: Interpret the sensitivity mapping results.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import matplotlib.pyplot as plt
 import numpy as np

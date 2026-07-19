@@ -71,7 +71,7 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
 These are functionally identical to the `Analysis` and `Gaussian` objects you have seen elsewhere in the workspace.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -439,7 +439,7 @@ and change its parameterization between each fit.
 
 This cookbook is a concise reference to the model linking API.
 """
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import json
 import os

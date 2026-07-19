@@ -56,7 +56,7 @@ The **PyAutoFit** source code has the following example objects (accessed via `a
  - `Gaussian`: a model component representing a 1D Gaussian profile.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 from os import path
 import matplotlib.pyplot as plt

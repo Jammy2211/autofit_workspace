@@ -18,7 +18,7 @@ __Contents__
    files) to aid in the interpretation of results.
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import json
 import numpy as np

@@ -26,7 +26,7 @@ This script is split into the following sections:
 - **Search Internal**: Accessing the internal sampler for advanced use (shown once for Emcee).
 """
 
-# from autoconf import setup_notebook; setup_notebook()
+# from autofit import setup_notebook; setup_notebook()
 
 import matplotlib.pyplot as plt
 import numpy as np
