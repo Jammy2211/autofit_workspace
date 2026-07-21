@@ -22,4 +22,3 @@
 - zeus_plotter # Test Model Iniitalization no good.
 - dynesty_plotter # Test Model Iniitalization no good.
 - start_point # bug https://github.com/rhayes777/PyAutoFit/issues/1017
-- features/interpolate # NEEDS_FIX 2026-04-10 - IndexError in InstanceInterpolator.__getitem__ when querying time == 1.5; value_map lookup falls through to empty instances list
