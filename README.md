@@ -66,7 +66,13 @@ The following **projects** are available in the project folder:
 
 ## Workspace Version
 
-This version of the workspace are built and tested for using **PyAutoFit v2026.7.9.1**.
+This workspace is built and tested against the **latest PyAutoFit release** — install it with
+`pip install --upgrade autofit`.
+
+The oldest release the scripts here are compatible with is recorded as
+`version.minimum_library_version` in `config/general.yaml`, and is checked when the workspace
+runs. That floor is the authoritative compatibility signal; this README no longer names an
+exact version, which could go stale (or name a yanked release) between releases.
 
 ## Support
 
