@@ -213,13 +213,26 @@ by interpolating between the values computed above.
 instance = interpolator[interpolator.time == 1.5]
 
 """
-The `centre` of the `Gaussian` at time 1.5 is between the value inferred for the first and second fits taken
-at times 1.0 and 2.0.
+The `centre` of the `Gaussian` at time 1.5 is between the value inferred for the fits taken at times 1.0 and 2.0.
 
 This is a `centre` close to a value of 55.0.
+
+We select the instances to print by matching on their `time` attribute rather than by their position in
+`ml_instances_list`. Position and time are not interchangeable, and relying on position is what makes this kind of
+comparison silently wrong (see the aggregator section below, where the loaded order is not the fit order).
 """
-print(f"Gaussian centre of fit 1 (t = 1): {ml_instances_list[0].gaussian.centre}")
-print(f"Gaussian centre of fit 2 (t = 2): {ml_instances_list[1].gaussian.centre}")
+
+
+def instance_at_time(instances, time):
+    return next(inst for inst in instances if inst.time == time)
+
+
+print(
+    f"Gaussian centre of fit at t = 1: {instance_at_time(ml_instances_list, 1).gaussian.centre}"
+)
+print(
+    f"Gaussian centre of fit at t = 2: {instance_at_time(ml_instances_list, 2).gaussian.centre}"
+)
 
 print(f"Gaussian centre interpolated at t = 1.5 {instance.gaussian.centre}")
 
@@ -260,12 +273,24 @@ agg = Aggregator.from_directory(
 
 ml_instances_list = [samps.max_log_likelihood() for samps in agg.values("samples")]
 
+"""
+The aggregator does not guarantee that results are loaded in the order the fits were performed — here, for example,
+they come back in the order t=0, t=2, t=1.
+
+This does not affect the interpolation at all, because the `LinearInterpolator` keys each instance by its `time`
+attribute and sorts them internally. It does mean you should never assume `ml_instances_list[i]` is the i'th fit,
+which is why we again select by `time` below.
+"""
 interpolator = af.LinearInterpolator(instances=ml_instances_list)
 
 instance = interpolator[interpolator.time == 1.5]
 
-print(f"Gaussian centre of fit 1 (t = 1): {ml_instances_list[0].gaussian.centre}")
-print(f"Gaussian centre of fit 2 (t = 2): {ml_instances_list[1].gaussian.centre}")
+print(
+    f"Gaussian centre of fit at t = 1: {instance_at_time(ml_instances_list, 1).gaussian.centre}"
+)
+print(
+    f"Gaussian centre of fit at t = 2: {instance_at_time(ml_instances_list, 2).gaussian.centre}"
+)
 
 print(f"Gaussian centre interpolated at t = 1.5 {instance.gaussian.centre}")
 
