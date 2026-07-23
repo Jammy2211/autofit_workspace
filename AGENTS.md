@@ -100,7 +100,7 @@ root):
 ```bash
 pip install ipynb-py-convert
 git clone https://github.com/PyAutoLabs/PyAutoHands.git ../PyAutoHands
-PYTHONPATH=../PyAutoHands/autobuild python3 ../PyAutoHands/autobuild/generate.py autofit
+PYTHONPATH=../PyAutoHands/autohands python3 ../PyAutoHands/autohands/generate.py autofit
 ```
 
 Commit the regenerated notebooks alongside the script changes. The `/generate_and_merge` skill
