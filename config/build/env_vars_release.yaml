@@ -30,9 +30,7 @@ defaults:
   PYAUTO_SKIP_FIT_OUTPUT: "0"               # real fit output (release fidelity, not smoke)
   PYAUTO_SKIP_VISUALIZATION: "0"            # real visualization (release fidelity, not smoke)
   PYAUTO_SKIP_CHECKS: "0"                   # real checks (release fidelity, not smoke)
-  PYAUTO_SMALL_DATASETS: "1"                # cap grids/masks to 15x15, reduce MGE gaussians
   PYAUTO_DISABLE_JAX: "0"                   # JAX enabled (release fidelity, not smoke)
-  PYAUTO_FAST_PLOTS: "1"                    # skip tight_layout() + critical curve/caustic overlays
   PYAUTO_SKIP_WORKSPACE_VERSION_CHECK: "1"  # TestPyPI dev version won't match the workspace pin
   JAX_ENABLE_X64: "True"                    # enable 64-bit precision in JAX
   NUMBA_CACHE_DIR: "/tmp/numba_cache"       # writable cache dir for numba
