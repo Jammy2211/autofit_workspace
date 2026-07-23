@@ -66,7 +66,7 @@ python .github/scripts/run_smoke.py
 ```
 
 It is driven by `smoke_tests.txt` (scripts) and `smoke_notebooks.txt` (notebooks) in the workspace
-root, with per-entry environment from `config/build/env_vars.yaml`. It prints a `[PASS]` /
+root, with per-entry environment from `config/build/profile_smoke.yaml`. It prints a `[PASS]` /
 `[FAIL (exit N)]` line per entry, ends with a `=== Smoke test summary: P/T passed ===` line, and
 exits non-zero if any entry failed.
 
