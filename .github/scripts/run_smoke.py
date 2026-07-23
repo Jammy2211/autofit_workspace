@@ -37,9 +37,6 @@ WORKSPACE = Path(__file__).resolve().parents[2]
 SMOKE_FILE = WORKSPACE / "smoke_tests.txt"
 NOTEBOOK_FILE = WORKSPACE / "smoke_notebooks.txt"
 ENV_VARS_FILE = WORKSPACE / "config" / "build" / "profile_smoke.yaml"
-# Legacy fallback for the rename transition; dies at the stage-3 cleanup.
-if not ENV_VARS_FILE.exists():
-    ENV_VARS_FILE = WORKSPACE / "config" / "build" / "env_vars.yaml"
 SCRIPTS_DIR = WORKSPACE / "scripts"
 NOTEBOOKS_DIR = WORKSPACE / "notebooks"
 
