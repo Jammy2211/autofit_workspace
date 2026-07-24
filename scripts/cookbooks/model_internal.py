@@ -453,9 +453,7 @@ print(f"Loaded model prior count: {loaded_model.prior_count}")
 """
 Linked priors are preserved through serialization. If two parameters shared the same prior before saving,
 they will share the same prior after loading.
-"""
 
-"""
 __Log Prior Computation__
 
 During MCMC sampling (e.g. with emcee), the log prior probability for a parameter vector is needed. The model

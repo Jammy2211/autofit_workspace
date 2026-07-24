@@ -419,9 +419,7 @@ and sigma=2.0.
 
 And with that, we`re done. Chaining searches is a bit of an art form, but for certain problems can be extremely 
 powerful.
-"""
 
-"""
 Cookbook 5: Model Linking
 =========================
 

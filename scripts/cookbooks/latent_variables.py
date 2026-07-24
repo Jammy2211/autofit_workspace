@@ -94,9 +94,7 @@ sample.
 
 The same trick generalises. Whenever a quantity you care about is a function of the parameters but not part of
 the likelihood, it can be a latent variable.
-"""
 
-"""
 __Why Latent Variables?__
 
 Three common motivating cases:
@@ -118,9 +116,7 @@ Three common motivating cases:
 
 Because latent variables are computed *after* the search completes, they cost zero per-likelihood evaluation —
 adding one never slows the fit down.
-"""
 
-"""
 __How PyAutoFit Computes Latents__
 
 A model declares its latent variables with a `Latent` class (subclass of `af.Latent`), attached to the
@@ -138,9 +134,7 @@ that drives the dispatch is at `PyAutoFit/autofit/non_linear/analysis/latent.py`
 The method is called *after* the search completes. It is never invoked inside `log_likelihood_function`, so
 latent computations cannot influence which models the search prefers — they only attach extra information to
 samples that have already been drawn.
-"""
 
-"""
 __Two Output Modes__
 
 PyAutoFit supports two strategies for computing latent values after a fit, controlled by `output.yaml`. Both
@@ -168,9 +162,7 @@ Two further flags toggle whether latents are computed at all:
 
 For most use cases the defaults are right: latents are computed once at the end, only summary statistics are
 written, and you opt into every-sample mode when you specifically need it.
-"""
 
-"""
 __Errors on Latents__
 
 This is the most important concept in the cookbook, and the most commonly misunderstood. The 1σ and 3σ intervals
@@ -207,9 +199,7 @@ print(f"Max log-likelihood FWHM: {max_likelihood_instance.gaussian.fwhm}")
 The intervals are asymmetric whenever the underlying parameter posterior is asymmetric — for instance, when the
 prior on `σ` is bounded near zero. The 1σ interval is a pair `(lower, upper)` with no requirement that
 `upper - median == median - lower`.
-"""
 
-"""
 __Posterior Draws Under the Hood__
 
 `analysis.compute_latent_samples(result.samples)` does mechanically what the explanation above describes:
@@ -228,9 +218,7 @@ the search runs under JAX.
 If the latent computation itself is expensive (e.g. a multi-band lensing integral), the cost is what dominates,
 not the dispatch loop. In that regime the N-draws-from-PDF mode is dramatically faster than every-sample mode
 and almost always sufficient for reporting.
-"""
 
-"""
 __Loading Results Downstream__
 
 Once a fit has produced latent output, you can access it in two ways.
@@ -255,9 +243,7 @@ also surfaces them for batched analysis across many fits. The end-to-end loading
 The committed `latent.csv` file format is intentionally human-readable — one column per latent key,
 one row per sample (or per posterior draw, in N-draws mode), plus the standard `log_likelihood`, `log_prior`,
 and `weight` columns. You can open it in any spreadsheet tool for a quick visual check.
-"""
 
-"""
 __When To Add A Latent vs A Sampled Parameter__
 
 A short rule of thumb:

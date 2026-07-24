@@ -90,8 +90,7 @@ The `aplt.corner_cornerpy` function wraps the library `corner.py` to make corner
 
 In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
 described in the API docs.
-"""
-"""
+
 The `corner_cornerpy` function produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
 """
 aplt.corner_cornerpy(
