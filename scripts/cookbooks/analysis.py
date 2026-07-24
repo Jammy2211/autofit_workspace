@@ -472,10 +472,7 @@ visual every `iterations_per_quick_update` evaluations, and declares itself thre
 #         plt.savefig(path.join(paths.image_path, "fit.png"))
 #         plt.clf()
 ```
-"""
 
-
-"""
 __Custom Result__
 
 The `Result` object is returned by a non-linear search after running the following code:

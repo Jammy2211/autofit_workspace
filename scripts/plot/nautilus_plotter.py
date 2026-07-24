@@ -93,8 +93,7 @@ we:
 
 There are other `_kwargs` inputs we pass as None, you should check out the Nautilus docs if you need to customize your
 figure.
-"""
-"""
+
 The `corner_anesthetic` function produces a triangle of 1D and 2D PDF's of every parameter using the library `anesthetic`.
 """
 aplt.corner_anesthetic(samples=samples)
