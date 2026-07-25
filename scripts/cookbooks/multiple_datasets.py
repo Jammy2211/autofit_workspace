@@ -468,7 +468,7 @@ model complexity, number of datasets or computational time.
 An alternative approach is to fit each dataset individually, and then interpolate the results over the smoothly
 varying parameter (e.g. time) to estimate the model parameters at any point.
 
-**PyAutoFit** has interpolation tools to do exactly this, which are described in the `features/interpolation.ipynb`
+**PyAutoFit** has interpolation tools to do exactly this, which are described in the `features/interpolate.ipynb`
 example.
 
 __Wrap Up__

@@ -136,7 +136,7 @@
       "Wrap Up: A summary of multi-dataset fitting in PyAutoFit."
     ],
     "cross_refs": [
-      "features/interpolation.ipynb"
+      "features/interpolate.ipynb"
     ],
     "notebook": "notebooks/cookbooks/multiple_datasets.ipynb",
     "path": "scripts/cookbooks/multiple_datasets.py",
@@ -203,7 +203,7 @@
       "Samples Filtering (Advanced): Filter the `Samples` object to only contain samples fulfilling certain criteria."
     ],
     "cross_refs": [
-      "/features/bayes_model_comparison.py",
+      "/features/model_comparison.py",
       "corner.py",
       "get_dist.py"
     ],
@@ -290,7 +290,7 @@
       "Database"
     ],
     "cross_refs": [
-      "cookbook/database.ipynb",
+      "cookbooks/result.ipynb",
       "interpolation.py"
     ],
     "notebook": "notebooks/features/interpolate.ipynb",
@@ -473,7 +473,7 @@
     ],
     "cross_refs": [
       "corner.py",
-      "overview/simple/fit.py"
+      "overview/overview_1_the_basics.py"
     ],
     "notebook": "notebooks/plot/dynesty_plotter.ipynb",
     "path": "scripts/plot/dynesty_plotter.py",
@@ -488,7 +488,7 @@
     ],
     "cross_refs": [
       "corner.py",
-      "overview/simple/fit.py"
+      "overview/overview_1_the_basics.py"
     ],
     "notebook": "notebooks/plot/emcee_plotter.ipynb",
     "path": "scripts/plot/emcee_plotter.py",
@@ -509,7 +509,7 @@
       "Plotting Multiple Samples"
     ],
     "cross_refs": [
-      "overview/simple/fit.py"
+      "overview/overview_1_the_basics.py"
     ],
     "notebook": "notebooks/plot/get_dist.ipynb",
     "path": "scripts/plot/get_dist.py",
@@ -525,7 +525,7 @@
     ],
     "cross_refs": [
       "corner.py",
-      "overview/simple/fit.py"
+      "overview/overview_1_the_basics.py"
     ],
     "notebook": "notebooks/plot/nautilus_plotter.ipynb",
     "path": "scripts/plot/nautilus_plotter.py",
@@ -540,7 +540,7 @@
     ],
     "cross_refs": [
       "corner.py",
-      "overview/simple/fit.py"
+      "overview/overview_1_the_basics.py"
     ],
     "notebook": "notebooks/plot/zeus_plotter.ipynb",
     "path": "scripts/plot/zeus_plotter.py",
@@ -607,7 +607,7 @@
       "Result"
     ],
     "cross_refs": [
-      "modeling/start_here.ipynb"
+      "overview/overview_1_the_basics.ipynb"
     ],
     "notebook": "notebooks/searches/start_point.ipynb",
     "path": "scripts/searches/start_point.py",

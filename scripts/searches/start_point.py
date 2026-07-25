@@ -54,7 +54,7 @@ This script is split into the following sections:
 
 __Start Here Notebook__
 
-If any code in this script is unclear, refer to the `modeling/start_here.ipynb` notebook.
+If any code in this script is unclear, refer to the `overview/overview_1_the_basics.ipynb` notebook.
 """
 
 # from autofit import setup_notebook; setup_notebook()
