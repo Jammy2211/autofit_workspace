@@ -296,7 +296,7 @@ If a nested sampling non-linear search is used, the evidence of the model is als
 model comparison to be performed (given we are using Emcee, which is not a nested sampling algorithm, the log evidence 
 is None).
 
-A full discussion of Bayesian model comparison is given in `autofit_workspace/*/features/bayes_model_comparison.py`.
+A full discussion of Bayesian model comparison is given in `autofit_workspace/*/features/model_comparison.py`.
 """
 log_evidence = samples.log_evidence
 print(f"Log Evidence: {log_evidence}")

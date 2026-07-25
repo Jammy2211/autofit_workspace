@@ -52,7 +52,7 @@ import autofit as af
 __Model Fit__
 
 First, lets create a result so we have samples to plot, repeating the simple model-fit that is performed in 
-the `overview/simple/fit.py` example.
+the `overview/overview_1_the_basics.py` example.
 
 We'll use dynesty in this example, but any MCMC / nested sampling non-linear search which produces samples of
 the posterior could be used.

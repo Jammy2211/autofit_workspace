@@ -363,6 +363,7 @@ Where to go next:
 
  - `features/graphical_models.py` — composing richer graphical models (this script's prerequisite reading).
 
- - **HowToFit** chapter 3 (`scripts/chapter_3_graphical_models/`) — the full tutorial series, including hierarchical
-   models where shared parameters are drawn from a parent distribution, and EP fits of those hierarchies.
+ - **HowToFit** chapter 3, at https://github.com/PyAutoLabs/HowToFit/tree/main/scripts/chapter_3_graphical_models —
+   the full tutorial series, including hierarchical models where shared parameters are drawn from a parent
+   distribution, and EP fits of those hierarchies.
 """

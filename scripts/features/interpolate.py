@@ -263,7 +263,8 @@ PyAutoFit's allows you to store the results of model-fits from hard-disk.
 Database functionality then allows you to load the results of the fit above, set up the interpolator and perform the 
 interpolation.
 
-If you are not familiar with the database API, you should checkout the `cookbook/database.ipynb` example.
+If you are not familiar with the database API, you should checkout the `cookbooks/result.ipynb` example, whose
+final sections cover building and querying the database.
 """
 from autofit.aggregator.aggregator import Aggregator
 

@@ -24,7 +24,7 @@ import autofit.plot as aplt
 
 """
 First, lets create a result via emcee by repeating the simple model-fit that is performed in 
-the `overview/simple/fit.py` example.
+the `overview/overview_1_the_basics.py` example.
 """
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1")
 
