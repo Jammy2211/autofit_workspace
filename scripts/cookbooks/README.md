@@ -7,7 +7,6 @@ The `cookbooks` folder contains cookbooks concisely explaining how to use differ
 - `search.py`: Custom settings of non-linear searches and a list of all searches available (e.g. MCM, nested sampling).
 - `result.py`: Using results from a non-linear search.
 - `samples.py`: Analysing the samples of a non linear search (e.g. maximum likelihood model, parameter errors).
-- `config.py`: Defining configuration files associated with your user define model (e.g. automatic prior setup and parameter labels).
+- `configs.py`: Defining configuration files associated with your user define model (e.g. automatic prior setup and parameter labels).
 - `multiple_datasets.py`: Fitting multiple datasets simultaneously via `Analysis` class summing.
-- `database.py`: Using an sqlite3 database to store results of non-linear searches for fits to large datasets.
 - `multi_level_model.py`: Composing multi-level models from hierarchicies of Python classes.

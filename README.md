@@ -46,8 +46,7 @@ pitched at undergraduate level and above.
 The workspace includes the following main directories:
 
 - `notebooks`: **PyAutoFit** examples written as Jupyter notebooks.
-- `scipts`: **PyAutoFit** examples written as Python scripts.
-- `projects`: Example projects which use **PyAutoFit**, which serve as a illustration of model-fitting problems and the **PyAutoFit** API.
+- `scripts`: **PyAutoFit** examples written as Python scripts.
 - `config`: Configuration files which customize **PyAutoFit**'s behaviour.
 - `dataset`: Where data is stored, including example datasets distributed with **PyAutoFit**.
 - `output`: Where the **PyAutoFit** analysis and visualization are output.
