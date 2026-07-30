@@ -2773,11 +2773,3 @@ plt.close()
     
 ![png](overview_1_the_basics_files/overview_1_the_basics_77_0.png)
     
-
-
-Finish.
-
-
-```python
-
-```

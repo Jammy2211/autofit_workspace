@@ -584,7 +584,3 @@ print(
     "All parameters of the very first sample (containing only the Gaussian normalization and sigma)."
 )
 print(samples.parameter_lists[0])
-
-"""
-Finish.
-"""

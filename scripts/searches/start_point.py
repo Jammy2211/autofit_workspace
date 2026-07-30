@@ -186,7 +186,3 @@ print(samples.model.parameter_names)
 print(samples.parameter_lists[0])
 print(samples.parameter_lists[1])
 print(samples.parameter_lists[2])
-
-"""
-Finish.
-"""

@@ -334,7 +334,3 @@ time to run, so I've commented it out, but feel free to run it!
 #     analysis=analysis,
 #     grid_priors=[model.gaussian_feature.centre, model.gaussian_main.centre],
 # )
-
-"""
-Finish.
-"""

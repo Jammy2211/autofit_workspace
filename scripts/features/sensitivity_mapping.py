@@ -573,7 +573,3 @@ of results. If you intend to use sensitivity mapping, the best way to interpret 
 """
 print(sensitivity_result.samples)
 print(sensitivity_result.log_evidences_base)
-
-"""
-Finish.
-"""
