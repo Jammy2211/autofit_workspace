@@ -174,7 +174,3 @@ for i in range(result.samples.model.prior_count):
 axes[-1].set_xlabel("step number")
 
 plt.show()
-
-"""
-Finish.
-"""

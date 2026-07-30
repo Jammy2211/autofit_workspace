@@ -820,8 +820,3 @@ class Analysis(af.Analysis):
 
         with open(file_path, "w+") as f:
             json.dump(model_data, f, indent=4)
-
-
-"""
-Finish.
-"""

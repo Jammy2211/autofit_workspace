@@ -873,7 +873,3 @@ plt.xlabel("x values of profile")
 plt.ylabel("Profile normalization")
 plt.show()
 plt.close()
-
-"""
-Finish.
-"""

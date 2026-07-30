@@ -294,7 +294,3 @@ print(
 )
 
 print(f"Gaussian centre interpolated at t = 1.5 {instance.gaussian.centre}")
-
-"""
-Finish.
-"""

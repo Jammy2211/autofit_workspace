@@ -333,7 +333,3 @@ try:
 
 except ValueError:
     pass
-
-"""
-Finish.
-"""

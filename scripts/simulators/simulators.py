@@ -205,7 +205,3 @@ util.simulate_dataset_1d_via_gaussian_from(gaussian=gaussian, dataset_path=datas
 dataset_path = path.join("dataset", "example_1d", "gaussian_x1_variable", "sigma_2")
 gaussian = af.ex.Gaussian(centre=50.0, normalization=50.0, sigma=30.0)
 util.simulate_dataset_1d_via_gaussian_from(gaussian=gaussian, dataset_path=dataset_path)
-
-"""
-Finish.
-"""
