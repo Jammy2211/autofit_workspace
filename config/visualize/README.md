@@ -1,4 +1,4 @@
-The `config` folder contains configuration files which customize default **PyAutoLens**.
+The `visualize` folder contains configuration files which customize what a model-fit outputs.
 
 # Files
 
