@@ -23,3 +23,4 @@
 - zeus_plotter # Test Model Iniitalization no good.
 - dynesty_plotter # Test Model Iniitalization no good.
 - start_point # bug https://github.com/rhayes777/PyAutoFit/issues/1017
+- features/expectation_propagation.py # NEEDS_FIX 2026-08-03 - EP parked as not release-ready. EP message projection is unstable: a truncated per-factor search projects an ESS=1 posterior with zero weighted variance, which EP feeds back as a delta-function prior. See PyAutoFit #1332 F10 and autofit_workspace_test graphical/ep.py.
