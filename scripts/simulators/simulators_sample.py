@@ -19,7 +19,6 @@ import numpy as np
 from os import path
 
 import autofit as af
-import util
 
 """
 __Gaussian x1 low snr (centre fixed to 50.0)__
@@ -34,7 +33,7 @@ for i in range(total_datasets):
         "dataset", "example_1d", f"gaussian_x1__low_snr", f"dataset_{i}"
     )
     gaussian = af.ex.Gaussian(centre=50.0, normalization=0.5, sigma=5.0)
-    util.simulate_dataset_1d_via_gaussian_from(
+    af.ex.util.simulate_dataset_1d_via_gaussian_from(
         gaussian=gaussian, dataset_path=dataset_path
     )
 
@@ -63,7 +62,7 @@ for i in range(total_datasets):
 
     gaussian = gaussian_parent_model.random_instance()
 
-    util.simulate_dataset_1d_via_gaussian_from(
+    af.ex.util.simulate_dataset_1d_via_gaussian_from(
         gaussian=gaussian, dataset_path=dataset_path
     )
 
@@ -104,6 +103,6 @@ for i in range(total_datasets):
     gaussian_0 = af.ex.Gaussian(centre=40.0, normalization=1.0, sigma=sigma_0_value)
     gaussian_1 = af.ex.Gaussian(centre=60.0, normalization=1.0, sigma=sigma_1_value)
 
-    util.simulate_dataset_1d_via_profile_1d_list_from(
+    af.ex.util.simulate_dataset_1d_via_profile_1d_list_from(
         profile_1d_list=[gaussian_0, gaussian_1], dataset_path=dataset_path
     )
