@@ -651,13 +651,5 @@
     "path": "scripts/simulators/simulators_sample.py",
     "summary": "These scripts simulates many 1D Gaussian datasets with a low signal to noise ratio, which are used to demonstrate model-fitting.",
     "title": "__Simulators__"
-  },
-  {
-    "contents": [],
-    "cross_refs": [],
-    "notebook": "notebooks/simulators/util.ipynb",
-    "path": "scripts/simulators/util.py",
-    "summary": "(no summary in script docstring)",
-    "title": "util"
   }
 ]
