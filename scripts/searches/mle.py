@@ -243,6 +243,7 @@ search = af.MultiStartAdam(
     path_prefix="searches",
     name="MultiStartAdam",
     n_starts=16,
+    batch_size=None,  # Starts evaluated at once: `None` vmaps all 16 together, which is fastest but allocates the whole batched gradient; set an integer (e.g. 4) if you hit an out-of-memory error.
     n_steps=500,
     learning_rate=0.5,
 )
