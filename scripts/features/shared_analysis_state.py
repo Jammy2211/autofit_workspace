@@ -77,6 +77,8 @@ __Dataset Auto-Simulation__
 
 If the dataset does not already exist on your system, it will be created by running the corresponding simulator script.
 """
+# Intentional raw guard: this guards a single file, and this workspace has no
+# should_simulate / PYAUTO_SMALL_DATASETS contract (unlike autolens/autogalaxy).
 if not path.exists(
     path.join("dataset", "example_1d", "gaussian_x1__low_snr", "dataset_0", "data.json")
 ):
