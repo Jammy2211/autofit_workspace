@@ -285,10 +285,16 @@ no search needed). Iterations repeat until the KL change converges.
 __Full EP Fit__
 
 That is the entire algorithm. The high-level API runs this loop for us: `factor_graph.optimise(...)` cycles the
-factors, manages damping, tracks the history and writes results to the output folder.
+factors, tracks the history and writes results to the output folder. By default it uses full updates (`delta=1.0`),
+so damping is not enabled unless we explicitly pass an updater.
 
 Each `AnalysisFactor` is fitted by its own `DynestyStatic`; the `LaplaceOptimiser` passed here is the *default* for
 the remaining factors — the `PriorFactor`'s — whose updates are cheap.
+
+For a problem where partial updates are worth testing, add
+`updater=af.SimplerUpdater(delta=0.7)` to the call below. This is deliberately commented out: damping is
+problem-dependent and has made hierarchical scale collapse worse in repeated-run diagnostics, so it should be
+validated across repeated fits rather than enabled routinely.
 """
 laplace = af.LaplaceOptimiser()
 
@@ -298,6 +304,7 @@ factor_graph_result = factor_graph.optimise(
     optimiser=laplace,
     paths=paths,
     ep_history=af.EPHistory(kl_tol=0.05),
+    # updater=af.SimplerUpdater(delta=0.7),  # Optional; no damping by default.
     max_steps=5,
 )
 
