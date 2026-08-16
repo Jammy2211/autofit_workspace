@@ -524,8 +524,10 @@ returns the goodness-of-fit of the model to the data.
 example, normalization has a `LogUniformPrior` with lower limit 1e-4 and upper limit 1e2, therefore the `number_of_steps` 
 of 2 wills imulate and fit just 2 datasets where the intensities between 1e-4 and 1e2.
 
-- `number_of_cores`: The number of cores over which the sensitivity mapping is performed, enabling parallel processing
-if set above 1.
+- `number_of_cores`: The number of cores over which the sensitivity mapping is performed. If `number_of_cores=1`, the
+sensitivity mapping is run in serial. For > 1 core, the simulate-and-fit of each dataset is farmed out to a separate
+process. In case your laptop has limited hardware resources we do not run in parallel in this example by default, but
+feel free to raise it if you have a lot of CPUs and memory!
 """
 paths = af.DirectoryPaths(
     path_prefix=path.join("features"),
@@ -542,7 +544,7 @@ sensitivity = af.Sensitivity(
     base_fit_cls=BaseFit(analysis_cls=Analysis),
     perturb_fit_cls=PerturbFit(analysis_cls=Analysis),
     number_of_steps=2,
-    number_of_cores=2,
+    number_of_cores=1,
 )
 sensitivity_result = sensitivity.run()
 
