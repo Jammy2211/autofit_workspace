@@ -123,3 +123,5 @@ This overview is split into the following sections:
 - **Search Chaining**: Chain a sequence of non-linear searches with increasing model complexity.
 - **Sensitivity Mapping**: Determine the data quality needed for complex models to be favored.
 """
+
+# from autofit import setup_notebook; setup_notebook()
