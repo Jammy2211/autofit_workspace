@@ -1,1 +1,1 @@
-autofit[jax]
+autofit
