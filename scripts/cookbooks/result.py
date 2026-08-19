@@ -424,8 +424,8 @@ sampled using the fit or an instance of the maximum likelihood model.
 The `Samples` class is described fully in the results cookbook.
 """
 for samples in agg.values("samples"):
-    print("The tenth sample`s third parameter")
-    print(samples.parameter_lists[9][2], "\n")
+    print("The final sample`s third parameter")
+    print(samples.parameter_lists[-1][2], "\n")
 
     instance = samples.max_log_likelihood()
 
