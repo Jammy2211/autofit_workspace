@@ -100,7 +100,7 @@ plt.ylabel("Signal Value")
 plt.show()
 plt.close()
 
-"""
+r"""
 The 1D signal was generated using a 1D Gaussian profile of the form:
 
 \begin{equation*}

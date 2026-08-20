@@ -205,7 +205,7 @@ search = af.DynestyStatic()
 
 # result = search.fit(model=model, analysis=analysis)
 
-"""
+r"""
 __Modules__
 
 For larger projects, it may not be ideal to have to write a .yaml file for every Python class which acts as a model
