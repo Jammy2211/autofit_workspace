@@ -81,36 +81,33 @@ We now use the `autofit.plot` module-level functions to visualize the results.
 
 The zeus readthedocs describes fully all of the methods used below
 
- - https://zeus-mcmc.readthedocs.io/en/latest/api/plotting.html#cornerplot
  - https://zeus-mcmc.readthedocs.io/en/latest/notebooks/normal_distribution.html
+
+Note that `corner_cornerpy` wraps `corner.py`, not zeus's own `cornerplot` — zeus's arguments
+(`weight_list`, `span`, `truth`, `fill`, `cut`, `size`, …) are not accepted here.
 
 The `aplt.corner_cornerpy` function wraps the library `corner.py` to make corner plots of the PDF:
 
 - https://corner.readthedocs.io/en/latest/index.html
 
-In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
-described in the API docs.
+In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters described
+in the `corner.py` API docs — they are forwarded to `corner.corner`. A name `corner.py` does not accept raises a
+`TypeError` naming it, so a typo, or an argument belonging to a different plotting library, fails loudly instead of
+being quietly ignored.
 
 The `corner_cornerpy` function produces a triangle of 1D and 2D PDF's of every parameter using the library `corner.py`.
 """
 aplt.corner_cornerpy(
     samples=samples,
-    weight_list=None,
-    levels=None,
-    span=None,
     quantiles=[0.025, 0.5, 0.975],
-    truth=None,
+    levels=(0.68, 0.95),
     color=None,
-    alpha=0.5,
-    linewidth=1.5,
-    fill=True,
-    fontsize=10,
     show_titles=True,
     title_fmt=".2f",
-    title_fontsize=12,
-    cut=3,
+    title_kwargs={"fontsize": 12},
+    label_kwargs={"fontsize": 10},
+    truths=None,
     fig=None,
-    size=(10, 10),
 )
 
 

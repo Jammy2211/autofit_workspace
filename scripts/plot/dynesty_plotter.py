@@ -79,17 +79,20 @@ The dynesty readthedocs describes fully all of the methods used below
  - https://dynesty.readthedocs.io/en/latest/quickstart.html
  - https://dynesty.readthedocs.io/en/latest/api.html#module-dynesty.plotting
 
-In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
-described in the API docs.
+In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters described
+in the `corner.py` API docs — they are forwarded to `corner.corner`. A name `corner.py` does not accept raises a
+`TypeError` naming it, so a typo, or an argument belonging to a different plotting library, fails loudly instead of
+being quietly ignored.
 
-Dynesty plotters use `_kwargs` dictionaries to pass visualization settings to matplotlib lib. For example, below,
+`corner.py` uses `_kwargs` dictionaries to pass visualization settings through to matplotlib. For example, below,
 we:
 
  - Set the fontsize of the x and y labels by passing `label_kwargs={"fontsize": 16}`.
  - Set the fontsize of the title by passing `title_kwargs={"fontsize": "10"}`.
 
-There are other `_kwargs` inputs we pass as None, you should check out the Dynesty docs if you need to customize your
-figure.
+There are other `_kwargs` inputs we pass as None; check out the `corner.py` docs if you need to customize your
+figure further. Note that these are `corner.py`'s options, not dynesty's — `corner_cornerpy` wraps `corner.py`,
+so dynesty's own `cornerplot` arguments (`dims`, `span`, `quantiles_2d`, …) do not apply here.
 
 The `corner_anesthetic` function produces a triangle of 1D and 2D PDF's of every parameter using the library `anesthetic`.
 """
@@ -100,21 +103,16 @@ The `corner_cornerpy` function produces a triangle of 1D and 2D PDF's of every p
 """
 aplt.corner_cornerpy(
     samples=samples,
-    dims=None,
-    span=None,
     quantiles=[0.025, 0.5, 0.975],
     color="black",
     smooth=0.02,
-    quantiles_2d=None,
     hist_kwargs=None,
-    hist2d_kwargs=None,
     label_kwargs={"fontsize": 16},
     show_titles=True,
     title_fmt=".2f",
     title_kwargs={"fontsize": "10"},
     truths=None,
     truth_color="red",
-    truth_kwargs=None,
     max_n_ticks=5,
     top_ticks=False,
     use_math_text=False,

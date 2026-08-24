@@ -85,8 +85,10 @@ The `aplt.corner_cornerpy` function wraps the library `corner.py` to make corner
 
 - https://corner.readthedocs.io/en/latest/index.html
 
-In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
-described in the API docs.
+In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters described
+in the `corner.py` API docs — they are forwarded to `corner.corner`. A name `corner.py` does not accept raises a
+`TypeError` naming it, so a typo, or an argument belonging to a different plotting library, fails loudly instead of
+being quietly ignored.
 """
 samples = result.samples
 
