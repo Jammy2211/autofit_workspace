@@ -82,17 +82,19 @@ The nautilus readthedocs describes fully all of the methods used below
 
  - https://nautilus-sampler.readthedocs.io/en/stable/guides/crash_course.html
 
-In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters that are
-described in the API docs.
+In all the examples below, we use the `kwargs` of this function to pass in any of the input parameters described
+in the `corner.py` API docs — they are forwarded to `corner.corner`. A name `corner.py` does not accept raises a
+`TypeError` naming it, so a typo, or an argument belonging to a different plotting library, fails loudly instead of
+being quietly ignored.
 
-Nautilus plotters use `_kwargs` dictionaries to pass visualization settings to matplotlib lib. For example, below,
+`corner.py` uses `_kwargs` dictionaries to pass visualization settings through to matplotlib. For example, below,
 we:
 
- - Set the fontsize of the x and y labels by passing `label_kwargs={"fontsize": 16}`.
- - Set the fontsize of the title by passing `title_kwargs={"fontsize": "10"}`.
+ - Set the fontsize of the x and y labels by passing `label_kwargs={"fontsize": 24}`.
 
-There are other `_kwargs` inputs we pass as None, you should check out the Nautilus docs if you need to customize your
-figure.
+Check out the `corner.py` docs if you need to customize your figure further. Note that these are `corner.py`'s
+options, not nautilus's — `corner_cornerpy` wraps `corner.py`, so figure-geometry arguments from other plotting
+libraries (`panelsize`, `xticksize`, `yticksize`, …) do not apply here.
 
 The `corner_anesthetic` function produces a triangle of 1D and 2D PDF's of every parameter using the library `anesthetic`.
 """
@@ -103,9 +105,6 @@ The `corner_cornerpy` function produces a triangle of 1D and 2D PDF's of every p
 """
 aplt.corner_cornerpy(
     samples=samples,
-    panelsize=3.5,
-    yticksize=16,
-    xticksize=16,
     bins=20,
     plot_datapoints=False,
     plot_density=False,
