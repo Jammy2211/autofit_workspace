@@ -57,6 +57,7 @@ search = af.Nautilus(
     path_prefix="plot",
     name="NestPlotter",
     n_live=100,  # Number of so-called live points. New bounds are constructed so that they encompass the live points.
+    n_like_max=3000,  # Caps the number of likelihood evaluations so this example completes quickly; remove for a full run.
 )
 
 result = search.fit(model=model, analysis=analysis)
@@ -135,4 +136,17 @@ search_internal = result.search_internal
 __Plots__
 
 Nautilus example plots are not shown explicitly below, so checkout their docs for examples!
+
+__Env__ (Developer Only)
+
+Not user documentation: this section configures the automated test harness.
+The ENV line declares the environment applied when this script runs in CI
+(PyAutoHands docs/env_profile_redesign.md §10); this whole section is
+stripped from generated notebooks and markdown.
+
+The corner plots above need a real posterior: TEST_MODE stops nautilus after
+its first batch, leaving one non-zero weight, which collapses the corner
+range and raises. The `n_like_max` cap on the search keeps the run fast.
+
+ENV: real_search
 """
